@@ -1,0 +1,5908 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "ComeCome Pay API Collection",
+    "description": "Complete API collection for ComeCome Pay backend services including authentication, KYC, wallet operations, cards, coupons, and commission management.",
+    "version": "1.0.0"
+  },
+  "tags": [],
+  "paths": {
+    "/auth/signup": {
+      "post": {
+        "summary": "Signup",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email"
+                ]
+              },
+              "example": "{\n  \"email\": \"john.doe@example.com\",\n}"
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Login - Step 1",
+        "deprecated": false,
+        "description": "Login with email and password. OTP will be sent to email.",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ]
+              },
+              "example": {
+                "email": "{{test_email}}",
+                "password": "{{test_password}}"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/auth/verify": {
+      "post": {
+        "summary": "Verify OTP",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "otp_code": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "otp_code"
+                ]
+              },
+              "example": {
+                "email": "john.doe@example.com",
+                "otp_code": "12345"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/auth/verify-login-otp": {
+      "post": {
+        "summary": "Login - Step 2 (Verify OTP)",
+        "deprecated": false,
+        "description": "Verify OTP code and receive access token",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "otp_code": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "otp_code"
+                ]
+              },
+              "example": {
+                "email": "{{test_email}}",
+                "otp_code": "12345"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/auth/resend-otp": {
+      "post": {
+        "summary": "Resend OTP",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email"
+                ]
+              },
+              "example": {
+                "email": "john.doe@example.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "summary": "Logout",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "summary": "Refresh Token",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refresh_token": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "refresh_token"
+                ]
+              },
+              "example": {
+                "refresh_token": "{{refreshToken}}"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/auth/forgot-password": {
+      "post": {
+        "summary": "Forgot Password",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email"
+                ]
+              },
+              "example": {
+                "email": "john.doe@example.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/auth/verify-forgot-password-otp": {
+      "post": {
+        "summary": "Verify Forgot Password OTP",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "otp_code": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "otp_code"
+                ]
+              },
+              "example": {
+                "email": "john.doe@example.com",
+                "otp_code": "12345"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "summary": "Reset Password",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "new_password": {
+                    "type": "string"
+                  },
+                  "confirm_password": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "new_password",
+                  "confirm_password"
+                ]
+              },
+              "example": {
+                "email": "john.doe@example.com",
+                "new_password": "newpassword123",
+                "confirm_password": "newpassword123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/auth/set-password": {
+      "post": {
+        "summary": "Set Password",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ]
+              },
+              "example": {
+                "email": "john.doe@example.com",
+                "password": "mypassword123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/user/profile": {
+      "get": {
+        "summary": "Get Profile",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      },
+      "put": {
+        "summary": "Update Profile",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "first_name": {
+                    "type": "string"
+                  },
+                  "last_name": {
+                    "type": "string"
+                  },
+                  "phone": {
+                    "type": "string"
+                  },
+                  "date_of_birth": {
+                    "type": "string"
+                  },
+                  "account_type": {
+                    "type": "string"
+                  },
+                  "referral_code": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "first_name",
+                  "last_name",
+                  "phone",
+                  "date_of_birth",
+                  "account_type",
+                  "referral_code"
+                ]
+              },
+              "example": {
+                "first_name": "John",
+                "last_name": "Doe",
+                "phone": "+1234567890",
+                "date_of_birth": "1990-01-15",
+                "account_type": "personal",
+                "referral_code": "REF123456"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/kyc/generate-link": {
+      "post": {
+        "summary": "Initialized Token",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/kyc/documents": {
+      "post": {
+        "summary": "Submit KYC Document",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "document_type": {
+                    "type": "string"
+                  },
+                  "document_number": {
+                    "type": "string"
+                  },
+                  "document_url": {
+                    "type": "string"
+                  },
+                  "expiry_date": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "document_type",
+                  "document_number",
+                  "document_url",
+                  "expiry_date"
+                ]
+              },
+              "example": {
+                "document_type": "passport",
+                "document_number": "A12345678",
+                "document_url": "https://example.com/document.pdf",
+                "expiry_date": "2030-12-31"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      },
+      "get": {
+        "summary": "Get KYC Documents",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/kyc/business-profile": {
+      "post": {
+        "summary": "Create Business Profile",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_name": {
+                    "type": "string"
+                  },
+                  "business_type": {
+                    "type": "string"
+                  },
+                  "registration_number": {
+                    "type": "string"
+                  },
+                  "business_address": {
+                    "type": "string"
+                  },
+                  "website": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "business_name",
+                  "business_type",
+                  "registration_number",
+                  "business_address",
+                  "website"
+                ]
+              },
+              "example": {
+                "business_name": "My Business Inc.",
+                "business_type": "corporation",
+                "registration_number": "BUS123456",
+                "business_address": "123 Business St, City, State",
+                "website": "https://mybusiness.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      },
+      "get": {
+        "summary": "Get Business Profile",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/admin/kyc/documents/pending": {
+      "get": {
+        "summary": "Get Pending KYC Documents",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/admin/kyc/documents/{id}/review": {
+      "put": {
+        "summary": "Review KYC Document",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "reviewer_comments": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "status",
+                  "reviewer_comments"
+                ]
+              },
+              "example": {
+                "status": "approved",
+                "reviewer_comments": "Document verified successfully"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/wallet/": {
+      "get": {
+        "summary": "Get Wallet",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/wallet/add-money": {
+      "post": {
+        "summary": "Add Money",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "integer"
+                  },
+                  "payment_method_id": {
+                    "type": "integer"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "amount",
+                  "payment_method_id",
+                  "description"
+                ]
+              },
+              "example": {
+                "amount": 100,
+                "payment_method_id": 1,
+                "description": "Adding funds to wallet"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/wallet/withdraw": {
+      "post": {
+        "summary": "Withdraw Money",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "integer"
+                  },
+                  "payment_method_id": {
+                    "type": "integer"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "amount",
+                  "payment_method_id",
+                  "description"
+                ]
+              },
+              "example": {
+                "amount": 50,
+                "payment_method_id": 1,
+                "description": "Withdrawing funds from wallet"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/wallet/transfer": {
+      "post": {
+        "summary": "Transfer Money",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "recipient_wallet_id": {
+                    "type": "string"
+                  },
+                  "amount": {
+                    "type": "integer"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "recipient_wallet_id",
+                  "amount",
+                  "description"
+                ]
+              },
+              "example": {
+                "recipient_wallet_id": "CCP123456",
+                "amount": 25,
+                "description": "Transfer to friend"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/wallet/transactions": {
+      "get": {
+        "summary": "Get Transaction History",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "10",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/wallet/payment-methods": {
+      "post": {
+        "summary": "Add Payment Method",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  },
+                  "account_number": {
+                    "type": "string"
+                  },
+                  "routing_number": {
+                    "type": "string"
+                  },
+                  "account_holder_name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "type",
+                  "account_number",
+                  "routing_number",
+                  "account_holder_name"
+                ]
+              },
+              "example": {
+                "type": "bank_account",
+                "account_number": "1234567890",
+                "routing_number": "021000021",
+                "account_holder_name": "John Doe"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      },
+      "get": {
+        "summary": "Get Payment Methods",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/cards/request": {
+      "post": {
+        "summary": "Request Card",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "card_type": {
+                    "type": "string"
+                  },
+                  "delivery_address": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "card_type",
+                  "delivery_address"
+                ]
+              },
+              "example": {
+                "card_type": "debit",
+                "delivery_address": "123 Main St, City, State, 12345"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/cards/": {
+      "get": {
+        "summary": "Get User Cards",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/cards/{id}/block": {
+      "put": {
+        "summary": "Block Card",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "reason"
+                ]
+              },
+              "example": {
+                "reason": "lost_card"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/admin/cards/fee-config": {
+      "post": {
+        "summary": "Create Card Fee Config",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "card_type": {
+                    "type": "string"
+                  },
+                  "issuance_fee": {
+                    "type": "integer"
+                  },
+                  "monthly_maintenance_fee": {
+                    "type": "integer"
+                  },
+                  "replacement_fee": {
+                    "type": "integer"
+                  },
+                  "currency": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "card_type",
+                  "issuance_fee",
+                  "monthly_maintenance_fee",
+                  "replacement_fee",
+                  "currency"
+                ]
+              },
+              "example": {
+                "card_type": "debit",
+                "fee_type": "test",
+                "fee_amount": 2,
+                "description": "USD"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "get": {
+        "summary": "Get Card Fee Configs",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/admin/cards/fee-exemption": {
+      "post": {
+        "summary": "Create Card Fee Exemption",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "exemption_type": {
+                    "type": "string"
+                  },
+                  "reason": {
+                    "type": "string"
+                  },
+                  "expires_at": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "user_id",
+                  "exemption_type",
+                  "reason",
+                  "expires_at"
+                ]
+              },
+              "example": {
+                "user_id": 1,
+                "exemption_type": "issuance_fee",
+                "reason": "VIP customer",
+                "expires_at": "2024-12-31T23:59:59Z"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/user/change-email/request": {
+      "post": {
+        "summary": "1. Change Email - Request",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "new_email": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "new_email"
+                ]
+              },
+              "example": {
+                "new_email": "newemail@example.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/user/change-email/verify-new": {
+      "post": {
+        "summary": "2. Change Email - Verify New",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "new_email": {
+                    "type": "string"
+                  },
+                  "otp_code": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "new_email",
+                  "otp_code"
+                ]
+              },
+              "example": {
+                "new_email": "newemail@example.com",
+                "otp_code": "12345"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/user/change-email/complete": {
+      "post": {
+        "summary": "3. Change Email - Complete",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "new_email": {
+                    "type": "string"
+                  },
+                  "old_email_otp": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "new_email",
+                  "old_email_otp"
+                ]
+              },
+              "example": {
+                "new_email": "newemail@example.com",
+                "old_email_otp": "54321"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/user/change-phone/request": {
+      "post": {
+        "summary": "1. Change Phone - Request",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "new_phone": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "new_phone"
+                ]
+              },
+              "example": {
+                "new_phone": "+1987654321"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/user/change-phone/verify-new": {
+      "post": {
+        "summary": "2. Change Phone - Verify New",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "otp_code": {
+                    "type": "string"
+                  },
+                  "new_phone": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "otp_code",
+                  "new_phone"
+                ]
+              },
+              "example": {
+                "email": "firm@example.com",
+                "new_phone": "+1987654321",
+                "otp_code": "75706"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/user/change-phone/complete": {
+      "post": {
+        "summary": "3. Change Phone - Complete",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "new_phone": {
+                    "type": "string"
+                  },
+                  "email_otp": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "new_phone",
+                  "email_otp"
+                ]
+              },
+              "example": {
+                "new_phone": "+1987654321",
+                "email_otp": "82495"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/user/transaction-password/request": {
+      "post": {
+        "summary": "1. Transaction Password - Request",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "transaction_password": {
+                    "type": "string"
+                  },
+                  "confirm_transaction_password": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "transaction_password",
+                  "confirm_transaction_password"
+                ]
+              },
+              "example": {
+                "transaction_password": "txnpass123",
+                "confirm_transaction_password": "txnpass123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/user/transaction-password/complete": {
+      "post": {
+        "summary": "2. Transaction Password - Complete",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "otp_code": {
+                    "type": "string"
+                  },
+                  "temp_hash": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "otp_code",
+                  "temp_hash"
+                ]
+              },
+              "example": {
+                "otp_code": "12345",
+                "temp_hash": "hashed_password_from_request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/user/change-password": {
+      "post": {
+        "summary": "Change Login Password",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "old_password": {
+                    "type": "string"
+                  },
+                  "new_password": {
+                    "type": "string"
+                  },
+                  "confirm_password": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "old_password",
+                  "new_password",
+                  "confirm_password"
+                ]
+              },
+              "example": {
+                "old_password": "password123",
+                "new_password": "newpassword456",
+                "confirm_password": "newpassword456"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/coupons/claim": {
+      "post": {
+        "summary": "Claim",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "coupon_code": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "coupon_code"
+                ]
+              },
+              "example": {
+                "coupon_code": "WELCOME20"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/coupons/available": {
+      "get": {
+        "summary": "Browse Available Coupons",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "10",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/coupons/my-coupons": {
+      "get": {
+        "summary": "My Coupons",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "available",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "10",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/coupons/{id}/details": {
+      "get": {
+        "summary": "Coupon Details",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/coupons/redeem": {
+      "post": {
+        "summary": "Redeem Coupon (by ID)",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "coupon_id": {
+                    "type": "integer"
+                  },
+                  "transaction_amount": {
+                    "type": "integer"
+                  },
+                  "transaction_id": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "coupon_id",
+                  "transaction_amount",
+                  "transaction_id"
+                ]
+              },
+              "example": {
+                "coupon_id": 1,
+                "transaction_amount": 100,
+                "transaction_id": 456
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/coupons/check-eligibility": {
+      "post": {
+        "summary": "Check Coupon Eligibility",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "coupon_code": {
+                    "type": "string"
+                  },
+                  "transaction_amount": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "coupon_code",
+                  "transaction_amount"
+                ]
+              },
+              "example": {
+                "coupon_code": "WELCOME20",
+                "transaction_amount": 75
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/coupons/history": {
+      "get": {
+        "summary": "Coupon History",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "10",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/admin/coupons/": {
+      "post": {
+        "summary": "Create Coupon",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "value_type": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "integer"
+                  },
+                  "min_transaction_amount": {
+                    "type": "integer"
+                  },
+                  "max_discount": {
+                    "type": "integer"
+                  },
+                  "usage_limit": {
+                    "type": "integer"
+                  },
+                  "usage_limit_per_user": {
+                    "type": "integer"
+                  },
+                  "expires_at": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "code",
+                  "name",
+                  "description",
+                  "value_type",
+                  "value",
+                  "min_transaction_amount",
+                  "max_discount",
+                  "usage_limit",
+                  "usage_limit_per_user",
+                  "expires_at"
+                ]
+              },
+              "example": {
+                "code": "WELCOME20",
+                "name": "Welcome Discount",
+                "description": "20% off your first purchase",
+                "value_type": "percentage",
+                "value": 20,
+                "min_transaction_amount": 50,
+                "max_discount": 100,
+                "usage_limit": 1000,
+                "usage_limit_per_user": 1,
+                "expires_at": "2024-12-31T23:59:59Z"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      },
+      "get": {
+        "summary": "Get Coupons",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/admin/coupons/{id}": {
+      "get": {
+        "summary": "Get Coupon",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/admin/coupons/distribute": {
+      "post": {
+        "summary": "Distribute Coupon",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "coupon_id": {
+                    "type": "integer"
+                  },
+                  "user_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "distribution_method": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "coupon_id",
+                  "user_ids",
+                  "distribution_method"
+                ]
+              },
+              "example": {
+                "coupon_id": 1,
+                "user_ids": [
+                  1,
+                  2,
+                  3
+                ],
+                "distribution_method": "manual"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/admin/coupons/{id}/analytics": {
+      "get": {
+        "summary": "Get Coupon Analytics",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/admin/commissions/structures": {
+      "post": {
+        "summary": "Create Commission Structure",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "commission_rate": {
+                    "type": "number"
+                  },
+                  "min_transaction_amount": {
+                    "type": "integer"
+                  },
+                  "max_commission_amount": {
+                    "type": "integer"
+                  },
+                  "is_active": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "name",
+                  "commission_rate",
+                  "min_transaction_amount",
+                  "max_commission_amount",
+                  "is_active"
+                ]
+              },
+              "example": {
+                "name": "Standard Commission",
+                "commission_rate": 2.5,
+                "min_transaction_amount": 10,
+                "max_commission_amount": 100,
+                "is_active": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      },
+      "get": {
+        "summary": "Get Commission Structures",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/admin/commissions/partners": {
+      "post": {
+        "summary": "Create Partner",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "contact_email": {
+                    "type": "string"
+                  },
+                  "commission_structure_id": {
+                    "type": "integer"
+                  },
+                  "status": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "contact_email",
+                  "commission_structure_id",
+                  "status"
+                ]
+              },
+              "example": {
+                "name": "Partner Company",
+                "contact_email": "partner@example.com",
+                "commission_structure_id": 1,
+                "status": "active"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      },
+      "get": {
+        "summary": "Get Partners",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/admin/commissions/calculate": {
+      "post": {
+        "summary": "Calculate Commission",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "transaction_amount": {
+                    "type": "integer"
+                  },
+                  "partner_id": {
+                    "type": "integer"
+                  },
+                  "transaction_type": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "transaction_amount",
+                  "partner_id",
+                  "transaction_type"
+                ]
+              },
+              "example": {
+                "transaction_amount": 100,
+                "partner_id": 1,
+                "transaction_type": "payment"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/admin/commissions/": {
+      "get": {
+        "summary": "Get Commissions",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "pending",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "10",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/admin/commissions/{id}/approve": {
+      "put": {
+        "summary": "Approve Commission",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "approved_by": {
+                    "type": "string"
+                  },
+                  "notes": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "approved_by",
+                  "notes"
+                ]
+              },
+              "example": {
+                "approved_by": "admin@example.com",
+                "notes": "Commission approved after review"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/admin/commissions/payouts": {
+      "post": {
+        "summary": "Create Payout",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "partner_id": {
+                    "type": "integer"
+                  },
+                  "amount": {
+                    "type": "integer"
+                  },
+                  "commission_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "payment_method": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "partner_id",
+                  "amount",
+                  "commission_ids",
+                  "payment_method"
+                ]
+              },
+              "example": {
+                "partner_id": 1,
+                "amount": 250,
+                "commission_ids": [
+                  1,
+                  2,
+                  3
+                ],
+                "payment_method": "bank_transfer"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      },
+      "get": {
+        "summary": "Get Payouts",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "partner_id",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "completed",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/chat/send": {
+      "post": {
+        "summary": "Send Message to Admin",
+        "deprecated": false,
+        "description": "User sends a message to admin support",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "message"
+                ]
+              },
+              "example": {
+                "message": "Hello admin, I need help with my account."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/chat/inbox": {
+      "get": {
+        "summary": "Get User Inbox",
+        "deprecated": false,
+        "description": "Get all chat messages for the authenticated user (both sent and received)",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number (default: 1)",
+            "required": true,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Messages per page (default: 50, max: 100)",
+            "required": true,
+            "example": "50",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/chat/unread": {
+      "get": {
+        "summary": "Get Unread Count",
+        "deprecated": false,
+        "description": "Get count of unread messages from admin",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/chat/messages/1/read": {
+      "put": {
+        "summary": "Mark Message as Read",
+        "deprecated": false,
+        "description": "Mark a specific message as read",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/chat/notifications": {
+      "get": {
+        "summary": "User Notification Stream (SSE)",
+        "deprecated": false,
+        "description": "Server-Sent Events (SSE) endpoint for real-time notifications. Keep this connection open to receive new message notifications.\n\nNote: Postman may not display SSE properly. Test with:\n- curl: `curl -N -H \"Authorization: Bearer YOUR_TOKEN\" http://localhost:8080/api/v1/chat/notifications`\n- Browser EventSource API\n- Specialized SSE testing tools",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "text/event-stream",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/admin/chat/send": {
+      "post": {
+        "summary": "Send Message to User",
+        "deprecated": false,
+        "description": "Admin sends a message to a specific user. The user will receive a real-time notification via SSE if connected.",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "user_id",
+                  "message"
+                ]
+              },
+              "example": {
+                "user_id": 1,
+                "message": "Hello! How can I help you today?"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/admin/chat/inbox": {
+      "get": {
+        "summary": "Get Admin Inbox (All Conversations)",
+        "deprecated": false,
+        "description": "Get all chat conversations grouped by user with last message, unread count, and conversation metadata",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number (default: 1)",
+            "required": true,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Conversations per page (default: 20, max: 100)",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/admin/chat/users/user_id": {
+      "get": {
+        "summary": "Get User Conversation",
+        "deprecated": false,
+        "description": "Get full conversation history with a specific user. Automatically marks user messages as read.",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number (default: 1)",
+            "required": true,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Messages per page (default: 50, max: 100)",
+            "required": true,
+            "example": "50",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/admin/notifications/send": {
+      "post": {
+        "summary": "Scenario 4: Card Request Status",
+        "deprecated": false,
+        "description": "Send card request status notification",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{access_token}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "body": {
+                    "type": "string"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "card_id": {
+                        "type": "string"
+                      },
+                      "card_type": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "action": {
+                        "type": "string"
+                      },
+                      "url": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "card_id",
+                      "card_type",
+                      "type",
+                      "action",
+                      "url"
+                    ]
+                  }
+                },
+                "required": [
+                  "user_id",
+                  "title",
+                  "body",
+                  "data"
+                ]
+              },
+              "example": {
+                "user_id": 1,
+                "title": "Virtual Card Ready",
+                "body": "Your virtual card has been created and is ready to use!",
+                "data": {
+                  "card_id": "CARD123",
+                  "card_type": "virtual",
+                  "type": "card_update",
+                  "action": "view_card",
+                  "url": "/cards/CARD123"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/admin/notifications/broadcast": {
+      "post": {
+        "summary": "Scenario 6: System Announcement",
+        "deprecated": false,
+        "description": "Broadcast a new feature announcement to all users",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{access_token}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "body": {
+                    "type": "string"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "feature": {
+                        "type": "string"
+                      },
+                      "promo_period": {
+                        "type": "string"
+                      },
+                      "fee": {
+                        "type": "integer"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "action": {
+                        "type": "string"
+                      },
+                      "url": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "feature",
+                      "promo_period",
+                      "fee",
+                      "type",
+                      "action",
+                      "url"
+                    ]
+                  }
+                },
+                "required": [
+                  "title",
+                  "body",
+                  "data"
+                ]
+              },
+              "example": {
+                "title": "New Feature: Instant Transfers",
+                "body": "We've just launched instant transfers! Send money to any user instantly with zero fees for the first month.",
+                "data": {
+                  "feature": "instant_transfers",
+                  "promo_period": "1 month",
+                  "fee": 0,
+                  "type": "feature_announcement",
+                  "action": "try_now",
+                  "url": "/wallet/transfer"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/admin/notifications/bulk": {
+      "post": {
+        "summary": "Scenario 5: Promotion to VIP Users",
+        "deprecated": false,
+        "description": "Send promotional notification to VIP users",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{access_token}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "body": {
+                    "type": "string"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "offer_code": {
+                        "type": "string"
+                      },
+                      "discount_percentage": {
+                        "type": "integer"
+                      },
+                      "valid_from": {
+                        "type": "string"
+                      },
+                      "valid_until": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "offer_code",
+                      "discount_percentage",
+                      "valid_from",
+                      "valid_until",
+                      "type"
+                    ]
+                  }
+                },
+                "required": [
+                  "user_ids",
+                  "title",
+                  "body",
+                  "data"
+                ]
+              },
+              "example": {
+                "user_ids": [
+                  1,
+                  2,
+                  3
+                ],
+                "title": "Exclusive VIP Offer",
+                "body": "As a valued VIP customer, enjoy 50% off all transaction fees this weekend!",
+                "data": {
+                  "offer_code": "VIP50WEEKEND",
+                  "discount_percentage": 50,
+                  "valid_from": "2024-01-20T00:00:00Z",
+                  "valid_until": "2024-01-22T23:59:59Z",
+                  "type": "vip_promotion"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/notifications": {
+      "get": {
+        "summary": "Get Notifications",
+        "deprecated": false,
+        "description": "Get notifications for the authenticated user with pagination",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of notifications to retrieve",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Offset for pagination",
+            "required": true,
+            "example": "0",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{access_token}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/notifications/unread-count": {
+      "get": {
+        "summary": "Get Unread Notification Count",
+        "deprecated": false,
+        "description": "Get the count of unread notifications for the authenticated user",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{access_token}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/notifications/1/read": {
+      "put": {
+        "summary": "Mark Notification as Read",
+        "deprecated": false,
+        "description": "Mark a specific notification as read by notification ID",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{access_token}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/notifications/stream": {
+      "get": {
+        "summary": "Notification Stream (SSE)",
+        "deprecated": false,
+        "description": "Connect to real-time notification stream via Server-Sent Events (SSE). Note: This endpoint streams data and may not show results in Postman. Use a browser or SSE client instead.",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "Access token for authentication",
+            "required": true,
+            "example": "{{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{accessToken}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/aliyun/initialize-token": {
+      "post": {
+        "summary": "1. Initialize Aliyun Token",
+        "deprecated": false,
+        "description": "Initialize Aliyun KYC verification.\n\nRequired fields:\n- email (user must exist)\n- first_en_name, last_en_name\n- id_front_img, id_back_img\n- address, city, state, post_code\n- area_code, bill_country_code\n\nResponse includes certify_id for checking status.",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{access_token}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "address": {
+                    "type": "string"
+                  },
+                  "area_code": {
+                    "type": "string"
+                  },
+                  "bill_country_code": {
+                    "type": "string"
+                  },
+                  "city": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "first_en_name": {
+                    "type": "string"
+                  },
+                  "id_back_img": {
+                    "type": "string"
+                  },
+                  "id_front_img": {
+                    "type": "string"
+                  },
+                  "last_en_name": {
+                    "type": "string"
+                  },
+                  "meta_info": {
+                    "type": "string"
+                  },
+                  "phone": {
+                    "type": "string"
+                  },
+                  "post_code": {
+                    "type": "string"
+                  },
+                  "return_url": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "type": "string"
+                  },
+                  "public_token": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "address",
+                  "area_code",
+                  "bill_country_code",
+                  "city",
+                  "email",
+                  "first_en_name",
+                  "id_back_img",
+                  "id_front_img",
+                  "last_en_name",
+                  "meta_info",
+                  "phone",
+                  "post_code",
+                  "return_url",
+                  "state",
+                  "public_token"
+                ]
+              },
+              "example": {
+                "address": "123 Main Street, Apartment 4B",
+                "area_code": "86",
+                "bill_country_code": "CN",
+                "city": "Beijing",
+                "email": "{{test_email}}",
+                "first_en_name": "John",
+                "id_back_img": "https://example.com/images/id_back.jpg",
+                "id_front_img": "https://example.com/images/id_front.jpg",
+                "last_en_name": "Doe",
+                "meta_info": "{}",
+                "phone": "13800138000",
+                "post_code": "100000",
+                "return_url": "https://yourapp.com/kyc/callback",
+                "state": "Beijing",
+                "public_token": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/aliyun/get-result/{certify_id}": {
+      "get": {
+        "summary": "2. Get Aliyun Result",
+        "deprecated": false,
+        "description": "Check Aliyun KYC verification status.\n\nStatus values:\n- not_completed\n- rejected\n- completed\n\nIf email is provided and status is completed, 199 USDT will be deducted from wallet.",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "certify_id",
+            "in": "path",
+            "description": "From initialize response",
+            "required": true,
+            "example": "{{certify_id}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "description": "Optional - For wallet fee deduction",
+            "required": true,
+            "example": "{{test_email}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{access_token}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/aliyun/get-user-kyc/{email}": {
+      "get": {
+        "summary": "3. Get User KYC History",
+        "deprecated": false,
+        "description": "Get all Aliyun KYC records for a user (ordered by most recent first)",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "{{test_email}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{access_token}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/didit/initialize-token": {
+      "post": {
+        "summary": "1. Initialize Didit Token",
+        "deprecated": false,
+        "description": "Initialize Didit KYC verification.\n\nRequired fields:\n- email (user must exist)\n- first_en_name, last_en_name\n- address, city, state, post_code\n- area_code, bill_country_code\n\nOptional:\n- agent_uid (defaults to \"1\")\n\nNote: NO ID images required (unlike Aliyun)",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{access_token}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "address": {
+                    "type": "string"
+                  },
+                  "agent_uid": {
+                    "type": "string"
+                  },
+                  "area_code": {
+                    "type": "string"
+                  },
+                  "bill_country_code": {
+                    "type": "string"
+                  },
+                  "city": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "first_en_name": {
+                    "type": "string"
+                  },
+                  "last_en_name": {
+                    "type": "string"
+                  },
+                  "phone": {
+                    "type": "string"
+                  },
+                  "post_code": {
+                    "type": "string"
+                  },
+                  "return_url": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "address",
+                  "agent_uid",
+                  "area_code",
+                  "bill_country_code",
+                  "city",
+                  "email",
+                  "first_en_name",
+                  "last_en_name",
+                  "phone",
+                  "post_code",
+                  "return_url",
+                  "state"
+                ]
+              },
+              "example": {
+                "address": "Guangzhou Zhongshan Road No.1",
+                "agent_uid": "1",
+                "area_code": "86",
+                "bill_country_code": "CN",
+                "city": "Shenzhen",
+                "email": "{{test_email}}",
+                "first_en_name": "John",
+                "last_en_name": "Doe",
+                "phone": "13800138000",
+                "post_code": "558800",
+                "return_url": "https://yourapp.com/kyc/didit/callback",
+                "state": "Guangdong"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/didit/get-result/{verification_id}": {
+      "get": {
+        "summary": "2. Get Didit Result",
+        "deprecated": false,
+        "description": "Check Didit KYC verification status.\n\nStatus values:\n- pending\n- rejected\n- completed\n\nIf email is provided and status is completed, 199 USDT will be deducted from wallet.",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "verification_id",
+            "in": "path",
+            "description": "From initialize response",
+            "required": true,
+            "example": "{{verification_id}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "description": "Optional - For wallet fee deduction",
+            "required": true,
+            "example": "{{test_email}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{access_token}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/didit/get-user-kyc/{email}": {
+      "get": {
+        "summary": "3. Get User KYC History",
+        "deprecated": false,
+        "description": "Get all Didit KYC records for a user (ordered by most recent first)",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "{{test_email}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{access_token}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/healthz": {
+      "get": {
+        "summary": "Health Check (Public)",
+        "deprecated": false,
+        "description": "Public health check endpoint. No authentication required.\n\n**Use Case:** Monitor system availability",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/v1/health": {
+      "get": {
+        "summary": "Invalid API Key",
+        "deprecated": false,
+        "description": "Test invalid API key handling.\n\n**Expected:** 401 Unauthorized",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "invalid-key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/v1/whoami": {
+      "get": {
+        "summary": "Who Am I (Debug)",
+        "deprecated": false,
+        "description": "Debug endpoint to verify API key and check admin details.\n\n**Authentication:** Required\n**Headers:**\n- x-api-key: Your API key\n- x-tenant-id: (Optional) Your tenant ID\n\n**Use Case:** Verify API key is valid and check admin info",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "{{apiKey}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-tenant-id",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "{{tenantId}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/v1/wallets/create": {
+      "post": {
+        "summary": "Idempotency Replay",
+        "deprecated": false,
+        "description": "Test idempotency protection.\n\n**Instructions:**\n1. Run this request TWICE with same idempotency-key\n2. Second request should return cached response\n3. No duplicate wallet created\n\n**Use Case:** Prevent duplicate transfers/wallets on retry",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "{{apiKey}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "idempotency-key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "test-idempotency-replay-123",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fetch_balance": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "fetch_balance"
+                ]
+              },
+              "example": {
+                "fetch_balance": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/v1/wallets/ethWalletId/addresses/derive": {
+      "post": {
+        "summary": "Derive New Address",
+        "deprecated": false,
+        "description": "Derive a new address from HD wallet.\n\n**Features:**\n- Atomic index increment (thread-safe)\n- Follows BIP44 derivation path\n- Optionally fetches balance\n\n**Use Cases:**\n- Generate deposit addresses for users\n- Separate addresses for different purposes\n- Privacy enhancement\n\n**Variables Auto-Set:**\n- derivedAddress\n- addressIndex",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "{{apiKey}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tenant_id": {
+                    "type": "string"
+                  },
+                  "fetch_balance": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "tenant_id",
+                  "fetch_balance"
+                ]
+              },
+              "example": {
+                "tenant_id": "{{tenantId}}",
+                "fetch_balance": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/v1/wallets/ethWalletId/addresses": {
+      "get": {
+        "summary": "List All Wallet Addresses",
+        "deprecated": false,
+        "description": "List all derived addresses for a wallet.\n\n**Query Parameters:**\n- tenant_id (required): Your tenant ID\n- fetch_balance (optional): true/false\n\n**Use Cases:**\n- View all deposit addresses\n- Check balances across addresses\n- Audit address usage",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "tenant_id",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "{{tenantId}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fetch_balance",
+            "in": "query",
+            "description": "Set to false to skip balance queries (faster)",
+            "required": true,
+            "example": "true",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "{{apiKey}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/v1/wallets/ethWalletId/addresses/0": {
+      "get": {
+        "summary": "Get Specific Address by Index",
+        "deprecated": false,
+        "description": "Get details of a specific address by its index.\n\n**Use Cases:**\n- Lookup specific address\n- Verify address derivation\n- Check derivation path",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "tenant_id",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "{{tenantId}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "{{apiKey}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/v1/wallets/balance": {
+      "get": {
+        "summary": "Get Balance (MATIC)",
+        "deprecated": false,
+        "description": "Query balance on Polygon (MATIC).\n\n**Note:** EVM addresses are compatible across ETH, BNB, MATIC, BASE",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "address",
+            "in": "query",
+            "description": "EVM addresses work across ETH, BNB, MATIC, BASE",
+            "required": true,
+            "example": "{{ethAddress}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "chain",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "MATIC",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tenant_id",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "{{tenantId}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "{{apiKey}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/v1/transfer/ETH/intent-sign-broadcast": {
+      "post": {
+        "summary": "Execute Transfer (With Custom Gas)",
+        "deprecated": false,
+        "description": "Execute transfer with custom gas settings.\n\n**Use Cases:**\n- Speed up transaction (higher gas price)\n- Control costs (lower gas price)\n- Custom gas limit for complex transactions\n\n**Note:** If not provided, gas is auto-estimated",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "{{apiKey}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "idempotency-key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "{{$guid}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tenant_id": {
+                    "type": "string"
+                  },
+                  "wallet_id": {
+                    "type": "string"
+                  },
+                  "address_index": {
+                    "type": "integer"
+                  },
+                  "chain": {
+                    "type": "string"
+                  },
+                  "to_address": {
+                    "type": "string"
+                  },
+                  "amount": {
+                    "type": "string"
+                  },
+                  "asset_type": {
+                    "type": "string"
+                  },
+                  "gas_price": {
+                    "type": "string"
+                  },
+                  "gas_limit": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "tenant_id",
+                  "wallet_id",
+                  "address_index",
+                  "chain",
+                  "to_address",
+                  "amount",
+                  "asset_type",
+                  "gas_price",
+                  "gas_limit"
+                ]
+              },
+              "example": {
+                "tenant_id": "{{tenantId}}",
+                "wallet_id": "{{ethWalletId}}",
+                "address_index": 0,
+                "chain": "ETH",
+                "to_address": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+                "amount": "0.001",
+                "asset_type": "native",
+                "gas_price": "20000000000",
+                "gas_limit": 21000
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/v1/transfer/BNB/intent-sign-broadcast": {
+      "post": {
+        "summary": "Execute Transfer (BNB)",
+        "deprecated": false,
+        "description": "Execute BNB transfer on BNB Smart Chain.\n\n**Same process as ETH**, just different chain.",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "{{apiKey}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "idempotency-key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "{{$guid}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tenant_id": {
+                    "type": "string"
+                  },
+                  "wallet_id": {
+                    "type": "string"
+                  },
+                  "address_index": {
+                    "type": "integer"
+                  },
+                  "chain": {
+                    "type": "string"
+                  },
+                  "to_address": {
+                    "type": "string"
+                  },
+                  "amount": {
+                    "type": "string"
+                  },
+                  "asset_type": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "tenant_id",
+                  "wallet_id",
+                  "address_index",
+                  "chain",
+                  "to_address",
+                  "amount",
+                  "asset_type"
+                ]
+              },
+              "example": {
+                "tenant_id": "{{tenantId}}",
+                "wallet_id": "{{bnbWalletId}}",
+                "address_index": 0,
+                "chain": "BNB",
+                "to_address": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+                "amount": "0.001",
+                "asset_type": "native"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/v1/transfers/transferId/status": {
+      "get": {
+        "summary": "Get Transfer Status",
+        "deprecated": false,
+        "description": "Get real-time status of a transfer.\n\n**Status Values:**\n- `pending`: Created, not yet broadcast\n- `broadcast`: Sent to network\n- `confirmed`: Mined and confirmed\n- `failed`: Transaction failed\n\n**Returns:**\n- Current status\n- Block number (if mined)\n- Confirmations count\n- Gas used\n- Final fee\n\n**Use Cases:**\n- Poll until confirmed\n- Display to user\n- Audit transactions",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "tenant_id",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "{{tenantId}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "{{apiKey}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/v1/wallets/ethWalletId/transfers": {
+      "get": {
+        "summary": "List Wallet Transfers",
+        "deprecated": false,
+        "description": "List all transfers for a wallet.\n\n**Query Parameters:**\n- status (optional): Filter by status\n\n**Use Cases:**\n- Transaction history\n- Audit trail\n- User transaction list\n\n**Results:** Sorted by created_at DESC (newest first)",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "tenant_id",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "{{tenantId}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter: pending, broadcast, confirmed, failed (empty = all)",
+            "required": true,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "{{apiKey}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Complete Chat Flow Example",
+        "deprecated": false,
+        "description": "# Complete Chat Flow Example\n\n## Setup\n1. Login as user and save access token\n2. Login as admin and save admin access token\n\n## User Flow:\n1. **Connect to SSE Stream** (keep open in separate terminal):\n   ```bash\n   curl -N -H \"Authorization: Bearer USER_TOKEN\" \\\n   http://localhost:8080/api/v1/chat/notifications\n   ```\n\n2. **Send Message to Admin**:\n   POST /api/v1/chat/send\n   ```json\n   {\"message\": \"I need help with my wallet\"}\n   ```\n\n3. **Check Inbox**:\n   GET /api/v1/chat/inbox?page=1&limit=50\n\n4. **Check Unread Count**:\n   GET /api/v1/chat/unread\n\n## Admin Flow:\n1. **View All Conversations**:\n   GET /api/v1/admin/chat/inbox\n\n2. **View Specific User Conversation**:\n   GET /api/v1/admin/chat/users/1\n\n3. **Reply to User**:\n   POST /api/v1/admin/chat/send\n   ```json\n   {\n     \"user_id\": 1,\n     \"message\": \"I can help you with that!\"\n   }\n   ```\n\n4. **User receives notification via SSE** (real-time)\n\n## User Flow (continued):\n5. **Mark Message as Read**:\n   PUT /api/v1/chat/messages/MESSAGE_ID/read\n\n6. **View Updated Inbox**:\n   GET /api/v1/chat/inbox",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "responses": {
+      "Record not found": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "message"
+              ]
+            }
+          }
+        }
+      },
+      "Invalid input": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "message"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {}
+  },
+  "servers": [],
+  "security": []
+}
