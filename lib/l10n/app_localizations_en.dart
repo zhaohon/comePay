@@ -649,4 +649,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get swapStatus => 'Swap';
+
+  @override
+  String get applyVirtualCard => 'Apply Virtual Card';
+
+  @override
+  String get cardInformation => 'Card Information';
+
+  @override
+  String get cardName => 'Card Name';
+
+  @override
+  String get cardOrganization => 'Card Organization';
+
+  @override
+  String get cardFee => 'Card Fee';
+
+  @override
+  String get fee => 'Fee';
+
+  @override
+  String get submit => 'Submit';
+
+  @override
+  String get pleaseSelect => 'Please select';
 }

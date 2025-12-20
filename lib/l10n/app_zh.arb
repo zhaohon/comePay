@@ -211,5 +211,13 @@
   "transactionHistory": "交易历史",
   "sentStatus": "已发送",
   "receiveStatus": "已接收",
-  "swapStatus": "交换"
+  "swapStatus": "交换",
+  "applyVirtualCard": "申请虚拟卡",
+  "cardInformation": "卡信息",
+  "cardName": "卡名称",
+  "cardOrganization": "卡组织",
+  "cardFee": "卡费",
+  "fee": "卡费",
+  "submit": "提交",
+  "pleaseSelect": "请选择"
 }

@@ -647,5 +647,29 @@ class AppLocalizationsId extends AppLocalizations {
   String get receiveStatus => 'Diterima';
 
   @override
-  String get swapStatus => 'Tukar';
+  String get swapStatus => 'Swap';
+
+  @override
+  String get applyVirtualCard => 'Ajukan Kartu Virtual';
+
+  @override
+  String get cardInformation => 'Informasi Kartu';
+
+  @override
+  String get cardName => 'Nama Kartu';
+
+  @override
+  String get cardOrganization => 'Organisasi Kartu';
+
+  @override
+  String get cardFee => 'Biaya Kartu';
+
+  @override
+  String get fee => 'Biaya';
+
+  @override
+  String get submit => 'Kirim';
+
+  @override
+  String get pleaseSelect => 'Silakan pilih';
 }

@@ -208,5 +208,13 @@
   "transactionHistory": "Transaction History",
   "sentStatus": "Sent",
   "receiveStatus": "Receive",
-  "swapStatus": "Swap"
+  "swapStatus": "Swap",
+  "applyVirtualCard": "Apply Virtual Card",
+  "cardInformation": "Card Information",
+  "cardName": "Card Name",
+  "cardOrganization": "Card Organization",
+  "cardFee": "Card Fee",
+  "fee": "Fee",
+  "submit": "Submit",
+  "pleaseSelect": "Please select"
 }

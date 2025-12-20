@@ -211,5 +211,13 @@
   "transactionHistory": "تاريخ المعاملات",
   "sentStatus": "مرسل",
   "receiveStatus": "مستلم",
-  "swapStatus": "مبادلة"
+  "swapStatus": "Swap",
+  "applyVirtualCard": "تطبيق البطاقة الافتراضية",
+  "cardInformation": "معلومات البطاقة",
+  "cardName": "اسم البطاقة",
+  "cardOrganization": "منظمة البطاقة",
+  "cardFee": "رسوم البطاقة",
+  "fee": "الرسوم",
+  "submit": "إرسال",
+  "pleaseSelect": "الرجاء الاختيار"
 }

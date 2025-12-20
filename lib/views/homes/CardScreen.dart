@@ -1,7 +1,10 @@
 import 'package:comecomepay/models/carddetail_response_model.dart';
-import 'package:comecomepay/services/hive_storage_service.dart' show HiveStorageService;
-import 'package:comecomepay/views/homes/AuthorizationRecordScreen.dart' show AuthorizationRecordScreen;
-import 'package:comecomepay/views/homes/CardVerificationScreen.dart' show Cardverificationscreen;
+import 'package:comecomepay/services/hive_storage_service.dart'
+    show HiveStorageService;
+import 'package:comecomepay/views/homes/AuthorizationRecordScreen.dart'
+    show AuthorizationRecordScreen;
+import 'package:comecomepay/views/homes/CardApplyConfirmScreen.dart'
+    show CardApplyConfirmScreen;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../l10n/app_localizations.dart';
@@ -20,7 +23,8 @@ class CardScreen extends StatefulWidget {
 
 class _CardScreenState extends State<CardScreen> {
   // Add TextEditingController for verification code
-  final TextEditingController _verificationCodeController = TextEditingController();
+  final TextEditingController _verificationCodeController =
+      TextEditingController();
 
   String? email;
   String? userId;
@@ -60,14 +64,16 @@ class _CardScreenState extends State<CardScreen> {
 
   void _setupScrollListener() {
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
         _loadMoreTrades();
       }
     });
   }
 
   Future<void> _loadMoreTrades() async {
-    if (_cardDetailData?.publicToken != null && _cardTradeViewModel.hasMoreData) {
+    if (_cardDetailData?.publicToken != null &&
+        _cardTradeViewModel.hasMoreData) {
       await _cardTradeViewModel.fetchCardTrades(
         publicToken: _cardDetailData!.publicToken,
         isLoadMore: true,
@@ -86,16 +92,13 @@ class _CardScreenState extends State<CardScreen> {
           email = profileEmail;
           userId = profileUserId;
         });
-      if (email != null) {
-        await _loadKycData(email!);
-      }
+        if (email != null) {
+          await _loadKycData(email!);
+        }
 
-      setState(() {
-        _isInitialLoading = false;
-      });
-
-
-
+        setState(() {
+          _isInitialLoading = false;
+        });
       } else {
         // Fallback to auth data if profile fetch fails
         final user = HiveStorageService.getUser();
@@ -114,8 +117,6 @@ class _CardScreenState extends State<CardScreen> {
         _isInitialLoading = false;
       });
     }
-
-    
   }
 
   Future<void> _loadKycData(String kycEmail) async {
@@ -137,7 +138,6 @@ class _CardScreenState extends State<CardScreen> {
         // Don't set _showBlankScreen here, wait for card data
       });
       await _loadCardData(kycData[0].id);
-
     } catch (e) {
       setState(() {
         _isKycLoading = false;
@@ -171,8 +171,11 @@ class _CardScreenState extends State<CardScreen> {
         }
       } else {
         // If cardResponse is null, try to create card
-        if (_kycData != null && _kycData!.isNotEmpty && _viewModel.profileResponse != null) {
-          final createSuccess = await _viewModel.createCard(_kycData!, _viewModel.profileResponse!);
+        if (_kycData != null &&
+            _kycData!.isNotEmpty &&
+            _viewModel.profileResponse != null) {
+          final createSuccess = await _viewModel.createCard(
+              _kycData!, _viewModel.profileResponse!);
           if (createSuccess) {
             // If create card succeeds, call _loadCardData again
             await _loadCardData(kyc_id);
@@ -186,9 +189,12 @@ class _CardScreenState extends State<CardScreen> {
       }
     } catch (e) {
       // If in catch block, try to create card
-      if (_kycData != null && _kycData!.isNotEmpty && _viewModel.profileResponse != null) {
+      if (_kycData != null &&
+          _kycData!.isNotEmpty &&
+          _viewModel.profileResponse != null) {
         try {
-          final createSuccess = await _viewModel.createCard(_kycData!, _viewModel.profileResponse!);
+          final createSuccess = await _viewModel.createCard(
+              _kycData!, _viewModel.profileResponse!);
           if (createSuccess) {
             // If create card succeeds, call _loadCardData again
             await _loadCardData(kyc_id);
@@ -205,7 +211,6 @@ class _CardScreenState extends State<CardScreen> {
       });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -387,7 +392,8 @@ class _CardScreenState extends State<CardScreen> {
                                 children: [
                                   Text(
                                     _isCardNumberVisible
-                                        ? (_cardDetailData?.cardNo ?? '**** **** **** ****')
+                                        ? (_cardDetailData?.cardNo ??
+                                            '**** **** **** ****')
                                         : '**** **** **** ****', // Placeholder nomor kartu
                                     style: TextStyle(
                                       color: Colors.white,
@@ -395,16 +401,18 @@ class _CardScreenState extends State<CardScreen> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-
                                   const SizedBox(width: 8),
                                   GestureDetector(
                                     onTap: () {
                                       setState(() {
-                                        _isCardNumberVisible = !_isCardNumberVisible;
+                                        _isCardNumberVisible =
+                                            !_isCardNumberVisible;
                                       });
                                     },
                                     child: Icon(
-                                      _isCardNumberVisible ? Icons.visibility : Icons.visibility_off,
+                                      _isCardNumberVisible
+                                          ? Icons.visibility
+                                          : Icons.visibility_off,
                                       color: Colors.white,
                                       size: 20,
                                     ),
@@ -414,7 +422,8 @@ class _CardScreenState extends State<CardScreen> {
                               const SizedBox(height: 4),
                               // Nama
                               Text(
-                                _cardDetailData?.memberName ?? 'CARDHOLDER NAME', // Placeholder nama
+                                _cardDetailData?.memberName ??
+                                    'CARDHOLDER NAME', // Placeholder nama
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,
@@ -488,7 +497,8 @@ class _CardScreenState extends State<CardScreen> {
                         children: [
                           const Icon(Icons.error, size: 48, color: Colors.red),
                           const SizedBox(height: 8),
-                          Text(_cardTradeViewModel.errorMessage ?? 'Error loading transactions'),
+                          Text(_cardTradeViewModel.errorMessage ??
+                              'Error loading transactions'),
                           TextButton(
                             onPressed: () {
                               if (_cardDetailData?.publicToken != null) {
@@ -516,7 +526,8 @@ class _CardScreenState extends State<CardScreen> {
                     ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: _cardTradeViewModel.cardTrades.length + (_cardTradeViewModel.hasMoreData ? 1 : 0),
+                      itemCount: _cardTradeViewModel.cardTrades.length +
+                          (_cardTradeViewModel.hasMoreData ? 1 : 0),
                       itemBuilder: (context, index) {
                         if (index == _cardTradeViewModel.cardTrades.length) {
                           // Loading indicator for pagination
@@ -528,14 +539,19 @@ class _CardScreenState extends State<CardScreen> {
                           );
                         }
 
-                        final displayData = _cardTradeViewModel.tradeDisplayData[index];
+                        final displayData =
+                            _cardTradeViewModel.tradeDisplayData[index];
 
                         return Card(
                           margin: const EdgeInsets.only(bottom: 8.0),
                           child: ListTile(
                             leading: Icon(
-                              displayData['isPositive'] ? Icons.arrow_upward : Icons.arrow_downward,
-                              color: displayData['isPositive'] ? Colors.green : Colors.red,
+                              displayData['isPositive']
+                                  ? Icons.arrow_upward
+                                  : Icons.arrow_downward,
+                              color: displayData['isPositive']
+                                  ? Colors.green
+                                  : Colors.red,
                             ),
                             title: Text(displayData['description']),
                             subtitle: Text(displayData['date']),
@@ -547,7 +563,9 @@ class _CardScreenState extends State<CardScreen> {
                                   displayData['amount'],
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: displayData['isPositive'] ? Colors.green : Colors.red,
+                                    color: displayData['isPositive']
+                                        ? Colors.green
+                                        : Colors.red,
                                   ),
                                 ),
                                 Text(
@@ -570,7 +588,6 @@ class _CardScreenState extends State<CardScreen> {
         },
       );
     }
-
 
     return Consumer<LocaleProvider>(
       builder: (context, localeProvider, child) {
@@ -627,8 +644,11 @@ class _CardScreenState extends State<CardScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          _buildChip(AppLocalizations.of(context)!.noMonthlyFee, isTablet),
-                          _buildChip(AppLocalizations.of(context)!.lowTransactionFee, isTablet),
+                          _buildChip(AppLocalizations.of(context)!.noMonthlyFee,
+                              isTablet),
+                          _buildChip(
+                              AppLocalizations.of(context)!.lowTransactionFee,
+                              isTablet),
                         ],
                       ),
                       SizedBox(height: size.height * 0.05),
@@ -649,13 +669,13 @@ class _CardScreenState extends State<CardScreen> {
                           height: 52,
                           child: ElevatedButton(
                             onPressed: () async {
-
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Cardverificationscreen(),
-                                  ),
-                                );
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const CardApplyConfirmScreen(),
+                                ),
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
@@ -663,14 +683,18 @@ class _CardScreenState extends State<CardScreen> {
                               ),
                               padding: EdgeInsets.zero,
                             ).copyWith(
-                              backgroundColor: MaterialStateProperty.resolveWith(
-                                    (states) => null, // biar gradient tetap jalan
+                              backgroundColor:
+                                  MaterialStateProperty.resolveWith(
+                                (states) => null, // biar gradient tetap jalan
                               ),
                             ),
                             child: Ink(
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
-                                  colors: [Color(0xFF2196F3), Color(0xFF0D47A1)],
+                                  colors: [
+                                    Color(0xFF2196F3),
+                                    Color(0xFF0D47A1)
+                                  ],
                                 ),
                                 borderRadius: BorderRadius.circular(8),
                               ),
@@ -699,7 +723,6 @@ class _CardScreenState extends State<CardScreen> {
       },
     );
   }
-
 
   Widget _buildChip(String label, bool isTablet) {
     return Container(
@@ -823,7 +846,8 @@ class _CardScreenState extends State<CardScreen> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                 ),
               ),
               const SizedBox(height: 16),
@@ -847,7 +871,8 @@ class _CardScreenState extends State<CardScreen> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                   suffixIcon: TextButton(
                     onPressed: () {
                       // TODO: Implement get code logic
@@ -955,7 +980,8 @@ class _CardScreenState extends State<CardScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 12),
                   ),
                   child: const Text(
                     'Card Not Received, Active later',

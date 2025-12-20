@@ -650,5 +650,29 @@ class AppLocalizationsAr extends AppLocalizations {
   String get receiveStatus => 'مستلم';
 
   @override
-  String get swapStatus => 'مبادلة';
+  String get swapStatus => 'Swap';
+
+  @override
+  String get applyVirtualCard => 'تطبيق البطاقة الافتراضية';
+
+  @override
+  String get cardInformation => 'معلومات البطاقة';
+
+  @override
+  String get cardName => 'اسم البطاقة';
+
+  @override
+  String get cardOrganization => 'منظمة البطاقة';
+
+  @override
+  String get cardFee => 'رسوم البطاقة';
+
+  @override
+  String get fee => 'الرسوم';
+
+  @override
+  String get submit => 'إرسال';
+
+  @override
+  String get pleaseSelect => 'الرجاء الاختيار';
 }

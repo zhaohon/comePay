@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:comecomepay/viewmodels/profile_screen_viewmodel.dart';
 import 'package:comecomepay/views/homes/ProfilKycDiditScreen.dart';
 import 'package:comecomepay/models/requests/didit_initialize_token_request_model.dart';
@@ -66,8 +67,8 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildTextField("Name", controller: _nameController),
-                _buildTextField("Surname", controller: _surnameController),
+                _buildNameTextField("Name", controller: _nameController),
+                _buildNameTextField("Surname", controller: _surnameController),
                 const SizedBox(height: 10),
 
                 // Mobile Phone
@@ -153,7 +154,8 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
                 ),
                 const SizedBox(height: 15),
 
-                _buildTextField("State / Province", controller: _stateController),
+                _buildTextField("State / Province",
+                    controller: _stateController),
                 _buildTextField("City", controller: _cityController),
                 _buildTextField("Detailed Address",
                     controller: _addressController),
@@ -179,6 +181,15 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
                     ),
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
+                        // Validate Name and Surname contain only uppercase English letters
+                        if (!_validateEnglishUppercase(
+                            _nameController.text, 'Name')) {
+                          return;
+                        }
+                        if (!_validateEnglishUppercase(
+                            _surnameController.text, 'Surname')) {
+                          return;
+                        }
                         // Get email from profile
                         final user = HiveStorageService.getUser();
                         final email = user?.email ?? '';
@@ -186,9 +197,14 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
                         // Create request model from form data
                         final request = DiditInitializeTokenRequestModel(
                           address: _addressController.text,
-                          agentUid: '${_nameController.text}_${_surnameController.text}_${DateTime.now().millisecondsSinceEpoch}',
+                          agentUid:
+                              '${_nameController.text}_${_surnameController.text}_${DateTime.now().millisecondsSinceEpoch}',
                           areaCode: _selectedCode.replaceAll('+', ''),
-                          billCountryCode: _selectedCountry == 'China' ? 'CN' : _selectedCountry == 'Vietnam' ? 'VN' : 'ID',
+                          billCountryCode: _selectedCountry == 'China'
+                              ? 'CN'
+                              : _selectedCountry == 'Vietnam'
+                                  ? 'VN'
+                                  : 'ID',
                           city: _cityController.text,
                           email: email,
                           firstEnName: _nameController.text.toUpperCase(),
@@ -199,9 +215,11 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
                           state: _stateController.text,
                         );
 
-                        final response = await _viewModel.initializeDiditToken(request);
+                        final response =
+                            await _viewModel.initializeDiditToken(request);
 
-                        if (response != null && response.diditToken.data.url.isNotEmpty) {
+                        if (response != null &&
+                            response.diditToken.data.url.isNotEmpty) {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -214,7 +232,8 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                _viewModel.errorMessage ?? 'Failed to initialize KYC',
+                                _viewModel.errorMessage ??
+                                    'Failed to initialize KYC',
                               ),
                             ),
                           );
@@ -223,8 +242,8 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
                     },
                     child: const Text(
                       "Continue",
-                      style:
-                          TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -244,7 +263,8 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+              style:
+                  const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
           const SizedBox(height: 5),
           TextFormField(
             controller: controller,
@@ -260,6 +280,84 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildNameTextField(String label,
+      {TextEditingController? controller}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 15),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label,
+              style:
+                  const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+          const SizedBox(height: 5),
+          TextFormField(
+            controller: controller,
+            inputFormatters: [
+              // Convert to uppercase automatically
+              UpperCaseTextFormatter(),
+              // Allow only English letters (A-Z)
+              FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z]')),
+            ],
+            decoration: InputDecoration(
+              hintText: 'Enter $label (uppercase English only)',
+              hintStyle: const TextStyle(color: Colors.grey),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter $label';
+              }
+              return null;
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  bool _validateEnglishUppercase(String value, String fieldName) {
+    // Check if the value contains only uppercase English letters
+    final regex = RegExp(r'^[A-Z]+$');
+    if (!regex.hasMatch(value)) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Invalid Input'),
+          content: Text(
+            '$fieldName must contain only uppercase English letters (A-Z).\n\nCurrent value: $value',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+      return false;
+    }
+    return true;
+  }
+}
+
+// Custom formatter to convert input to uppercase
+class UpperCaseTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    return TextEditingValue(
+      text: newValue.text.toUpperCase(),
+      selection: newValue.selection,
     );
   }
 }

@@ -209,5 +209,13 @@
   "transactionHistory": "Riwayat Transaksi",
   "sentStatus": "Dikirim",
   "receiveStatus": "Diterima",
-  "swapStatus": "Tukar"
+  "swapStatus": "Swap",
+  "applyVirtualCard": "Ajukan Kartu Virtual",
+  "cardInformation": "Informasi Kartu",
+  "cardName": "Nama Kartu",
+  "cardOrganization": "Organisasi Kartu",
+  "cardFee": "Biaya Kartu",
+  "fee": "Biaya",
+  "submit": "Kirim",
+  "pleaseSelect": "Silakan pilih"
 }

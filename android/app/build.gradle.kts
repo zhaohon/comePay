@@ -10,7 +10,7 @@ android {
     // Override Flutter's default compileSdk to use API 35 so that new
     // predictive back APIs like android.window.BackEvent are available
     // on the compile classpath for R8.
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion = "27.0.12077973"
 
     compileOptions {

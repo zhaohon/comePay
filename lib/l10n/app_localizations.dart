@@ -1325,6 +1325,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Swap'**
   String get swapStatus;
+
+  /// No description provided for @applyVirtualCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply Virtual Card'**
+  String get applyVirtualCard;
+
+  /// No description provided for @cardInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Information'**
+  String get cardInformation;
+
+  /// No description provided for @cardName.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Name'**
+  String get cardName;
+
+  /// No description provided for @cardOrganization.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Organization'**
+  String get cardOrganization;
+
+  /// No description provided for @cardFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Fee'**
+  String get cardFee;
+
+  /// No description provided for @fee.
+  ///
+  /// In en, this message translates to:
+  /// **'Fee'**
+  String get fee;
+
+  /// No description provided for @submit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get submit;
+
+  /// No description provided for @pleaseSelect.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select'**
+  String get pleaseSelect;
 }
 
 class _AppLocalizationsDelegate

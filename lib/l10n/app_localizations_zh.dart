@@ -620,4 +620,28 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get swapStatus => '交换';
+
+  @override
+  String get applyVirtualCard => '申请虚拟卡';
+
+  @override
+  String get cardInformation => '卡信息';
+
+  @override
+  String get cardName => '卡名称';
+
+  @override
+  String get cardOrganization => '卡组织';
+
+  @override
+  String get cardFee => '卡费';
+
+  @override
+  String get fee => '卡费';
+
+  @override
+  String get submit => '提交';
+
+  @override
+  String get pleaseSelect => '请选择';
 }

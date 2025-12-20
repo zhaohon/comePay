@@ -1,6 +1,7 @@
 import 'package:comecomepay/views/homes/AboutUsScreen.dart';
 import 'package:comecomepay/views/homes/InviteFriendScreen.dart';
-import 'package:comecomepay/views/homes/MessageServiceCenterScreen.dart' show MessageServiceCenterScreen;
+import 'package:comecomepay/views/homes/MessageServiceCenterScreen.dart'
+    show MessageServiceCenterScreen;
 import 'package:comecomepay/views/homes/ProfilCouponScreen.dart'
     show Profilcouponscreen;
 import 'package:comecomepay/views/homes/ProfilLanguageScreen.dart'
@@ -35,7 +36,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _loadProfile() async {
-    final viewModel = Provider.of<ProfileScreenViewModel>(context, listen: false);
+    final viewModel =
+        Provider.of<ProfileScreenViewModel>(context, listen: false);
     final accessToken = HiveStorageService.getAccessToken();
     if (accessToken != null) {
       final success = await viewModel.getProfile(accessToken);
@@ -160,185 +162,129 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
             ),
-            Card(
-              margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              color: Colors.white,
-              elevation: 4.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Column(
-                children: [
-                  ListTile(
-                    leading: Container(
-                      padding: EdgeInsets.all(4.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.black, width: 1.0),
-                        borderRadius: BorderRadius.circular(4.0),
-                      ),
-                      child: Icon(Icons.person_add, color: Colors.blue),
-                    ),
-                    title: Text(AppLocalizations.of(context)!.inviteFriend),
-                    trailing: Icon(Icons.play_arrow_sharp, color: Colors.blue),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => InviteFriendScreen()),
-                      );
-                    },
-                  ),
-                  ListTile(
-                    leading: Container(
-                      padding: EdgeInsets.all(4.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.black, width: 1.0),
-                        borderRadius: BorderRadius.circular(4.0),
-                      ),
-                      child: Icon(Icons.camera_alt, color: Colors.blue),
-                    ),
-                    title: Text(AppLocalizations.of(context)!.kyc),
-                    trailing: Icon(Icons.play_arrow_sharp, color: Colors.blue),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Profilkycscreen()),
-                      );
-                    },
-                  ),
-                  ListTile(
-                    leading: Container(
-                      padding: EdgeInsets.all(4.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.black, width: 1.0),
-                        borderRadius: BorderRadius.circular(4.0),
-                      ),
-                      child: Icon(Icons.language, color: Colors.blue),
-                    ),
-                    title: Text(AppLocalizations.of(context)!.language),
-                    trailing: Icon(Icons.play_arrow_sharp, color: Colors.blue),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Profillanguagescreen()),
-                      );
-                    },
-                  ),
-                ],
-              ),
+            _buildProfileItem(
+              context,
+              icon: Icons.person_add,
+              title: AppLocalizations.of(context)!.inviteFriend,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => InviteFriendScreen()),
+                );
+              },
             ),
-            Card(
-              margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              color: Colors.white,
-              elevation: 4.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Column(
-                children: [
-                  ListTile(
-                    leading: Container(
-                      padding: EdgeInsets.all(4.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.black, width: 1.0),
-                        borderRadius: BorderRadius.circular(4.0),
-                      ),
-                      child: Icon(Icons.card_giftcard, color: Colors.blue),
-                    ),
-                    title: Text(AppLocalizations.of(context)!.coupon),
-                    trailing: Icon(Icons.play_arrow_sharp, color: Colors.blue),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Profilcouponscreen()),
-                      );
-                    },
-                  ),
-                  ListTile(
-                    leading: Container(
-                      padding: EdgeInsets.all(4.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.black, width: 1.0),
-                        borderRadius: BorderRadius.circular(4.0),
-                      ),
-                      child: Icon(Icons.headset_mic, color: Colors.blue),
-                    ),
-                    title: Text(
-                        AppLocalizations.of(context)!.customerServiceCenter),
-                    trailing: Icon(Icons.play_arrow_sharp, color: Colors.blue),
-                      onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MessageServiceCenterScreen()),
-                      );
-                    },
-                  ),
-                ],
-              ),
+            _buildProfileItem(
+              context,
+              icon: Icons.camera_alt,
+              title: AppLocalizations.of(context)!.kyc,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Profilkycscreen()),
+                );
+              },
             ),
-            Card(
-              margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              color: Colors.white,
-              elevation: 4.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Column(
-                children: [
-                  ListTile(
-                    leading: Container(
-                      padding: EdgeInsets.all(4.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.black, width: 1.0),
-                        borderRadius: BorderRadius.circular(4.0),
-                      ),
-                      child: Icon(Icons.info, color: Colors.blue),
-                    ),
-                    title: Text(AppLocalizations.of(context)!.aboutUs),
-                    trailing: Icon(Icons.play_arrow_sharp, color: Colors.blue),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AboutUsScreen()),
-                      );
-                    },
-                  ),
-                  ListTile(
-                    leading: Container(
-                      padding: EdgeInsets.all(4.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.black, width: 1.0),
-                        borderRadius: BorderRadius.circular(4.0),
-                      ),
-                      child: Icon(Icons.security, color: Colors.blue),
-                    ),
-                    title: Text(AppLocalizations.of(context)!.security),
-                    trailing: Icon(Icons.play_arrow_sharp, color: Colors.blue),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Securityscreen()),
-                      );
-                    },
-                  ),
-                ],
-              ),
+            _buildProfileItem(
+              context,
+              icon: Icons.language,
+              title: AppLocalizations.of(context)!.language,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Profillanguagescreen()),
+                );
+              },
             ),
+            _buildProfileItem(
+              context,
+              icon: Icons.card_giftcard,
+              title: AppLocalizations.of(context)!.coupon,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Profilcouponscreen()),
+                );
+              },
+            ),
+            _buildProfileItem(
+              context,
+              icon: Icons.headset_mic,
+              title: AppLocalizations.of(context)!.customerServiceCenter,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MessageServiceCenterScreen()),
+                );
+              },
+            ),
+            _buildProfileItem(
+              context,
+              icon: Icons.info,
+              title: AppLocalizations.of(context)!.aboutUs,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AboutUsScreen()),
+                );
+              },
+            ),
+            _buildProfileItem(
+              context,
+              icon: Icons.security,
+              title: AppLocalizations.of(context)!.security,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Securityscreen()),
+                );
+              },
+            ),
+            SizedBox(height: 20),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildProfileItem(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 3.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ListTile(
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+        leading: Container(
+          padding: const EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            color: const Color(0xFFE7ECFE),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: Colors.blue, size: 22),
+        ),
+        title: Text(
+          title,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+        trailing:
+            const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+        onTap: onTap,
       ),
     );
   }
