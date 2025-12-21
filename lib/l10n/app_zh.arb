@@ -219,5 +219,16 @@
   "cardFee": "卡费",
   "fee": "卡费",
   "submit": "提交",
-  "pleaseSelect": "请选择"
+  "pleaseSelect": "请选择",
+  "yourGateway": "您的门户",
+  "toCrypto": "通向加密货币",
+  "simpleSecureSmooth": "简单、安全、流畅",
+  "manageYour": "管理您的",
+  "cryptoAsset": "加密资产",
+  "andPaymentsWithComePay": "以及Come Pay支付",
+  "createAPassword": "创建密码",
+  "confirmPasswordLabel": "确认密码",
+  "byRegisteringYouAccept": "注册即表示您同意我们的",
+  "andPrivacyPolicy": "和",
+  "yourDataWillBeSecure": "您的数据将使用TLS进行安全加密。"
 }

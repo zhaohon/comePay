@@ -644,4 +644,37 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get pleaseSelect => '请选择';
+
+  @override
+  String get yourGateway => '您的门户';
+
+  @override
+  String get toCrypto => '通向加密货币';
+
+  @override
+  String get simpleSecureSmooth => '简单、安全、流畅';
+
+  @override
+  String get manageYour => '管理您的';
+
+  @override
+  String get cryptoAsset => '加密资产';
+
+  @override
+  String get andPaymentsWithComePay => '以及Come Pay支付';
+
+  @override
+  String get createAPassword => '创建密码';
+
+  @override
+  String get confirmPasswordLabel => '确认密码';
+
+  @override
+  String get byRegisteringYouAccept => '注册即表示您同意我们的';
+
+  @override
+  String get andPrivacyPolicy => '和';
+
+  @override
+  String get yourDataWillBeSecure => '您的数据将使用TLS进行安全加密。';
 }

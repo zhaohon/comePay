@@ -672,4 +672,38 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get pleaseSelect => 'Silakan pilih';
+
+  @override
+  String get yourGateway => 'Your Gateway';
+
+  @override
+  String get toCrypto => 'to Crypto';
+
+  @override
+  String get simpleSecureSmooth => 'Simple, Secure, Smooth';
+
+  @override
+  String get manageYour => 'Manage Your ';
+
+  @override
+  String get cryptoAsset => 'Crypto Asset';
+
+  @override
+  String get andPaymentsWithComePay => 'And Payments with Come Pay';
+
+  @override
+  String get createAPassword => 'Create a Password';
+
+  @override
+  String get confirmPasswordLabel => 'Confirm password';
+
+  @override
+  String get byRegisteringYouAccept => 'By registering you accept our';
+
+  @override
+  String get andPrivacyPolicy => 'and';
+
+  @override
+  String get yourDataWillBeSecure =>
+      'Your data will be security encrypted with TLS.';
 }

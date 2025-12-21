@@ -216,5 +216,16 @@
   "cardFee": "Card Fee",
   "fee": "Fee",
   "submit": "Submit",
-  "pleaseSelect": "Please select"
+  "pleaseSelect": "Please select",
+  "yourGateway": "Your Gateway",
+  "toCrypto": "to Crypto",
+  "simpleSecureSmooth": "Simple, Secure, Smooth",
+  "manageYour": "Manage Your ",
+  "cryptoAsset": "Crypto Asset",
+  "andPaymentsWithComePay": "And Payments with Come Pay",
+  "createAPassword": "Create a Password",
+  "confirmPasswordLabel": "Confirm password",
+  "byRegisteringYouAccept": "By registering you accept our",
+  "andPrivacyPolicy": "and",
+  "yourDataWillBeSecure": "Your data will be security encrypted with TLS."
 }

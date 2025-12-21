@@ -1,9 +1,11 @@
-import 'package:comecomepay/l10n/app_localizations.dart' show AppLocalizations;
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:comecomepay/viewmodels/forgot_password_viewmodel.dart';
 import 'package:comecomepay/utils/service_locator.dart';
-import 'package:provider/provider.dart';
-import 'dart:math';
+import 'package:comecomepay/utils/app_colors.dart';
+import 'package:comecomepay/widgets/gradient_button.dart';
+import 'package:comecomepay/widgets/custom_text_field.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 class ResetPasswordCreatePasswordScreen extends StatelessWidget {
   const ResetPasswordCreatePasswordScreen({super.key});
@@ -39,13 +41,12 @@ class _ResetPasswordCreatePasswordScreenContentState
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
-  bool _obscurePassword = true;
-  bool _obscureConfirmPassword = true;
+  bool _showPassword = false;
+  bool _showConfirmPassword = false;
   bool _isLoading = false;
 
-  // Untuk _buildProgressIndicator
-  final int _totalProgressSteps = 3; // Misal ada 3 langkah total
-  final int _currentProgressStep = 2; // Langkah saat ini adalah ke-2
+  final int _totalProgressSteps = 3;
+  final int _currentProgressStep = 3;
 
   @override
   void dispose() {
@@ -54,127 +55,53 @@ class _ResetPasswordCreatePasswordScreenContentState
     super.dispose();
   }
 
-  String? _validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Password cannot be empty';
-    }
-    if (value.length < 8) {
-      return 'Password must be at least 8 characters long';
-    }
-    if (!value.contains(RegExp(r'[A-Z]'))) {
-      return 'Password must contain an uppercase letter';
-    }
-    if (!value.contains(RegExp(r'[0-9]'))) {
-      return 'Password must contain a number';
-    }
-    if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-      return 'Password must contain a special character';
-    }
-    return null;
-  }
+  Future<void> _submitForm() async {
+    if (!_formKey.currentState!.validate()) return;
 
-  String? _validateConfirmPassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please confirm your password';
-    }
-    if (value != _passwordController.text) {
-      return 'Passwords do not match';
-    }
-    return null;
-  }
+    setState(() => _isLoading = true);
 
-  void _togglePasswordVisibility() {
-    setState(() {
-      _obscurePassword = !_obscurePassword;
-    });
-  }
+    final email = ModalRoute.of(context)?.settings.arguments as String? ?? '';
+    final result = await widget.viewModel.resetPasswordCreatePassword(
+      email: email,
+      newPassword: _passwordController.text,
+      confirmPassword: _confirmPasswordController.text,
+    );
 
-  void _toggleConfirmPasswordVisibility() {
-    setState(() {
-      _obscureConfirmPassword = !_obscureConfirmPassword;
-    });
-  }
+    setState(() => _isLoading = false);
 
-  void _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
+    if (!mounted) return;
 
-      final email = ModalRoute.of(context)?.settings.arguments as String? ?? '';
-
-      final result = await widget.viewModel.resetPasswordCreatePassword(
-        email: email,
-        newPassword: _passwordController.text,
-        confirmPassword: _confirmPasswordController.text,
+    if (result.success) {
+      Navigator.pushNamed(
+        context,
+        '/ResetPasswordCreatePasswordVerificationScreen',
       );
-
-      setState(() {
-        _isLoading = false;
-      });
-
-      if (result.success) {
-        Navigator.pushNamed(
-          context,
-          '/ResetPasswordCreatePasswordVerificationScreen',
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(result.message ?? 'An error occurred'),
-            backgroundColor: Color(0xFF34495E),
-          ),
-        );
-      }
+    } else {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result.message ?? l10n.errorOccurred),
+          backgroundColor: AppColors.error,
+        ),
+      );
     }
   }
 
-  Widget _buildProgressIndicator(
-      int totalSteps, int currentActiveStep, double screenWidth) {
-    double defaultIndicatorWidth = max(screenWidth * 0.2, 60.0);
-    double activeIndicatorWidth = max(screenWidth * 0.2, 60.0);
-    double indicatorHeight = max(screenWidth * 0.008, 3.0);
-    double iconSize = max(screenWidth * 0.045, 16.0);
-    double maxItemHeight = indicatorHeight + iconSize;
-
+  Widget _buildProgressIndicator(int totalSteps, int currentStep) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: List.generate(totalSteps, (index) {
-        bool isStepCompletedOrActive = index < currentActiveStep;
+        bool isActive = index < currentStep;
+        bool isCurrent = index + 1 == currentStep;
+
         return Container(
-          margin:
-              EdgeInsets.symmetric(horizontal: max(screenWidth * 0.015, 4.0)),
-          width: activeIndicatorWidth,
-          height: maxItemHeight,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  height: indicatorHeight,
-                  decoration: BoxDecoration(
-                    color: isStepCompletedOrActive
-                        ? Colors.blueAccent.withOpacity(0.8)
-                        : Colors.grey[700],
-                    borderRadius: BorderRadius.circular(indicatorHeight / 2),
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: indicatorHeight - 0.2,
-                child: Icon(
-                  Icons.circle,
-                  color: isStepCompletedOrActive
-                      ? Colors.blueAccent
-                      : Colors.grey[500],
-                  size: iconSize,
-                ),
-              ),
-            ],
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          width: isCurrent ? 44 : 36,
+          height: 4,
+          decoration: BoxDecoration(
+            gradient: isActive || isCurrent ? AppColors.primaryGradient : null,
+            color: isActive || isCurrent ? null : AppColors.border,
+            borderRadius: BorderRadius.circular(2),
           ),
         );
       }),
@@ -183,262 +110,157 @@ class _ResetPasswordCreatePasswordScreenContentState
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white70),
-          onPressed: () {
-            if (Navigator.canPop(context)) {
-              Navigator.pop(context);
-            }
-          },
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.textPrimary),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
-      extendBodyBehindAppBar: true,
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: RadialGradient(
-            center: Alignment.center,
-            radius: 1.0,
-            colors: [
-              Color(0xFF2C3E50),
-              Color(0xFF34495E),
-            ],
-            stops: [0.4, 1.0],
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            // Column utama untuk layout atas-ke-bawah
-            children: <Widget>[
-              Expanded(
-                // Konten form akan mengambil ruang yang tersedia
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: screenWidth * 0.06,
-                    vertical: 20.0, // Bisa disesuaikan jika perlu
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 40),
+
+                // Title
+                Text(
+                  l10n.createPassword,
+                  style: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
                   ),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment
-                          .start, // Default rata kiri untuk children form
-                      children: <Widget>[
-                        SizedBox(
-                            height:
-                                screenHeight * 0.02), // Spasi setelah AppBar
-                        Center(
-                          // Membuat judul "Create Password" di tengah
-                          child: Text(
-                            AppLocalizations.of(context)!.createPassword,
-                            style: TextStyle(
-                              fontSize: max(screenWidth * 0.07, 20.0),
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: max(screenHeight * 0.015, 12.0)),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: screenWidth * 0.04),
-                          child: Text(
-                            AppLocalizations.of(context)!.passwordMustBe8Characters,
-                            textAlign: TextAlign.center, // Subjudul di tengah
-                            style: TextStyle(
-                              fontSize: max(screenWidth * 0.04, 14.0),
-                              color: Colors.white.withOpacity(0.85),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: screenHeight * 0.04),
+                ),
 
-                        // Password Field
-                        TextFormField(
-                          controller: _passwordController,
-                          obscureText: _obscurePassword,
-                          style: const TextStyle(
-                              color: Colors.black, fontSize: 16.5),
-                          decoration: InputDecoration(
-                            hintText: AppLocalizations.of(context)!.password,
-                            hintStyle: TextStyle(
-                                color: Colors.black.withOpacity(0.5),
-                                fontSize: 16.5),
-                            prefixIcon: const Icon(Icons.lock_outline,
-                                color: Colors.grey),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _obscurePassword
-                                    ? Icons.visibility_off_outlined
-                                    : Icons.visibility_outlined,
-                                color: Colors.grey,
-                              ),
-                              onPressed: _togglePasswordVisibility,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: BorderSide.none,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: BorderSide.none,
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: BorderSide(
-                                  color: Colors.blueAccent.withOpacity(0.7),
-                                  width: 1.5),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: BorderSide(
-                                  color: Colors.red.shade700, width: 1.5),
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: BorderSide(
-                                  color: Colors.red.shade700, width: 2),
-                            ),
-                            filled: true,
-                            fillColor: Colors.white,
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 18.0, horizontal: 20.0),
-                          ),
-                          validator: _validatePassword,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                        ),
-                        const SizedBox(height: 20),
+                const SizedBox(height: 12),
 
-                        // Confirm Password Title
-                         Text(
-                          AppLocalizations.of(context)!.confirmPassword,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
+                // Subtitle
+                Text(
+                  l10n.passwordMustBe8Characters,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
 
-                        // Confirm Password Field
-                        TextFormField(
-                          controller: _confirmPasswordController,
-                          obscureText: _obscureConfirmPassword,
-                          style: const TextStyle(
-                              color: Colors.black, fontSize: 16.5),
-                          decoration: InputDecoration(
-                            hintText: AppLocalizations.of(context)!
-                                .confirmPassword,
-                            hintStyle: TextStyle(
-                                color: Colors.black.withOpacity(0.5),
-                                fontSize: 16.5),
-                            prefixIcon: const Icon(Icons.lock_outline,
-                                color: Colors.grey),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _obscureConfirmPassword
-                                    ? Icons.visibility_off_outlined
-                                    : Icons.visibility_outlined,
-                                color: Colors.grey,
-                              ),
-                              onPressed: _toggleConfirmPasswordVisibility,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: BorderSide.none,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: BorderSide.none,
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: BorderSide(
-                                  color: Colors.blueAccent.withOpacity(0.7),
-                                  width: 1.5),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: BorderSide(
-                                  color: Colors.red.shade700, width: 1.5),
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              borderSide: BorderSide(
-                                  color: Colors.red.shade700, width: 2),
-                            ),
-                            filled: true,
-                            fillColor: Colors.white,
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 18.0, horizontal: 20.0),
-                          ),
-                          validator: _validateConfirmPassword,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                        ),
-                        SizedBox(
-                            height:
-                                screenHeight * 0.05), // Spasi sebelum tombol
+                const SizedBox(height: 40),
 
-                        // Button Continue
-                        Center(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blueAccent,
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 16.0,
-                                  horizontal: screenWidth * 0.25),
-                              textStyle: const TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12.0),
-                              ),
-                              elevation: 5,
-                            ),
-                            onPressed: _isLoading ? null : _submitForm,
-                            child: _isLoading
-                                ? SizedBox(
-                                    width: 24,
-                                    height: 24,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                      strokeWidth: 2,
-                                    ),
-                                  )
-                                : Text(
-                                    AppLocalizations.of(context)!.continues,
-                                    style: TextStyle(color: Colors.white)),
-                          ),
-                        ),
-                        SizedBox(
-                            height: screenHeight *
-                                0.02), // Sedikit spasi di akhir scroll view jika perlu
-                      ],
+                // Password Input
+                CustomTextField(
+                  controller: _passwordController,
+                  hintText: l10n.password,
+                  obscureText: !_showPassword,
+                  prefixIcon: const Icon(
+                    Icons.lock_outline,
+                    color: AppColors.textSecondary,
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _showPassword ? Icons.visibility : Icons.visibility_off,
+                      color: AppColors.textSecondary,
                     ),
+                    onPressed: () {
+                      setState(() {
+                        _showPassword = !_showPassword;
+                      });
+                    },
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return l10n.passwordCannotBeEmpty;
+                    }
+                    if (value.length < 8) {
+                      return l10n.passwordMustBeAtLeast8Characters;
+                    }
+                    if (!value.contains(RegExp(r'[A-Z]'))) {
+                      return l10n.passwordMustContainUppercase;
+                    }
+                    if (!value.contains(RegExp(r'[0-9]'))) {
+                      return l10n.passwordMustContainNumber;
+                    }
+                    if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                      return l10n.passwordMustContainSpecial;
+                    }
+                    return null;
+                  },
+                ),
+
+                const SizedBox(height: 20),
+
+                // Confirm Password Label
+                Text(
+                  l10n.confirmPasswordLabel,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textPrimary,
                   ),
                 ),
-              ),
-              // Progress Indicator di luar Expanded, akan berada di bawah
-              Padding(
-                padding: EdgeInsets.only(
-                  bottom: screenHeight * 0.03 > 20
-                      ? screenHeight * 0.03
-                      : 20.0, // Pastikan padding bawah cukup
-                  top: screenHeight * 0.01 > 10
-                      ? screenHeight * 0.01
-                      : 10.0, // Sedikit padding atas
+
+                const SizedBox(height: 8),
+
+                // Confirm Password Input
+                CustomTextField(
+                  controller: _confirmPasswordController,
+                  hintText: l10n.confirmPassword,
+                  obscureText: !_showConfirmPassword,
+                  prefixIcon: const Icon(
+                    Icons.lock_outline,
+                    color: AppColors.textSecondary,
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _showConfirmPassword
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: AppColors.textSecondary,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _showConfirmPassword = !_showConfirmPassword;
+                      });
+                    },
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return l10n.pleaseConfirmYourPassword;
+                    }
+                    if (value != _passwordController.text) {
+                      return l10n.passwordsDoNotMatch;
+                    }
+                    return null;
+                  },
                 ),
-                child: _buildProgressIndicator(
-                    _totalProgressSteps, _currentProgressStep, screenWidth),
-              ),
-            ],
+
+                const Spacer(),
+
+                // Continue Button
+                GradientButton(
+                  text: l10n.continues,
+                  width: double.infinity,
+                  onPressed: _isLoading ? null : _submitForm,
+                  isLoading: _isLoading,
+                ),
+
+                const SizedBox(height: 24),
+
+                // Progress Indicator
+                _buildProgressIndicator(
+                    _totalProgressSteps, _currentProgressStep),
+
+                const SizedBox(height: 40),
+              ],
+            ),
           ),
         ),
       ),

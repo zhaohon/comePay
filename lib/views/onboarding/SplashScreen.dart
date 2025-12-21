@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:provider/provider.dart';
 import 'package:comecomepay/viewmodels/login_viewmodel.dart';
+import 'package:comecomepay/utils/app_colors.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,42 +14,51 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> _animation;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(seconds: 2), // Durasi animasi fade-in
+      duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.6, curve: Curves.easeIn),
+      ),
+    );
+
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.6, curve: Curves.easeOutBack),
+      ),
+    );
+
     _controller.forward();
 
-    // Defer authentication check to after build to avoid setState during build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkAuthStatus();
     });
   }
 
   Future<void> _checkAuthStatus() async {
-    // Load authentication data dari storage
     final loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
     await loginViewModel.loadAuthDataFromStorage();
 
-    // Navigasi setelah animasi selesai dengan sedikit penundaan tambahan
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed && mounted) {
-        Timer(const Duration(milliseconds: 500), () {
+        Timer(const Duration(milliseconds: 800), () {
           if (mounted) {
-            // Check jika user sudah login dan ada token
             if (loginViewModel.hasStoredAuthData &&
                 loginViewModel.storedAccessToken != null &&
                 loginViewModel.storedRefreshToken != null) {
-              // User sudah login, langsung ke home
               Navigator.pushReplacementNamed(context, '/home');
             } else {
-              // User belum login, ke onboarding
               Navigator.pushReplacementNamed(context, '/onboarding_screen');
             }
           }
@@ -65,50 +75,56 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    // Gunakan SafeArea untuk menghindari notch atau status bar
-    return SafeArea(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final screenWidth = constraints.maxWidth;
-          final screenHeight = constraints.maxHeight;
-          final smallestDimension =
-              screenWidth < screenHeight ? screenWidth : screenHeight;
-
-          // Ukuran logo disesuaikan dengan 35% dari dimensi terkecil, dibatasi untuk layar ekstrem
-          final logoSize = smallestDimension *
-              0.35; // 35% untuk visibilitas yang lebih baik pada layar besar
-
-          return Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: const BoxDecoration(
-              gradient: RadialGradient(
-                center: Alignment.center,
-                radius: 1.0, // Radius lebih fleksibel untuk semua rasio layar
-                colors: [
-                  Color(0xFF2C3E50), // Warna gelap di tengah
-                  Color(0xFF34495E), // Warna sedikit lebih terang di luar
-                ],
-                stops: [
-                  0.4,
-                  1.0
-                ], // Sesuaikan stops untuk efek gradien yang lebih natural
-              ),
-            ),
-            child: Center(
-              child: FadeTransition(
-                opacity: _animation,
-                child: Image.asset(
-                  'assets/which.png', // Pastikan path benar dan didefinisikan di pubspec.yaml
-                  width: logoSize.clamp(
-                      100, 300), // Batasan ukuran logo (100-300 piksel)
-                  height: logoSize.clamp(100, 300), // Batasan ukuran logo
-                  fit: BoxFit.contain, // Menjaga proporsi gambar
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: ScaleTransition(
+            scale: _scaleAnimation,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Logo
+                Image.asset(
+                  'assets/logo.png',
+                  width: 150,
+                  height: 150,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) {
+                    // 如果logo不存在，显示应用名
+                    return Column(
+                      children: [
+                        Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            gradient: AppColors.primaryGradient,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Icon(
+                            Icons.account_balance_wallet,
+                            size: 50,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'Come Come Pay',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
-              ),
+              ],
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }

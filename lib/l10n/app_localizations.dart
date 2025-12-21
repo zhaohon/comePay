@@ -1373,6 +1373,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please select'**
   String get pleaseSelect;
+
+  /// No description provided for @yourGateway.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Gateway'**
+  String get yourGateway;
+
+  /// No description provided for @toCrypto.
+  ///
+  /// In en, this message translates to:
+  /// **'to Crypto'**
+  String get toCrypto;
+
+  /// No description provided for @simpleSecureSmooth.
+  ///
+  /// In en, this message translates to:
+  /// **'Simple, Secure, Smooth'**
+  String get simpleSecureSmooth;
+
+  /// No description provided for @manageYour.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Your '**
+  String get manageYour;
+
+  /// No description provided for @cryptoAsset.
+  ///
+  /// In en, this message translates to:
+  /// **'Crypto Asset'**
+  String get cryptoAsset;
+
+  /// No description provided for @andPaymentsWithComePay.
+  ///
+  /// In en, this message translates to:
+  /// **'And Payments with Come Pay'**
+  String get andPaymentsWithComePay;
+
+  /// No description provided for @createAPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a Password'**
+  String get createAPassword;
+
+  /// No description provided for @confirmPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get confirmPasswordLabel;
+
+  /// No description provided for @byRegisteringYouAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'By registering you accept our'**
+  String get byRegisteringYouAccept;
+
+  /// No description provided for @andPrivacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'and'**
+  String get andPrivacyPolicy;
+
+  /// No description provided for @yourDataWillBeSecure.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data will be security encrypted with TLS.'**
+  String get yourDataWillBeSecure;
 }
 
 class _AppLocalizationsDelegate

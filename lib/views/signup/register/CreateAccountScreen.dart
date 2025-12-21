@@ -1,5 +1,7 @@
-import 'package:comecomepay/l10n/app_localizations.dart' show AppLocalizations;
 import 'package:flutter/material.dart';
+import 'package:comecomepay/utils/app_colors.dart';
+import 'package:comecomepay/widgets/gradient_button.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
@@ -9,139 +11,98 @@ class CreateAccountScreen extends StatefulWidget {
 }
 
 class _CreateAccountScreenState extends State<CreateAccountScreen> {
-  bool _agreeToTerms = false;
-
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: Stack(
-        children: [
-          // Background
-          Container(
-            decoration: const BoxDecoration(
-              gradient: RadialGradient(
-                center: Alignment.center,
-                radius: 1.0,
-                colors: [Color(0xFF2C3E50), Color(0xFF34495E)],
+      backgroundColor: const Color(0xFF3A4750), // 深蓝灰色背景
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Spacer(flex: 2),
+
+              // Logo
+              Image.asset(
+                'assets/logo.png',
+                width: 120,
+                height: 120,
+                fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      gradient: AppColors.primaryGradient,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Icon(
+                      Icons.account_balance_wallet,
+                      size: 50,
+                      color: Colors.white,
+                    ),
+                  );
+                },
               ),
-            ),
-          ),
 
-          // Icon pojok kanan atas
-          Positioned(
-            top: kToolbarHeight + MediaQuery.of(context).padding.top - 20,
-            right: 30,
-            child: GestureDetector(
-              onTap: () {
-                print("Icon kanan atas ditekan");
-              },
-              child: Image.asset(
-                "assets/which.png",
-                width: 45,
-                height: 45,
+              const SizedBox(height: 24),
+
+              // App Name
+              const Text(
+                'Come Come Pay',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
-            ),
-          ),
 
-          // Konten utama scrollable
-          SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              children: [
-                SizedBox(
-                    height: kToolbarHeight +
-                        MediaQuery.of(context).padding.top +
-                        80),
+              const Spacer(flex: 3),
 
-                // Ilustrasi cloud
-                Image.asset(
-                  "assets/cloudillustration.png",
-                  height: 220,
-                ),
-
-                const SizedBox(height: 100), // biar konten tidak menabrak bawah
-              ],
-            ),
-          ),
-
-          // Terms & Conditions + Register di bawah layar
-          Positioned(
-            bottom: 30,
-            left: 24,
-            right: 24,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Checkbox + Terms
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Checkbox(
-                      value: _agreeToTerms,
-                      onChanged: (value) {
-                        setState(() => _agreeToTerms = value ?? false);
-                      },
-                      activeColor: Colors.blue,
+              // 开始使用按钮 (白色)
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: const Color(0xFF3A4750),
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    GestureDetector(
-                      onTap: () => setState(() {
-                        _agreeToTerms = !_agreeToTerms;
-                      }),
-                      child: Text.rich(
-                        TextSpan(
-                          style: const TextStyle(color: Colors.white, fontSize: 14),
-                          children: [
-                            TextSpan(text: AppLocalizations.of(context)!.iAgreeWith),
-                            TextSpan(
-                              text: AppLocalizations.of(context)!.termsAndConditions,
-                              style: const TextStyle(
-                                color: Colors.blue,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-
-                // Tombol Register
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    onPressed: _agreeToTerms
-                        ? () => Navigator.pushNamed(
-                            context, '/create_account_email')
-                        : null,
-                    child: Text(
-                      AppLocalizations.of(context)!.register,
-                      style: const TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/create_account_email');
+                  },
+                  child: Text(
+                    l10n.getStarted,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // 登录按钮 (蓝色渐变)
+              GradientButton(
+                text: l10n.login,
+                width: double.infinity,
+                onPressed: () {
+                  Navigator.pushNamed(context, '/login_screen');
+                },
+              ),
+
+              const SizedBox(height: 40),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

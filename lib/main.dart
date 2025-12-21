@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:comecomepay/utils/constants.dart';
 import 'package:comecomepay/utils/service_locator.dart';
+import 'package:comecomepay/utils/app_theme.dart';
 import 'package:comecomepay/viewmodels/login_viewmodel.dart';
 import 'package:comecomepay/viewmodels/signup_viewmodel.dart';
 import 'package:comecomepay/viewmodels/registration_otp_viewmodel.dart';
@@ -161,7 +162,7 @@ class MyApp extends StatelessWidget {
           builder: (context, localeProvider, child) {
             return MaterialApp(
               title: 'Come Come Pay',
-              theme: ThemeData(primarySwatch: Colors.blue),
+              theme: AppTheme.lightTheme,
               locale: localeProvider.locale,
               supportedLocales: L10n.all,
               localeResolutionCallback: (locale, supportedLocales) {

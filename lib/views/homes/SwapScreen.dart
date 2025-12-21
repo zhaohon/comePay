@@ -84,105 +84,105 @@ class _SwapScreenContentState extends State<_SwapScreenContent> {
                     child: viewModel.busy
                         ? const Center(child: CircularProgressIndicator())
                         : ListView.separated(
-                      itemCount: viewModel.cryptoData.length,
-                      separatorBuilder: (context, index) =>
-                      const SizedBox(height: 1),
-                      itemBuilder: (context, index) {
-                        final crypto = viewModel.cryptoData[index];
-                        return Card(
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 2,
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(12),
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                '/SwapDetailScreen',
-                                arguments: crypto,
-                              );
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 12),
-                              child: Row(
-                                children: [
-                                  CircleAvatar(
-                                    backgroundColor: Colors.white,
-                                    radius: 20,
-                                    child: Image.network(
-                                      crypto.image,
-                                      width: 35,
-                                      height: 35,
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                        return const Icon(Icons.error);
-                                      },
-                                    ),
-                                  ),
-                                  const SizedBox(width: 16),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                            itemCount: viewModel.cryptoData.length,
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(height: 1),
+                            itemBuilder: (context, index) {
+                              final crypto = viewModel.cryptoData[index];
+                              return Card(
+                                color: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                elevation: 2,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(12),
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/SwapDetailScreen',
+                                      arguments: crypto,
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 12),
+                                    child: Row(
                                       children: [
-                                        Text(
-                                          crypto.name,
-                                          style: const TextStyle(
-                                              fontWeight:
-                                              FontWeight.w500),
+                                        CircleAvatar(
+                                          backgroundColor: Colors.white,
+                                          radius: 20,
+                                          child: Image.network(
+                                            crypto.image,
+                                            width: 35,
+                                            height: 35,
+                                            fit: BoxFit.cover,
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                              return const Icon(Icons.error);
+                                            },
+                                          ),
                                         ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          "\$${crypto.currentPrice.toStringAsFixed(2)}",
-                                          style: const TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.black54),
+                                        const SizedBox(width: 16),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                crypto.name,
+                                                style: const TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                "\$${crypto.currentPrice.toStringAsFixed(2)}",
+                                                style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.black54),
+                                              ),
+                                            ],
+                                          ),
                                         ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                              NumberFormat.simpleCurrency(
+                                                      locale: 'en_US')
+                                                  .format(crypto.currentPrice *
+                                                      totalAssets),
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              NumberFormat.simpleCurrency(
+                                                      locale: 'en_US')
+                                                  .format(crypto.currentPrice *
+                                                      totalAssets),
+                                              style: TextStyle(
+                                                color:
+                                                    crypto.priceChangePercentage24h >=
+                                                            0
+                                                        ? Colors.green
+                                                        : Colors.red,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ],
+                                        )
                                       ],
                                     ),
                                   ),
-                                  Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        NumberFormat.simpleCurrency(
-                                            locale: 'en_US')
-                                            .format(crypto.currentPrice *
-                                            totalAssets),
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        NumberFormat.simpleCurrency(
-                                            locale: 'en_US')
-                                            .format(crypto.currentPrice *
-                                            totalAssets),
-                                        style: TextStyle(
-                                          color: crypto
-                                              .priceChangePercentage24h >=
-                                              0
-                                              ? Colors.green
-                                              : Colors.red,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
                   ),
                 ],
               ),
