@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:comecomepay/viewmodels/swap_viewmodel.dart';
+import 'package:comecomepay/viewmodels/wallet_viewmodel.dart';
 import 'dart:async';
-// import 'package:comecomepay/models/responses/crypto_response_model.dart'; // No longer needed directly if we rely on ViewModel strings
 
 class SwapDetailPage extends StatefulWidget {
   const SwapDetailPage({super.key});
@@ -12,12 +12,12 @@ class SwapDetailPage extends StatefulWidget {
 }
 
 class _SwapDetailPageState extends State<SwapDetailPage> {
-  // Restricted Lists as per user request
+  // 限制列表
   final List<String> sendCoinList = ["USDT", "BTC", "ETH", "USDC"];
   final List<String> receiveCoinList = ["HKD"];
 
-  String topCoin = "USDT"; // Default
-  String bottomCoin = "HKD"; // Default
+  String topCoin = "USDT"; // 默认
+  String bottomCoin = "HKD"; // 默认
 
   late TextEditingController _amountController;
   late TextEditingController _bottomAmountController;
@@ -31,9 +31,11 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
     _amountController = TextEditingController();
     _bottomAmountController = TextEditingController();
 
-    // Initial fetch of exchange rate for default pair
+    // 初始获取汇率
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _fetchRate();
+      // 获取钱包数据以显示余额
+      Provider.of<WalletViewModel>(context, listen: false).fetchWalletData();
     });
   }
 
@@ -48,7 +50,6 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
   void _fetchRate() {
     final viewModel = Provider.of<SwapViewModel>(context, listen: false);
     viewModel.fetchExchangeRate(topCoin, bottomCoin).then((_) {
-      // Re-calculate after fetching rate if amount exists
       _calculateBottomAmount();
     });
   }
@@ -59,15 +60,31 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
 
     final selected = await showModalBottomSheet<String>(
       context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       builder: (context) {
-        return ListView(
-          children: coinList.map((coin) {
-            return ListTile(
-              title: Text(coin),
-              selected: coin == current,
-              onTap: () => Navigator.pop(context, coin),
-            );
-          }).toList(),
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                '选择币种',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              ...coinList.map((coin) {
+                return ListTile(
+                  leading: _getCoinIcon(coin),
+                  title: Text(coin),
+                  selected: coin == current,
+                  selectedTileColor: Colors.blue.shade50,
+                  onTap: () => Navigator.pop(context, coin),
+                );
+              }).toList(),
+            ],
+          ),
         );
       },
     );
@@ -80,7 +97,6 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
           bottomCoin = selected;
         }
       });
-      // Fetch new rate when coin changes
       _fetchRate();
     }
   }
@@ -106,7 +122,6 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
     final double amount = double.tryParse(_amountController.text) ?? 0.0;
     final double result = amount * viewModel.exchangeRate;
 
-    // Format result, maybe 2 decimals for HKD/USD
     if (mounted) {
       setState(() {
         _bottomAmountController.text = result.toStringAsFixed(2);
@@ -114,18 +129,6 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
     }
   }
 
-  // NOTE: Swap functionality might be weird because lists are different.
-  // If user swaps, Top becomes HKD (which is not in Send List).
-  // I will just simple swap the variables, but UI might show "HKD" in top even if not in list,
-  // or I should disable swap if restricted.
-  // User asked for "Send List" and "Receive List".
-  // Swapping them would mean Send becomes Receive list (HKD) and Receive becomes Send List.
-  // If strict, I should probably disable Swap or allow it but updating the lists dynamically?
-  // Given "Send List" is [USDT, BTC...] explicitly, maybe swapping is NOT intended or should switch contexts?
-  // For now I will implement simple swap but warn user if values are outside lists (or just let it be).
-  // Actually, better to just let them swap values. The dropdowns use `sendCoinList` based on `isTop`.
-  // If `topCoin` becomes HKD, it's fine, but when they open dropdown, they only see [USDT, BTC...].
-  // So they can't change it back to HKD if they change it to USDT. This seems acceptable for "Swap".
   void _swapCoins() {
     setState(() {
       final temp = topCoin;
@@ -135,10 +138,133 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
     _fetchRate();
   }
 
+  // 直接执行兑换（移除Review弹窗）
+  Future<void> _executeDirectSwap() async {
+    final amount = double.tryParse(_amountController.text) ?? 0.0;
+    if (amount <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('请输入有效金额')),
+      );
+      return;
+    }
+
+    final walletViewModel =
+        Provider.of<WalletViewModel>(context, listen: false);
+    final swapViewModel = Provider.of<SwapViewModel>(context, listen: false);
+
+    // 检查余额是否足够
+    final availableBalance = _getAvailableBalance(walletViewModel, topCoin);
+    final balance = double.tryParse(availableBalance) ?? 0.0;
+    if (balance < amount) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('$topCoin 余额不足')),
+      );
+      return;
+    }
+
+    // 直接执行兑换
+    final result = await swapViewModel.executeSwap(
+      fromCurrency: topCoin,
+      toCurrency: bottomCoin,
+      amount: amount,
+    );
+
+    if (!mounted) return;
+
+    if (result != null) {
+      // 成功，刷新钱包余额
+      walletViewModel.fetchWalletData();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('兑换成功！'), backgroundColor: Colors.green),
+      );
+
+      // 清空输入
+      _amountController.clear();
+      _bottomAmountController.clear();
+      swapViewModel.clearQuote();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('兑换失败: ${swapViewModel.errorMessage}')),
+      );
+    }
+  }
+
+  // 获取币种图标
+  Widget _getCoinIcon(String coin) {
+    String assetPath = '';
+    switch (coin.toUpperCase()) {
+      case 'ETH':
+        assetPath = 'assets/eth.png';
+        break;
+      case 'BTC':
+        assetPath = 'assets/btc.png';
+        break;
+      case 'USDT':
+        assetPath = 'assets/usdt.png';
+        break;
+      case 'USDC':
+        assetPath = 'assets/usdc.png';
+        break;
+      case 'HKD':
+        assetPath = 'assets/hkd.png';
+        break;
+      default:
+        return const CircleAvatar(
+          radius: 20,
+          child: Icon(Icons.currency_exchange),
+        );
+    }
+
+    return CircleAvatar(
+      radius: 20,
+      backgroundColor: Colors.white,
+      child: Image.asset(
+        assetPath,
+        width: 32,
+        height: 32,
+        errorBuilder: (context, error, stackTrace) {
+          return const Icon(Icons.currency_exchange);
+        },
+      ),
+    );
+  }
+
+  // 获取可用余额
+  String _getAvailableBalance(
+      WalletViewModel walletViewModel, String currency) {
+    // AvailableCurrency模型包含chain、native、token字段
+    // token是一个Map<String, dynamic>，包含各种代币的余额
+    final availableCurrencies = walletViewModel.availableCurrenciesList;
+
+    if (availableCurrencies.isEmpty) return '0.00';
+
+    // 尝试从AvailableCurrency的token map中获取余额
+    for (var curr in availableCurrencies) {
+      // 检查token map中是否有对应币种
+      if (curr.token.containsKey(currency)) {
+        final balance = curr.token[currency];
+        if (balance is num) {
+          return balance.toStringAsFixed(2);
+        } else if (balance is String) {
+          return (double.tryParse(balance) ?? 0.0).toStringAsFixed(2);
+        }
+      }
+
+      // 如果是原生代币（如ETH、BTC），检查native字段
+      if (currency.toUpperCase() == curr.chain.toUpperCase()) {
+        final balance = double.tryParse(curr.native) ?? 0.0;
+        return balance.toStringAsFixed(2);
+      }
+    }
+
+    return '0.00';
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<SwapViewModel>(
-      builder: (context, viewModel, child) {
+    return Consumer2<SwapViewModel, WalletViewModel>(
+      builder: (context, swapViewModel, walletViewModel, child) {
         return Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
@@ -154,17 +280,28 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
               icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
               onPressed: () => Navigator.pop(context),
             ),
+            actions: [
+              // 历史记录图标
+              IconButton(
+                icon: const Icon(Icons.history, color: Colors.black),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/SwapHistory');
+                },
+              ),
+            ],
           ),
           body: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
               children: [
-                // Top Row
+                // Top Row - 发送
                 _buildSwapRow(
                   amountController: _amountController,
                   symbol: topCoin,
                   isTop: true,
                   onChanged: _onAmountChanged,
+                  availableBalance:
+                      _getAvailableBalance(walletViewModel, topCoin),
                 ),
 
                 const SizedBox(height: 12),
@@ -175,26 +312,31 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
                     const Expanded(
                       child: Divider(
                         color: Colors.blueAccent,
-                        thickness: 2,
+                        thickness: 1,
                         endIndent: 12,
                       ),
                     ),
                     GestureDetector(
                       onTap: _swapCoins,
                       child: Container(
-                        padding: const EdgeInsets.all(6),
+                        padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
+                          color: Colors.white,
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.blueAccent),
+                          border:
+                              Border.all(color: Colors.blueAccent, width: 2),
                         ),
-                        child: const Icon(Icons.keyboard_arrow_down,
-                            color: Colors.blueAccent),
+                        child: const Icon(
+                          Icons.swap_vert,
+                          color: Colors.blueAccent,
+                          size: 20,
+                        ),
                       ),
                     ),
                     const Expanded(
                       child: Divider(
                         color: Colors.blueAccent,
-                        thickness: 2,
+                        thickness: 1,
                         indent: 12,
                       ),
                     ),
@@ -203,49 +345,98 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
 
                 const SizedBox(height: 12),
 
-                // Bottom Row (Read Only usually, but let's make it display)
+                // Bottom Row - 接收
                 _buildSwapRow(
                   amountController: _bottomAmountController,
                   symbol: bottomCoin,
                   isTop: false,
                   readOnly: true,
+                  availableBalance:
+                      _getAvailableBalance(walletViewModel, bottomCoin),
                 ),
 
                 const SizedBox(height: 20),
 
-                // Rate Display
-                if (viewModel.isLoadingRate)
-                  const Text("Fetching rate...",
-                      style: TextStyle(color: Colors.grey))
-                else if (viewModel.errorMessage != null)
-                  Text("Error: ${viewModel.errorMessage}",
-                      style: const TextStyle(color: Colors.red))
-                else if (viewModel.exchangeRate > 0)
-                  Text("1 $topCoin ≈ ${viewModel.exchangeRate} $bottomCoin",
-                      style: const TextStyle(
-                          color: Colors.black54, fontWeight: FontWeight.bold)),
+                // 汇率显示
+                if (swapViewModel.isLoadingRate)
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                      SizedBox(width: 8),
+                      Text("获取汇率中...", style: TextStyle(color: Colors.grey)),
+                    ],
+                  )
+                else if (swapViewModel.errorMessage != null)
+                  Text(
+                    "错误: ${swapViewModel.errorMessage}",
+                    style: const TextStyle(color: Colors.red, fontSize: 12),
+                  )
+                else if (swapViewModel.exchangeRate > 0)
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade50,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "1 $topCoin ≈ ${swapViewModel.exchangeRate.toStringAsFixed(6)} $bottomCoin",
+                          style: const TextStyle(
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 13,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        GestureDetector(
+                          onTap: _fetchRate,
+                          child: const Icon(
+                            Icons.refresh,
+                            size: 16,
+                            color: Colors.blueAccent,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
 
                 const Spacer(),
 
-                // Review Button
+                // 兑换按钮（直接兑换，无需Review）
                 SizedBox(
                   width: double.infinity,
                   height: 52,
                   child: ElevatedButton(
-                    onPressed: () {
-                      // Implement Review Logic or Navigation
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("Review not implemented yet")));
-                    },
+                    onPressed: swapViewModel.isExecutingSwap
+                        ? null
+                        : _executeDirectSwap,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue.shade600,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
-                    child: const Text(
-                      "Review",
-                      style: TextStyle(fontSize: 16, color: Colors.white),
-                    ),
+                    child: swapViewModel.isExecutingSwap
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Text(
+                            "兑换",
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          ),
                   ),
                 ),
               ],
@@ -260,52 +451,92 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
     required TextEditingController amountController,
     required String symbol,
     required bool isTop,
+    required String availableBalance,
     ValueChanged<String>? onChanged,
     bool readOnly = false,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
+        color: Colors.grey.shade50,
         border: Border.all(color: Colors.grey.shade300),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: TextField(
-              controller: amountController,
-              readOnly: readOnly,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                hintText: "0.0",
+          // 金额输入行
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: amountController,
+                  readOnly: readOnly,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "0",
+                    hintStyle: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey.shade400,
+                    ),
+                  ),
+                  style: const TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  onChanged: onChanged,
+                ),
               ),
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              onChanged: onChanged,
-            ),
-          ),
-          const SizedBox(width: 8),
-          GestureDetector(
-            onTap: () => _openDropdown(isTop),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.blue.shade50,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  Text(symbol,
-                      style: const TextStyle(
+              const SizedBox(width: 8),
+              GestureDetector(
+                onTap: () => _openDropdown(isTop),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _getCoinIcon(symbol),
+                      const SizedBox(width: 8),
+                      Text(
+                        symbol,
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
-                          color: Colors.blue)),
-                  const Icon(Icons.arrow_drop_down, color: Colors.blue),
-                ],
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      const Icon(Icons.arrow_drop_down, size: 20),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 8),
+
+          // 可用余额 - 只在发送时显示
+          if (isTop)
+            Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                '$availableBalance $symbol available',
+                style: TextStyle(
+                  color: Colors.blue.shade700,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
-          ),
         ],
       ),
     );

@@ -5,7 +5,7 @@ import 'dart:async';
 class SwapViewModel extends BaseViewModel {
   final SwapService _swapService = SwapService();
 
-  // Rate cache: e.g. "USDT_HKD" -> 7.8
+  // 汇率
   double _exchangeRate = 0.0;
   double get exchangeRate => _exchangeRate;
 
@@ -15,35 +15,49 @@ class SwapViewModel extends BaseViewModel {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
-  // Method to fetch exchange rate
-  Future<void> fetchExchangeRate(String src, String dst) async {
+  // 报价数据
+  String? _quoteId;
+  String? get quoteId => _quoteId;
+
+  double _fromAmount = 0.0;
+  double get fromAmount => _fromAmount;
+
+  double _toAmount = 0.0;
+  double get toAmount => _toAmount;
+
+  double _fee = 0.0;
+  double get fee => _fee;
+
+  double _netAmount = 0.0;
+  double get netAmount => _netAmount;
+
+  DateTime? _expiresAt;
+  DateTime? get expiresAt => _expiresAt;
+
+  bool _isCreatingPreview = false;
+  bool get isCreatingPreview => _isCreatingPreview;
+
+  bool _isExecutingSwap = false;
+  bool get isExecutingSwap => _isExecutingSwap;
+
+  /// 获取汇率
+  Future<void> fetchExchangeRate(String fromCurrency, String toCurrency) async {
     _isLoadingRate = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      final data = await _swapService.getExchangeRate(
-        srcCurrencyCode: src,
-        dstCurrencyCode: dst,
+      final response = await _swapService.getExchangeRate(
+        fromCurrency: fromCurrency,
+        toCurrency: toCurrency,
       );
-      // Assuming response structure: { ..., data: { rate: 7.8, ... } } or direct rate field.
-      // Based on user description: "1源币种 能换 多少 目标币种"
-      // Let's assume the API returns a 'price' or 'rate'.
-      // Usually currencySimple returns the price of src in dst.
-      // I will log and parse dynamically for robustness or assume a standard field like 'price' or 'rate'.
-      // Since I cannot see the exact API response format in the prompt, I will assume 'price' from common patterns or look for "data".
-      // Let's assume data['data']['price'] or data['price'].
 
-      // Let's assume the response is the 'data' part returned by handleResponse which strips the wrapper.
-      // If handleResponse returns the inner data object.
-      // Let's try to find a 'price' field.
-
-      if (data.containsKey('price')) {
-        _exchangeRate = double.tryParse(data['price'].toString()) ?? 0.0;
-      } else if (data.containsKey('rate')) {
-        _exchangeRate = double.tryParse(data['rate'].toString()) ?? 0.0;
+      // 根据API文档，响应格式为：
+      // { "status": "success", "data": { "rate": 7.80, ... } }
+      if (response['data'] != null) {
+        final data = response['data'];
+        _exchangeRate = (data['rate'] ?? 0.0).toDouble();
       } else {
-        // Fallback if structure is unknown, log it (implying we might need to debug if it fails)
         _exchangeRate = 0.0;
       }
     } catch (e) {
@@ -53,5 +67,126 @@ class SwapViewModel extends BaseViewModel {
       _isLoadingRate = false;
       notifyListeners();
     }
+  }
+
+  /// 创建兑换预览/报价
+  Future<bool> createPreview({
+    required String fromCurrency,
+    required String toCurrency,
+    required double amount,
+  }) async {
+    if (amount <= 0) {
+      _errorMessage = '金额必须大于0';
+      notifyListeners();
+      return false;
+    }
+
+    _isCreatingPreview = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final response = await _swapService.createPreview(
+        fromCurrency: fromCurrency,
+        toCurrency: toCurrency,
+        amount: amount,
+      );
+
+      // 根据API文档，响应格式为：
+      // {
+      //   "status": "success",
+      //   "data": {
+      //     "quote_id": "quote_xxx",
+      //     "from_amount": 100,
+      //     "to_amount": 780,
+      //     "exchange_rate": 7.80,
+      //     "fee": 0,
+      //     "net_amount": 780,
+      //     "expires_at": "2025-12-21T00:05:00Z"
+      //   }
+      // }
+      if (response['data'] != null) {
+        final data = response['data'];
+        _quoteId = data['quote_id'];
+        _fromAmount = (data['from_amount'] ?? 0.0).toDouble();
+        _toAmount = (data['to_amount'] ?? 0.0).toDouble();
+        _exchangeRate = (data['exchange_rate'] ?? 0.0).toDouble();
+        _fee = (data['fee'] ?? 0.0).toDouble();
+        _netAmount = (data['net_amount'] ?? 0.0).toDouble();
+
+        // 解析过期时间
+        if (data['expires_at'] != null) {
+          _expiresAt = DateTime.parse(data['expires_at']);
+        }
+
+        _isCreatingPreview = false;
+        notifyListeners();
+        return true;
+      } else {
+        _errorMessage = '创建报价失败：数据格式错误';
+        _isCreatingPreview = false;
+        notifyListeners();
+        return false;
+      }
+    } catch (e) {
+      _errorMessage = e.toString();
+      _isCreatingPreview = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// 执行兑换
+  Future<Map<String, dynamic>?> executeSwap({
+    required String fromCurrency,
+    required String toCurrency,
+    required double amount,
+  }) async {
+    if (amount <= 0) {
+      _errorMessage = '金额必须大于0';
+      notifyListeners();
+      return null;
+    }
+
+    _isExecutingSwap = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final response = await _swapService.executeSwap(
+        fromCurrency: fromCurrency,
+        toCurrency: toCurrency,
+        amount: amount,
+        quoteId: _quoteId,
+      );
+
+      _isExecutingSwap = false;
+      notifyListeners();
+
+      // 返回完整的响应数据供UI使用
+      return response['data'];
+    } catch (e) {
+      _errorMessage = e.toString();
+      _isExecutingSwap = false;
+      notifyListeners();
+      return null;
+    }
+  }
+
+  /// 清除报价数据
+  void clearQuote() {
+    _quoteId = null;
+    _fromAmount = 0.0;
+    _toAmount = 0.0;
+    _fee = 0.0;
+    _netAmount = 0.0;
+    _expiresAt = null;
+    notifyListeners();
+  }
+
+  /// 检查报价是否过期
+  bool isQuoteExpired() {
+    if (_expiresAt == null) return true;
+    return DateTime.now().isAfter(_expiresAt!);
   }
 }

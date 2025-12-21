@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:comecomepay/utils/constants.dart';
 import 'package:comecomepay/services/api_logger_service.dart';
+import 'package:comecomepay/services/hive_storage_service.dart';
 
 // Custom exception classes for different HTTP status codes
 class UnauthorizedException implements Exception {
@@ -57,6 +58,13 @@ abstract class BaseService {
         // Add timestamp for duration calculation
         options.extra['request_start_time'] =
             DateTime.now().millisecondsSinceEpoch;
+
+        // 自动添加Authorization token
+        final token = HiveStorageService.getAccessToken();
+        if (token != null) {
+          options.headers['Authorization'] = 'Bearer $token';
+        }
+
         _apiLogger.logRequest(options);
         handler.next(options);
       },
@@ -111,11 +119,9 @@ abstract class BaseService {
       case 202: // Accept
         return data;
       case 400:
-        throw Exception(
-            'Bad Request: ${data['message'] ?? 'Invalid request'}');
+        throw Exception('Bad Request: ${data['message'] ?? 'Invalid request'}');
       case 401:
-        throw UnauthorizedException(
-            data['message'] ?? 'Invalid credentials');
+        throw UnauthorizedException(data['message'] ?? 'Invalid credentials');
       case 403:
         throw ForbiddenException(
             data['message'] ?? 'Access denied - OTP required');
@@ -132,8 +138,7 @@ abstract class BaseService {
       case 502:
       case 503:
       case 504:
-        throw ServerErrorException(
-            data['message'] ?? 'Server error occurred');
+        throw ServerErrorException(data['message'] ?? 'Server error occurred');
       default:
         throw Exception(
             'HTTP ${response.statusCode}: ${data['message'] ?? 'Unknown error'}');

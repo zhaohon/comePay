@@ -1,26 +1,20 @@
 import 'package:dio/dio.dart';
 import 'package:comecomepay/core/base_service.dart';
-import 'package:comecomepay/services/hive_storage_service.dart';
 
 class SwapService extends BaseService {
+  /// 获取特定货币对的汇率
+  /// GET /wallet/exchange-rate?from={from_currency}&to={to_currency}
   Future<Map<String, dynamic>> getExchangeRate({
-    required String srcCurrencyCode,
-    required String dstCurrencyCode,
+    required String fromCurrency,
+    required String toCurrency,
   }) async {
     try {
-      final token = HiveStorageService.getAccessToken();
       final response = await dio.get(
-        'https://testagent.pokepay.cc/api/v1/system/currencySimple',
+        '/wallet/exchange-rate',
         queryParameters: {
-          'src_currency_code': srcCurrencyCode,
-          'dst_currency_code': dstCurrencyCode,
+          'from': fromCurrency,
+          'to': toCurrency,
         },
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            if (token != null) 'Authorization': 'Bearer $token',
-          },
-        ),
       );
 
       final data = handleResponse(response);
@@ -28,7 +22,90 @@ class SwapService extends BaseService {
     } on DioException catch (e) {
       throw handleDioError(e);
     } catch (e) {
-      throw Exception('Failed to fetch exchange rate: ${e.toString()}');
+      throw Exception('获取汇率失败: ${e.toString()}');
+    }
+  }
+
+  /// 创建兑换预览/报价
+  /// POST /wallet/swap/preview
+  Future<Map<String, dynamic>> createPreview({
+    required String fromCurrency,
+    required String toCurrency,
+    required double amount,
+  }) async {
+    try {
+      final response = await dio.post(
+        '/wallet/swap/preview',
+        data: {
+          'from_currency': fromCurrency,
+          'to_currency': toCurrency,
+          'amount': amount,
+        },
+      );
+
+      final data = handleResponse(response);
+      return data;
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    } catch (e) {
+      throw Exception('创建报价失败: ${e.toString()}');
+    }
+  }
+
+  /// 执行兑换
+  /// POST /wallet/swap
+  Future<Map<String, dynamic>> executeSwap({
+    required String fromCurrency,
+    required String toCurrency,
+    required double amount,
+    String? quoteId,
+  }) async {
+    try {
+      final requestData = {
+        'from_currency': fromCurrency,
+        'to_currency': toCurrency,
+        'amount': amount,
+      };
+
+      if (quoteId != null) {
+        requestData['quote_id'] = quoteId;
+      }
+
+      final response = await dio.post(
+        '/wallet/swap',
+        data: requestData,
+      );
+
+      final data = handleResponse(response);
+      return data;
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    } catch (e) {
+      throw Exception('执行兑换失败: ${e.toString()}');
+    }
+  }
+
+  /// 获取兑换历史
+  /// GET /wallet/swap/history?page={page}&limit={limit}
+  Future<Map<String, dynamic>> getSwapHistory({
+    int page = 1,
+    int limit = 20,
+  }) async {
+    try {
+      final response = await dio.get(
+        '/wallet/swap/history',
+        queryParameters: {
+          'page': page,
+          'limit': limit,
+        },
+      );
+
+      final data = handleResponse(response);
+      return data;
+    } on DioException catch (e) {
+      throw handleDioError(e);
+    } catch (e) {
+      throw Exception('获取兑换历史失败: ${e.toString()}');
     }
   }
 }

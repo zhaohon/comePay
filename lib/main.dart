@@ -53,6 +53,7 @@ import 'package:comecomepay/views/homes/SendPdpDetailDone.dart';
 import 'package:comecomepay/views/homes/TransactionHistoryHistory.dart';
 import 'package:comecomepay/views/homes/SwapScreen.dart';
 import 'package:comecomepay/views/homes/SwapDetailPage.dart';
+import 'package:comecomepay/views/homes/SwapHistoryPage.dart';
 import 'package:comecomepay/views/homes/WaletAccountCardDetailScreen.dart';
 import 'package:comecomepay/views/homes/CardSelectDocumentScreen.dart';
 import 'package:comecomepay/views/homes/CardKycScreen.dart';
@@ -232,6 +233,7 @@ class MyApp extends StatelessWidget {
                     const TransactionHistoryHistory(availableCurrencies: []),
                 '/SwapScreen': (context) => const SwapScreen(),
                 '/SwapDetailScreen': (context) => const SwapDetailPage(),
+                '/SwapHistory': (context) => const SwapHistoryPage(),
                 '/WaletAccountCardDetailScreen': (context) =>
                     const WaletAccountCardDetailScreen(),
                 '/Cardselectdocumentscreen': (context) =>
