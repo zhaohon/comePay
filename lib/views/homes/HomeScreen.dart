@@ -11,6 +11,7 @@ import '../../viewmodels/notification_viewmodel.dart';
 import '../../viewmodels/home_screen_viewmodel.dart';
 import '../../viewmodels/transaction_record_viewmodel.dart';
 import '../../viewmodels/wallet_viewmodel.dart';
+import '../../utils/app_colors.dart';
 
 import 'ReceiveScreen.dart';
 
@@ -51,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
         final notificationCount = notificationViewModel.unreadNotificationCount;
 
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: AppColors.pageBackground,
           body: OrientationBuilder(
             builder: (context, orientation) {
               return LayoutBuilder(
@@ -68,71 +69,77 @@ class _HomeScreenState extends State<HomeScreen> {
                                   .welcomeToComeComePay,
                               style: TextStyle(
                                 color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: isSmallScreen ? 18 : 20,
+                                fontWeight: FontWeight.w600,
+                                fontSize: isSmallScreen ? 16 : 18,
                               ),
                             ),
-                            backgroundColor: Colors.white,
+                            backgroundColor: AppColors.pageBackground,
                             floating: true,
                             snap: true,
-                            pinned: true,
+                            pinned: false,
                             elevation: 0,
+                            centerTitle: false, // 左对齐
+                            titleSpacing: 0,
                             actions: [
-                              Container(
-                                width: isSmallScreen ? 35 : 40,
-                                height: isSmallScreen ? 35 : 40,
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFFA3A8AC),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Stack(
-                                  clipBehavior: Clip.none,
-                                  alignment: Alignment.center,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        Navigator.pushNamed(
-                                            context, '/NotificationScreen');
-                                      },
-                                      child: Icon(
-                                        Icons.notifications_none,
-                                        color: Colors.white,
-                                        size: isSmallScreen ? 20 : 24,
-                                      ),
+                              Padding(
+                                  padding: const EdgeInsets.only(right: 4),
+                                  child: Container(
+                                    width: isSmallScreen ? 38 : 42,
+                                    height: isSmallScreen ? 38 : 42,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade900,
+                                      shape: BoxShape.circle,
                                     ),
-                                    if (notificationCount > 0)
-                                      Positioned(
-                                        right: -4,
-                                        top: -4,
-                                        child: Container(
-                                          padding: const EdgeInsets.all(4),
-                                          decoration: const BoxDecoration(
-                                            color: Colors.red,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          constraints: BoxConstraints(
-                                            minWidth: isSmallScreen ? 14 : 16,
-                                            minHeight: isSmallScreen ? 14 : 16,
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              notificationCount > 99
-                                                  ? '99+'
-                                                  : '$notificationCount',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize:
-                                                    isSmallScreen ? 8 : 10,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                              textAlign: TextAlign.center,
-                                            ),
+                                    child: Stack(
+                                      clipBehavior: Clip.none,
+                                      alignment: Alignment.center,
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.pushNamed(
+                                                context, '/NotificationScreen');
+                                          },
+                                          child: Icon(
+                                            Icons.notifications_none,
+                                            color: Colors.white,
+                                            size: isSmallScreen ? 20 : 24,
                                           ),
                                         ),
-                                      ),
-                                  ],
-                                ),
-                              )
+                                        if (notificationCount > 0)
+                                          Positioned(
+                                            right: -4,
+                                            top: -4,
+                                            child: Container(
+                                              padding: const EdgeInsets.all(4),
+                                              decoration: const BoxDecoration(
+                                                color: Colors.red,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              constraints: BoxConstraints(
+                                                minWidth:
+                                                    isSmallScreen ? 14 : 16,
+                                                minHeight:
+                                                    isSmallScreen ? 14 : 16,
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  notificationCount > 99
+                                                      ? '99+'
+                                                      : '$notificationCount',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize:
+                                                        isSmallScreen ? 8 : 10,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ))
                             ],
                           ),
                           SliverToBoxAdapter(
@@ -142,92 +149,141 @@ class _HomeScreenState extends State<HomeScreen> {
                                   width: double.infinity,
                                   padding: EdgeInsets.all(screenWidth * 0.05),
                                   decoration: BoxDecoration(
-                                    color: const Color(
-                                        0xFF1A4D8F), // Slightly lighter #014799
-                                    borderRadius: BorderRadius.circular(16),
+                                    gradient: const LinearGradient(
+                                      colors: [
+                                        Color(0xFFA855F7),
+                                        Color(0xFFEC4899)
+                                      ],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                    borderRadius: BorderRadius.circular(20),
                                   ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                  child: Stack(
                                     children: [
-                                      Row(
+                                      // 主内容
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            _isVisible
-                                                ? walletViewModel
-                                                    .getFormattedBalance()
-                                                : "****",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: isSmallScreen ? 20 : 24,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                _isVisible
+                                                    ? walletViewModel
+                                                        .getFormattedBalance()
+                                                    : "****",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize:
+                                                      isSmallScreen ? 20 : 24,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                  width: screenWidth * 0.02),
+                                              DropdownButton<String>(
+                                                value: walletViewModel
+                                                    .selectedCurrency,
+                                                dropdownColor:
+                                                    const Color(0xFF1A4D8F),
+                                                underline: Container(),
+                                                iconEnabledColor: Colors.white,
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize:
+                                                      isSmallScreen ? 16 : 18,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                                items: walletViewModel
+                                                    .listAssets.keys
+                                                    .map<
+                                                            DropdownMenuItem<
+                                                                String>>(
+                                                        (String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (String? newValue) {
+                                                  if (newValue != null) {
+                                                    walletViewModel
+                                                        .selectCurrency(
+                                                            newValue);
+                                                  }
+                                                },
+                                              ),
+                                            ],
                                           ),
-                                          SizedBox(width: screenWidth * 0.02),
-                                          DropdownButton<String>(
-                                            value: walletViewModel
-                                                .selectedCurrency,
-                                            dropdownColor:
-                                                const Color(0xFF1A4D8F),
-                                            underline: Container(),
-                                            iconEnabledColor: Colors.white,
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: isSmallScreen ? 16 : 18,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                            items: walletViewModel
-                                                .listAssets.keys
-                                                .map<DropdownMenuItem<String>>(
-                                                    (String value) {
-                                              return DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Text(value),
-                                              );
-                                            }).toList(),
-                                            onChanged: (String? newValue) {
-                                              if (newValue != null) {
-                                                walletViewModel
-                                                    .selectCurrency(newValue);
-                                              }
-                                            },
+                                          SizedBox(height: screenWidth * 0.015),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                AppLocalizations.of(context)!
+                                                    .totalAssets,
+                                                style: TextStyle(
+                                                    color: Colors.white70,
+                                                    fontSize: isSmallScreen
+                                                        ? 14
+                                                        : 16),
+                                              ),
+                                              SizedBox(
+                                                  width: screenWidth * 0.02),
+                                              Text(
+                                                _isVisible
+                                                    ? walletViewModel
+                                                        .totalAssets
+                                                        .toStringAsFixed(2)
+                                                    : "****",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize:
+                                                      isSmallScreen ? 14 : 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              IconButton(
+                                                icon: Icon(Icons.visibility,
+                                                    color: Colors.white,
+                                                    size: isSmallScreen
+                                                        ? 20
+                                                        : 24),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _isVisible = !_isVisible;
+                                                  });
+                                                },
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
-                                      SizedBox(height: screenWidth * 0.015),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            AppLocalizations.of(context)!
-                                                .totalAssets,
-                                            style: TextStyle(
-                                                color: Colors.white70,
-                                                fontSize:
-                                                    isSmallScreen ? 14 : 16),
+                                      // 右上角P图标
+                                      Positioned(
+                                        top: 0,
+                                        right: 0,
+                                        child: Container(
+                                          width: 50,
+                                          height: 50,
+                                          decoration: BoxDecoration(
+                                            color:
+                                                Colors.white.withOpacity(0.2),
+                                            shape: BoxShape.circle,
                                           ),
-                                          SizedBox(width: screenWidth * 0.02),
-                                          Text(
-                                            _isVisible
-                                                ? walletViewModel.totalAssets
-                                                    .toStringAsFixed(2)
-                                                : "****",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: isSmallScreen ? 14 : 16,
-                                              fontWeight: FontWeight.bold,
+                                          child: const Center(
+                                            child: Text(
+                                              'P',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 24,
+                                                fontWeight: FontWeight.bold,
+                                                fontStyle: FontStyle.italic,
+                                              ),
                                             ),
                                           ),
-                                          IconButton(
-                                            icon: Icon(Icons.visibility,
-                                                color: Colors.white,
-                                                size: isSmallScreen ? 20 : 24),
-                                            onPressed: () {
-                                              setState(() {
-                                                _isVisible = !_isVisible;
-                                              });
-                                            },
-                                          ),
-                                        ],
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -392,26 +448,32 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       children: [
         InkWell(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(30),
           onTap: onTap,
           child: Container(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFFE7ECFE),
-              borderRadius: BorderRadius.circular(16),
+              color: const Color(0xFFF3E5F5),
+              shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 6,
-                  offset: Offset(0, 3),
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
                 )
               ],
             ),
-            child: Icon(icon, size: 28, color: Colors.black87),
+            child: Icon(icon, size: 26, color: const Color(0xFFA855F7)),
           ),
         ),
-        const SizedBox(height: 6),
-        Text(label, style: const TextStyle(fontSize: 14)),
+        const SizedBox(height: 8),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 13,
+            color: Colors.black87,
+          ),
+        ),
       ],
     );
   }

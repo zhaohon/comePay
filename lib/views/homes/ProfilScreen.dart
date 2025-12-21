@@ -15,6 +15,7 @@ import 'package:provider/provider.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
 import 'package:comecomepay/viewmodels/profile_screen_viewmodel.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:comecomepay/utils/app_colors.dart';
 
 import 'ProfilKycScreen.dart';
 
@@ -69,14 +70,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.pageBackground,
       body: SafeArea(
         child: ListView(
+          padding: const EdgeInsets.only(top: 16, bottom: 100),
           children: [
+            // 用户信息卡片
             Container(
-              padding: EdgeInsets.all(screenWidth * 0.04),
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   GestureDetector(
                     onTap: () {
@@ -87,45 +94,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       );
                     },
                     child: CircleAvatar(
-                      radius: screenWidth * 0.1,
+                      radius: 40,
                       backgroundImage: const AssetImage("assets/profil.png"),
                       backgroundColor: Colors.transparent,
                     ),
                   ),
-                  SizedBox(height: screenHeight * 0.02),
+                  const SizedBox(height: 16),
                   Text(
                     email ?? AppLocalizations.of(context)!.noEmail,
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.045,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.underline,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  SizedBox(height: screenHeight * 0.01),
+                  const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: 'ID: ',
-                              style: TextStyle(
-                                  fontSize: screenWidth * 0.04,
-                                  color: Colors.black),
-                            ),
-                            TextSpan(
-                              text:
-                                  userId ?? AppLocalizations.of(context)!.noId,
-                              style: TextStyle(
-                                  fontSize: screenWidth * 0.04,
-                                  color: Colors.blue),
-                            ),
-                          ],
+                      Text(
+                        'ID: ',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                      Text(
+                        userId ?? AppLocalizations.of(context)!.noId,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: AppColors.primary,
                         ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.copy),
+                        icon: Icon(Icons.copy,
+                            size: 18, color: Colors.grey.shade600),
                         onPressed: () {
                           Clipboard.setData(ClipboardData(text: userId ?? ''));
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -137,113 +139,172 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: screenHeight * 0.01),
+                  const SizedBox(height: 8),
                   Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: screenWidth * 0.02,
-                        vertical: screenHeight * 0.003),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.circular(12.0),
+                      color: const Color(0xFF4CAF50),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.check,
-                            color: Colors.white, size: screenWidth * 0.03),
-                        SizedBox(width: screenWidth * 0.01),
-                        Text(AppLocalizations.of(context)!.identityVerified,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: screenWidth * 0.03)),
+                        const Icon(Icons.check, color: Colors.white, size: 16),
+                        const SizedBox(width: 6),
+                        Text(
+                          AppLocalizations.of(context)!.identityVerified,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 ],
               ),
             ),
-            _buildProfileItem(
-              context,
-              icon: Icons.person_add,
-              title: AppLocalizations.of(context)!.inviteFriend,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => InviteFriendScreen()),
-                );
-              },
+
+            const SizedBox(height: 8),
+
+            // 账户设置分组
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                children: [
+                  _buildProfileItem(
+                    context,
+                    icon: Icons.person_add,
+                    title: AppLocalizations.of(context)!.inviteFriend,
+                    iconColor: const Color(0xFF2196F3),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => InviteFriendScreen()),
+                      );
+                    },
+                  ),
+                  _buildDivider(),
+                  _buildProfileItem(
+                    context,
+                    icon: Icons.camera_alt,
+                    title: AppLocalizations.of(context)!.kyc,
+                    iconColor: const Color(0xFF9C27B0),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Profilkycscreen()),
+                      );
+                    },
+                  ),
+                  _buildDivider(),
+                  _buildProfileItem(
+                    context,
+                    icon: Icons.language,
+                    title: AppLocalizations.of(context)!.language,
+                    iconColor: const Color(0xFFFF9800),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Profillanguagescreen()),
+                      );
+                    },
+                  ),
+                  _buildDivider(),
+                  _buildProfileItem(
+                    context,
+                    icon: Icons.card_giftcard,
+                    title: AppLocalizations.of(context)!.coupon,
+                    iconColor: const Color(0xFFE91E63),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Profilcouponscreen()),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
-            _buildProfileItem(
-              context,
-              icon: Icons.camera_alt,
-              title: AppLocalizations.of(context)!.kyc,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Profilkycscreen()),
-                );
-              },
+
+            const SizedBox(height: 8),
+
+            // 帮助和支持分组
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                children: [
+                  _buildProfileItem(
+                    context,
+                    icon: Icons.headset_mic,
+                    title: AppLocalizations.of(context)!.customerServiceCenter,
+                    iconColor: const Color(0xFF00BCD4),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MessageServiceCenterScreen()),
+                      );
+                    },
+                  ),
+                  _buildDivider(),
+                  _buildProfileItem(
+                    context,
+                    icon: Icons.info,
+                    title: AppLocalizations.of(context)!.aboutUs,
+                    iconColor: const Color(0xFF607D8B),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AboutUsScreen()),
+                      );
+                    },
+                  ),
+                  _buildDivider(),
+                  _buildProfileItem(
+                    context,
+                    icon: Icons.security,
+                    title: AppLocalizations.of(context)!.security,
+                    iconColor: const Color(0xFFF44336),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Securityscreen()),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
-            _buildProfileItem(
-              context,
-              icon: Icons.language,
-              title: AppLocalizations.of(context)!.language,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Profillanguagescreen()),
-                );
-              },
-            ),
-            _buildProfileItem(
-              context,
-              icon: Icons.card_giftcard,
-              title: AppLocalizations.of(context)!.coupon,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Profilcouponscreen()),
-                );
-              },
-            ),
-            _buildProfileItem(
-              context,
-              icon: Icons.headset_mic,
-              title: AppLocalizations.of(context)!.customerServiceCenter,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MessageServiceCenterScreen()),
-                );
-              },
-            ),
-            _buildProfileItem(
-              context,
-              icon: Icons.info,
-              title: AppLocalizations.of(context)!.aboutUs,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AboutUsScreen()),
-                );
-              },
-            ),
-            _buildProfileItem(
-              context,
-              icon: Icons.security,
-              title: AppLocalizations.of(context)!.security,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Securityscreen()),
-                );
-              },
-            ),
-            SizedBox(height: 20),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 68),
+      child: Divider(
+        height: 1,
+        thickness: 0.5,
+        color: Colors.grey.shade200,
       ),
     );
   }
@@ -252,39 +313,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
     BuildContext context, {
     required IconData icon,
     required String title,
+    required Color iconColor,
     required VoidCallback onTap,
   }) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 3.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: ListTile(
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-        leading: Container(
-          padding: const EdgeInsets.all(8.0),
-          decoration: BoxDecoration(
-            color: const Color(0xFFE7ECFE),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, color: Colors.blue, size: 22),
-        ),
-        title: Text(
-          title,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-        ),
-        trailing:
-            const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
         onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: iconColor.withOpacity(0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: iconColor, size: 20),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+              Icon(Icons.chevron_right, size: 20, color: Colors.grey.shade400),
+            ],
+          ),
+        ),
       ),
     );
   }

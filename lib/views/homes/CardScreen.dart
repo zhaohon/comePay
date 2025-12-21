@@ -13,6 +13,7 @@ import 'package:comecomepay/viewmodels/profile_screen_viewmodel.dart';
 import 'package:comecomepay/services/kyc_service.dart';
 import 'package:comecomepay/models/kyc_model.dart';
 import 'package:comecomepay/viewmodels/card_trade_viewmodel.dart';
+import 'package:comecomepay/utils/app_colors.dart';
 
 class CardScreen extends StatefulWidget {
   const CardScreen({super.key});
@@ -217,7 +218,7 @@ class _CardScreenState extends State<CardScreen> {
     // Jika masih loading awal, tampilkan loading screen
     if (_isInitialLoading) {
       return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.pageBackground,
         body: Center(
           child: CircularProgressIndicator(),
         ),
@@ -232,7 +233,7 @@ class _CardScreenState extends State<CardScreen> {
       return StatefulBuilder(
         builder: (context, setState) {
           return Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: AppColors.pageBackground,
             body: SingleChildScrollView(
               controller: _scrollController,
               padding: const EdgeInsets.all(16.0),
@@ -595,7 +596,7 @@ class _CardScreenState extends State<CardScreen> {
         final textScale = MediaQuery.of(context).textScaleFactor;
 
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: AppColors.pageBackground,
           body: SafeArea(
             child: LayoutBuilder(
               builder: (context, constraints) {
@@ -690,12 +691,7 @@ class _CardScreenState extends State<CardScreen> {
                             ),
                             child: Ink(
                               decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    Color(0xFF2196F3),
-                                    Color(0xFF0D47A1)
-                                  ],
-                                ),
+                                gradient: AppColors.primaryGradient,
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Container(
@@ -731,7 +727,7 @@ class _CardScreenState extends State<CardScreen> {
         vertical: isTablet ? 10 : 6,
       ),
       decoration: BoxDecoration(
-        color: Colors.blue.shade600,
+        color: AppColors.primary,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
