@@ -8,7 +8,7 @@ class WalletService extends BaseService {
   Future<WalletResponse> getWalletById(int idUser) async {
     try {
       final response = await dio.get(
-        'http://31.97.222.142:2050/api/wallet',
+        'http://31.97.222.142:8010/api/v1/wallet/',
         options: Options(
           headers: {
             'Content-Type': 'application/json',

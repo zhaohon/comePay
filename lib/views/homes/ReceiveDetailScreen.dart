@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:comecomepay/models/wallet_model.dart';
-import 'package:comecomepay/viewmodels/wallet_viewmodel.dart';
 
 class ReceiveDetailScreen extends StatefulWidget {
   const ReceiveDetailScreen({super.key});
@@ -35,74 +32,18 @@ class _ReceiveDetailScreenState extends State<ReceiveDetailScreen> {
     debugPrint('token full keys: ${token.keys.toList()}');
 
     // Access WalletViewModel to get wallet data
-    final walletViewModel = Provider.of<WalletViewModel>(context, listen: false);
-    final wallets = walletViewModel.walletResponse?.data.wallets ?? [];
-    debugPrint('total wallets count: ${wallets.length}');
-    
-    for (final w in wallets) {
-      debugPrint(
-        'wallet chain=${w.chain}, '
-        'firstAddress=${w.firstAddress}, '
-        'tokenAddresses=${w.tokenAddresses}',
-      );
-    }
+    // 注意：新的API结构不再返回钱包地址，只返回余额信息
+    // 这里暂时使用占位符地址
 
-    // Find the wallet matching the token's chain (BTC/ETH/BNB/MATIC/BASE/TRX/SOL)
-    final tokenChain = token['chain'] as String? ?? '';
-    debugPrint('=== Looking for wallet with chain: "$tokenChain" ===');
-    
-    final matchingWallet = wallets.firstWhere(
-      (wallet) {
-        final matches = wallet.chain == tokenChain;
-        debugPrint('  comparing wallet.chain="${wallet.chain}" == tokenChain="$tokenChain" => $matches');
-        return matches;
-      },
-      orElse: () {
-        debugPrint('  ❌ NO MATCHING WALLET FOUND for chain="$tokenChain"');
-        return Wallet(
-          id: 0,
-          idWallet: '',
-          idUser: 0,
-          tenantId: '',
-          tenantExternalId: '',
-          chain: '',
-          firstAddress: '',
-          tokenAddresses: {},
-          createdAt: '',
-          updatedAt: '',
-        );
-      },
-    );
+    debugPrint('=== ReceiveDetailScreen didChangeDependencies ===');
+    debugPrint('token: $token');
+    debugPrint('network: $network');
 
-    debugPrint('=== Matching wallet result ===');
-    debugPrint('matchingWallet.chain: "${matchingWallet.chain}"');
-    debugPrint('matchingWallet.firstAddress: "${matchingWallet.firstAddress}"');
-    debugPrint('matchingWallet.tokenAddresses: ${matchingWallet.tokenAddresses}');
+    // TODO: 需要从其他地方获取钱包地址，新API不提供此信息
+    // 临时使用占位符
+    walletAddress = 'Wallet address not available in new API';
 
-    // Set walletAddress:
-    // - 对于 BTC/ETH/HKD 等主币，直接用 firstAddress
-    // - 对于 USDT/USDC 等代币，从 tokenAddresses['USDT'/'USDC'] 里取，取不到就回退 firstAddress
-    if (matchingWallet.chain.isNotEmpty) {
-      final String? tokenKey = token['tokenAddressKey'] as String?;
-      debugPrint('=== Getting address ===');
-      debugPrint('tokenAddressKey: $tokenKey');
-      
-      if (tokenKey != null && tokenKey.isNotEmpty) {
-        final tokenAddr = matchingWallet.tokenAddresses[tokenKey];
-        debugPrint('tokenAddresses[$tokenKey] = $tokenAddr');
-        walletAddress = tokenAddr ?? matchingWallet.firstAddress;
-        debugPrint('final walletAddress (from tokenAddresses): "$walletAddress"');
-      } else {
-        walletAddress = matchingWallet.firstAddress;
-        debugPrint('final walletAddress (from firstAddress): "$walletAddress"');
-      }
-    } else {
-      // Fallback if no matching wallet found
-      walletAddress = 'No wallet address available';
-      debugPrint('❌ walletAddress set to: "$walletAddress" (no matching wallet)');
-    }
-    
-    debugPrint('=== Final walletAddress ===');
+    debugPrint('=== Final walletAddress (placeholder) ===');
     debugPrint('walletAddress: "$walletAddress"');
     debugPrint('==========================================');
   }

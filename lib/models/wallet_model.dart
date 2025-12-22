@@ -1,158 +1,104 @@
+// 新的钱包API响应模型
 class WalletResponse {
-  final String apiName;
-  final int code;
-  final WalletData data;
-  final String date;
-  final String message;
-  final String version;
+  final String status;
+  final WalletData wallet;
 
   WalletResponse({
-    required this.apiName,
-    required this.code,
-    required this.data,
-    required this.date,
-    required this.message,
-    required this.version,
+    required this.status,
+    required this.wallet,
   });
 
   factory WalletResponse.fromJson(Map<String, dynamic> json) {
     return WalletResponse(
-      apiName: json['api-name'],
-      code: json['code'],
-      data: WalletData.fromJson(json['data']),
-      date: json['date'],
-      message: json['message'],
-      version: json['version'],
+      status: json['status'] ?? '',
+      wallet: WalletData.fromJson(json['wallet']),
     );
   }
 }
 
 class WalletData {
-  final List<Wallet> wallets;
-  final Map<String, dynamic> listAssets;
-  final double totalAssets;
-  final List<AvailableCurrency> availableCurrencies;
-  final String defaultCurrency;
+  final int id;
+  final int userId;
+  final String currency;
+  final String status;
+  final double dailyLimit;
+  final double monthlyLimit;
+  final Map<String, double> balancesByCurrency; // 修改为Map类型
+  final List<WalletBalance> balances;
+  final String createdAt;
+  final String updatedAt;
 
   WalletData({
-    required this.wallets,
-    required this.listAssets,
-    required this.totalAssets,
-    required this.availableCurrencies,
-    required this.defaultCurrency,
+    required this.id,
+    required this.userId,
+    required this.currency,
+    required this.status,
+    required this.dailyLimit,
+    required this.monthlyLimit,
+    required this.balancesByCurrency,
+    required this.balances,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
-  factory WalletData.fromJson(dynamic json) {
-    if (json is List) {
-      // Handle case where data is a list of wallets
-      return WalletData(
-        wallets: json.map((wallet) => Wallet.fromJson(wallet)).toList(),
-        listAssets: {},
-        totalAssets: 0.0,
-        availableCurrencies: [],
-        defaultCurrency: 'USD',
-      );
-    } else if (json is Map<String, dynamic>) {
-      // Handle case where data is a map
-      return WalletData(
-        wallets: (json['wallets'] as List?)
-                ?.map((wallet) => Wallet.fromJson(wallet))
-                .toList() ??
-            [],
-        listAssets: Map<String, dynamic>.from(json['list_assets'] ?? {}),
-        totalAssets: (json['total_assets'] ?? 0).toDouble(),
-        availableCurrencies: (json['available_currencies'] as List?)
-                ?.map((currency) => AvailableCurrency.fromJson(currency))
-                .toList() ??
-            [],
-        defaultCurrency: json['default_currency'] ?? 'USD',
-      );
-    } else {
-      throw Exception('Invalid data format for WalletData');
+  factory WalletData.fromJson(Map<String, dynamic> json) {
+    // 解析 balances_by_currency Map
+    Map<String, double> balancesByCurrencyMap = {};
+    if (json['balances_by_currency'] != null &&
+        json['balances_by_currency'] is Map) {
+      final rawMap = json['balances_by_currency'] as Map<String, dynamic>;
+      rawMap.forEach((key, value) {
+        balancesByCurrencyMap[key] = (value is num) ? value.toDouble() : 0.0;
+      });
     }
-  }
-}
 
-class Wallet {
-  final int id;
-  final String idWallet;
-  final int idUser;
-  final String tenantId;
-  final String tenantExternalId;
-  final String chain;
-  final String firstAddress;
-  final Map<String, String?> tokenAddresses;
-  final Balance? balance;
-  final String createdAt;
-  final String updatedAt;
-
-  Wallet({
-    required this.id,
-    required this.idWallet,
-    required this.idUser,
-    required this.tenantId,
-    required this.tenantExternalId,
-    required this.chain,
-    required this.firstAddress,
-    required this.tokenAddresses,
-    this.balance,
-    required this.createdAt,
-    required this.updatedAt,
-  });
-
-  factory Wallet.fromJson(Map<String, dynamic> json) {
-    return Wallet(
-      id: json['id'],
-      idWallet: json['id_wallet'],
-      idUser: json['id_user'],
-      tenantId: json['tenant_id'],
-      tenantExternalId: json['tenant_external_id'],
-      chain: json['chain'],
-      firstAddress: json['first_address'],
-      tokenAddresses: Map<String, String?>.from(json['token_addresses'] ?? {}),
-      balance:
-          json['balance'] != null ? Balance.fromJson(json['balance']) : null,
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
+    return WalletData(
+      id: json['id'] ?? 0,
+      userId: json['user_id'] ?? 0,
+      currency: json['currency'] ?? 'USD',
+      status: json['status'] ?? '',
+      dailyLimit: (json['daily_limit'] ?? 0).toDouble(),
+      monthlyLimit: (json['monthly_limit'] ?? 0).toDouble(),
+      balancesByCurrency: balancesByCurrencyMap,
+      balances: (json['balances'] as List?)
+              ?.map((balance) => WalletBalance.fromJson(balance))
+              .toList() ??
+          [],
+      createdAt: json['created_at'] ?? '',
+      updatedAt: json['updated_at'] ?? '',
     );
   }
 }
 
-class Balance {
+class WalletBalance {
   final int id;
-  final String chain;
-  final String address;
-  final String native;
-  final Map<String, dynamic> token;
-  final String tenantId;
+  final String currency;
+  final double balance;
   final String createdAt;
   final String updatedAt;
 
-  Balance({
+  WalletBalance({
     required this.id,
-    required this.chain,
-    required this.address,
-    required this.native,
-    required this.token,
-    required this.tenantId,
+    required this.currency,
+    required this.balance,
     required this.createdAt,
     required this.updatedAt,
   });
 
-  factory Balance.fromJson(Map<String, dynamic> json) {
-    return Balance(
-      id: json['id'],
-      chain: json['chain'],
-      address: json['address'],
-      native: json['native'],
-      token: json['token'] ?? {},
-      tenantId: json['tenant_id'],
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
+  factory WalletBalance.fromJson(Map<String, dynamic> json) {
+    return WalletBalance(
+      id: json['id'] ?? 0,
+      currency: json['currency'] ?? '',
+      balance: (json['balance'] is num)
+          ? (json['balance'] as num).toDouble()
+          : double.tryParse(json['balance'].toString()) ?? 0.0,
+      createdAt: json['created_at'] ?? '',
+      updatedAt: json['updated_at'] ?? '',
     );
   }
 }
 
+// 保留旧的模型以兼容其他地方可能的使用
 class AvailableCurrency {
   final int id;
   final String chain;

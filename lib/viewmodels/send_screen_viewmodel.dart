@@ -60,46 +60,24 @@ class SendScreenViewModel extends BaseViewModel {
     _tokens.clear();
     if (_walletResponse == null) return;
 
-    final wallets = _walletResponse!.data.wallets;
-    final availableCurrencies = _walletResponse!.data.availableCurrencies;
+    final balances = _walletResponse!.wallet.balances;
 
-    for (var wallet in wallets) {
-      // Add native token for the chain
-      final nativeBalance =
-          _getNativeBalance(wallet.chain, availableCurrencies);
+    for (var balance in balances) {
       _tokens.add({
-        'name': _getNameForChain(wallet.chain),
-        'symbol': wallet.chain,
-        'chain': '',
-        'icon': _icons[wallet.chain] ?? Icons.help,
-        'color': _colors[wallet.chain] ?? Colors.black,
-        'networks': [wallet.chain],
-        'balance': nativeBalance,
+        'name': _getNameForCurrency(balance.currency),
+        'symbol': balance.currency,
+        'chain': balance.currency,
+        'icon': _icons[balance.currency] ?? Icons.attach_money,
+        'color': _colors[balance.currency] ?? Colors.green,
+        'networks': [balance.currency],
+        'balance': balance.balance.toString(),
         'usdBalance': '****', // Placeholder, as no USD conversion
-      });
-
-      // Add tokens for each non-null token_address
-      wallet.tokenAddresses.forEach((symbol, address) {
-        if (address != null) {
-          final tokenBalance =
-              _getTokenBalance(wallet.chain, symbol, availableCurrencies);
-          _tokens.add({
-            'name': symbol,
-            'symbol': symbol,
-            'chain': wallet.chain,
-            'icon': _icons[symbol] ?? Icons.attach_money,
-            'color': _colors[symbol] ?? Colors.green,
-            'networks': ['${wallet.chain} ${symbol}'], // e.g., "ETH USDT"
-            'balance': tokenBalance,
-            'usdBalance': '****',
-          });
-        }
       });
     }
   }
 
-  String _getNameForChain(String chain) {
-    switch (chain) {
+  String _getNameForCurrency(String currency) {
+    switch (currency) {
       case 'BTC':
         return 'Bitcoin';
       case 'ETH':
@@ -114,44 +92,14 @@ class SendScreenViewModel extends BaseViewModel {
         return 'Tron';
       case 'SOL':
         return 'Solana';
+      case 'USD':
+        return 'US Dollar';
+      case 'USDT':
+        return 'Tether';
+      case 'USDC':
+        return 'USD Coin';
       default:
-        return chain;
+        return currency;
     }
-  }
-
-  String _getNativeBalance(
-      String chain, List<AvailableCurrency> availableCurrencies) {
-    final currency = availableCurrencies.firstWhere(
-      (c) => c.chain == chain,
-      orElse: () => AvailableCurrency(
-        id: 0,
-        chain: '',
-        address: '',
-        native: '0',
-        token: {},
-        tenantId: '',
-        createdAt: '',
-        updatedAt: '',
-      ),
-    );
-    return currency.native;
-  }
-
-  String _getTokenBalance(String chain, String symbol,
-      List<AvailableCurrency> availableCurrencies) {
-    final currency = availableCurrencies.firstWhere(
-      (c) => c.chain == chain,
-      orElse: () => AvailableCurrency(
-        id: 0,
-        chain: '',
-        address: '',
-        native: '0',
-        token: {},
-        tenantId: '',
-        createdAt: '',
-        updatedAt: '',
-      ),
-    );
-    return (currency.token[symbol] ?? '0').toString();
   }
 }

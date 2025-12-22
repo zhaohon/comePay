@@ -12,8 +12,13 @@ class WalletViewModel extends BaseViewModel {
   String _selectedCurrency = 'USD';
   String get selectedCurrency => _selectedCurrency;
 
-  Map<String, dynamic> _listAssets = {};
-  Map<String, dynamic> get listAssets => _listAssets;
+  Map<String, double> _balancesByCurrency = {};
+  Map<String, double> get balancesByCurrency => _balancesByCurrency;
+
+  // 保持兼容性
+  Map<String, dynamic> get listAssets {
+    return _balancesByCurrency.map((key, value) => MapEntry(key, value));
+  }
 
   double _totalAssets = 0.0;
   double get totalAssets => _totalAssets;
@@ -21,42 +26,63 @@ class WalletViewModel extends BaseViewModel {
   double _displayValue = 0.0;
   double get displayValue => _displayValue;
 
-  List<AvailableCurrency> get availableCurrenciesList =>
-      _walletResponse?.data.availableCurrencies ?? [];
+  // 返回空列表以保持兼容性
+  List<AvailableCurrency> get availableCurrenciesList => [];
+
+  List<WalletBalance> get balances => _walletResponse?.wallet.balances ?? [];
 
   Future<void> fetchWalletData() async {
     setBusy(true);
     try {
       final user = HiveStorageService.getUser();
       if (user == null) {
+        print('❌ WalletViewModel: User not found');
         throw Exception('User not found');
       }
 
+      print('🔄 WalletViewModel: Fetching wallet data for user ${user.id}');
       _walletResponse = await _walletService.getWalletById(user.id);
-      _listAssets = _walletResponse!.data.listAssets;
-      _totalAssets = _walletResponse!.data.totalAssets;
-      _selectedCurrency = _walletResponse!.data.defaultCurrency;
-      _displayValue = _totalAssets; // Initially show total_assets
 
+      print('✅ WalletViewModel: Received wallet response');
+      print('   Balances count: ${_walletResponse!.wallet.balances.length}');
+
+      // 将balances数组转换为Map
+      _balancesByCurrency = {};
+      for (var balance in _walletResponse!.wallet.balances) {
+        _balancesByCurrency[balance.currency] = balance.balance;
+        print('   ${balance.currency}: ${balance.balance}');
+      }
+
+      // 计算总资产
+      _totalAssets =
+          _balancesByCurrency.values.fold(0.0, (sum, value) => sum + value);
+      print('   Total assets: $_totalAssets');
+
+      // 默认选择第一个货币
+      if (_walletResponse!.wallet.balances.isNotEmpty) {
+        _selectedCurrency = _walletResponse!.wallet.balances[0].currency;
+        _displayValue = _walletResponse!.wallet.balances[0].balance;
+        print('   Selected currency: $_selectedCurrency = $_displayValue');
+      } else {
+        _selectedCurrency = 'USD';
+        _displayValue = 0.0;
+        print('   No balances found, using defaults');
+      }
+
+      setBusy(false);
       notifyListeners();
+    } catch (e, stackTrace) {
+      print('❌ WalletViewModel Error: $e');
+      print('Stack trace: $stackTrace');
       setBusy(false);
-    } catch (e) {
-      setBusy(false);
-      throw e;
+      notifyListeners();
+      // 不重新抛出异常，让UI继续显示
     }
   }
 
   void selectCurrency(String currency) {
     _selectedCurrency = currency;
-    // Update display value to the selected currency's value from list_assets
-    final value = _listAssets[currency];
-    if (value is num) {
-      _displayValue = value.toDouble();
-    } else if (value is String) {
-      _displayValue = double.tryParse(value) ?? 0.0;
-    } else {
-      _displayValue = 0.0;
-    }
+    _displayValue = _balancesByCurrency[currency] ?? 0.0;
     notifyListeners();
   }
 
