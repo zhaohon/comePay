@@ -2,24 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/viewmodels/messageservicecenter_viewmodel.dart';
-
+import 'package:comecomepay/utils/app_colors.dart';
 import 'package:intl/intl.dart';
 
 class MessageServiceCenterScreen extends StatefulWidget {
   const MessageServiceCenterScreen({super.key});
 
   @override
-  State<MessageServiceCenterScreen> createState() => _MessageServiceCenterScreenState();
+  State<MessageServiceCenterScreen> createState() =>
+      _MessageServiceCenterScreenState();
 }
 
-class _MessageServiceCenterScreenState extends State<MessageServiceCenterScreen> {
+class _MessageServiceCenterScreenState
+    extends State<MessageServiceCenterScreen> {
   final TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final viewModel = Provider.of<MessageServiceCenterViewModel>(context, listen: false);
+      final viewModel =
+          Provider.of<MessageServiceCenterViewModel>(context, listen: false);
       viewModel.getChatHistory();
     });
   }
@@ -33,9 +36,9 @@ class _MessageServiceCenterScreenState extends State<MessageServiceCenterScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.pageBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.pageBackground,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
@@ -70,13 +73,15 @@ class _MessageServiceCenterScreenState extends State<MessageServiceCenterScreen>
                   },
                   child: ListView.builder(
                     padding: const EdgeInsets.all(16),
-                    itemCount: viewModel.chatHistory.length + (viewModel.isLoadingHistoryMore ? 1 : 0),
+                    itemCount: viewModel.chatHistory.length +
+                        (viewModel.isLoadingHistoryMore ? 1 : 0),
                     itemBuilder: (context, index) {
                       if (index == 0 && viewModel.isLoadingHistoryMore) {
                         return const Center(child: CircularProgressIndicator());
                       }
 
-                      final actualIndex = viewModel.isLoadingHistoryMore ? index - 1 : index;
+                      final actualIndex =
+                          viewModel.isLoadingHistoryMore ? index - 1 : index;
                       if (actualIndex < 0) return const SizedBox.shrink();
 
                       final msg = viewModel.chatHistory[actualIndex];
@@ -91,24 +96,32 @@ class _MessageServiceCenterScreenState extends State<MessageServiceCenterScreen>
                       }
 
                       // Load more when reaching near the top (only if not already loading)
-                      if (actualIndex == 0 && !viewModel.isLoadingHistoryMore && viewModel.historyHasMorePages) {
+                      if (actualIndex == 0 &&
+                          !viewModel.isLoadingHistoryMore &&
+                          viewModel.historyHasMorePages) {
                         viewModel.loadMoreChatHistory();
                       }
 
                       return Align(
-                        alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+                        alignment: isUser
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.easeInOut,
                           transform: Matrix4.translationValues(0, 0, 0),
                           child: Container(
                             margin: const EdgeInsets.symmetric(vertical: 4),
-                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 14),
                             constraints: BoxConstraints(
-                              maxWidth: MediaQuery.of(context).size.width * 0.75,
+                              maxWidth:
+                                  MediaQuery.of(context).size.width * 0.75,
                             ),
                             decoration: BoxDecoration(
-                              color: isUser ? Colors.blue : Colors.grey[200],
+                              gradient:
+                                  isUser ? AppColors.primaryGradient : null,
+                              color: isUser ? null : Colors.grey[200],
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Column(
@@ -128,7 +141,9 @@ class _MessageServiceCenterScreenState extends State<MessageServiceCenterScreen>
                                       timeString,
                                       style: TextStyle(
                                         fontSize: 10,
-                                        color: isUser ? Colors.white70 : Colors.black54,
+                                        color: isUser
+                                            ? Colors.white70
+                                            : Colors.black54,
                                       ),
                                     ),
                                     if (!msg.isRead && !isUser) ...[
@@ -156,7 +171,8 @@ class _MessageServiceCenterScreenState extends State<MessageServiceCenterScreen>
               SafeArea(
                 child: Container(
                   margin: const EdgeInsets.all(12),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
                     color: Colors.grey[100],
                     borderRadius: BorderRadius.circular(12),
@@ -174,9 +190,12 @@ class _MessageServiceCenterScreenState extends State<MessageServiceCenterScreen>
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.send, color: Colors.blue),
+                        icon: Icon(Icons.send, color: AppColors.primary),
                         onPressed: () async {
-                          final viewModel = Provider.of<MessageServiceCenterViewModel>(context, listen: false);
+                          final viewModel =
+                              Provider.of<MessageServiceCenterViewModel>(
+                                  context,
+                                  listen: false);
                           final message = _controller.text.trim();
                           if (message.isNotEmpty) {
                             try {
@@ -185,7 +204,9 @@ class _MessageServiceCenterScreenState extends State<MessageServiceCenterScreen>
                             } catch (e) {
                               // Show error message to user
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Failed to send message: $e')),
+                                SnackBar(
+                                    content:
+                                        Text('Failed to send message: $e')),
                               );
                             }
                           }

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:comecomepay/viewmodels/bind_phone_viewmodel.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:comecomepay/utils/app_colors.dart';
 
 class BindPhoneScreen extends StatefulWidget {
   const BindPhoneScreen({super.key});
@@ -43,10 +44,10 @@ class _BindPhoneScreenState extends State<BindPhoneScreen> {
           final height = size.height;
 
           return Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: AppColors.pageBackground,
             appBar: AppBar(
               elevation: 0,
-              backgroundColor: Colors.white,
+              backgroundColor: AppColors.pageBackground,
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.black),
                 onPressed: () => Navigator.pop(context),
@@ -249,20 +250,46 @@ class _BindPhoneScreenState extends State<BindPhoneScreen> {
                                 }
                               },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          padding:
-                              EdgeInsets.symmetric(vertical: height * 0.02),
+                          padding: EdgeInsets.zero,
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30)),
+                              borderRadius: BorderRadius.circular(12)),
+                          elevation: 0,
+                        ).copyWith(
+                          backgroundColor: MaterialStateProperty.resolveWith(
+                            (states) => null,
+                          ),
                         ),
-                        child: Text(
-                          viewModel.isLoading
-                              ? AppLocalizations.of(context)!.confirming
-                              : AppLocalizations.of(context)!.confirm,
-                          style: TextStyle(
-                            fontSize: width * 0.05,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                        child: Ink(
+                          decoration: BoxDecoration(
+                            gradient: viewModel.isLoading
+                                ? null
+                                : AppColors.primaryGradient,
+                            color: viewModel.isLoading
+                                ? Colors.grey.shade300
+                                : null,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Container(
+                            padding:
+                                EdgeInsets.symmetric(vertical: height * 0.02),
+                            alignment: Alignment.center,
+                            child: viewModel.isLoading
+                                ? const SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : Text(
+                                    AppLocalizations.of(context)!.confirm,
+                                    style: TextStyle(
+                                      fontSize: width * 0.05,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                           ),
                         ),
                       ),

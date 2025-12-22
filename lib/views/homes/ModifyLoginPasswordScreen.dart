@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:comecomepay/viewmodels/modify_password_viewmodel.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:comecomepay/utils/app_colors.dart';
 
 class ModifyLoginPasswordScreen extends StatelessWidget {
   const ModifyLoginPasswordScreen({super.key});
@@ -34,32 +35,19 @@ class ModifyLoginPasswordScreen extends StatelessWidget {
                       fontSize: 14, fontWeight: FontWeight.w500),
                 ),
                 const SizedBox(height: 8),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.15),
-                        blurRadius: 6,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: TextField(
-                    controller: controller,
-                    obscureText: obscure,
-                    decoration: InputDecoration(
-                      hintText: hint,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 14),
+                TextField(
+                  controller: controller,
+                  obscureText: obscure,
+                  decoration: InputDecoration(
+                    hintText: hint,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
                     ),
+                    filled: true,
+                    fillColor: Colors.white,
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 14),
                   ),
                 ),
               ],
@@ -67,10 +55,10 @@ class ModifyLoginPasswordScreen extends StatelessWidget {
           }
 
           return Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: AppColors.pageBackground,
             appBar: AppBar(
               title: Text(AppLocalizations.of(context)!.modifyLoginPassword),
-              backgroundColor: Colors.white,
+              backgroundColor: AppColors.pageBackground,
               elevation: 0,
               foregroundColor: Colors.black,
             ),
@@ -126,10 +114,10 @@ class ModifyLoginPasswordScreen extends StatelessWidget {
             // Confirm button di paling bawah
             bottomNavigationBar: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: viewModel.isLoading
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: viewModel.isLoading
                       ? null
                       : () async {
                           final result = await viewModel.changePassword(
@@ -151,27 +139,35 @@ class ModifyLoginPasswordScreen extends StatelessWidget {
                             );
                           }
                         },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    backgroundColor: Colors.blue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    height: 52,
+                    decoration: BoxDecoration(
+                      gradient: viewModel.isLoading
+                          ? null
+                          : AppColors.primaryGradient,
+                      color: viewModel.isLoading ? Colors.grey.shade300 : null,
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                  ),
-                  child: viewModel.isLoading
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.white),
+                    alignment: Alignment.center,
+                    child: viewModel.isLoading
+                        ? const SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : Text(
+                            AppLocalizations.of(context)!.confirm,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                        )
-                      : Text(
-                          AppLocalizations.of(context)!.confirm,
-                          style: TextStyle(fontSize: 16, color: Colors.white),
-                        ),
+                  ),
                 ),
               ),
             ),

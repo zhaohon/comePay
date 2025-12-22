@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'dart:developer' as developer;
+import 'dart:convert';
 
 enum LogLevel {
   debug,
@@ -20,17 +22,31 @@ class Logger {
 
     String logMessage = '[$timestamp] $levelStr $prefix $message';
 
-    if (data != null && kDebugMode) {
-      logMessage += '\nData: ${data.toString()}';
-    }
-
-    // Print to console
+    // 使用 developer.log() 输出完整数据，不会被截断
     if (kDebugMode) {
-      debugPrint(logMessage);
-    }
+      if (data != null) {
+        // 尝试格式化 JSON 以便更易读
+        String dataStr;
+        try {
+          if (data is Map || data is List) {
+            dataStr = const JsonEncoder.withIndent('  ').convert(data);
+          } else {
+            dataStr = data.toString();
+          }
+        } catch (e) {
+          dataStr = data.toString();
+        }
 
-    // In production, you might want to send logs to a service
-    // For now, we'll just use debugPrint for development
+        // 使用 developer.log 可以输出超长文本到 DevTools
+        developer.log(
+          logMessage,
+          name: '$levelStr $prefix',
+          error: dataStr,
+        );
+      } else {
+        developer.log(logMessage, name: '$levelStr $prefix');
+      }
+    }
   }
 
   static void apiInfo(String message, {dynamic data}) {

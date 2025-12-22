@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer' as developer;
 import 'package:dio/dio.dart';
 import 'package:comecomepay/utils/constants.dart';
 import 'package:comecomepay/services/api_logger_service.dart';
@@ -65,6 +66,15 @@ abstract class BaseService {
           options.headers['Authorization'] = 'Bearer $token';
         }
 
+        // 添加 DevTools Network 监控支持
+        developer.Timeline.startSync(
+          'HTTP ${options.method}',
+          arguments: {
+            'method': options.method,
+            'url': options.uri.toString(),
+          },
+        );
+
         _apiLogger.logRequest(options);
         handler.next(options);
       },
@@ -76,6 +86,18 @@ abstract class BaseService {
                 .difference(DateTime.fromMillisecondsSinceEpoch(startTime))
             : Duration.zero;
         _apiLogger.logResponse(response, duration);
+
+        // 结束 DevTools Timeline 追踪
+        developer.Timeline.finishSync();
+
+        // 发送网络事件到 DevTools
+        developer.postEvent('HTTP Response', {
+          'method': response.requestOptions.method,
+          'url': response.requestOptions.uri.toString(),
+          'statusCode': response.statusCode.toString(),
+          'duration': '${duration.inMilliseconds}ms',
+        });
+
         handler.next(response);
       },
       onError: (error, handler) {
@@ -86,6 +108,17 @@ abstract class BaseService {
                 .difference(DateTime.fromMillisecondsSinceEpoch(startTime))
             : Duration.zero;
         _apiLogger.logError(error, error.stackTrace);
+
+        // 结束 DevTools Timeline 追踪
+        developer.Timeline.finishSync();
+
+        // 发送错误事件到 DevTools
+        developer.postEvent('HTTP Error', {
+          'method': error.requestOptions.method,
+          'url': error.requestOptions.uri.toString(),
+          'error': error.message ?? 'Unknown error',
+        });
+
         handler.next(error);
       },
     ));

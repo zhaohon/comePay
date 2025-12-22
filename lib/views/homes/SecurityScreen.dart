@@ -76,8 +76,7 @@ class _SecurityscreenState extends State<Securityscreen> {
                           icon: Icons.email,
                           iconColor: const Color(0xFF2196F3),
                           title: localizations.email,
-                          value: _profileData?.user.email ??
-                              "kas.........@gmail.com",
+                          value: _maskEmail(_profileData?.user.email ?? ""),
                           onTap: () {
                             Navigator.push(
                               context,
@@ -200,6 +199,23 @@ class _SecurityscreenState extends State<Securityscreen> {
         color: Colors.grey.shade200,
       ),
     );
+  }
+
+  String _maskEmail(String email) {
+    if (email.isEmpty) return "Not set";
+    final parts = email.split('@');
+    if (parts.length != 2) return email;
+
+    final username = parts[0];
+    final domain = parts[1];
+
+    if (username.length <= 3) {
+      return '$username@$domain';
+    }
+
+    final visibleStart = username.substring(0, 2);
+    final visibleEnd = username.substring(username.length - 1);
+    return '$visibleStart....$visibleEnd@$domain';
   }
 
   Widget _buildCardItem(

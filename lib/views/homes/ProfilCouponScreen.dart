@@ -2,6 +2,7 @@ import 'package:comecomepay/views/homes/CouponCodeScreen.dart'
     show CouponCodeScreen;
 import 'package:flutter/material.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:comecomepay/utils/app_colors.dart';
 import 'AvailableCouponTab.dart';
 import 'UsedCouponTab.dart';
 import 'ExpiredCouponTab.dart';
@@ -20,9 +21,11 @@ class _ProfilcouponscreenState extends State<Profilcouponscreen> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.pageBackground,
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: AppColors.pageBackground,
+          elevation: 0,
+          foregroundColor: Colors.black,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () => Navigator.pop(context),

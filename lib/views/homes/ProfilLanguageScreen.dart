@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../l10n/app_localizations.dart';
 import '../../viewmodels/locale_provider.dart';
+import '../../utils/app_colors.dart';
 
 class Profillanguagescreen extends StatefulWidget {
   const Profillanguagescreen({super.key});
@@ -63,9 +64,14 @@ class _ProfillanguagescreenState extends State<Profillanguagescreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    padding: EdgeInsets.zero,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
+                        borderRadius: BorderRadius.circular(12)),
+                    elevation: 0,
+                  ).copyWith(
+                    backgroundColor: MaterialStateProperty.resolveWith(
+                      (states) => null,
+                    ),
                   ),
                   onPressed: () {
                     setState(() {
@@ -80,7 +86,23 @@ class _ProfillanguagescreenState extends State<Profillanguagescreen> {
                         .setLocale(locale);
                     Navigator.of(context).pop();
                   },
-                  child: Text(AppLocalizations.of(context)!.confirm),
+                  child: Ink(
+                    decoration: BoxDecoration(
+                      gradient: AppColors.primaryGradient,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      alignment: Alignment.center,
+                      child: Text(
+                        AppLocalizations.of(context)!.confirm,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -93,9 +115,9 @@ class _ProfillanguagescreenState extends State<Profillanguagescreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.pageBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.pageBackground,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
@@ -142,7 +164,7 @@ class _ProfillanguagescreenState extends State<Profillanguagescreen> {
                           ? Icons.check_circle
                           : Icons.circle_outlined,
                       color: language['selected']
-                          ? Colors.blue
+                          ? AppColors.primary
                           : const Color(0xFF757575),
                     ),
                     onTap: () => _showConfirmDialog(language['locale']),

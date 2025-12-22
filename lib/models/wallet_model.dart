@@ -74,6 +74,15 @@ class WalletBalance {
   final int id;
   final String currency;
   final double balance;
+  final int mainCoinType;
+  final String coinType;
+  final String symbol;
+  final int decimals;
+  final int tokenStatus;
+  final String mainSymbol;
+  final String logo;
+  final String coinName;
+  final String address;
   final String createdAt;
   final String updatedAt;
 
@@ -81,6 +90,15 @@ class WalletBalance {
     required this.id,
     required this.currency,
     required this.balance,
+    required this.mainCoinType,
+    required this.coinType,
+    required this.symbol,
+    required this.decimals,
+    required this.tokenStatus,
+    required this.mainSymbol,
+    required this.logo,
+    required this.coinName,
+    required this.address,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -92,6 +110,15 @@ class WalletBalance {
       balance: (json['balance'] is num)
           ? (json['balance'] as num).toDouble()
           : double.tryParse(json['balance'].toString()) ?? 0.0,
+      mainCoinType: json['main_coin_type'] ?? 0,
+      coinType: json['coin_type']?.toString() ?? '',
+      symbol: json['symbol'] ?? '',
+      decimals: json['decimals'] ?? 0,
+      tokenStatus: json['token_status'] ?? 0,
+      mainSymbol: json['main_symbol'] ?? '',
+      logo: json['logo'] ?? '',
+      coinName: json['coin_name'] ?? '',
+      address: json['address'] ?? '',
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
     );

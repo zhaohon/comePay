@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:comecomepay/viewmodels/set_transaction_password_viewmodel.dart';
 import 'package:comecomepay/utils/service_locator.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:comecomepay/utils/app_colors.dart';
 
 class SetTransactionPasswordScreen extends StatelessWidget {
   const SetTransactionPasswordScreen({super.key});
@@ -19,10 +20,10 @@ class SetTransactionPasswordScreen extends StatelessWidget {
         TextEditingController();
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.pageBackground,
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.setTransactionPassword),
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.pageBackground,
         elevation: 0,
         foregroundColor: Colors.black,
       ),
@@ -125,15 +126,14 @@ class SetTransactionPasswordScreen extends StatelessWidget {
       // Confirm button di paling bawah
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: () async {
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () async {
               final result = await viewModel.completeTransactionPassword(
                 otpCode: _verificationCodeController.text,
               );
               if (result.success) {
-                // Transaction password set successfully
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(result.message ??
@@ -142,21 +142,25 @@ class SetTransactionPasswordScreen extends StatelessWidget {
                     backgroundColor: Colors.green,
                   ),
                 );
-                // Navigate back or to next screen
                 Navigator.of(context).pop();
               }
-              // Error handled by Consumer
             },
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              backgroundColor: Colors.blue,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              height: 52,
+              decoration: BoxDecoration(
+                gradient: AppColors.primaryGradient,
+                borderRadius: BorderRadius.circular(12),
               ),
-            ),
-            child: Text(
-              AppLocalizations.of(context)!.confirm,
-              style: TextStyle(fontSize: 16, color: Colors.white),
+              alignment: Alignment.center,
+              child: Text(
+                AppLocalizations.of(context)!.confirm,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           ),
         ),
@@ -180,36 +184,23 @@ class SetTransactionPasswordScreen extends StatelessWidget {
           style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 8),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.15),
-                blurRadius: 6,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-          child: TextField(
-            controller: controller,
-            obscureText: obscure,
-            readOnly: readOnly,
-            decoration: InputDecoration(
-              hintText: hint,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide.none,
-              ),
-              filled: true,
-              fillColor: Colors.white,
-              suffixIcon: suffix,
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+        TextField(
+          controller: controller,
+          obscureText: obscure,
+          readOnly: readOnly,
+          decoration: InputDecoration(
+            hintText: hint,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide.none,
             ),
-            keyboardType: obscure ? TextInputType.number : TextInputType.text,
+            filled: true,
+            fillColor: Colors.white,
+            suffixIcon: suffix,
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
           ),
+          keyboardType: obscure ? TextInputType.number : TextInputType.text,
         ),
       ],
     );

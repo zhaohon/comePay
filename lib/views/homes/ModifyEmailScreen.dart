@@ -3,6 +3,7 @@ import 'package:comecomepay/viewmodels/modify_email_viewmodel.dart';
 import 'package:comecomepay/utils/service_locator.dart';
 import 'package:provider/provider.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:comecomepay/utils/app_colors.dart';
 
 class ModifyEmailScreen extends StatefulWidget {
   const ModifyEmailScreen({super.key});
@@ -39,10 +40,9 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
       child: Consumer<ModifyEmailViewModel>(
         builder: (context, viewModel, child) {
           return Scaffold(
-            backgroundColor: Colors.white,
-
+            backgroundColor: AppColors.pageBackground,
             appBar: AppBar(
-              backgroundColor: Colors.white,
+              backgroundColor: AppColors.pageBackground,
               elevation: 0,
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
@@ -217,10 +217,10 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
             bottomNavigationBar: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: viewModel.isLoading
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: viewModel.isLoading
                         ? null
                         : () async {
                             final verificationCode =
@@ -244,7 +244,6 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
                                         AppLocalizations.of(context)!
                                             .emailChangedSuccessfully)),
                               );
-                              // Navigate back or to success screen
                               Navigator.pop(context);
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -255,16 +254,35 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
                               );
                             }
                           },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      height: 52,
+                      decoration: BoxDecoration(
+                        gradient: viewModel.isLoading
+                            ? null
+                            : AppColors.primaryGradient,
+                        color:
+                            viewModel.isLoading ? Colors.grey.shade300 : null,
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      backgroundColor: Colors.blue,
-                    ),
-                    child: Text(
-                      AppLocalizations.of(context)!.confirm,
-                      style: TextStyle(fontSize: 16, color: Colors.white),
+                      alignment: Alignment.center,
+                      child: viewModel.isLoading
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.grey,
+                              ),
+                            )
+                          : Text(
+                              AppLocalizations.of(context)!.confirm,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                     ),
                   ),
                 ),

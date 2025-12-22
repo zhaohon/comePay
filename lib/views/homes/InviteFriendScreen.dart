@@ -62,8 +62,8 @@ class _InviteDialogState extends State<InviteDialog> {
                   AppLocalizations.of(context)!.whatsapp),
               _buildShareItem("assets/telegram.png",
                   AppLocalizations.of(context)!.telegram),
-              _buildShareItem("assets/wechat.png",
-                  AppLocalizations.of(context)!.wechat),
+              _buildShareItem(
+                  "assets/wechat.png", AppLocalizations.of(context)!.wechat),
             ],
           ),
 
@@ -176,7 +176,8 @@ class _InviteFriendScreenState extends State<InviteFriendScreen> {
                     child: Row(
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.arrow_back, color: Colors.white),
+                          icon:
+                              const Icon(Icons.arrow_back, color: Colors.white),
                           onPressed: () => Navigator.pop(context),
                         ),
                         const SizedBox(width: 8),
@@ -206,7 +207,8 @@ class _InviteFriendScreenState extends State<InviteFriendScreen> {
                               children: [
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         localizations.inviteFriendsRebate,
@@ -219,7 +221,8 @@ class _InviteFriendScreenState extends State<InviteFriendScreen> {
                                       ),
                                       SizedBox(height: screenHeight * 0.005),
                                       Text(
-                                        localizations.moreFriendsHigherCommission,
+                                        localizations
+                                            .moreFriendsHigherCommission,
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
                                             color: Colors.white,
@@ -248,14 +251,14 @@ class _InviteFriendScreenState extends State<InviteFriendScreen> {
                               scrollDirection: Axis.horizontal,
                               child: Row(
                                 children: [
-                                  _buildLevelCard(context, "V1", 0, 10, 10, 0.5, 10,
-                                      screenWidth),
+                                  _buildLevelCard(context, "V1", 0, 10, 10, 0.5,
+                                      10, screenWidth),
                                   SizedBox(width: screenWidth * 0.03),
-                                  _buildLevelCard(context, "V2", 0, 30, 20, 0.8, 10,
-                                      screenWidth),
+                                  _buildLevelCard(context, "V2", 0, 30, 20, 0.8,
+                                      10, screenWidth),
                                   SizedBox(width: screenWidth * 0.03),
-                                  _buildLevelCard(context, "V3", 5, 50, 30, 1.2, 15,
-                                      screenWidth),
+                                  _buildLevelCard(context, "V3", 5, 50, 30, 1.2,
+                                      15, screenWidth),
                                 ],
                               ),
                             ),
@@ -265,11 +268,13 @@ class _InviteFriendScreenState extends State<InviteFriendScreen> {
 
                           // Node partner section
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
                             child: SizedBox(
                               height: 140,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Image.asset(
                                     "assets/diamond.png",
@@ -279,7 +284,8 @@ class _InviteFriendScreenState extends State<InviteFriendScreen> {
                                   ),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           localizations.nodePartnerProgram,
@@ -314,7 +320,8 @@ class _InviteFriendScreenState extends State<InviteFriendScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               _buildStep(localizations.shareInvitationLink),
-                              _buildStep(localizations.friendCompleteRegistration),
+                              _buildStep(
+                                  localizations.friendCompleteRegistration),
                               _buildStep(localizations.earnRebates),
                             ],
                           ),
