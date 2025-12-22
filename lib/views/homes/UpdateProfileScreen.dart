@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:comecomepay/viewmodels/profile_screen_viewmodel.dart';
 import 'package:comecomepay/models/requests/update_profile_request_model.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
+import 'package:comecomepay/utils/app_colors.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   const UpdateProfileScreen({super.key});
@@ -23,7 +24,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final viewModel = Provider.of<ProfileScreenViewModel>(context, listen: false);
+      final viewModel =
+          Provider.of<ProfileScreenViewModel>(context, listen: false);
       if (viewModel.profileResponse != null) {
         _loadProfileData(viewModel);
       } else {
@@ -61,132 +63,164 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   Widget build(BuildContext context) {
     return Consumer<ProfileScreenViewModel>(
       builder: (context, viewModel, child) {
-        if (viewModel.profileResponse != null && _firstNameController.text.isEmpty) {
+        if (viewModel.profileResponse != null &&
+            _firstNameController.text.isEmpty) {
           _loadProfileData(viewModel);
         }
 
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: AppColors.pageBackground,
           appBar: AppBar(
             title: const Text(
               'Update Profile',
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-            backgroundColor: Colors.white,
+            backgroundColor: AppColors.pageBackground,
             elevation: 0,
             centerTitle: true,
             iconTheme: const IconThemeData(color: Colors.black),
           ),
           body: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(16),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // First Name
-                TextField(
-                  controller: _firstNameController,
-                  decoration: const InputDecoration(
-                    labelText: 'First Name',
-                    border: OutlineInputBorder(),
+                // 个人信息卡片
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                ),
-                const SizedBox(height: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // First Name
+                      _buildInputField(
+                        controller: _firstNameController,
+                        label: 'First Name',
+                      ),
+                      const SizedBox(height: 16),
 
-                // Last Name
-                TextField(
-                  controller: _lastNameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Last Name',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 16),
+                      // Last Name
+                      _buildInputField(
+                        controller: _lastNameController,
+                        label: 'Last Name',
+                      ),
+                      const SizedBox(height: 16),
 
-                // Phone
-                TextField(
-                  controller: _phoneController,
-                  decoration: const InputDecoration(
-                    labelText: 'Phone',
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.phone,
-                ),
-                const SizedBox(height: 16),
+                      // Phone
+                      _buildInputField(
+                        controller: _phoneController,
+                        label: 'Phone',
+                        keyboardType: TextInputType.phone,
+                      ),
+                      const SizedBox(height: 16),
 
-                // Date of Birth
-                TextField(
-                  controller: _dateOfBirthController,
-                  decoration: const InputDecoration(
-                    labelText: 'Date of Birth',
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.datetime,
-                ),
-                const SizedBox(height: 16),
+                      // Date of Birth
+                      _buildInputField(
+                        controller: _dateOfBirthController,
+                        label: 'Date of Birth',
+                        keyboardType: TextInputType.datetime,
+                      ),
+                      const SizedBox(height: 16),
 
-                // Account Type
-                TextField(
-                  controller: _accountTypeController,
-                  decoration: const InputDecoration(
-                    labelText: 'Account Type',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 16),
+                      // Account Type
+                      _buildInputField(
+                        controller: _accountTypeController,
+                        label: 'Account Type',
+                        enabled: false,
+                      ),
+                      const SizedBox(height: 16),
 
-                // Referral Code
-                TextField(
-                  controller: _referralCodeController,
-                  decoration: const InputDecoration(
-                    labelText: 'Referral Code',
-                    border: OutlineInputBorder(),
+                      // Referral Code
+                      _buildInputField(
+                        controller: _referralCodeController,
+                        label: 'Referral Code',
+                        enabled: false,
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 24),
 
                 // Save Button
                 SizedBox(
                   width: double.infinity,
-                  height: 50,
+                  height: 52,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: EdgeInsets.zero,
+                      elevation: 0,
+                    ).copyWith(
+                      backgroundColor: MaterialStateProperty.resolveWith(
+                        (states) => null,
                       ),
                     ),
-                    onPressed: viewModel.busy ? null : () async {
-                      final request = UpdateProfileRequestModel(
-                        firstName: _firstNameController.text,
-                        lastName: _lastNameController.text,
-                        phone: _phoneController.text,
-                        dateOfBirth: _dateOfBirthController.text,
-                        accountType: _accountTypeController.text,
-                        referralCode: _referralCodeController.text,
-                      );
+                    onPressed: viewModel.busy
+                        ? null
+                        : () async {
+                            final request = UpdateProfileRequestModel(
+                              firstName: _firstNameController.text,
+                              lastName: _lastNameController.text,
+                              phone: _phoneController.text,
+                              dateOfBirth: _dateOfBirthController.text,
+                              accountType: _accountTypeController.text,
+                              referralCode: _referralCodeController.text,
+                            );
 
-                      final success = await viewModel.updateProfile(request);
-                      if (success) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Profile updated successfully')),
-                        );
-                        Navigator.of(context).pop();
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(viewModel.errorMessage ?? 'Failed to update profile')),
-                        );
-                      }
-                    },
-                    child: viewModel.busy
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text(
-                            'Save',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                            final success =
+                                await viewModel.updateProfile(request);
+                            if (success) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content:
+                                        Text('Profile updated successfully')),
+                              );
+                              Navigator.of(context).pop();
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text(viewModel.errorMessage ??
+                                        'Failed to update profile')),
+                              );
+                            }
+                          },
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        gradient:
+                            viewModel.busy ? null : AppColors.primaryGradient,
+                        color: viewModel.busy ? Colors.grey.shade300 : null,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: viewModel.busy
+                            ? const SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.grey,
+                                ),
+                              )
+                            : const Text(
+                                'Save',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -194,6 +228,51 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildInputField({
+    required TextEditingController controller,
+    required String label,
+    TextInputType? keyboardType,
+    bool enabled = true,
+  }) {
+    return TextField(
+      controller: controller,
+      enabled: enabled,
+      keyboardType: keyboardType,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(
+          color: Colors.grey.shade600,
+          fontSize: 14,
+        ),
+        filled: true,
+        fillColor: enabled ? AppColors.pageBackground : Colors.grey.shade100,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: AppColors.primary,
+            width: 2,
+          ),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
+      ),
     );
   }
 }

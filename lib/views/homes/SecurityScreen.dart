@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
 import 'package:comecomepay/models/responses/get_profile_response_model.dart';
+import 'package:comecomepay/utils/app_colors.dart';
 
 class Securityscreen extends StatefulWidget {
   const Securityscreen({super.key});
@@ -35,163 +36,148 @@ class _SecurityscreenState extends State<Securityscreen> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-    final size = MediaQuery.of(context).size;
-    final width = size.width;
-
-    // Responsive scaling factor
-    double scale(double value) => value * (width / 390);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.pageBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.pageBackground,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           localizations.security,
-          style: TextStyle(color: Colors.black),
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         centerTitle: true,
       ),
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(scale(16)),
+          padding: const EdgeInsets.all(16),
           child: Column(
             children: [
               // Scrollable content
               Expanded(
                 child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      // Card Section with white bg + shadow
-                      Card(
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(scale(8)),
-                          side: const BorderSide(
-                            color: Colors.black12,
-                            width: 0.3,
-                          ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
+                      children: [
+                        _buildCardItem(
+                          context,
+                          icon: Icons.email,
+                          iconColor: const Color(0xFF2196F3),
+                          title: localizations.email,
+                          value: _profileData?.user.email ??
+                              "kas.........@gmail.com",
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ModifyEmailScreen()),
+                            );
+                          },
                         ),
-                        elevation: 4,
-                        shadowColor: Colors.black26,
-                        margin: EdgeInsets.symmetric(
-                          vertical: scale(10),
-                          horizontal: scale(8),
+                        _buildDivider(),
+                        _buildCardItem(
+                          context,
+                          icon: Icons.phone,
+                          iconColor: const Color(0xFF4CAF50),
+                          title: localizations.phone,
+                          value:
+                              _profileData?.user.phone ?? localizations.unbound,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BindPhoneScreen()),
+                            );
+                          },
                         ),
-                        child: Column(
-                          children: [
-                            _buildCardItem(
+                        _buildDivider(),
+                        _buildCardItem(
+                          context,
+                          icon: Icons.lock,
+                          iconColor: const Color(0xFFFF9800),
+                          title: localizations.transactionPassword,
+                          value: localizations.set,
+                          onTap: () {
+                            Navigator.push(
                               context,
-                              icon: Icons.email,
-                              title: localizations.email,
-                              value: _profileData?.user.email ??
-                                  "kas.........@gmail.com",
-                              onTap: () {
-                                // Navigate to ModifyEmailScreen
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          ModifyEmailScreen()),
-                                );
-                              },
-                            ),
-                            const Divider(height: 1),
-                            _buildCardItem(
-                              context,
-                              icon: Icons.phone,
-                              title: localizations.phone,
-                              value: _profileData?.user.phone ??
-                                  localizations.unbound,
-                              onTap: () {
-                                // Navigate to BindPhoneScreen
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => BindPhoneScreen()),
-                                );
-                              },
-                            ),
-                            const Divider(height: 1),
-                            _buildCardItem(
-                              context,
-                              icon: Icons.lock,
-                              title: localizations.transactionPassword,
-                              value: localizations.set,
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          SetTransactionPasswordScreen()),
-                                );
-                              },
-                            ),
-                            const Divider(height: 1),
-                            _buildCardItem(
-                              context,
-                              icon: Icons.password,
-                              title: localizations.loginPassword,
-                              value: localizations.update,
-                              onTap: () {
-                                // Navigate to ModifyLoginPasswordScreen
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          ModifyLoginPasswordScreen()),
-                                );
-                              },
-                            ),
-                          ],
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      SetTransactionPasswordScreen()),
+                            );
+                          },
                         ),
-                      ),
-                    ],
+                        _buildDivider(),
+                        _buildCardItem(
+                          context,
+                          icon: Icons.password,
+                          iconColor: AppColors.primary,
+                          title: localizations.loginPassword,
+                          value: localizations.update,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      ModifyLoginPasswordScreen()),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
 
-              // Spacer jarak
-              SizedBox(height: scale(20)),
+              const SizedBox(height: 20),
 
-              // Logout Button - gradient biru
+              // Logout Button
               SizedBox(
                 width: double.infinity,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(scale(8)),
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF1565C0), Color(0xFF42A5F5)],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
+                height: 52,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 6,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
+                    padding: EdgeInsets.zero,
+                    elevation: 0,
+                  ).copyWith(
+                    backgroundColor: MaterialStateProperty.resolveWith(
+                      (states) => null,
+                    ),
                   ),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(scale(8)),
-                    onTap: () async {
-                      await _handleLogout(context);
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: scale(16)),
-                      child: Center(
-                        child: Text(
-                          localizations.logout,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: scale(16),
-                          ),
+                  onPressed: () async {
+                    await _handleLogout(context);
+                  },
+                  child: Ink(
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFFEF4444), Color(0xFFDC2626)],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        localizations.logout,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
                         ),
                       ),
                     ),
@@ -205,46 +191,63 @@ class _SecurityscreenState extends State<Securityscreen> {
     );
   }
 
+  Widget _buildDivider() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 68),
+      child: Divider(
+        height: 1,
+        thickness: 0.5,
+        color: Colors.grey.shade200,
+      ),
+    );
+  }
+
   Widget _buildCardItem(
     BuildContext context, {
     required IconData icon,
+    required Color iconColor,
     required String title,
     required String value,
     required VoidCallback onTap,
   }) {
-    final width = MediaQuery.of(context).size.width;
-    double scale(double value) => value * (width / 390);
-
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: scale(12),
-          vertical: scale(14),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: Colors.blue, size: scale(22)),
-            SizedBox(width: scale(12)),
-            Expanded(
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: scale(14),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: iconColor.withOpacity(0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: iconColor, size: 20),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ),
-            ),
-            Text(
-              value,
-              style: TextStyle(
-                color: Colors.grey[700],
-                fontSize: scale(13),
+              Text(
+                value,
+                style: TextStyle(
+                  color: Colors.grey.shade600,
+                  fontSize: 14,
+                ),
               ),
-            ),
-            SizedBox(width: scale(12)),
-            Icon(Icons.chevron_right, color: Colors.black, size: scale(20)),
-          ],
+              const SizedBox(width: 12),
+              Icon(Icons.chevron_right, size: 20, color: Colors.grey.shade400),
+            ],
+          ),
         ),
       ),
     );
@@ -252,12 +255,40 @@ class _SecurityscreenState extends State<Securityscreen> {
 
   Future<void> _handleLogout(BuildContext context) async {
     final localizations = AppLocalizations.of(context)!;
+
+    // Show confirmation dialog
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(localizations.logout),
+        content: const Text('Are you sure you want to logout?'),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(
+              localizations.logout,
+              style: const TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
     try {
       // Clear all data from Hive storage (auth and profile)
       await HiveStorageService.clearAllData();
 
-      // Navigate to LoginScreen after a short delay to show the notification
-      await Future.delayed(const Duration(seconds: 1));
+      // Navigate to LoginScreen after a short delay
+      await Future.delayed(const Duration(milliseconds: 500));
       if (context.mounted) {
         Navigator.pushNamedAndRemoveUntil(
           context,
@@ -271,7 +302,7 @@ class _SecurityscreenState extends State<Securityscreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('${localizations.logoutFailed}: ${e.toString()}'),
-            backgroundColor: Color(0xFF34495E),
+            backgroundColor: Colors.red,
             duration: const Duration(seconds: 3),
           ),
         );
