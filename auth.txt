@@ -1,0 +1,383 @@
+
+注册流程：
+1发送验证码
+http://149.88.65.193:8010/api/v1/auth/signup
+
+{"email":"15702125951@qq.com","referral_code":"GEYSDNS1"}
+
+{
+    "email": "15702125951@qq.com",
+    "message": "OTP sent to your email. Please verify to continue registration.",
+    "otp": "79460",
+    "status": "success"
+}
+
+2验证
+http://149.88.65.193:8010/api/v1/auth/verifyz
+
+{"email":"15702125951@qq.com","otp_code":"79460"}
+
+{
+    "email": "15702125951@qq.com",
+    "message": "Email verified successfully. Please set your password to complete registration.",
+    "next_step": "set_password",
+    "referral_code": "",
+    "status": "success"
+}
+
+
+3设置密码
+http://149.88.65.193:8010/api/v1/auth/set-password
+
+
+{"email":"22222@test.com","password":"zzzz1111","referral_code":"GEYSDNS1"}
+
+{
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJlbWFpbCI6IjE1NzAyMTI1OTUxQHFxLmNvbSIsImV4cCI6MTc2NjU0NTc4NSwiaWF0IjoxNzY2NDU5Mzg1fQ.twS_z0NKQQmr-thjqESa6tQDEBEDr2q8U4dTZT7B5Rg",
+    "message": "Registration completed successfully. Please complete your profile.",
+    "next_step": "complete_profile",
+    "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJlbWFpbCI6IjE1NzAyMTI1OTUxQHFxLmNvbSIsImV4cCI6MTc2NzA2NDE4NSwiaWF0IjoxNzY2NDU5Mzg1fQ.k5p9MoRUgS6hg42_ml0PtAXrU1q-o7Xa_khlMD0LHxc",
+    "status": "success",
+    "user": {
+        "account_type": "personal",
+        "created_at": "2025-12-23T03:09:45.077068332Z",
+        "email": "15702125951@qq.com",
+        "first_name": "",
+        "id": 2,
+        "kyc_level": 0,
+        "kyc_status": "pending",
+        "last_name": "",
+        "phone": null,
+        "referral_code": "D8MEZ73N",
+        "status": "active",
+        "wallet_id": "CCP17664593850018"
+    }
+}
+
+
+
+
+查邀请码 get
+http://149.88.65.193:8010/api/v1/user/referral-code
+
+
+{"referral_code":"GEYSDNS1","status":"success"}
+
+
+查邀请统计数据
+GET /api/v1/user/referral-stats HTTP/1.1
+Accept: */*
+Accept-Encoding: gzip, deflate
+Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6IjE1NzAyMTI1OTVAcXEuY29tIiwiZXhwIjoxNzY2NTQ2NjYyLCJpYXQiOjE3NjY0NjAyNjJ9.tvBzUFOYCmqFm2H2Qfrr4OUO4A2VeLkO-ERFx6zjL4Y
+Cache-Control: no-cache
+Connection: keep-alive
+Content-Type: application/json
+Host: 149.88.65.193:8010
+Origin: null
+Pragma: no-cache
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0
+
+
+
+{
+    "stats": {
+        "level1_count": 1,
+        "level2_count": 0,
+        "total_referrals": 1,
+        "total_commission": 0,
+        "pending_commission": 0,
+        "this_month_commission": 0
+    },
+    "status": "success"
+}
+
+
+查邀请列表
+GET /api/v1/user/referrals?level=0&page=1&page_size=50 HTTP/1.1
+Accept: */*
+Accept-Encoding: gzip, deflate
+Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6IjE1NzAyMTI1OTVAcXEuY29tIiwiZXhwIjoxNzY2NTQ2NjYyLCJpYXQiOjE3NjY0NjAyNjJ9.tvBzUFOYCmqFm2H2Qfrr4OUO4A2VeLkO-ERFx6zjL4Y
+Cache-Control: no-cache
+Connection: keep-alive
+Content-Type: application/json
+Host: 149.88.65.193:8010
+Origin: null
+Pragma: no-cache
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0
+
+
+{
+    "pagination": {
+        "page": 1,
+        "page_size": 50,
+        "total": 1,
+        "total_pages": 1
+    },
+    "referrals": [
+        {
+            "created_at": "2025-12-23T03:23:30.111964Z",
+            "email": "22***@test.com",
+            "first_name": "",
+            "id": 4,
+            "last_name": ""
+        }
+    ],
+    "status": "success"
+}
+
+
+
+佣金记录 
+GET /api/v1/user/commissions?page=1&page_size=50 HTTP/1.1
+Accept: */*
+Accept-Encoding: gzip, deflate
+Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6IjE1NzAyMTI1OTVAcXEuY29tIiwiZXhwIjoxNzY2NTQ2NjYyLCJpYXQiOjE3NjY0NjAyNjJ9.tvBzUFOYCmqFm2H2Qfrr4OUO4A2VeLkO-ERFx6zjL4Y
+Cache-Control: no-cache
+Connection: keep-alive
+Content-Type: application/json
+Host: 149.88.65.193:8010
+Origin: null
+Pragma: no-cache
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0
+
+{
+    "commissions": [],
+    "pagination": {
+        "page": 1,
+        "page_size": 50,
+        "total": 0,
+        "total_pages": 0
+    },
+    "status": "success"
+}
+
+查推荐人
+GET /api/v1/user/my-referrer HTTP/1.1
+Accept: */*
+Accept-Encoding: gzip, deflate
+Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo0LCJlbWFpbCI6IjIyMjIyQHRlc3QuY29tIiwiZXhwIjoxNzY2NTQ3MjAyLCJpYXQiOjE3NjY0NjA4MDJ9.1FTkl0p6k8nhP54YHNUr2D9saihxIykMe58FvUQRCDY
+Cache-Control: no-cache
+Connection: keep-alive
+Content-Type: application/json
+Host: 149.88.65.193:8010
+Origin: null
+Pragma: no-cache
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0
+
+{
+    "has_referrer": true,
+    "level1_referrer": {
+        "email": "15***@qq.com",
+        "first_name": "",
+        "id": 1,
+        "last_name": ""
+    },
+    "level2_referrer": null,
+    "status": "success"
+}
+
+
+
+
+
+kyc 支付开卡费 优惠券功能（使用 USDT/USDC 支付）
+
+=== 接口列表 ===
+GET  /api/v1/CardFee/GetConfig              - 获取开卡费配置
+GET  /api/v1/CardFee/GetCurrencies          - 获取支持的支付币种（USDT/USDC）
+POST /api/v1/CardFee/CreatePayment          - 创建开卡费支付
+POST /api/v1/CardFee/CompletePayment/:ref   - 完成支付（使用交易参考号）
+GET  /api/v1/CardFee/GetPaymentStatus       - 获取支付状态
+GET  /api/v1/CardFee/GetPaymentHistory      - 获取支付历史
+
+
+获取开卡费配置
+GET /api/v1/CardFee/GetConfig?card_type=virtual HTTP/1.1
+Authorization: Bearer <token>
+Content-Type: application/json
+Host: 149.88.65.193:8010
+
+{
+    "config": {
+        "id": 1,
+        "card_type": "virtual",
+        "fee_type": "flat",
+        "fee_amount": 5,
+        "IsActive": true,
+        "description": "开卡费",
+        "created_by": 1,
+        "created_at": "2025-12-23T04:45:58.367215Z",
+        "updated_at": "2025-12-23T04:45:58.367215Z"
+    },
+    "status": "success"
+}
+
+
+获取支持的支付币种（动态从数据库加载 USDT/USDC 币种）
+GET /api/v1/CardFee/GetCurrencies HTTP/1.1
+Authorization: Bearer <token>
+Content-Type: application/json
+Host: 149.88.65.193:8010
+
+{
+    "currencies": [
+        {
+            "name": "USDT-TRC20",
+            "symbol": "USDT",
+            "coin_name": "TRC20-USDT",
+            "logo": ""
+        },
+        {
+            "name": "USDT-ERC20",
+            "symbol": "USDT",
+            "coin_name": "ERC20-USDT",
+            "logo": ""
+        }
+    ],
+    "status": "success"
+}
+
+
+创建支付（使用 coupon_code 优惠券码，而非 user_coupon_id）
+POST /api/v1/CardFee/CreatePayment HTTP/1.1
+Authorization: Bearer <token>
+Content-Type: application/json
+Host: 149.88.65.193:8010
+
+{"card_type":"virtual","coupon_code":"CPC59BAW69"}
+
+{
+    "message": "Payment created successfully",
+    "payment": {
+        "id": 1,
+        "user_id": 1,
+        "card_type": "virtual",
+        "original_fee": 5,
+        "coupon_discount": 1,
+        "actual_payment": 4,
+        "status": "pending",
+        "transaction_ref": "CFP176646553143361",
+        "created_at": "2025-12-23T04:52:11.54803641Z"
+    },
+    "status": "success"
+}
+
+
+确认支付（使用 transaction_ref 交易参考号，支付币种使用 yudun_supported_coins.name）
+POST /api/v1/CardFee/CompletePayment/CFP176646553143361 HTTP/1.1
+Authorization: Bearer <token>
+Content-Type: application/json
+Host: 149.88.65.193:8010
+
+{"payment_currency":"USDT-TRC20"}
+
+说明：
+- payment_currency: 支付币种名称，对应 yudun_supported_coins 表的 name 字段
+- 支持的币种：USDT-TRC20, USDT-ERC20, USDC-TRC20, USDC-ERC20 等（从数据库动态加载）
+- 系统会从用户对应币种的钱包余额中扣除（1:1 等值）
+
+{
+    "message": "Payment completed successfully",
+    "payment": {
+        "id": 1,
+        "user_id": 1,
+        "card_type": "virtual",
+        "original_fee": 5,
+        "coupon_discount": 1,
+        "actual_payment": 4,
+        "coupon_code": "CPC59BAW69",
+        "coupon_name": "testame",
+        "status": "completed",
+        "payment_method": "USDT-TRC20",
+        "transaction_ref": "CFP176646553143361",
+        "paid_at": "2025-12-23T04:54:13.536069Z",
+        "created_at": "2025-12-23T04:52:11.548036Z"
+    },
+    "status": "success"
+}
+
+
+支付状态
+GET /api/v1/CardFee/GetPaymentStatus HTTP/1.1
+Authorization: Bearer <token>
+Content-Type: application/json
+Host: 149.88.65.193:8010
+
+{
+    "has_payment": true,
+    "payment": {
+        "id": 1,
+        "user_id": 1,
+        "card_type": "virtual",
+        "original_fee": 5,
+        "coupon_discount": 1,
+        "actual_payment": 4,
+        "coupon_code": "CPC59BAW69",
+        "coupon_name": "testame",
+        "status": "completed",
+        "payment_method": "USDT-TRC20",
+        "transaction_ref": "CFP176646553143361",
+        "paid_at": "2025-12-23T04:54:13.536069Z",
+        "created_at": "2025-12-23T04:52:11.548036Z"
+    },
+    "status": "success"
+}
+
+支付历史
+GET /api/v1/CardFee/GetPaymentHistory?page=1&page_size=10 HTTP/1.1
+Authorization: Bearer <token>
+Content-Type: application/json
+Host: 149.88.65.193:8010
+
+{
+    "page": 1,
+    "page_size": 10,
+    "payments": [
+        {
+            "id": 1,
+            "user_id": 1,
+            "card_type": "virtual",
+            "original_fee": 5,
+            "coupon_discount": 1,
+            "actual_payment": 4,
+            "coupon_code": "CPC59BAW69",
+            "coupon_name": "testame",
+            "status": "completed",
+            "payment_method": "USDT-TRC20",
+            "transaction_ref": "CFP176646553143361",
+            "paid_at": "2025-12-23T04:54:13.536069Z",
+            "created_at": "2025-12-23T04:52:11.548036Z"
+        }
+    ],
+    "status": "success",
+    "total": 1
+}
+
+
+是否能开卡 检查是否支付过
+GET /api/v1/kyc/eligibility HTTP/1.1
+Accept: */*
+Accept-Encoding: gzip, deflate
+Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJlbWFpbCI6IjE1NzAyMTI1OTUxQHFxLmNvbSIsImV4cCI6MTc2NjU1MzU0OSwiaWF0IjoxNzY2NDY3MTQ5fQ.SijoCaux5lvahDWW0ySfYQmpQrsxKV_DPRl9h9p5C_M
+Cache-Control: no-cache
+Connection: keep-alive
+Content-Type: application/json
+Host: 149.88.65.193:8010
+Origin: null
+Pragma: no-cache
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0
+
+{
+    "eligible": false,
+    "payment_status": "none",
+    "reason": "Card fee payment required before KYC verification",
+    "required_action": "create_payment",
+    "status": "success"
+}
+
+
