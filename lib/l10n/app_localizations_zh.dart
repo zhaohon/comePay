@@ -677,4 +677,46 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get yourDataWillBeSecure => '您的数据将使用TLS进行安全加密。';
+
+  @override
+  String get originalFee => '原始费用';
+
+  @override
+  String get actualPayment => '实际支付';
+
+  @override
+  String get paymentRequired => '需要支付';
+
+  @override
+  String get goBack => '返回';
+
+  @override
+  String get cancel => '取消';
+
+  @override
+  String get paymentSuccessful => '支付成功！';
+
+  @override
+  String get confirmPayment => '确认支付';
+
+  @override
+  String get amountToPay => '支付金额';
+
+  @override
+  String get selectCoupon => '选择优惠券';
+
+  @override
+  String get noCoupon => '不使用优惠券';
+
+  @override
+  String get applyCard => '申请卡片';
+
+  @override
+  String get failedToLoadCardFee => '加载卡费失败';
+
+  @override
+  String get code => '代码';
+
+  @override
+  String get insufficient => '余额不足';
 }

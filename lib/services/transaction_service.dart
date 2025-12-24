@@ -14,7 +14,7 @@ class TransactionService extends BaseService {
   Future<TransactionPreviewResponse> previewTransaction(
       TransactionPreviewRequest request) async {
     final response = await post(
-        'http://31.97.222.142:2050/api/transaction/preview',
+        'http://149.88.65.193:8010/api/transaction/preview',
         data: request.toJson());
     return TransactionPreviewResponse.fromJson(response);
   }

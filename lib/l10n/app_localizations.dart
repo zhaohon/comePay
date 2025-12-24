@@ -1439,6 +1439,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your data will be security encrypted with TLS.'**
   String get yourDataWillBeSecure;
+
+  /// No description provided for @originalFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Original Fee'**
+  String get originalFee;
+
+  /// No description provided for @actualPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Actual Payment'**
+  String get actualPayment;
+
+  /// No description provided for @paymentRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Required'**
+  String get paymentRequired;
+
+  /// No description provided for @goBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Go Back'**
+  String get goBack;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @paymentSuccessful.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment successful!'**
+  String get paymentSuccessful;
+
+  /// No description provided for @confirmPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Payment'**
+  String get confirmPayment;
+
+  /// No description provided for @amountToPay.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount to Pay'**
+  String get amountToPay;
+
+  /// No description provided for @selectCoupon.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Coupon'**
+  String get selectCoupon;
+
+  /// No description provided for @noCoupon.
+  ///
+  /// In en, this message translates to:
+  /// **'No coupon'**
+  String get noCoupon;
+
+  /// No description provided for @applyCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply Card'**
+  String get applyCard;
+
+  /// No description provided for @failedToLoadCardFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load card fee'**
+  String get failedToLoadCardFee;
+
+  /// No description provided for @code.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get code;
+
+  /// No description provided for @insufficient.
+  ///
+  /// In en, this message translates to:
+  /// **'Insufficient'**
+  String get insufficient;
 }
 
 class _AppLocalizationsDelegate

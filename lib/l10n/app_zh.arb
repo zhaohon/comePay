@@ -230,5 +230,20 @@
   "confirmPasswordLabel": "确认密码",
   "byRegisteringYouAccept": "注册即表示您同意我们的",
   "andPrivacyPolicy": "和",
-  "yourDataWillBeSecure": "您的数据将使用TLS进行安全加密。"
+  "yourDataWillBeSecure": "您的数据将使用TLS进行安全加密。",
+  "originalFee": "原始费用",
+  "actualPayment": "实际支付",
+  "paymentRequired": "需要支付",
+  "goBack": "返回",
+  "cancel": "取消",
+  "paymentSuccessful": "支付成功！",
+  "confirmPayment": "确认支付",
+  "amountToPay": "支付金额",
+  "selectCoupon": "选择优惠券",
+  "noCoupon": "不使用优惠券",
+  "applyCard": "申请卡片",
+  "failedToLoadCardFee": "加载卡费失败",
+  "comeComePayCard": "Come Come Pay 卡",
+  "code": "代码",
+  "insufficient": "余额不足"
 }

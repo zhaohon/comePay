@@ -3,7 +3,7 @@ import 'package:comecomepay/utils/logger.dart';
 
 class ReferralService {
   final Dio _dio = Dio(BaseOptions(
-    baseUrl: 'http://31.97.222.142:2050',
+    baseUrl: 'http://149.88.65.193:8010',
     headers: {
       'Content-Type': 'application/json',
       'id_user': '42',
@@ -25,7 +25,8 @@ class ReferralService {
       final response = await _dio.post(url, data: body);
       final duration = DateTime.now().difference(startTime);
 
-      Logger.response(method, url, response.statusCode ?? 0, response.data, duration);
+      Logger.response(
+          method, url, response.statusCode ?? 0, response.data, duration);
 
       return response.data as Map<String, dynamic>;
     } catch (e, stackTrace) {

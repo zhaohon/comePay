@@ -1,245 +1,343 @@
 import 'package:flutter/material.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
-import 'package:comecomepay/viewmodels/token_receive_viewmodel.dart';
 import 'package:comecomepay/views/homes/CardVerificationScreen.dart';
-import 'package:provider/provider.dart';
+import 'package:comecomepay/utils/app_colors.dart';
+import 'package:comecomepay/services/card_fee_service.dart';
+import 'package:comecomepay/services/kyc_service.dart';
+import 'package:comecomepay/services/hive_storage_service.dart';
+import 'package:comecomepay/models/card_fee_config_model.dart';
+import 'package:comecomepay/models/payment_currency_model.dart';
+import 'package:comecomepay/models/card_fee_payment_model.dart';
+import 'package:dio/dio.dart';
+import 'package:comecomepay/models/responses/coupon_detail_model.dart';
 
 class CardApplyConfirmScreen extends StatefulWidget {
-  const CardApplyConfirmScreen({Key? key}) : super(key: key);
+  final CardFeeConfigModel? cardFeeConfig;
+  final CouponDetailModel? selectedCoupon;
+
+  const CardApplyConfirmScreen({
+    Key? key,
+    this.cardFeeConfig,
+    this.selectedCoupon,
+  }) : super(key: key);
 
   @override
   State<CardApplyConfirmScreen> createState() => _CardApplyConfirmScreenState();
 }
 
 class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
-  Map<String, dynamic>? _selectedNetwork;
+  final CardFeeService _cardFeeService = CardFeeService();
+  final KycService _kycService = KycService();
+  final Dio dio = Dio();
+
+  List<PaymentCurrencyModel> _paymentCurrencies = [];
+  PaymentCurrencyModel? _selectedCurrency;
+  CardFeeConfigModel? _cardFeeConfig;
+  CardFeePaymentModel? _createdPayment;
+
+  bool _isLoadingCurrencies = true;
+  bool _isLoadingConfig = false;
+  bool _isProcessing = false;
+  String? _errorMessage;
+
+  // 用于存储用户各币种的完整信息（包括余额、logo等）
+  Map<String, Map<String, dynamic>> _walletBalances = {};
 
   @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider<TokenReceiveViewModel>(
-      create: (context) => TokenReceiveViewModel()
-        ..fetchCryptoData()
-        ..setTotalAssets(0.0),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
+  void initState() {
+    super.initState();
+    _cardFeeConfig = widget.cardFeeConfig;
+    _checkEligibilityAndLoadData();
+  }
+
+  /// 检查KYC资格并加载数据
+  Future<void> _checkEligibilityAndLoadData() async {
+    print('🔍 [CardApplyConfirmScreen] Checking KYC eligibility...');
+    try {
+      // 检查KYC资格
+      final eligibility = await _kycService.checkEligibility();
+      print(
+          '✅ [CardApplyConfirmScreen] Eligibility: eligible=${eligibility.eligible}, reason="${eligibility.reason}"');
+
+      if (eligibility.eligible) {
+        // 已支付，有资格进行KYC，显示提示后跳转
+        print(
+            '🚀 [CardApplyConfirmScreen] User already paid, showing confirm dialog...');
+        if (!mounted) return;
+
+        // 显示提示对话框
+        await _showAlreadyPaidDialog();
+        return;
+      }
+
+      // 未支付，继续正常流程
+      print(
+          '📝 [CardApplyConfirmScreen] User not paid, loading payment data...');
+      await _loadData();
+    } catch (e) {
+      print('❌ [CardApplyConfirmScreen] Error checking eligibility: $e');
+      // 检查失败，继续正常流程（降级处理）
+      await _loadData();
+    }
+  }
+
+  /// 加载数据
+  Future<void> _loadData() async {
+    await Future.wait([
+      _loadCardFeeConfig(),
+      _loadPaymentCurrencies(),
+      _loadUserBalances(),
+    ]);
+  }
+
+  /// 显示已支付提示对话框
+  Future<void> _showAlreadyPaidDialog() async {
+    final result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black.withOpacity(0.5),
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
-            onPressed: () => Navigator.pop(context),
-          ),
-          title: Text(
-            AppLocalizations.of(context)!.applyVirtualCard,
-            style: const TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
+          backgroundColor: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
             ),
-          ),
-          centerTitle: true,
-        ),
-        body: Consumer<TokenReceiveViewModel>(
-          builder: (context, viewModel, child) {
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // 卡信息
-                  _buildSectionTitle(
-                      AppLocalizations.of(context)!.cardInformation),
-                  const SizedBox(height: 12),
-                  _buildInfoRow(
-                    AppLocalizations.of(context)!.cardName,
-                    'Come Come Pay Card',
-                    isClickable: true,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // 图标（紫色）
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(32),
                   ),
-                  const SizedBox(height: 8),
-                  _buildInfoRow(
-                    AppLocalizations.of(context)!.cardOrganization,
-                    'VISA',
-                    isClickable: false,
+                  child: const Icon(
+                    Icons.check_circle_outline,
+                    color: Colors.white,
+                    size: 36,
                   ),
-                  const SizedBox(height: 24),
+                ),
+                const SizedBox(height: 16),
 
-                  // 卡费
-                  _buildSectionTitle(AppLocalizations.of(context)!.cardFee),
-                  const SizedBox(height: 12),
-                  _buildInfoRow(
-                    AppLocalizations.of(context)!.fee,
-                    '5 USD',
-                    isClickable: false,
+                // 标题
+                Text(
+                  AppLocalizations.of(context)!.paymentSuccessful,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
                   ),
-                  const SizedBox(height: 8),
-                  _buildNetworkSelectionRow(viewModel),
-                  const SizedBox(height: 32),
+                ),
+                const SizedBox(height: 12),
 
-                  // 提交按钮
-                  SizedBox(
-                    width: double.infinity,
-                    height: 52,
-                    child: ElevatedButton(
-                      onPressed: _selectedNetwork == null
-                          ? null
-                          : () async {
-                              // TODO: 将选择的网络地址发送到后端
-                              // 暂时使用假数据
-                              final networkAddress =
-                                  _selectedNetwork!['address'] ??
-                                      'mock_address';
-                              print(
-                                  'Selected network: ${_selectedNetwork!['symbol']}');
-                              print('Address: $networkAddress');
+                // 内容
+                Text(
+                  '您已完成开卡费支付，现在可以进行KYC身份验证了。',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey.shade700,
+                  ),
+                ),
+                const SizedBox(height: 24),
 
-                              // 跳转到填资料页面
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const Cardverificationscreen(),
-                                ),
-                              );
-                            },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF0D47A1),
-                        disabledBackgroundColor: Colors.grey.shade300,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                // 按钮组（返回 | 前往验证）
+                Row(
+                  children: [
+                    // 返回按钮
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () => {
+                          // 返回两次
+                          Navigator.pop(context),
+                          Navigator.pop(context),
+                        },
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
-                      ),
-                      child: Text(
-                        AppLocalizations.of(context)!.submit,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                        child: Text(
+                          AppLocalizations.of(context)!.goBack,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey.shade700,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: const TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        color: Colors.black54,
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(String label, String value,
-      {required bool isClickable}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 14,
-              color: Colors.black87,
-            ),
-          ),
-          Row(
-            children: [
-              Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.black,
-                ),
-              ),
-              if (isClickable) ...[
-                const SizedBox(width: 4),
-                const Icon(
-                  Icons.chevron_right,
-                  size: 20,
-                  color: Colors.grey,
+                    const SizedBox(width: 12),
+                    // 前往验证按钮（渐变）
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: AppColors.primaryGradient,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: ElevatedButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: const Text(
+                            '前往验证',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
-            ],
+            ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNetworkSelectionRow(TokenReceiveViewModel viewModel) {
-    return GestureDetector(
-      onTap: () {
-        _showNetworkSelectionBottomSheet(viewModel);
+        );
       },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade50,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              AppLocalizations.of(context)!.selectNetwork,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.black87,
-              ),
-            ),
-            Row(
-              children: [
-                Text(
-                  _selectedNetwork == null
-                      ? AppLocalizations.of(context)!.pleaseSelect
-                      : _getNetworkDisplayName(_selectedNetwork!),
-                  style: TextStyle(
-                    fontSize: 14,
-                    color:
-                        _selectedNetwork == null ? Colors.grey : Colors.black,
-                  ),
-                ),
-                const SizedBox(width: 4),
-                const Icon(
-                  Icons.chevron_right,
-                  size: 20,
-                  color: Colors.grey,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
     );
-  }
 
-  String _getNetworkDisplayName(Map<String, dynamic> network) {
-    final symbol = network['symbol'] as String? ?? '';
-    final networks = network['networks'] as List? ?? [];
-    if (networks.isEmpty ||
-        symbol == 'BTC' ||
-        symbol == 'ETH' ||
-        symbol == 'HKD') {
-      return symbol;
+    if (result == true && mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Cardverificationscreen(),
+        ),
+      );
     }
-    return '$symbol (${networks[0]})';
   }
 
-  void _showNetworkSelectionBottomSheet(TokenReceiveViewModel viewModel) {
-    showModalBottomSheet(
+  /// 加载开卡费配置
+  Future<void> _loadCardFeeConfig() async {
+    if (_cardFeeConfig != null) return;
+
+    try {
+      setState(() {
+        _isLoadingConfig = true;
+        _errorMessage = null;
+      });
+
+      final config = await _cardFeeService.getConfig('virtual');
+      setState(() {
+        _cardFeeConfig = config;
+        _isLoadingConfig = false;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Failed to load card fee config: $e';
+        _isLoadingConfig = false;
+      });
+      print('Error loading card fee config: $e');
+    }
+  }
+
+  /// 加载支付币种列表
+  Future<void> _loadPaymentCurrencies() async {
+    try {
+      setState(() {
+        _isLoadingCurrencies = true;
+        _errorMessage = null;
+      });
+
+      final currencies = await _cardFeeService.getCurrencies();
+      setState(() {
+        _paymentCurrencies = currencies;
+        _isLoadingCurrencies = false;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Failed to load payment currencies: $e';
+        _isLoadingCurrencies = false;
+      });
+      print('Error loading payment currencies: $e');
+    }
+  }
+
+  /// 加载用户钱包余额
+  Future<void> _loadUserBalances() async {
+    try {
+      // 使用wallet API直接获取余额
+      final accessToken = HiveStorageService.getAccessToken();
+      if (accessToken == null) return;
+
+      final response = await dio.get(
+        'http://149.88.65.193:8010/api/v1/wallet/',
+        options: Options(
+          headers: {'Authorization': 'Bearer $accessToken'},
+        ),
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        final data = response.data;
+        if (data['status'] == 'success' && data['wallet'] != null) {
+          final balances = data['wallet']['balances'] as List<dynamic>? ?? [];
+
+          setState(() {
+            // 将balances数组转换为Map，以currency为key
+            _walletBalances = {};
+            for (var balance in balances) {
+              final currency = balance['currency'] as String;
+              // balance就是实际余额，不需要除以decimals
+              final actualBalance =
+                  (balance['balance'] as num?)?.toDouble() ?? 0.0;
+
+              _walletBalances[currency] = {
+                'balance': actualBalance,
+                'logo': balance['logo'] ?? '',
+                'coin_name': balance['coin_name'] ?? currency,
+                'symbol': balance['symbol'] ?? '',
+              };
+            }
+          });
+        }
+      }
+    } catch (e) {
+      print('Error loading user balances: $e');
+      // 不阻塞UI，只打印错误
+    }
+  }
+
+  /// 获取币种的用户余额
+  double _getCurrencyBalance(String currencyName) {
+    return _walletBalances[currencyName]?['balance'] ?? 0.0;
+  }
+
+  /// 获取币种的logo
+  String _getCurrencyLogo(String currencyName) {
+    return _walletBalances[currencyName]?['logo'] ?? '';
+  }
+
+  /// 获取币种的显示名称
+  String _getCurrencyCoinName(String currencyName) {
+    return _walletBalances[currencyName]?['coin_name'] ?? currencyName;
+  }
+
+  /// 显示支付币种选择底部弹窗
+  Future<void> _showCurrencySelectionSheet() async {
+    if (_paymentCurrencies.isEmpty) {
+      _showMessage('No payment currencies available');
+      return;
+    }
+
+    final selected = await showModalBottomSheet<PaymentCurrencyModel>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.white,
@@ -248,8 +346,8 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
       ),
       builder: (context) {
         return DraggableScrollableSheet(
-          initialChildSize: 0.7,
-          minChildSize: 0.5,
+          initialChildSize: 0.6,
+          minChildSize: 0.4,
           maxChildSize: 0.9,
           expand: false,
           builder: (context, scrollController) {
@@ -280,25 +378,19 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
                     ],
                   ),
                 ),
-                // Network list
+                // Currency list
                 Expanded(
-                  child: viewModel.busy
-                      ? const Center(child: CircularProgressIndicator())
-                      : ListView.separated(
-                          controller: scrollController,
-                          padding: const EdgeInsets.all(16),
-                          itemCount: viewModel.filteredTokens.length,
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(height: 12),
-                          itemBuilder: (context, index) {
-                            final token = viewModel.filteredTokens[index];
-                            // 过滤掉 HKD
-                            if (token['symbol'] == 'HKD') {
-                              return const SizedBox.shrink();
-                            }
-                            return _buildNetworkItem(token);
-                          },
-                        ),
+                  child: ListView.separated(
+                    controller: scrollController,
+                    padding: const EdgeInsets.all(16),
+                    itemCount: _paymentCurrencies.length,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 12),
+                    itemBuilder: (context, index) {
+                      final currency = _paymentCurrencies[index];
+                      return _buildCurrencyItem(currency);
+                    },
+                  ),
                 ),
               ],
             );
@@ -306,19 +398,29 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
         );
       },
     );
+
+    if (selected != null) {
+      setState(() {
+        _selectedCurrency = selected;
+      });
+    }
   }
 
-  Widget _buildNetworkItem(Map<String, dynamic> token) {
-    final isSelected = _selectedNetwork != null &&
-        _selectedNetwork!['symbol'] == token['symbol'] &&
-        (_selectedNetwork!['networks'] as List?)?.isNotEmpty ==
-            (token['networks'] as List?)?.isNotEmpty &&
-        (((_selectedNetwork!['networks'] as List?)?.isEmpty ?? true) ||
-            (_selectedNetwork!['networks'] as List?)?[0] ==
-                (token['networks'] as List?)?[0]);
+  /// 构建支付币种列表项
+  Widget _buildCurrencyItem(PaymentCurrencyModel currency) {
+    final balance = _getCurrencyBalance(currency.name);
+    final actualPayment = _getActualPayment();
+    final hasEnoughBalance = balance >= actualPayment;
+
+    final isSelected =
+        _selectedCurrency != null && _selectedCurrency!.name == currency.name;
 
     return Card(
-      color: isSelected ? Colors.blue.shade50 : Colors.white,
+      color: isSelected
+          ? Colors.blue.shade50
+          : hasEnoughBalance
+              ? Colors.white
+              : Colors.grey.shade100,
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -329,37 +431,78 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () {
-          setState(() {
-            _selectedNetwork = token;
-          });
-          Navigator.pop(context);
-        },
+        onTap: hasEnoughBalance
+            ? () {
+                Navigator.pop(context, currency);
+              }
+            : null,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Row(
             children: [
-              CircleAvatar(
-                backgroundColor: Colors.white,
-                radius: 20,
-                child: Image.asset(token['iconPath'], width: 28, height: 28),
-              ),
+              // 使用wallet API返回的logo
+              _getCurrencyLogo(currency.name).isNotEmpty
+                  ? ClipOval(
+                      child: Image.network(
+                        _getCurrencyLogo(currency.name),
+                        width: 40,
+                        height: 40,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          // 如果图片加载失败，显示默认头像
+                          return CircleAvatar(
+                            backgroundColor: hasEnoughBalance
+                                ? Colors.blue.shade100
+                                : Colors.grey.shade300,
+                            radius: 20,
+                            child: Text(
+                              currency.symbol.substring(0, 1),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: hasEnoughBalance
+                                    ? Colors.blue
+                                    : Colors.grey,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                  : CircleAvatar(
+                      backgroundColor: hasEnoughBalance
+                          ? Colors.blue.shade100
+                          : Colors.grey.shade300,
+                      radius: 20,
+                      child: Text(
+                        currency.symbol.substring(0, 1),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: hasEnoughBalance ? Colors.blue : Colors.grey,
+                        ),
+                      ),
+                    ),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _getNetworkDisplayName(token),
-                      style: const TextStyle(
+                      _getCurrencyCoinName(currency.name),
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
+                        color: hasEnoughBalance ? Colors.black : Colors.grey,
                       ),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
-                      '\$0.00',
-                      style: TextStyle(color: Colors.grey, fontSize: 13),
+                    Text(
+                      currency.name,
+                      style: TextStyle(
+                        color: hasEnoughBalance
+                            ? Colors.grey
+                            : Colors.grey.shade400,
+                        fontSize: 13,
+                      ),
                     ),
                   ],
                 ),
@@ -367,20 +510,588 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
-                children: const [
+                children: [
                   Text(
-                    '0',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    balance.toStringAsFixed(2),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: hasEnoughBalance ? Colors.black : Colors.red,
+                    ),
                   ),
-                  SizedBox(height: 2),
-                  Text(
-                    '\$0.00',
-                    style: TextStyle(color: Colors.grey, fontSize: 12),
-                  ),
+                  if (!hasEnoughBalance)
+                    Text(
+                      AppLocalizations.of(context)!.insufficient,
+                      style: TextStyle(
+                        color: Colors.red.shade700,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                 ],
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  /// 获取实际支付金额
+  double _getActualPayment() {
+    if (_createdPayment != null) {
+      return _createdPayment!.actualPayment;
+    }
+
+    if (_cardFeeConfig == null) return 0.0;
+
+    // 如果有优惠券，需要计算折扣
+    double amount = _cardFeeConfig!.feeAmount;
+    if (widget.selectedCoupon != null) {
+      final coupon = widget.selectedCoupon!;
+      if (coupon.valueType == 'percentage') {
+        // 百分比折扣
+        amount = amount * (1 - coupon.value / 100);
+      } else {
+        // 固定金额折扣
+        amount = amount - coupon.value;
+      }
+    }
+    return amount.clamp(0.0, double.infinity);
+  }
+
+  /// 创建支付订单并显示确认对话框
+  Future<void> _handleSubmit() async {
+    if (_selectedCurrency == null) {
+      _showMessage('Please select a payment currency');
+      return;
+    }
+
+    final actualPayment = _getActualPayment();
+    final balance = _getCurrencyBalance(_selectedCurrency!.name);
+
+    if (balance < actualPayment) {
+      _showMessage('Insufficient balance');
+      return;
+    }
+
+    try {
+      setState(() {
+        _isProcessing = true;
+      });
+
+      // 步骤1: 创建支付订单
+      final payment = await _cardFeeService.createPayment(
+        cardType: 'virtual',
+        couponCode: widget.selectedCoupon?.code,
+      );
+
+      setState(() {
+        _createdPayment = payment;
+      });
+
+      // 步骤2: 显示确认对话框
+      final confirmed = await _showPaymentConfirmDialog();
+
+      if (confirmed == true) {
+        // 步骤3: 完成支付
+        await _completePayment(payment.transactionRef);
+      } else {
+        setState(() {
+          _isProcessing = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _isProcessing = false;
+      });
+      _showMessage('Failed to create payment: $e');
+      print('Error creating payment: $e');
+    }
+  }
+
+  /// 显示支付确认对话框 (简洁版)
+  Future<bool?> _showPaymentConfirmDialog() async {
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black.withOpacity(0.5),
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // 图标
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(32),
+                  ),
+                  child: const Icon(
+                    Icons.credit_card,
+                    color: Colors.white,
+                    size: 32,
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // 标题
+                Text(
+                  AppLocalizations.of(context)!.confirmPayment,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // 支付金额（大号显示）
+                if (_createdPayment != null) ...[
+                  Text(
+                    '${_createdPayment!.actualPayment.toStringAsFixed(2)} USD',
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue.shade700,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    AppLocalizations.of(context)!.amountToPay,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                ],
+
+                const SizedBox(height: 32),
+
+                // 按钮组
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(
+                          AppLocalizations.of(context)!.cancel,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey.shade700,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 0,
+                        ),
+                        child: Text(
+                          AppLocalizations.of(context)!.confirm,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  /// 完成支付
+  Future<void> _completePayment(String transactionRef) async {
+    try {
+      // 步骤1: 调用CompletePayment（发起支付请求）
+      await _cardFeeService.completePayment(
+        transactionRef: transactionRef,
+        paymentCurrency: _selectedCurrency!.name,
+      );
+
+      // 步骤2: 轮询支付状态，等待支付真正完成
+      final paymentCompleted = await _pollPaymentStatus(transactionRef);
+
+      setState(() {
+        _isProcessing = false;
+      });
+
+      if (!paymentCompleted) {
+        if (!mounted) return;
+        _showMessage(
+            'Payment processing timeout. Please check payment status.');
+        return;
+      }
+
+      // 步骤3: 支付成功，检查KYC资格
+      final eligibility = await _kycService.checkEligibility();
+
+      if (eligibility.eligible) {
+        // 有资格进行KYC
+        if (!mounted) return;
+        _showMessage(AppLocalizations.of(context)!.paymentSuccessful);
+
+        // 跳转到KYC页面
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Cardverificationscreen(),
+          ),
+        );
+      } else {
+        // 理论上不应该到这里，因为刚支付成功
+        if (!mounted) return;
+        _showMessage('Payment successful but ${eligibility.reason}');
+      }
+    } catch (e) {
+      setState(() {
+        _isProcessing = false;
+      });
+      if (!mounted) return;
+      _showMessage('Payment error: $e');
+      print('Error completing payment: $e');
+    }
+  }
+
+  /// 轮询支付状态
+  /// 返回true表示支付成功，false表示超时或失败
+  Future<bool> _pollPaymentStatus(String transactionRef) async {
+    const maxAttempts = 10; // 最多尝试10次
+    const pollInterval = Duration(seconds: 2); // 每2秒检查一次
+
+    for (int attempt = 0; attempt < maxAttempts; attempt++) {
+      try {
+        // 等待一段时间后再查询
+        if (attempt > 0) {
+          await Future.delayed(pollInterval);
+        }
+
+        print('Polling payment status, attempt ${attempt + 1}/$maxAttempts');
+
+        // 查询支付状态
+        final paymentStatus = await _cardFeeService.getPaymentStatus();
+
+        if (paymentStatus != null &&
+            paymentStatus.transactionRef == transactionRef) {
+          if (paymentStatus.status == 'completed') {
+            print('Payment completed successfully');
+            return true;
+          } else if (paymentStatus.status == 'failed') {
+            print('Payment failed');
+            return false;
+          }
+          // 如果是pending，继续轮询
+          print(
+              'Payment status: ${paymentStatus.status}, continuing to poll...');
+        }
+      } catch (e) {
+        print('Error polling payment status: $e');
+        // 继续尝试
+      }
+    }
+
+    // 超时
+    print('Payment status polling timeout');
+    return false;
+  }
+
+  void _showMessage(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isLoading = _isLoadingCurrencies || _isLoadingConfig;
+
+    return Scaffold(
+      backgroundColor: AppColors.pageBackground,
+      appBar: AppBar(
+        backgroundColor: AppColors.pageBackground,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          AppLocalizations.of(context)!.applyVirtualCard,
+          style: const TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _errorMessage != null
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(_errorMessage!,
+                          style: const TextStyle(color: Colors.red)),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: _loadData,
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  ),
+                )
+              : SingleChildScrollView(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // 卡信息
+                      _buildSectionTitle(
+                          AppLocalizations.of(context)!.cardInformation),
+                      const SizedBox(height: 12),
+                      _buildInfoRow(
+                        AppLocalizations.of(context)!.cardName,
+                        _cardFeeConfig?.description ?? 'Come Come Pay Card',
+                        isClickable: false,
+                      ),
+                      const SizedBox(height: 8),
+                      _buildInfoRow(
+                        AppLocalizations.of(context)!.cardOrganization,
+                        'VISA',
+                        isClickable: false,
+                      ),
+                      const SizedBox(height: 24),
+
+                      // 卡费
+                      _buildSectionTitle(AppLocalizations.of(context)!.cardFee),
+                      const SizedBox(height: 12),
+                      _buildInfoRow(
+                        // TODO: 添加国际化字符串 'Original Fee'
+                        'Original Fee',
+                        '${_cardFeeConfig?.feeAmount.toStringAsFixed(2) ?? '0.00'} USD',
+                        isClickable: false,
+                      ),
+                      if (widget.selectedCoupon != null) ...[
+                        const SizedBox(height: 8),
+                        _buildInfoRow(
+                          // TODO: 使用国际化字符串
+                          AppLocalizations.of(context)!.coupon,
+                          widget.selectedCoupon!.name,
+                          isClickable: false,
+                          valueColor: Colors.green,
+                        ),
+                      ],
+                      if (_getActualPayment() !=
+                          (_cardFeeConfig?.feeAmount ?? 0)) ...[
+                        const SizedBox(height: 8),
+                        _buildInfoRow(
+                          // TODO: 添加国际化字符串 'Actual Payment'
+                          'Actual Payment',
+                          '${_getActualPayment().toStringAsFixed(2)} USD',
+                          isClickable: false,
+                          isBold: true,
+                        ),
+                      ],
+                      const SizedBox(height: 8),
+                      _buildCurrencySelectionRow(),
+                      const SizedBox(height: 32),
+
+                      // 提交按钮
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: _selectedCurrency == null || _isProcessing
+                              ? null
+                              : _handleSubmit,
+                          borderRadius: BorderRadius.circular(12),
+                          child: Ink(
+                            decoration: BoxDecoration(
+                              gradient:
+                                  _selectedCurrency != null && !_isProcessing
+                                      ? AppColors.primaryGradient
+                                      : null,
+                              color: _selectedCurrency == null || _isProcessing
+                                  ? Colors.grey.shade300
+                                  : null,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Container(
+                              width: double.infinity,
+                              height: 52,
+                              alignment: Alignment.center,
+                              child: _isProcessing
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.white,
+                                    )
+                                  : Text(
+                                      AppLocalizations.of(context)!.submit,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: _selectedCurrency != null
+                                            ? Colors.white
+                                            : Colors.grey.shade600,
+                                      ),
+                                    ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: const TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: Colors.black54,
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(
+    String label,
+    String value, {
+    required bool isClickable,
+    Color? valueColor,
+    bool isBold = false,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.black87,
+            ),
+          ),
+          Row(
+            children: [
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: valueColor ?? Colors.black,
+                  fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+                ),
+              ),
+              if (isClickable) ...[
+                const SizedBox(width: 4),
+                const Icon(
+                  Icons.chevron_right,
+                  size: 20,
+                  color: Colors.grey,
+                ),
+              ],
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCurrencySelectionRow() {
+    return GestureDetector(
+      onTap: _showCurrencySelectionSheet,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              AppLocalizations.of(context)!.selectNetwork,
+              style: const TextStyle(
+                fontSize: 14,
+                color: Colors.black87,
+              ),
+            ),
+            Row(
+              children: [
+                Text(
+                  _selectedCurrency == null
+                      ? AppLocalizations.of(context)!.pleaseSelect
+                      : _selectedCurrency!.coinName,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color:
+                        _selectedCurrency == null ? Colors.grey : Colors.black,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                const Icon(
+                  Icons.chevron_right,
+                  size: 20,
+                  color: Colors.grey,
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

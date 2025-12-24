@@ -227,5 +227,20 @@
   "confirmPasswordLabel": "Confirm password",
   "byRegisteringYouAccept": "By registering you accept our",
   "andPrivacyPolicy": "and",
-  "yourDataWillBeSecure": "Your data will be security encrypted with TLS."
+  "yourDataWillBeSecure": "Your data will be security encrypted with TLS.",
+  "originalFee": "Original Fee",
+  "actualPayment": "Actual Payment",
+  "paymentRequired": "Payment Required",
+  "goBack": "Go Back",
+  "cancel": "Cancel",
+  "paymentSuccessful": "Payment successful!",
+  "confirmPayment": "Confirm Payment",
+  "amountToPay": "Amount to Pay",
+  "selectCoupon": "Select Coupon",
+  "noCoupon": "No coupon",
+  "applyCard": "Apply Card",
+  "failedToLoadCardFee": "Failed to load card fee",
+  "comeComePayCard": "Come Come Pay Card",
+  "code": "Code",
+  "insufficient": "Insufficient"
 }

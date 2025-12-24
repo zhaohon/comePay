@@ -10,7 +10,7 @@ class CardTradeService extends BaseService {
   }) async {
     try {
       final response = await dio.get(
-        'http://31.97.222.142:2050/api/v1/card/trade',
+        'http://149.88.65.193:8010/api/v1/card/trade',
         queryParameters: {
           'publicToken': publicToken,
           'page': page,

@@ -8,7 +8,7 @@ class WalletService extends BaseService {
   Future<WalletResponse> getWalletById(int idUser) async {
     try {
       final response = await dio.get(
-        'http://31.97.222.142:8010/api/v1/wallet/',
+        'http://149.88.65.193:8010/api/v1/wallet/',
         options: Options(
           headers: {
             'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ class WalletService extends BaseService {
       VerifyPinRequest request, int idUser) async {
     try {
       final response = await dio.post(
-        'http://31.97.222.142:2050/api/wallet/verify-pin',
+        'http://149.88.65.193:8010/api/wallet/verify-pin',
         data: request.toJson(),
         options: Options(
           headers: {

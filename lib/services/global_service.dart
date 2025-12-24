@@ -1629,7 +1629,7 @@ class GlobalService extends BaseService {
       }
 
       final response = await dio.post(
-        'http://31.97.222.142:2050/api/chat/send',
+        'http://149.88.65.193:8010/api/chat/send',
         data: request.toJson(),
         options: Options(
           headers: {
@@ -1780,11 +1780,10 @@ class GlobalService extends BaseService {
     }
   }
 
-  Future<CarddetailResponseModel> initGetCard(int kyc_id) async{
-
-    try{
+  Future<CarddetailResponseModel> initGetCard(int kyc_id) async {
+    try {
       final response = await dio.get(
-        'http://31.97.222.142:2050/api/v1/card',
+        'http://149.88.65.193:8010/api/v1/card',
         queryParameters: {'kyc_id': kyc_id},
         options: Options(
           headers: {
@@ -1805,14 +1804,11 @@ class GlobalService extends BaseService {
         _apiLogger.logMethodExit('getCardData', result: 'Failed');
         throw Exception(data['message'] ?? 'Failed to retrieve card data');
       }
-
-
-    }catch (e){
+    } catch (e) {
       _apiLogger.logFailure('initGetCard', 'Exception occurred',
           error: e.toString());
       throw Exception('Failed to retrieve card data: ${e.toString()}');
     }
-
   }
 
   // Method untuk initialize Didit token
@@ -1886,7 +1882,7 @@ class GlobalService extends BaseService {
       }
 
       final response = await dio.get(
-        'http://31.97.222.142:2050/api/card',
+        'http://149.88.65.193:8010/api/card',
         options: Options(
           headers: {
             'Authorization': 'Bearer $accessToken',
@@ -1991,7 +1987,7 @@ class GlobalService extends BaseService {
     try {
       print('🔥 [SEND EMAIL] Making API call to send-email endpoint...');
       final response = await dio.post(
-        'http://31.97.222.142:2050/api/send-email',
+        'http://149.88.65.193:8010/api/send-email',
         data: {
           'email': email,
           'name': name,
@@ -2055,7 +2051,7 @@ class GlobalService extends BaseService {
       }
 
       final response = await dio.post(
-        'http://31.97.222.142:2050/api/wallet',
+        'http://149.88.65.193:8010/api/wallet',
         data: request.toJson(),
         options: Options(
           headers: {
@@ -2099,7 +2095,8 @@ class GlobalService extends BaseService {
   }
 
   // Method untuk create card
-  Future<dynamic> createCard(Map<String, dynamic> cardData, String userId) async {
+  Future<dynamic> createCard(
+      Map<String, dynamic> cardData, String userId) async {
     _apiLogger.logMethodEntry('createCard', parameters: {
       'card_data': cardData,
       'user_id': userId,
@@ -2107,7 +2104,7 @@ class GlobalService extends BaseService {
 
     try {
       final response = await dio.post(
-        'http://31.97.222.142:2050/api/card',
+        'http://149.88.65.193:8010/api/card',
         data: cardData,
         options: Options(
           headers: {
@@ -2142,7 +2139,8 @@ class GlobalService extends BaseService {
   }
 
   // Method untuk get chat history
-  Future<ChatHistoryResponse> getChatHistory(int userId, int page, int limit) async {
+  Future<ChatHistoryResponse> getChatHistory(
+      int userId, int page, int limit) async {
     _apiLogger.logMethodEntry('getChatHistory', parameters: {
       'user_id': userId,
       'page': page,
@@ -2156,7 +2154,7 @@ class GlobalService extends BaseService {
       }
 
       final response = await dio.get(
-        'http://31.97.222.142:2050/api/chat/history/$userId',
+        'http://149.88.65.193:8010/api/chat/history/$userId',
         queryParameters: {
           'page': page,
           'limit': limit,
@@ -2168,17 +2166,20 @@ class GlobalService extends BaseService {
 
       final data = handleResponse(response);
       if (data['code'] == 200) {
-        _apiLogger.logSuccess('getChatHistory', 'Chat history retrieved successfully');
+        _apiLogger.logSuccess(
+            'getChatHistory', 'Chat history retrieved successfully');
         _apiLogger.logMethodExit('getChatHistory', result: 'Success');
         return ChatHistoryResponse.fromJson(data);
       } else {
-        _apiLogger.logFailure('getChatHistory', 'Failed to retrieve chat history',
+        _apiLogger.logFailure(
+            'getChatHistory', 'Failed to retrieve chat history',
             error: data['message']);
         _apiLogger.logMethodExit('getChatHistory', result: 'Failed');
         throw Exception(data['message'] ?? 'Failed to retrieve chat history');
       }
     } on UnauthorizedException catch (e) {
-      _apiLogger.logFailure('getChatHistory', 'Unauthorized', error: e.toString());
+      _apiLogger.logFailure('getChatHistory', 'Unauthorized',
+          error: e.toString());
       _apiLogger.logMethodExit('getChatHistory', result: 'Unauthorized');
       throw e;
     } on DioException catch (e) {
@@ -2186,8 +2187,10 @@ class GlobalService extends BaseService {
       _apiLogger.logMethodExit('getChatHistory', result: 'Dio error');
       throw handleDioError(e);
     } catch (e) {
-      _apiLogger.logFailure('getChatHistory', 'Exception occurred', error: e.toString());
-      _apiLogger.logMethodExit('getChatHistory', result: 'Exception: ${e.toString()}');
+      _apiLogger.logFailure('getChatHistory', 'Exception occurred',
+          error: e.toString());
+      _apiLogger.logMethodExit('getChatHistory',
+          result: 'Exception: ${e.toString()}');
       throw Exception('Failed to retrieve chat history: ${e.toString()}');
     }
   }

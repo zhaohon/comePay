@@ -29,7 +29,7 @@ class SendPdpViewModel extends BaseViewModel {
     notifyListeners();
     try {
       final resp = await _dio.get(
-        'http://31.97.222.142:2050/api/networks',
+        'http://149.88.65.193:8010/api/networks',
         queryParameters: {'coin': symbol},
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
@@ -75,7 +75,7 @@ class SendPdpViewModel extends BaseViewModel {
 
     try {
       final resp = await _dio.post(
-        'http://31.97.222.142:2050/api/withdraw',
+        'http://149.88.65.193:8010/api/withdraw',
         data: {
           'coin_id': coinId,
           'network_id': networkId,

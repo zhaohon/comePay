@@ -4,6 +4,8 @@ import 'package:comecomepay/viewmodels/profile_screen_viewmodel.dart';
 import 'package:comecomepay/views/homes/ProfilKycDiditScreen.dart';
 import 'package:comecomepay/models/requests/didit_initialize_token_request_model.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
+import 'package:comecomepay/services/kyc_service.dart';
+import 'package:comecomepay/utils/app_colors.dart';
 
 class Cardverificationscreen extends StatefulWidget {
   const Cardverificationscreen({Key? key}) : super(key: key);
@@ -14,6 +16,7 @@ class Cardverificationscreen extends StatefulWidget {
 
 class _VerificationScreenState extends State<Cardverificationscreen> {
   late ProfileScreenViewModel _viewModel;
+  final KycService _kycService = KycService();
   final _formKey = GlobalKey<FormState>();
 
   // Controllers
@@ -40,14 +43,53 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
   void initState() {
     super.initState();
     _viewModel = ProfileScreenViewModel();
+    _checkEligibility(); // 检查KYC资格
+  }
+
+  /// 检查用户是否有资格进行KYC认证
+  Future<void> _checkEligibility() async {
+    try {
+      final eligibility = await _kycService.checkEligibility();
+
+      if (!eligibility.eligible) {
+        // 用户没有资格进行KYC
+        if (!mounted) return;
+
+        await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => AlertDialog(
+            title: const Text('Payment Required'),
+            content: Text(
+              eligibility.reason.isEmpty
+                  ? 'You need to complete the card fee payment before proceeding with KYC verification.'
+                  : eligibility.reason,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close dialog
+                  Navigator.pop(context); // Go back to previous screen
+                },
+                child: const Text('Go Back'),
+              ),
+            ],
+          ),
+        );
+      }
+    } catch (e) {
+      print('Error checking KYC eligibility: $e');
+      // 发生错误时，允许用户继续（可选：也可以阻止）
+      // 这里选择打印错误但不阻止用户
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.pageBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.pageBackground,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
@@ -77,35 +119,44 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                 ),
                 const SizedBox(height: 5),
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade400),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
-                    children: [
-                      Image.asset(_selectedFlag, width: 24, height: 24),
-                      const SizedBox(width: 8),
-                      Text(
-                        _selectedCode,
-                        style: const TextStyle(fontSize: 14),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 14),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade400),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      const SizedBox(width: 8),
-                      const VerticalDivider(color: Colors.grey, thickness: 1),
-                      Expanded(
-                        child: TextFormField(
-                          controller: _phoneNumberController,
-                          keyboardType: TextInputType.phone,
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Enter mobile number',
-                            hintStyle: TextStyle(color: Colors.grey),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Image.asset(_selectedFlag, width: 24, height: 24),
+                          const SizedBox(width: 8),
+                          Text(
+                            _selectedCode,
+                            style: const TextStyle(fontSize: 14),
                           ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _phoneNumberController,
+                        keyboardType: TextInputType.phone,
+                        decoration: InputDecoration(
+                          hintText: 'Enter mobile number',
+                          hintStyle: const TextStyle(color: Colors.grey),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 14),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 15),
 
@@ -116,7 +167,8 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
                 ),
                 const SizedBox(height: 5),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey.shade400),
                     borderRadius: BorderRadius.circular(8),
@@ -171,79 +223,89 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
 
                 SizedBox(
                   width: double.infinity,
-                  height: 48,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF0D47A1),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () async {
+                        if (_formKey.currentState!.validate()) {
+                          // Validate Name and Surname contain only uppercase English letters
+                          if (!_validateEnglishUppercase(
+                              _nameController.text, 'Name')) {
+                            return;
+                          }
+                          if (!_validateEnglishUppercase(
+                              _surnameController.text, 'Surname')) {
+                            return;
+                          }
+                          // Get email from profile
+                          final user = HiveStorageService.getUser();
+                          final email = user?.email ?? '';
+
+                          // Create request model from form data
+                          final request = DiditInitializeTokenRequestModel(
+                            address: _addressController.text,
+                            agentUid:
+                                '${_nameController.text}_${_surnameController.text}_${DateTime.now().millisecondsSinceEpoch}',
+                            areaCode: _selectedCode.replaceAll('+', ''),
+                            billCountryCode: _selectedCountry == 'China'
+                                ? 'CN'
+                                : _selectedCountry == 'Vietnam'
+                                    ? 'VN'
+                                    : 'ID',
+                            city: _cityController.text,
+                            email: email,
+                            firstEnName: _nameController.text.toUpperCase(),
+                            lastEnName: _surnameController.text.toUpperCase(),
+                            phone: _phoneNumberController.text,
+                            postCode: _postcodeController.text,
+                            returnUrl: 'https://yourapp.com/kyc/didit/callback',
+                            state: _stateController.text,
+                          );
+
+                          final response =
+                              await _viewModel.initializeDiditToken(request);
+
+                          if (response != null &&
+                              response.diditToken.data.url.isNotEmpty) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProfilkycDiditScreen(
+                                  url: response.diditToken.data.url,
+                                ),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  _viewModel.errorMessage ??
+                                      'Failed to initialize KYC',
+                                ),
+                              ),
+                            );
+                          }
+                        }
+                      },
+                      borderRadius: BorderRadius.circular(12),
+                      child: Ink(
+                        decoration: BoxDecoration(
+                          gradient: AppColors.primaryGradient,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Container(
+                          height: 52,
+                          alignment: Alignment.center,
+                          child: const Text(
+                            "Continue",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        // Validate Name and Surname contain only uppercase English letters
-                        if (!_validateEnglishUppercase(
-                            _nameController.text, 'Name')) {
-                          return;
-                        }
-                        if (!_validateEnglishUppercase(
-                            _surnameController.text, 'Surname')) {
-                          return;
-                        }
-                        // Get email from profile
-                        final user = HiveStorageService.getUser();
-                        final email = user?.email ?? '';
-
-                        // Create request model from form data
-                        final request = DiditInitializeTokenRequestModel(
-                          address: _addressController.text,
-                          agentUid:
-                              '${_nameController.text}_${_surnameController.text}_${DateTime.now().millisecondsSinceEpoch}',
-                          areaCode: _selectedCode.replaceAll('+', ''),
-                          billCountryCode: _selectedCountry == 'China'
-                              ? 'CN'
-                              : _selectedCountry == 'Vietnam'
-                                  ? 'VN'
-                                  : 'ID',
-                          city: _cityController.text,
-                          email: email,
-                          firstEnName: _nameController.text.toUpperCase(),
-                          lastEnName: _surnameController.text.toUpperCase(),
-                          phone: _phoneNumberController.text,
-                          postCode: _postcodeController.text,
-                          returnUrl: 'https://yourapp.com/kyc/didit/callback',
-                          state: _stateController.text,
-                        );
-
-                        final response =
-                            await _viewModel.initializeDiditToken(request);
-
-                        if (response != null &&
-                            response.diditToken.data.url.isNotEmpty) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ProfilkycDiditScreen(
-                                url: response.diditToken.data.url,
-                              ),
-                            ),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                _viewModel.errorMessage ??
-                                    'Failed to initialize KYC',
-                              ),
-                            ),
-                          );
-                        }
-                      }
-                    },
-                    child: const Text(
-                      "Continue",
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),

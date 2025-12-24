@@ -709,4 +709,46 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get yourDataWillBeSecure =>
       'Your data will be security encrypted with TLS.';
+
+  @override
+  String get originalFee => 'Original Fee';
+
+  @override
+  String get actualPayment => 'Actual Payment';
+
+  @override
+  String get paymentRequired => 'Payment Required';
+
+  @override
+  String get goBack => 'Go Back';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get paymentSuccessful => 'Payment successful!';
+
+  @override
+  String get confirmPayment => 'Confirm Payment';
+
+  @override
+  String get amountToPay => 'Amount to Pay';
+
+  @override
+  String get selectCoupon => 'Select Coupon';
+
+  @override
+  String get noCoupon => 'No coupon';
+
+  @override
+  String get applyCard => 'Apply Card';
+
+  @override
+  String get failedToLoadCardFee => 'Failed to load card fee';
+
+  @override
+  String get code => 'Code';
+
+  @override
+  String get insufficient => 'Insufficient';
 }

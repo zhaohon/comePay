@@ -9,7 +9,7 @@ class LogTestUtil {
   static void testLongResponse(Map<String, dynamic> responseData) {
     Logger.response(
       'GET',
-      'http://31.97.222.142:8010/api/v1/wallet/',
+      'http://149.88.65.193:8010/api/v1/wallet/',
       200,
       responseData,
       const Duration(milliseconds: 773),

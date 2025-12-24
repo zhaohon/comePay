@@ -3,7 +3,7 @@ class AppConstants {
   static const String appVersion = '1.0.0';
 
   // API endpoints
-  static const String baseUrl = 'http://31.97.222.142:8010/api/v1';
+  static const String baseUrl = 'http://149.88.65.193:8010/api/v1';
 
   // Routes
   static const String homeRoute = '/';

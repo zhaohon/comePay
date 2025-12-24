@@ -3,10 +3,11 @@ import 'package:comecomepay/core/base_service.dart';
 import 'package:comecomepay/models/transaction_record_model.dart';
 
 class TransactionRecordService extends BaseService {
-  Future<TransactionRecordResponse> fetchTransactionRecords({int page = 1, int limit = 10}) async {
+  Future<TransactionRecordResponse> fetchTransactionRecords(
+      {int page = 1, int limit = 10}) async {
     try {
       final response = await dio.get(
-        'http://31.97.222.142:2050/api/transaction-record',
+        'http://149.88.65.193:8010/api/transaction-record',
         queryParameters: {
           'page': page,
           'limit': limit,
