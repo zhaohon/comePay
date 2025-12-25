@@ -5,6 +5,7 @@ import 'package:comecomepay/views/homes/AuthorizationRecordScreen.dart'
     show AuthorizationRecordScreen;
 import 'package:comecomepay/views/homes/CardApplyConfirmScreen.dart'
     show CardApplyConfirmScreen;
+import 'package:comecomepay/views/homes/CardTransactionDetailScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../l10n/app_localizations.dart';
@@ -13,7 +14,11 @@ import 'package:comecomepay/viewmodels/profile_screen_viewmodel.dart';
 import 'package:comecomepay/services/kyc_service.dart';
 import 'package:comecomepay/models/kyc_model.dart';
 import 'package:comecomepay/viewmodels/card_trade_viewmodel.dart';
+import 'package:comecomepay/viewmodels/card_viewmodel.dart';
 import 'package:comecomepay/utils/app_colors.dart';
+import 'package:comecomepay/services/card_service.dart';
+import 'package:comecomepay/models/card_list_model.dart';
+import 'package:comecomepay/models/card_account_details_model.dart';
 
 class CardScreen extends StatefulWidget {
   const CardScreen({super.key});
@@ -32,18 +37,34 @@ class _CardScreenState extends State<CardScreen> {
 
   late ProfileScreenViewModel _viewModel;
   late CardTradeViewModel _cardTradeViewModel;
+  final CardService _cardService = CardService();
 
-  // KYC related state
-  bool _isKycLoading = false;
-  String? _kycError;
-  List<KycModel>? _kycData;
-  CarddetailModel? _cardDetailData;
-  bool _showBlankScreen = false;
-  int? _kycTotal;
+  // 卡片列表相关状态
+  CardListResponseModel? _cardList;
+  bool _isLoadingCards = false;
+  String? _cardError;
+
+  // 当前选中的卡片索引
+  int _currentCardIndex = 0;
+  final PageController _pageController = PageController();
+
+  // 当前卡片详情
+  CardAccountDetailsModel? _currentCardDetails;
+  bool _isLoadingCardDetails = false;
+
+  // 交易记录相关
+  List<Map<String, dynamic>> _transactions = [];
+  int _transactionPage = 1;
+  bool _isLoadingTransactions = false;
+  bool _hasMoreTransactions = true;
+
+  // UI状态
   bool _isInitialLoading = true;
   bool _isCardNumberVisible = false;
   bool _isCardLocked = false;
-  bool _hasLoadedTrades = false;
+  bool _isBalanceVisible = true; // 余额是否可见
+  Map<String, String> _cvvCache = {}; // 临时存储CVV，不持久化
+  Map<String, String> _pinCache = {}; // 临时存储PIN，不持久化
 
   // Scroll controller for pagination
   final ScrollController _scrollController = ScrollController();
@@ -53,13 +74,59 @@ class _CardScreenState extends State<CardScreen> {
     super.initState();
     _viewModel = ProfileScreenViewModel();
     _cardTradeViewModel = CardTradeViewModel();
-    _loadProfile();
+
+    // 优先使用缓存的卡片列表
+    final cachedList = CardViewModel.cachedCardList;
+    if (cachedList != null) {
+      setState(() {
+        _cardList = cachedList;
+        _isInitialLoading = false;
+      });
+      // 如果有卡片，加载第一张卡片的详情和交易记录
+      if (cachedList.hasCards) {
+        _currentCardIndex = 0;
+        _loadCurrentCardDetails();
+        _loadTransactions();
+      }
+    } else {
+      // 如果没有缓存，加载卡片列表
+      _loadCardList();
+    }
+
     _setupScrollListener();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // 当页面重新显示时，检查是否需要刷新
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkAndRefreshCardList();
+    });
+  }
+
+  /// 检查并刷新卡片列表（如果缓存已更新）
+  void _checkAndRefreshCardList() {
+    final cachedList = CardViewModel.cachedCardList;
+    if (cachedList != null && _cardList != null) {
+      // 如果缓存中的卡片数量与当前不同，刷新列表
+      if (cachedList.total != _cardList!.total) {
+        setState(() {
+          _cardList = cachedList;
+        });
+        if (cachedList.hasCards) {
+          _currentCardIndex = 0;
+          _loadCurrentCardDetails();
+          _loadTransactions();
+        }
+      }
+    }
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -73,149 +140,148 @@ class _CardScreenState extends State<CardScreen> {
   }
 
   Future<void> _loadMoreTrades() async {
-    if (_cardDetailData?.publicToken != null &&
-        _cardTradeViewModel.hasMoreData) {
-      await _cardTradeViewModel.fetchCardTrades(
-        publicToken: _cardDetailData!.publicToken,
-        isLoadMore: true,
-      );
-    }
-  }
-
-  Future<void> _loadProfile() async {
-    final accessToken = HiveStorageService.getAccessToken();
-    if (accessToken != null) {
-      final success = await _viewModel.getProfile(accessToken);
-      if (success) {
-        final profileEmail = _viewModel.profileResponse?.user.email;
-        final profileUserId = _viewModel.profileResponse?.user.id.toString();
-        setState(() {
-          email = profileEmail;
-          userId = profileUserId;
-        });
-        if (email != null) {
-          await _loadKycData(email!);
-        }
-
-        setState(() {
-          _isInitialLoading = false;
-        });
-      } else {
-        // Fallback to auth data if profile fetch fails
-        final user = HiveStorageService.getUser();
-        setState(() {
-          email = user?.email;
-          userId = user?.id.toString();
-          _isInitialLoading = false;
-        });
+    if (_cardList != null &&
+        _cardList!.hasCards &&
+        _currentCardIndex < _cardList!.cards.length) {
+      final currentCard = _cardList!.cards[_currentCardIndex];
+      if (_hasMoreTransactions && !_isLoadingTransactions) {
+        await _loadTransactions(isLoadMore: true);
       }
-    } else {
-      // Fallback to auth data if no access token
-      final user = HiveStorageService.getUser();
-      setState(() {
-        email = user?.email;
-        userId = user?.id.toString();
-        _isInitialLoading = false;
-      });
     }
   }
 
-  Future<void> _loadKycData(String kycEmail) async {
+  /// 加载卡片列表
+  Future<void> _loadCardList() async {
     setState(() {
-      _isKycLoading = true;
-      _kycError = null;
+      _isLoadingCards = true;
+      _cardError = null;
+      _isInitialLoading = true;
     });
 
     try {
-      final kycService = KycService();
-      final result = await kycService.getUserKyc(kycEmail);
-      final total = result['total'] as int;
-      final kycData = result['list'] as List<KycModel>;
+      final cardList = await _cardService.getCardList();
 
       setState(() {
-        _kycData = kycData;
-        _kycTotal = total;
-        _isKycLoading = false;
-        // Don't set _showBlankScreen here, wait for card data
-      });
-      await _loadCardData(kycData[0].id);
-    } catch (e) {
-      setState(() {
-        _isKycLoading = false;
-        _kycError = e.toString();
-        // Jika error, tampilan tetap normal
-        _showBlankScreen = false;
+        _cardList = cardList;
+        _isLoadingCards = false;
         _isInitialLoading = false;
       });
+
+      // 如果有卡片，加载第一张卡片的详情和交易记录
+      if (cardList.hasCards) {
+        _currentCardIndex = 0;
+        await _loadCurrentCardDetails();
+        await _loadTransactions();
+      }
+      // 如果没有卡片，_cardList已经设置为空列表，build方法会显示申请页面
+    } catch (e) {
+      // 如果还有异常（理论上不应该发生，因为CardService已经处理了），创建一个空的卡片列表
+      setState(() {
+        _cardError = e.toString();
+        _isLoadingCards = false;
+        _isInitialLoading = false;
+        _cardList = CardListResponseModel(total: 0, cards: []);
+      });
+      print('Error loading card list: $e');
     }
   }
 
-  Future<void> _loadCardData(int kyc_id) async {
+  /// 加载当前选中卡片的详情
+  Future<void> _loadCurrentCardDetails() async {
+    if (_cardList == null || !_cardList!.hasCards) return;
+    if (_currentCardIndex >= _cardList!.cards.length) return;
+
+    final currentCard = _cardList!.cards[_currentCardIndex];
+
+    setState(() {
+      _isLoadingCardDetails = true;
+    });
+
     try {
-      final cardResponse = await _viewModel.getCardData(kyc_id);
+      final details =
+          await _cardService.getCardAccountDetails(currentCard.publicToken);
 
-      if (cardResponse != null) {
-        setState(() {
-          _cardDetailData = cardResponse.data;
-          // Set _showBlankScreen only if card data loaded and KYC total >=1
-          _showBlankScreen = (_kycTotal != null && _kycTotal! >= 1);
-        });
-
-        // Load initial card trades if card data is available and not loaded yet
-        if (_cardDetailData?.publicToken != null && !_hasLoadedTrades) {
-          setState(() {
-            _hasLoadedTrades = true;
-          });
-          await _cardTradeViewModel.fetchCardTrades(
-            publicToken: _cardDetailData!.publicToken,
-          );
-        }
-      } else {
-        // If cardResponse is null, try to create card
-        if (_kycData != null &&
-            _kycData!.isNotEmpty &&
-            _viewModel.profileResponse != null) {
-          final createSuccess = await _viewModel.createCard(
-              _kycData!, _viewModel.profileResponse!);
-          if (createSuccess) {
-            // If create card succeeds, call _loadCardData again
-            await _loadCardData(kyc_id);
-            return;
-          }
-        }
-        setState(() {
-          _cardDetailData = null;
-          _showBlankScreen = false;
-        });
-      }
-    } catch (e) {
-      // If in catch block, try to create card
-      if (_kycData != null &&
-          _kycData!.isNotEmpty &&
-          _viewModel.profileResponse != null) {
-        try {
-          final createSuccess = await _viewModel.createCard(
-              _kycData!, _viewModel.profileResponse!);
-          if (createSuccess) {
-            // If create card succeeds, call _loadCardData again
-            await _loadCardData(kyc_id);
-            return;
-          }
-        } catch (createError) {
-          // If create card also fails, continue with original error handling
-        }
-      }
       setState(() {
-        _cardDetailData = null;
-        _showBlankScreen = false;
-        _isInitialLoading = false;
+        _currentCardDetails = details;
+        _isLoadingCardDetails = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoadingCardDetails = false;
+      });
+      print('Error loading card details: $e');
+    }
+  }
+
+  /// 加载交易记录
+  Future<void> _loadTransactions({bool isLoadMore = false}) async {
+    if (_cardList == null || !_cardList!.hasCards) return;
+    if (_currentCardIndex >= _cardList!.cards.length) return;
+
+    final currentCard = _cardList!.cards[_currentCardIndex];
+
+    if (!isLoadMore) {
+      setState(() {
+        _transactions = [];
+        _transactionPage = 1;
+        _hasMoreTransactions = true;
       });
     }
+
+    if (!_hasMoreTransactions) return;
+
+    setState(() {
+      _isLoadingTransactions = true;
+    });
+
+    try {
+      final result = await _cardService.getTransactionHistory(
+        publicToken: currentCard.publicToken,
+        page: _transactionPage,
+        limit: 20,
+      );
+
+      final transactions = result['transactions'] as List<dynamic>? ?? [];
+      final total = result['total'] as int? ?? 0;
+
+      setState(() {
+        if (isLoadMore) {
+          _transactions.addAll(
+            transactions.map((t) => t as Map<String, dynamic>).toList(),
+          );
+        } else {
+          _transactions =
+              transactions.map((t) => t as Map<String, dynamic>).toList();
+        }
+        _transactionPage++;
+        _hasMoreTransactions = _transactions.length < total;
+        _isLoadingTransactions = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoadingTransactions = false;
+      });
+      print('Error loading transactions: $e');
+    }
+  }
+
+  /// 切换卡片
+  void _onCardChanged(int index) {
+    if (index == _currentCardIndex) return;
+
+    setState(() {
+      _currentCardIndex = index;
+      _isCardNumberVisible = false; // 切换卡片时隐藏卡号
+    });
+
+    // 加载新卡片的详情和交易记录
+    _loadCurrentCardDetails();
+    _loadTransactions();
   }
 
   @override
   Widget build(BuildContext context) {
-    // Jika masih loading awal, tampilkan loading screen
+    // 初始加载中
     if (_isInitialLoading) {
       return Scaffold(
         backgroundColor: AppColors.pageBackground,
@@ -225,371 +291,789 @@ class _CardScreenState extends State<CardScreen> {
       );
     }
 
-    // Jika showBlankScreen true, tampilkan blank screen dengan "hello world"
+    // 如果有卡片，显示卡片详情页面
+    if (_cardList != null && _cardList!.hasCards) {
+      return _buildCardDetailScreen();
+    }
 
-    if (_showBlankScreen) {
-      String selectedCurrency = 'USD'; // default currency
+    // 如果没有卡片（包括_cardList为null、total=0、或接口报错），都显示申请页面
+    return _buildApplyScreen();
+  }
 
-      return StatefulBuilder(
-        builder: (context, setState) {
-          return Scaffold(
-            backgroundColor: AppColors.pageBackground,
-            body: SingleChildScrollView(
-              controller: _scrollController,
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 40),
+  /// 构建卡片详情页面（支持多卡片切换）
+  Widget _buildCardDetailScreen() {
+    final currentCard = _cardList!.cards[_currentCardIndex];
+    final cardCount = _cardList!.cards.length;
+    final hasLeftCard = _currentCardIndex > 0;
+    final hasRightCard = _currentCardIndex < cardCount - 1;
 
-                  // ===== Saldo + Mata uang + Icon Mata + Dropdown =====
-                  Row(
+    return Scaffold(
+      backgroundColor: AppColors.pageBackground,
+      // appBar: AppBar(
+      //   backgroundColor: AppColors.pageBackground,
+      //   elevation: 0,
+      //   automaticallyImplyLeading: false,
+      // ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await _loadCardList();
+        },
+        child: SingleChildScrollView(
+          controller: _scrollController,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ===== 余额和加号（一行，最右边） =====
+              SizedBox(
+                height: 24,
+              ),
+              SafeArea(
+                bottom: false,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Text(
-                        '1.48',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-
-                      // Nama currency di sebelah kiri ikon mata
-                      Text(
-                        selectedCurrency,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-
-                      // Ikon mata
-                      const Icon(
-                        Icons.visibility,
-                        size: 20,
-                        color: Colors.black,
-                      ),
-
-                      const SizedBox(width: 4),
-
-                      // Dropdown hanya icon panah, tapi ubah value currency
-                      DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          value: selectedCurrency,
-                          icon: const Icon(
-                            Icons.arrow_drop_down,
-                            color: Colors.black,
-                          ),
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          items: <String>['USD', 'IDR', 'EUR', 'SGD']
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(
-                                value,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (String? newValue) {
-                            if (newValue != null) {
-                              setState(() {
-                                selectedCurrency = newValue;
-                              });
-                            }
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 4),
-                  Text(
-                    'Estimated Available Balance',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[700],
-                    ),
-                  ),
-
-                  const SizedBox(height: 30),
-
-                  // ===== Gambar Kartu =====
-                  Container(
-                    height: 180,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Stack(
-                      children: [
-                        // Susunan kolom di kanan atas
-                        Positioned(
-                          right: 16,
-                          top: 16,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              // VISA
-                              Text(
-                                _cardDetailData?.cardScheme ?? 'VISA',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-
-                              // Comepay logo (tengah)
-                              Image.asset(
-                                'assets/which.png',
-                                height: 50,
-                                fit: BoxFit.contain,
-                              ),
-                              const SizedBox(height: 20),
-
-                              // Chip icon (bawah)
-                              Image.asset(
-                                'assets/chip.png',
-                                height: 28,
-                                width: 40,
-                                fit: BoxFit.contain,
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        // Icon besar di tengah kartu
-                        if (_isCardLocked)
-                          const Center(
-                            child: Icon(
-                              Icons.lock,
-                              color: Colors.blueAccent,
-                              size: 48,
-                            ),
-                          ),
-
-                        // Detail kartu di pojok kiri bawah
-                        Positioned(
-                          left: 16,
-                          bottom: 16,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Nomor kartu dengan ikon mata
-                              Row(
-                                children: [
-                                  Text(
-                                    _isCardNumberVisible
-                                        ? (_cardDetailData?.cardNo ??
-                                            '**** **** **** ****')
-                                        : '**** **** **** ****', // Placeholder nomor kartu
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        _isCardNumberVisible =
-                                            !_isCardNumberVisible;
-                                      });
-                                    },
-                                    child: Icon(
-                                      _isCardNumberVisible
-                                          ? Icons.visibility
-                                          : Icons.visibility_off,
-                                      color: Colors.white,
-                                      size: 20,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 4),
-                              // Nama
-                              Text(
-                                _cardDetailData?.memberName ??
-                                    'CARDHOLDER NAME', // Placeholder nama
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              // CVV dan Expire Date
-                              Row(
-                                children: [
-                                  Text(
-                                    'CVV: ${_cardDetailData?.kycId ?? '***'}',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 16),
-                                  Text(
-                                    'Expire Date: ${_cardDetailData?.expiryDate ?? 'MM/YY'}',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // ===== Cards =====
-                  GridView.count(
-                    crossAxisCount: 4,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                    children: [
-                      _buildActionCard(Icons.info, 'Card Info'),
-                      _buildActionCard(Icons.lock, 'Lock Card'),
-                      _buildActionCard(Icons.refresh, 'Autorecharge'),
-                      _buildActionCard(Icons.add, 'Apply'),
-                      _buildActionCard(Icons.update, 'Renew'),
-                    ],
-                  ),
-
-                  const SizedBox(height: 40),
-
-                  // ===== Bagian Latest Transactions =====
-                  Text(
-                    'Latest transactions',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[800],
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Show loading indicator for trades
-                  if (_cardTradeViewModel.busy)
-                    const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  else if (_cardTradeViewModel.hasError)
-                    Center(
-                      child: Column(
-                        children: [
-                          const Icon(Icons.error, size: 48, color: Colors.red),
-                          const SizedBox(height: 8),
-                          Text(_cardTradeViewModel.errorMessage ??
-                              'Error loading transactions'),
-                          TextButton(
-                            onPressed: () {
-                              if (_cardDetailData?.publicToken != null) {
-                                _cardTradeViewModel.fetchCardTrades(
-                                  publicToken: _cardDetailData!.publicToken,
-                                );
-                              }
-                            },
-                            child: const Text('Retry'),
-                          ),
-                        ],
-                      ),
-                    )
-                  else if (_cardTradeViewModel.totalTrades == 0)
-                    Center(
-                      child: Column(
-                        children: const [
-                          Icon(Icons.inbox, size: 48, color: Colors.blueAccent),
-                          SizedBox(height: 8),
-                          Text('transaction is empty'),
-                        ],
-                      ),
-                    )
-                  else
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: _cardTradeViewModel.cardTrades.length +
-                          (_cardTradeViewModel.hasMoreData ? 1 : 0),
-                      itemBuilder: (context, index) {
-                        if (index == _cardTradeViewModel.cardTrades.length) {
-                          // Loading indicator for pagination
-                          return const Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: CircularProgressIndicator(),
-                            ),
-                          );
-                        }
-
-                        final displayData =
-                            _cardTradeViewModel.tradeDisplayData[index];
-
-                        return Card(
-                          margin: const EdgeInsets.only(bottom: 8.0),
-                          child: ListTile(
-                            leading: Icon(
-                              displayData['isPositive']
-                                  ? Icons.arrow_upward
-                                  : Icons.arrow_downward,
-                              color: displayData['isPositive']
-                                  ? Colors.green
-                                  : Colors.red,
-                            ),
-                            title: Text(displayData['description']),
-                            subtitle: Text(displayData['date']),
-                            trailing: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.end,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  displayData['amount'],
-                                  style: TextStyle(
+                                  _isBalanceVisible &&
+                                          _currentCardDetails != null
+                                      ? _currentCardDetails!.balance
+                                          .toStringAsFixed(2)
+                                      : _isBalanceVisible
+                                          ? '0.00'
+                                          : '****',
+                                  style: const TextStyle(
+                                    fontSize: 24,
                                     fontWeight: FontWeight.bold,
-                                    color: displayData['isPositive']
-                                        ? Colors.green
-                                        : Colors.red,
+                                    color: AppColors.textPrimary,
                                   ),
                                 ),
+                                const SizedBox(width: 6),
                                 Text(
-                                  displayData['type'],
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey,
+                                  _currentCardDetails?.currencyCode ??
+                                      currentCard.currency,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _isBalanceVisible = !_isBalanceVisible;
+                                    });
+                                  },
+                                  child: Icon(
+                                    _isBalanceVisible
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                    size: 18,
+                                    color: AppColors.textSecondary,
                                   ),
                                 ),
                               ],
                             ),
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                Text(
+                                  '可用額度估值',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                GestureDetector(
+                                  onTap: () {
+                                    _showBalanceTip();
+                                  },
+                                  child: Icon(
+                                    Icons.help_outline,
+                                    size: 14,
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      // 加号按钮
+                      if (cardCount < 50)
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CardApplyConfirmScreen(
+                                  skipKycCheck: true,
+                                ),
+                              ),
+                            ).then((_) {
+                              _loadCardList();
+                            });
+                          },
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              gradient: AppColors.primaryGradient,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.primary.withOpacity(0.3),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: const Icon(
+                              Icons.add,
+                              color: Colors.white,
+                              size: 24,
+                            ),
                           ),
-                        );
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 15),
+
+              // ===== 卡片展示区域（全宽，带边缘渐变效果） =====
+              SizedBox(
+                height: 200,
+                child: Stack(
+                  children: [
+                    // 卡片轮播
+                    PageView.builder(
+                      controller: _pageController,
+                      itemCount: cardCount,
+                      onPageChanged: _onCardChanged,
+                      itemBuilder: (context, index) {
+                        final card = _cardList!.cards[index];
+                        return _buildCardWidget(card);
                       },
                     ),
+                    // 左侧渐变遮罩（表示有前一张卡片）
+                    if (hasLeftCard)
+                      Positioned(
+                        left: 0,
+                        top: 0,
+                        bottom: 0,
+                        child: Container(
+                          width: 40,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              colors: [
+                                AppColors.pageBackground,
+                                AppColors.pageBackground.withOpacity(0),
+                              ],
+                            ),
+                            borderRadius: const BorderRadius.only(
+                              topRight: Radius.circular(2),
+                              bottomRight: Radius.circular(2),
+                            ),
+                          ),
+                        ),
+                      ),
+                    // 右侧渐变遮罩（表示有后一张卡片）
+                    if (hasRightCard)
+                      Positioned(
+                        right: 0,
+                        top: 0,
+                        bottom: 0,
+                        child: Container(
+                          width: 40,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.centerRight,
+                              end: Alignment.centerLeft,
+                              colors: [
+                                AppColors.pageBackground,
+                                AppColors.pageBackground.withOpacity(0),
+                              ],
+                            ),
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(2),
+                              bottomLeft: Radius.circular(2),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              // ===== 操作按钮区域（3列布局） =====
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                child: GridView.count(
+                  crossAxisCount: 3,
+                  shrinkWrap: true,
+                  padding: EdgeInsets.zero, // 移除默认padding
+                  physics: const NeverScrollableScrollPhysics(),
+                  childAspectRatio: 1.2,
+                  children: [
+                    _buildActionCard(Icons.info_outline, '卡信息'),
+                    _buildActionCard(Icons.lock_outline, '鎖卡'),
+                    _buildActionCard(Icons.touch_app_outlined, '卡片授權'),
+                    _buildActionCard(Icons.credit_card_outlined, '申領實體卡'),
+                    _buildActionCard(Icons.link_off_outlined, '掛失'),
+                  ],
+                ),
+              ),
+
+              // ===== 交易记录区域（暂时隐藏） =====
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       Row(
+              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //         children: [
+              //           Text(
+              //             '賬單',
+              //             style: TextStyle(
+              //               fontWeight: FontWeight.bold,
+              //               fontSize: 18,
+              //               color: AppColors.textPrimary,
+              //             ),
+              //           ),
+              //           IconButton(
+              //             icon: const Icon(Icons.grid_view),
+              //             onPressed: () {
+              //               // TODO: 查看更多交易或筛选
+              //             },
+              //           ),
+              //         ],
+              //       ),
+              //     ],
+              //   ),
+              // ),
+
+              // // 交易记录列表（暂时隐藏）
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              //   child: Column(
+              //     children: [
+              //       if (_isLoadingTransactions && _transactions.isEmpty)
+              //         const Center(
+              //           child: Padding(
+              //             padding: EdgeInsets.all(16.0),
+              //             child: CircularProgressIndicator(),
+              //           ),
+              //         )
+              //       else if (_transactions.isEmpty)
+              //         Center(
+              //           child: Column(
+              //             children: [
+              //               Icon(Icons.inbox,
+              //                   size: 48, color: AppColors.textSecondary),
+              //               const SizedBox(height: 8),
+              //               Text(
+              //                 '暫無交易記錄',
+              //                 style: TextStyle(
+              //                   color: AppColors.textSecondary,
+              //                   fontSize: 14,
+              //                 ),
+              //               ),
+              //             ],
+              //           ),
+              //         )
+              //       else
+              //         ..._transactions
+              //             .map((transaction) =>
+              //                 _buildTransactionItem(transaction))
+              //             .toList(),
+
+              //       // 加载更多指示器
+              //       if (_isLoadingTransactions && _transactions.isNotEmpty)
+              //         const Center(
+              //           child: Padding(
+              //             padding: EdgeInsets.all(8.0),
+              //             child: CircularProgressIndicator(),
+              //           ),
+              //         ),
+
+              //       const SizedBox(height: 20),
+              //     ],
+              //   ),
+              // ),
+              const SizedBox(height: 100),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// 构建单张卡片Widget
+  Widget _buildCardWidget(CardListItemModel card) {
+    final isCurrentCard =
+        card.publicToken == _cardList!.cards[_currentCardIndex].publicToken;
+    final cardDetails = isCurrentCard ? _currentCardDetails : null;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+      height: 200,
+      decoration: BoxDecoration(
+        gradient: AppColors.primaryGradient,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withOpacity(0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          // 卡片右上角：费率信息
+          Positioned(
+            right: 16,
+            top: 16,
+            child: Row(
+              children: [
+                Text(
+                  '費率',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.9),
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Icon(
+                  Icons.help_outline,
+                  size: 14,
+                  color: Colors.white.withOpacity(0.9),
+                ),
+              ],
+            ),
+          ),
+
+          // 卡片左上角：P logo（文字）
+          Positioned(
+            left: 16,
+            top: 16,
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                shape: BoxShape.circle,
+              ),
+              child: const Center(
+                child: Text(
+                  'P',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          // 卡片中间：卡号（可点击查看）
+          Positioned(
+            left: 16,
+            top: 80,
+            child: GestureDetector(
+              onTap: isCurrentCard ? () => _showCardSecurityInfo() : null,
+              child: Row(
+                children: [
+                  Text(
+                    card.cardNo,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                  if (isCurrentCard) ...[
+                    const SizedBox(width: 8),
+                    Icon(
+                      Icons.visibility_off,
+                      color: Colors.white.withOpacity(0.8),
+                      size: 18,
+                    ),
+                  ],
                 ],
+              ),
+            ),
+          ),
+
+          // 卡片左下角：持卡人姓名
+          Positioned(
+            left: 16,
+            bottom: 50,
+            child: Text(
+              'CARDHOLDER NAME', // TODO: 从详情中获取
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.9),
+                fontSize: 14,
+              ),
+            ),
+          ),
+
+          // 卡片左下角：CVV和到期日（可点击查看）
+          Positioned(
+            left: 16,
+            bottom: 16,
+            child: Row(
+              children: [
+                GestureDetector(
+                  onTap: isCurrentCard ? () => _showCardSecurityInfo() : null,
+                  child: Text(
+                    'CVV: ***',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.9),
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Text(
+                  '到期日: ${cardDetails?.expiryDate ?? '***'}',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.9),
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // 卡片右下角：VISA Platinum
+          Positioned(
+            right: 16,
+            bottom: 16,
+            child: Text(
+              'VISA Platinum',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 构建交易记录项
+  Widget _buildTransactionItem(Map<String, dynamic> transaction) {
+    final amount = transaction['amount'] ?? 0.0;
+    final isPositive = amount > 0;
+    final description =
+        transaction['description'] ?? transaction['merchant'] ?? '交易';
+    final date = transaction['date'] ?? transaction['created_at'] ?? '';
+    final status = transaction['status'] ?? '';
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8.0),
+      child: ListTile(
+        leading: Icon(
+          isPositive ? Icons.arrow_upward : Icons.arrow_downward,
+          color: isPositive ? AppColors.success : AppColors.error,
+        ),
+        title: Text(description),
+        subtitle: Text(date),
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              '${isPositive ? '+' : ''}${amount.toStringAsFixed(2)}',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: isPositive ? AppColors.success : AppColors.error,
+              ),
+            ),
+            if (status.isNotEmpty)
+              Text(
+                status,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+          ],
+        ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CardTransactionDetailScreen(
+                transaction: transaction,
               ),
             ),
           );
         },
+      ),
+    );
+  }
+
+  /// 显示余额提示
+  void _showBalanceTip() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: const Text('可用額度估值'),
+        content: const Text(
+          '除交易手續費及匯率波動後預估可用金額',
+          style: TextStyle(fontSize: 14),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('確定'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 显示卡片安全信息（底部弹出）
+  Future<void> _showCardSecurityInfo() async {
+    if (_cardList == null || !_cardList!.hasCards) return;
+    final currentCard = _cardList!.cards[_currentCardIndex];
+
+    // 先显示全屏loading
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+
+    try {
+      // 并行获取所有信息
+      final results = await Future.wait([
+        _cardService.getFullCardNumber(currentCard.publicToken),
+        _cardService.getCvv(currentCard.publicToken),
+        _cardService.getPin(currentCard.publicToken),
+      ]);
+
+      final fullCardNumber =
+          (results[0] as Map<String, String>)['card_number'] ?? '';
+      final cvv = results[1] as String;
+      final pin = results[2] as String;
+
+      // 关闭loading
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+
+      // 显示安全信息弹窗
+      _showSecurityInfoBottomSheet(fullCardNumber, cvv, pin);
+    } catch (e) {
+      // 关闭loading
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('获取卡片信息失败: $e')),
       );
     }
+  }
 
+  /// 显示安全信息底部弹窗
+  void _showSecurityInfoBottomSheet(String cardNumber, String cvv, String pin) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.7,
+        ),
+        decoration: BoxDecoration(
+          color: AppColors.cardBackground,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // 拖拽指示器
+            Container(
+              margin: const EdgeInsets.only(top: 12),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppColors.border,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            // 标题栏
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '卡片安全信息',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                    color: AppColors.textSecondary,
+                  ),
+                ],
+              ),
+            ),
+            // 内容区域
+            Flexible(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    _buildSecurityInfoItem('卡號', cardNumber),
+                    const SizedBox(height: 20),
+                    _buildSecurityInfoItem(
+                        '到期日', _currentCardDetails?.expiryDate ?? '***'),
+                    const SizedBox(height: 20),
+                    _buildSecurityInfoItem('CVV碼', cvv),
+                    const SizedBox(height: 20),
+                    _buildSecurityInfoItem('PIN碼', pin),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+              ),
+            ),
+            // 确认按钮
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: SizedBox(
+                width: double.infinity,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: AppColors.primaryGradient,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withOpacity(0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: const Text(
+                      '確認',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 构建安全信息项
+  Widget _buildSecurityInfoItem(String label, String value) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.pageBackground,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppColors.border,
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 15,
+              color: AppColors.textSecondary,
+            ),
+          ),
+          Row(
+            children: [
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                  letterSpacing: 1,
+                ),
+              ),
+              const SizedBox(width: 8),
+              GestureDetector(
+                onTap: () {
+                  // 复制到剪贴板
+                  // TODO: 实现复制功能
+                },
+                child: Icon(
+                  Icons.copy,
+                  size: 18,
+                  color: AppColors.primary,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 构建申请页面
+  Widget _buildApplyScreen() {
     return Consumer<LocaleProvider>(
       builder: (context, localeProvider, child) {
         final size = MediaQuery.of(context).size;
@@ -613,13 +1097,6 @@ class _CardScreenState extends State<CardScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // Loading indicator untuk KYC
-                      if (_isKycLoading)
-                        Padding(
-                          padding: EdgeInsets.only(bottom: size.height * 0.02),
-                          child: CircularProgressIndicator(),
-                        ),
-
                       Text(
                         AppLocalizations.of(context)!.comeComePayCard,
                         style: TextStyle(
@@ -630,7 +1107,6 @@ class _CardScreenState extends State<CardScreen> {
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: size.height * 0.05),
-
                       ClipRRect(
                         borderRadius: BorderRadius.circular(16),
                         child: Image.asset(
@@ -641,7 +1117,6 @@ class _CardScreenState extends State<CardScreen> {
                         ),
                       ),
                       SizedBox(height: size.height * 0.05),
-
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -653,7 +1128,6 @@ class _CardScreenState extends State<CardScreen> {
                         ],
                       ),
                       SizedBox(height: size.height * 0.05),
-
                       Text(
                         AppLocalizations.of(context)!.spendCryptoLikeFiat,
                         style: TextStyle(
@@ -663,7 +1137,6 @@ class _CardScreenState extends State<CardScreen> {
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: size.height * 0.08),
-
                       FractionallySizedBox(
                         widthFactor: buttonWidthFactor,
                         child: SizedBox(
@@ -744,44 +1217,47 @@ class _CardScreenState extends State<CardScreen> {
   Widget _buildActionCard(IconData icon, String label) {
     return GestureDetector(
       onTap: () {
-        if (label == 'Card Info') {
-          _showSecurityVerificationDialog();
-        } else if (label == 'Lock Card') {
-          setState(() {
-            _isCardLocked = !_isCardLocked;
-          });
-        } else if (label == 'Autorecharge') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AuthorizationRecordScreen(),
-            ),
-          );
-        } else if (label == 'Apply') {
-          _showApplyDialog();
-        } else if (label == 'Renew') {
-          _showRenewDialog();
+        if (label == '卡信息') {
+          _showCardSecurityInfo();
+        } else if (label == '鎖卡') {
+          // TODO: 实现锁卡功能
+        } else if (label == '卡片授權') {
+          // TODO: 实现卡片授权功能
+        } else if (label == '申領實體卡') {
+          // TODO: 实现申领实体卡功能
+        } else if (label == '掛失') {
+          // TODO: 实现挂失功能
         }
       },
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 32, color: Colors.black),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.black,
-              ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              color: AppColors.border,
+              shape: BoxShape.circle,
             ),
-          ],
-        ),
+            child: Icon(
+              icon,
+              size: 24,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              color: AppColors.textPrimary,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
       ),
     );
   }

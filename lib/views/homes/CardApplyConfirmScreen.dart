@@ -1,24 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/views/homes/CardVerificationScreen.dart';
+import 'package:comecomepay/views/homes/CardApplyProgressScreen.dart';
 import 'package:comecomepay/utils/app_colors.dart';
 import 'package:comecomepay/services/card_fee_service.dart';
 import 'package:comecomepay/services/kyc_service.dart';
+import 'package:comecomepay/services/card_service.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
 import 'package:comecomepay/models/card_fee_config_model.dart';
 import 'package:comecomepay/models/payment_currency_model.dart';
 import 'package:comecomepay/models/card_fee_payment_model.dart';
+import 'package:comecomepay/models/card_apply_model.dart';
+import 'package:comecomepay/viewmodels/card_viewmodel.dart';
 import 'package:dio/dio.dart';
 import 'package:comecomepay/models/responses/coupon_detail_model.dart';
 
 class CardApplyConfirmScreen extends StatefulWidget {
   final CardFeeConfigModel? cardFeeConfig;
   final CouponDetailModel? selectedCoupon;
+  final bool skipKycCheck; // 是否跳过KYC检查（已有卡片时使用）
 
   const CardApplyConfirmScreen({
     Key? key,
     this.cardFeeConfig,
     this.selectedCoupon,
+    this.skipKycCheck = false, // 默认不跳过
   }) : super(key: key);
 
   @override
@@ -28,6 +35,7 @@ class CardApplyConfirmScreen extends StatefulWidget {
 class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
   final CardFeeService _cardFeeService = CardFeeService();
   final KycService _kycService = KycService();
+  final CardService _cardService = CardService();
   final Dio dio = Dio();
 
   List<PaymentCurrencyModel> _paymentCurrencies = [];
@@ -47,10 +55,17 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
   void initState() {
     super.initState();
     _cardFeeConfig = widget.cardFeeConfig;
-    _checkEligibilityAndLoadData();
+    
+    // 如果跳过KYC检查（已有卡片），直接加载支付数据
+    if (widget.skipKycCheck) {
+      _loadData();
+    } else {
+      // 首次申请，需要检查KYC资格
+      _checkEligibilityAndLoadData();
+    }
   }
 
-  /// 检查KYC资格并加载数据
+  /// 检查KYC资格并加载数据（仅首次申请时使用）
   Future<void> _checkEligibilityAndLoadData() async {
     print('🔍 [CardApplyConfirmScreen] Checking KYC eligibility...');
     try {
@@ -610,7 +625,7 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
     }
   }
 
-  /// 显示支付确认对话框 (简洁版)
+  /// 显示支付确认对话框 (优化UI)
   Future<bool?> _showPaymentConfirmDialog() async {
     return showDialog<bool>(
       context: context,
@@ -619,62 +634,80 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
       builder: (context) {
         return Dialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(24),
           ),
           elevation: 0,
           backgroundColor: Colors.transparent,
           child: Container(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(28),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
+              color: AppColors.cardBackground,
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10),
+                ),
+              ],
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // 图标
+                // 图标（使用渐变背景）
                 Container(
-                  width: 64,
-                  height: 64,
+                  width: 72,
+                  height: 72,
                   decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(32),
+                    gradient: AppColors.primaryGradient,
+                    borderRadius: BorderRadius.circular(36),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withOpacity(0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
                   child: const Icon(
                     Icons.credit_card,
                     color: Colors.white,
-                    size: 32,
+                    size: 36,
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
 
                 // 标题
                 Text(
-                  AppLocalizations.of(context)!.confirmPayment,
-                  style: const TextStyle(
-                    fontSize: 20,
+                  '确认支付',
+                  style: TextStyle(
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    color: AppColors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 24),
 
-                // 支付金额（大号显示）
+                // 支付金额（大号显示，使用渐变文字效果）
                 if (_createdPayment != null) ...[
-                  Text(
-                    '${_createdPayment!.actualPayment.toStringAsFixed(2)} USD',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue.shade700,
+                  ShaderMask(
+                    shaderCallback: (bounds) => AppColors.primaryGradient
+                        .createShader(bounds),
+                    child: Text(
+                      '${_createdPayment!.actualPayment.toStringAsFixed(2)} ${_selectedCurrency?.name ?? 'USD'}',
+                      style: const TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    AppLocalizations.of(context)!.amountToPay,
+                    '支付金额',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey.shade600,
+                      color: AppColors.textSecondary,
                     ),
                   ),
                 ],
@@ -685,42 +718,60 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
                 Row(
                   children: [
                     Expanded(
-                      child: TextButton(
+                      child: OutlinedButton(
                         onPressed: () => Navigator.pop(context, false),
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
+                          side: BorderSide(
+                            color: AppColors.border,
+                            width: 1.5,
+                          ),
                         ),
                         child: Text(
-                          AppLocalizations.of(context)!.cancel,
+                          '取消',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: Colors.grey.shade700,
+                            color: AppColors.textPrimary,
                           ),
                         ),
                       ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: ElevatedButton(
-                        onPressed: () => Navigator.pop(context, true),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: AppColors.primaryGradient,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primary.withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
-                        child: Text(
-                          AppLocalizations.of(context)!.confirm,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
+                        child: ElevatedButton(
+                          onPressed: () => Navigator.pop(context, true),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 0,
+                          ),
+                          child: const Text(
+                            '确认',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
@@ -762,7 +813,39 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
       final eligibility = await _kycService.checkEligibility();
 
       if (eligibility.eligible) {
-        // 有资格进行KYC
+        // 已有KYC，直接申请卡片
+        if (!mounted) return;
+        _showMessage(AppLocalizations.of(context)!.paymentSuccessful);
+
+        try {
+          // 申请虚拟卡
+          final request = CardApplyRequestModel(physical: false);
+          final response = await _cardService.applyCard(request);
+
+          if (!mounted) return;
+
+          // 跳转到开卡进度页面
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CardApplyProgressScreen(
+                taskId: response.taskId,
+              ),
+            ),
+          );
+          
+          // 如果返回true，表示开卡成功，需要刷新卡片列表
+          if (result == true && mounted) {
+            // 刷新卡片列表缓存
+            final cardViewModel = Provider.of<CardViewModel>(context, listen: false);
+            await cardViewModel.refreshCardList();
+          }
+        } catch (e) {
+          if (!mounted) return;
+          _showMessage('申请卡片失败: $e');
+        }
+      } else {
+        // 没有KYC，跳转到KYC填写页面
         if (!mounted) return;
         _showMessage(AppLocalizations.of(context)!.paymentSuccessful);
 
@@ -773,10 +856,6 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
             builder: (context) => const Cardverificationscreen(),
           ),
         );
-      } else {
-        // 理论上不应该到这里，因为刚支付成功
-        if (!mounted) return;
-        _showMessage('Payment successful but ${eligibility.reason}');
       }
     } catch (e) {
       setState(() {

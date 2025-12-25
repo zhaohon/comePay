@@ -477,37 +477,45 @@ class _CardApplyCardScreenState extends State<CardApplyCardScreen> {
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 16),
-                      Card(
-                        child: ListTile(
-                          title: Text(AppLocalizations.of(context)!.cardName),
-                          subtitle: Text(_cardFeeConfig?.description ??
-                              AppLocalizations.of(context)!.comeComePayCard),
-                        ),
-                      ),
-                      Card(
-                        child: ListTile(
-                          title: Text(
-                              AppLocalizations.of(context)!.cardOrganization),
-                          subtitle: const Text('VISA'),
-                        ),
-                      ),
-                      Card(
-                        child: ListTile(
-                          title: Text(AppLocalizations.of(context)!.cardFee),
-                          subtitle: Text(
-                            '${_cardFeeConfig?.feeAmount.toStringAsFixed(2) ?? '0.00'} USD',
-                          ),
-                        ),
-                      ),
-                      Card(
-                        child: ListTile(
-                          title: Text(AppLocalizations.of(context)!.coupon),
-                          subtitle: Text(_selectedCoupon == null
-                              ? AppLocalizations.of(context)!.available
-                              : _selectedCoupon!.name),
-                          trailing: const Icon(Icons.arrow_forward_ios),
-                          onTap: _showCouponSelectionSheet,
-                        ),
+                      // 卡片信息网格布局（一行最多3个）
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          final cardWidth = (constraints.maxWidth - 24) / 3; // 减去spacing
+                          return Wrap(
+                            spacing: 12,
+                            runSpacing: 12,
+                            children: [
+                              _buildInfoCard(
+                                context,
+                                cardWidth,
+                                AppLocalizations.of(context)!.cardName,
+                                _cardFeeConfig?.description ??
+                                    AppLocalizations.of(context)!.comeComePayCard,
+                              ),
+                              _buildInfoCard(
+                                context,
+                                cardWidth,
+                                AppLocalizations.of(context)!.cardOrganization,
+                                'VISA',
+                              ),
+                              _buildInfoCard(
+                                context,
+                                cardWidth,
+                                AppLocalizations.of(context)!.cardFee,
+                                '${_cardFeeConfig?.feeAmount.toStringAsFixed(2) ?? '0.00'} USD',
+                              ),
+                              _buildInfoCard(
+                                context,
+                                cardWidth,
+                                AppLocalizations.of(context)!.coupon,
+                                _selectedCoupon == null
+                                    ? AppLocalizations.of(context)!.available
+                                    : _selectedCoupon!.name,
+                                onTap: _showCouponSelectionSheet,
+                              ),
+                            ],
+                          );
+                        },
                       ),
                       const Spacer(),
                       Center(
@@ -527,12 +535,68 @@ class _CardApplyCardScreenState extends State<CardApplyCardScreen> {
                             backgroundColor: Colors.blue,
                             minimumSize: const Size(double.infinity, 50),
                           ),
-                          child: Text(AppLocalizations.of(context)!.submit),
+                          child: Text(AppLocalizations.of(context)!.submit                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
+    );
+  }
+
+  /// 构建信息卡片（网格布局）
+  Widget _buildInfoCard(
+    BuildContext context,
+    double width,
+    String title,
+    String subtitle, {
+    VoidCallback? onTap,
+  }) {
+    return SizedBox(
+      width: width,
+      child: Card(
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (onTap != null) ...[
+                  const SizedBox(height: 4),
+                  const Align(
+                    alignment: Alignment.centerRight,
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      size: 12,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

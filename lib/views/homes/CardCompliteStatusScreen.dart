@@ -1,6 +1,5 @@
-import 'package:comecomepay/views/homes/CardVerificationProfilScreen.dart';
 import 'package:flutter/material.dart';
-import 'CardVerifyIdentityScreen.dart';
+import 'package:comecomepay/views/homes/CardScreen.dart';
 
 class CardCompliteStatusScreen extends StatefulWidget {
   const CardCompliteStatusScreen({super.key});
@@ -14,14 +13,17 @@ class _CardCompliteStatusScreenState extends State<CardCompliteStatusScreen> {
   @override
   void initState() {
     super.initState();
-    // Navigasi otomatis setelah 3 detik
+    // 3秒后返回CardScreen（卡片首页）
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const CardVerificationProfilScreen(),
-        ),
-      );
+      if (mounted) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const CardScreen(),
+          ),
+          (route) => false, // 清除所有之前的页面
+        );
+      }
     });
   }
 

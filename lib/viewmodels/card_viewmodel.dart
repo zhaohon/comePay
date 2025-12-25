@@ -3,12 +3,22 @@ import 'package:comecomepay/models/responses/card_response_model.dart' as card_r
 import 'package:comecomepay/models/responses/transaction_response_model.dart';
 import 'package:comecomepay/services/global_service.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
+import 'package:comecomepay/services/card_service.dart';
+import 'package:comecomepay/models/card_list_model.dart';
 
 class CardViewModel extends BaseViewModel {
   final GlobalService _globalService = GlobalService();
+  final CardService _cardService = CardService();
 
   card_response.CardResponseModel? _cardResponse;
   card_response.CardResponseModel? get cardResponse => _cardResponse;
+
+  // 卡片列表缓存（全局）
+  static CardListResponseModel? _cachedCardList;
+  static CardListResponseModel? get cachedCardList => _cachedCardList;
+  static void setCachedCardList(CardListResponseModel? list) {
+    _cachedCardList = list;
+  }
 
   List<String> _availableCurrencies = [];
   List<String> get availableCurrencies => _availableCurrencies;
@@ -93,6 +103,28 @@ class CardViewModel extends BaseViewModel {
     } catch (e) {
       setBusy(false);
       throw e;
+    }
+  }
+
+  /// 预加载卡片列表（app启动时调用）
+  Future<void> preloadCardList() async {
+    try {
+      final cardList = await _cardService.getCardList();
+      setCachedCardList(cardList);
+    } catch (e) {
+      print('Error preloading card list: $e');
+      // 失败时设置为空列表
+      setCachedCardList(CardListResponseModel(total: 0, cards: []));
+    }
+  }
+
+  /// 刷新卡片列表缓存
+  Future<void> refreshCardList() async {
+    try {
+      final cardList = await _cardService.getCardList();
+      setCachedCardList(cardList);
+    } catch (e) {
+      print('Error refreshing card list: $e');
     }
   }
 }

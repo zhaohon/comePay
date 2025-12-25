@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:ui'; // 用于BackdropFilter和ImageFilter
+import 'package:provider/provider.dart';
 import 'CardScreen.dart';
 import 'HomeScreen.dart';
 import 'ProfilScreen.dart';
+import '../../viewmodels/card_viewmodel.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -13,12 +15,33 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
+  bool _hasPreloadedCards = false;
 
   static final List<Widget> _widgetOptions = <Widget>[
     HomeScreen(),
     CardScreen(),
     ProfileScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    // App启动时预加载卡片列表
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _preloadCardList();
+    });
+  }
+
+  Future<void> _preloadCardList() async {
+    if (_hasPreloadedCards) return;
+    try {
+      final cardViewModel = Provider.of<CardViewModel>(context, listen: false);
+      await cardViewModel.preloadCardList();
+      _hasPreloadedCards = true;
+    } catch (e) {
+      print('Error preloading card list: $e');
+    }
+  }
 
   void _onItemTapped(int index) {
     setState(() {

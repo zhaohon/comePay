@@ -1,10 +1,85 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:comecomepay/services/card_service.dart';
+import 'package:comecomepay/models/card_apply_model.dart';
+import 'package:comecomepay/views/homes/CardApplyProgressScreen.dart';
+import 'package:comecomepay/viewmodels/card_viewmodel.dart';
 
-class CardOtpScreen extends StatelessWidget {
+class CardOtpScreen extends StatefulWidget {
+  const CardOtpScreen({super.key});
+
+  @override
+  State<CardOtpScreen> createState() => _CardOtpScreenState();
+}
+
+class _CardOtpScreenState extends State<CardOtpScreen> {
   final TextEditingController otpController = TextEditingController();
+  final CardService _cardService = CardService();
+  bool _isProcessing = false;
 
-  CardOtpScreen({super.key});
+  @override
+  void dispose() {
+    otpController.dispose();
+    super.dispose();
+  }
+
+  /// 验证OTP并申请卡片
+  Future<void> _verifyAndApply() async {
+    final otp = otpController.text.trim();
+    if (otp.isEmpty || otp.length != 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('请输入6位验证码')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isProcessing = true;
+    });
+
+    try {
+      // TODO: 这里应该先验证OTP，如果后端有验证接口的话
+      // 目前直接调用申请接口
+
+      // 申请虚拟卡
+      final request = CardApplyRequestModel(physical: false);
+      final response = await _cardService.applyCard(request);
+
+      if (!mounted) return;
+
+      // 跳转到开卡进度页面
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CardApplyProgressScreen(
+            taskId: response.taskId,
+          ),
+        ),
+      );
+      
+      // 如果返回true，表示开卡成功，需要刷新卡片列表
+      if (result == true && mounted) {
+        // 刷新卡片列表缓存
+        try {
+          final cardViewModel = Provider.of<CardViewModel>(context, listen: false);
+          await cardViewModel.refreshCardList();
+        } catch (e) {
+          print('Error refreshing card list: $e');
+        }
+      }
+    } catch (e) {
+      setState(() {
+        _isProcessing = false;
+      });
+      
+      if (!mounted) return;
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('申请失败: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,13 +167,7 @@ class CardOtpScreen extends StatelessWidget {
               width: double.infinity,
               height: 48,
               child: ElevatedButton(
-                onPressed: () {
-                  // TODO: verify OTP
-                  // ScaffoldMessenger.of(context).showSnackBar(
-                  //   SnackBar(content: Text("Entered OTP: ${otpController.text}")),
-                  // );
-                  Navigator.pushNamed(context, '/CardCompliteScreen');
-                },
+                onPressed: _isProcessing ? null : _verifyAndApply,
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.zero,
                   backgroundColor: Colors.transparent,
@@ -107,17 +176,29 @@ class CardOtpScreen extends StatelessWidget {
                 ),
                 child: Ink(
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF2196F3), Color(0xFF0D47A1)],
-                    ),
+                    gradient: _isProcessing
+                        ? null
+                        : const LinearGradient(
+                            colors: [Color(0xFF2196F3), Color(0xFF0D47A1)],
+                          ),
+                    color: _isProcessing ? Colors.grey : null,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Container(
                     alignment: Alignment.center,
-                    child: const Text(
-                      "Confirm",
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
+                    child: _isProcessing
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          )
+                        : const Text(
+                            "Verify",
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                          ),
                   ),
                 ),
               ),
