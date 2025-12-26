@@ -1,7 +1,36 @@
 import 'package:dio/dio.dart';
 import 'package:comecomepay/core/base_service.dart';
+import 'package:comecomepay/services/hive_storage_service.dart';
 
 class SwapService extends BaseService {
+  // Swap API使用不同的base URL
+  @override
+  Dio get dio {
+    final dioInstance = Dio(BaseOptions(
+      baseUrl: 'http://149.88.65.193:8010/api/v1',
+      connectTimeout: const Duration(seconds: 60),
+      receiveTimeout: const Duration(seconds: 60),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      validateStatus: (status) => true,
+    ));
+
+    // 添加拦截器以自动添加token
+    dioInstance.interceptors.add(InterceptorsWrapper(
+      onRequest: (options, handler) {
+        final token = HiveStorageService.getAccessToken();
+        if (token != null) {
+          options.headers['Authorization'] = 'Bearer $token';
+        }
+        handler.next(options);
+      },
+    ));
+
+    return dioInstance;
+  }
+
   /// 获取特定货币对的汇率
   /// GET /wallet/exchange-rate?from={from_currency}&to={to_currency}
   Future<Map<String, dynamic>> getExchangeRate({
@@ -59,6 +88,7 @@ class SwapService extends BaseService {
     required String toCurrency,
     required double amount,
     String? quoteId,
+    int? cardId, // 当涉及HKD时必填
   }) async {
     try {
       final requestData = {
@@ -69,6 +99,11 @@ class SwapService extends BaseService {
 
       if (quoteId != null) {
         requestData['quote_id'] = quoteId;
+      }
+
+      // 当涉及HKD时，card_id是必填的
+      if (cardId != null) {
+        requestData['card_id'] = cardId;
       }
 
       final response = await dio.post(

@@ -19,6 +19,12 @@ class SwapViewModel extends BaseViewModel {
   String? _quoteId;
   String? get quoteId => _quoteId;
 
+  String _fromCurrency = '';
+  String get fromCurrency => _fromCurrency;
+
+  String _toCurrency = '';
+  String get toCurrency => _toCurrency;
+
   double _fromAmount = 0.0;
   double get fromAmount => _fromAmount;
 
@@ -30,6 +36,12 @@ class SwapViewModel extends BaseViewModel {
 
   double _netAmount = 0.0;
   double get netAmount => _netAmount;
+
+  double _feeRate = 0.0;
+  double get feeRate => _feeRate;
+
+  double _feeAmount = 0.0;
+  double get feeAmount => _feeAmount;
 
   DateTime? _expiresAt;
   DateTime? get expiresAt => _expiresAt;
@@ -53,10 +65,27 @@ class SwapViewModel extends BaseViewModel {
       );
 
       // 根据API文档，响应格式为：
-      // { "status": "success", "data": { "rate": 7.80, ... } }
+      // { "status": "success", "data": { "rate": 7.80, "inverse_rate": 0.1282, ... } }
       if (response['data'] != null) {
         final data = response['data'];
-        _exchangeRate = (data['rate'] ?? 0.0).toDouble();
+        final rate = (data['rate'] ?? 0.0).toDouble();
+        final inverseRate = (data['inverse_rate'] ?? 0.0).toDouble();
+
+        // rate表示：1 from_currency = rate to_currency
+        // 如果rate存在且大于0，直接使用
+        if (rate > 0) {
+          _exchangeRate = rate;
+        }
+        // 如果rate不存在或为0，但inverse_rate存在，使用inverse_rate的倒数
+        else if (inverseRate > 0) {
+          _exchangeRate = 1.0 / inverseRate;
+        }
+        // 如果rate太小（可能是反向的），检查inverse_rate
+        else if (rate > 0 && rate < 0.01 && inverseRate > 0) {
+          _exchangeRate = 1.0 / inverseRate;
+        } else {
+          _exchangeRate = 0.0;
+        }
       } else {
         _exchangeRate = 0.0;
       }
@@ -108,11 +137,15 @@ class SwapViewModel extends BaseViewModel {
       if (response['data'] != null) {
         final data = response['data'];
         _quoteId = data['quote_id'];
+        _fromCurrency = data['from_currency'] ?? '';
+        _toCurrency = data['to_currency'] ?? '';
         _fromAmount = (data['from_amount'] ?? 0.0).toDouble();
         _toAmount = (data['to_amount'] ?? 0.0).toDouble();
         _exchangeRate = (data['exchange_rate'] ?? 0.0).toDouble();
         _fee = (data['fee'] ?? 0.0).toDouble();
         _netAmount = (data['net_amount'] ?? 0.0).toDouble();
+        _feeRate = (data['fee_rate'] ?? 0.0).toDouble();
+        _feeAmount = (data['fee_amount'] ?? 0.0).toDouble();
 
         // 解析过期时间
         if (data['expires_at'] != null) {
@@ -141,6 +174,8 @@ class SwapViewModel extends BaseViewModel {
     required String fromCurrency,
     required String toCurrency,
     required double amount,
+    String? quoteId, // 明确传入的quoteId
+    int? cardId, // 当涉及HKD时必填
   }) async {
     if (amount <= 0) {
       _errorMessage = '金额必须大于0';
@@ -157,7 +192,8 @@ class SwapViewModel extends BaseViewModel {
         fromCurrency: fromCurrency,
         toCurrency: toCurrency,
         amount: amount,
-        quoteId: _quoteId,
+        quoteId: quoteId ?? _quoteId, // 优先使用传入的quoteId，否则使用内部的_quoteId
+        cardId: cardId,
       );
 
       _isExecutingSwap = false;
