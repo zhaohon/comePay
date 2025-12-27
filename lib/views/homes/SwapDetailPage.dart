@@ -506,6 +506,7 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
 
   /// 处理兑换按钮点击：先预览，再显示弹窗
   Future<void> _handleSwapButtonClick() async {
+    return;
     final amount = double.tryParse(_amountController.text) ?? 0.0;
     if (amount <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
