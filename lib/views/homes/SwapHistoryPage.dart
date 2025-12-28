@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:comecomepay/services/swap_service.dart';
 import 'package:comecomepay/models/swap_transaction_model.dart';
+import 'package:comecomepay/utils/app_colors.dart';
 import 'package:intl/intl.dart';
 
 class SwapHistoryPage extends StatefulWidget {
@@ -110,17 +111,20 @@ class _SwapHistoryPageState extends State<SwapHistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: AppColors.pageBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.pageBackground,
         elevation: 0,
         centerTitle: true,
         title: const Text(
           '兑换记录',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -134,12 +138,12 @@ class _SwapHistoryPageState extends State<SwapHistoryPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.history,
-                              size: 64, color: Colors.grey.shade400),
+                              size: 64, color: AppColors.textSecondary),
                           const SizedBox(height: 16),
                           Text(
                             '暂无兑换记录',
                             style: TextStyle(
-                                color: Colors.grey.shade600, fontSize: 16),
+                                color: AppColors.textSecondary, fontSize: 16),
                           ),
                         ],
                       ),
@@ -172,12 +176,36 @@ class _SwapHistoryPageState extends State<SwapHistoryPage> {
     final dateTime = DateTime.parse(transaction.createdAt);
     final formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
 
+    // 格式化金额：根据币种决定小数位数
+    String formatAmount(double amount, String currency) {
+      if (currency == 'BTC') {
+        return amount.toStringAsFixed(8);
+      } else if (currency == 'HKD' || currency == 'USD') {
+        return amount.toStringAsFixed(2);
+      } else {
+        return amount.toStringAsFixed(6);
+      }
+    }
+
+    final fromAmountStr =
+        formatAmount(transaction.fromAmount, transaction.fromCurrency);
+    final toAmountStr =
+        formatAmount(transaction.toAmount, transaction.toCurrency);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadow,
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,62 +213,57 @@ class _SwapHistoryPageState extends State<SwapHistoryPage> {
           // 时间
           Text(
             formattedDate,
-            style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 12,
+            ),
           ),
           const SizedBox(height: 12),
 
-          // 兑换方向
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // 消耗
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '消耗',
-                    style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      _getCoinIcon(transaction.fromCurrency, isRed: true),
-                      const SizedBox(width: 8),
-                      Text(
-                        '${transaction.fromAmount.toStringAsFixed(8)} ${transaction.fromCurrency}',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+          // "消耗"标签
+          const Text(
+            '消耗',
+            style: TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 12,
+            ),
+          ),
+          const SizedBox(height: 8),
 
-              // 获得
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    '获得',
-                    style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+          // 消耗部分（红色减号 + 金额 + 完整币种）
+          Row(
+            children: [
+              _getCoinIcon(transaction.fromCurrency, isRed: true),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  '$fromAmountStr ${transaction.fromCurrency}',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
                   ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      _getCoinIcon(transaction.toCurrency, isRed: false),
-                      const SizedBox(width: 8),
-                      Text(
-                        '${transaction.toAmount.toStringAsFixed(8)} ${transaction.toCurrency}',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 8),
+
+          // 获得部分（绿色加号 + 金额 + 完整币种）
+          Row(
+            children: [
+              _getCoinIcon(transaction.toCurrency, isRed: false),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  '$toAmountStr ${transaction.toCurrency}',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
                   ),
-                ],
+                ),
               ),
             ],
           ),
@@ -251,8 +274,8 @@ class _SwapHistoryPageState extends State<SwapHistoryPage> {
 
   Widget _getCoinIcon(String currency, {required bool isRed}) {
     return Container(
-      width: 24,
-      height: 24,
+      width: 20,
+      height: 20,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: isRed ? Colors.red.shade50 : Colors.green.shade50,
@@ -260,7 +283,7 @@ class _SwapHistoryPageState extends State<SwapHistoryPage> {
       child: Center(
         child: Icon(
           isRed ? Icons.remove : Icons.add,
-          size: 16,
+          size: 14,
           color: isRed ? Colors.red : Colors.green,
         ),
       ),

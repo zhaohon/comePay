@@ -127,7 +127,7 @@ class _WalletScreenState extends State<WalletScreen> {
                               Text(
                                 _isVisible
                                     ? walletViewModel.totalAssets
-                                    .toStringAsFixed(2)
+                                        .toStringAsFixed(2)
                                     : "****",
                                 style: TextStyle(
                                   color: Colors.white,
@@ -163,16 +163,15 @@ class _WalletScreenState extends State<WalletScreen> {
                           _buildMenuButton(
                             Icons.send,
                             AppLocalizations.of(context)!.send,
-                                () {
-                              Navigator.pushNamed(
-                                  context, '/SendScreen',
+                            () {
+                              Navigator.pushNamed(context, '/SendScreen',
                                   arguments: walletViewModel.totalAssets);
                             },
                           ),
                           _buildMenuButton(
                             Icons.download,
                             AppLocalizations.of(context)!.receive,
-                                () {
+                            () {
                               Navigator.pushNamed(
                                   context, '/TokenReceiveScreen',
                                   arguments: walletViewModel.totalAssets);
@@ -181,7 +180,7 @@ class _WalletScreenState extends State<WalletScreen> {
                           _buildMenuButton(
                             Icons.swap_horiz,
                             AppLocalizations.of(context)!.swap,
-                                () {
+                            () {
                               Navigator.pushNamed(context, '/SwapScreen',
                                   arguments: walletViewModel.totalAssets);
                             },
@@ -192,13 +191,12 @@ class _WalletScreenState extends State<WalletScreen> {
 
                     const SizedBox(height: 20),
 
-                    // Token network list（与 ReceiveScreen 共用组件，在钱包页隐藏搜索框）
+                    // Token network list（与 ReceiveScreen 共用组件）
                     // 组件会自动撑开，由外层 SingleChildScrollView 统一滚动
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: TokenNetworkList(
                         totalAssets: walletViewModel.totalAssets,
-                        showSearchBar: false,
                       ),
                     ),
                   ],
@@ -229,7 +227,8 @@ class _WalletScreenState extends State<WalletScreen> {
           ),
         ),
         const SizedBox(height: 8),
-        Text(label, style: TextStyle(fontSize: 12, color: Colors.grey.shade700)),
+        Text(label,
+            style: TextStyle(fontSize: 12, color: Colors.grey.shade700)),
       ],
     );
   }

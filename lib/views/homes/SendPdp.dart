@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:comecomepay/viewmodels/send_pdp_viewmodel.dart';
+import 'package:comecomepay/utils/app_colors.dart';
+import 'package:comecomepay/models/wallet_model.dart';
+import 'package:comecomepay/services/withdraw_service.dart';
 
 class SendPdp extends StatefulWidget {
   const SendPdp({super.key});
@@ -10,435 +11,460 @@ class SendPdp extends StatefulWidget {
 }
 
 class _SendPdpState extends State<SendPdp> {
-  Map<String, dynamic>? token;
-  String? network;
-  double _amount = 1.5; // Default amount
-  String? _toAddress; // Address to be filled by user
-  // Networks are managed by SendPdpViewModel (MVVM)
-  final int _hardcodedUserId = 42; // Hardcoded user_id for now
+  WalletBalance? balance;
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
+  final WithdrawService _withdrawService = WithdrawService();
+  bool _isLoading = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final args =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    if (args != null) {
+    if (args != null && args['balance'] != null) {
       setState(() {
-        token = args['token'];
-        network = args['network'];
+        balance = args['balance'] as WalletBalance;
       });
     }
   }
 
   @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    final textScaleFactor = MediaQuery.of(context).textScaleFactor;
-
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text('Send'),
-        centerTitle: true,
-      ),
-      body: ChangeNotifierProvider(
-        create: (_) => SendPdpViewModel(),
-        child: Consumer<SendPdpViewModel>(
-          builder: (context, vm, child) {
-            return _buildBody(
-                context, screenWidth, screenHeight, textScaleFactor, vm);
-          },
-        ),
-      ),
-    );
+  void dispose() {
+    _addressController.dispose();
+    _amountController.dispose();
+    super.dispose();
   }
 
-  Widget _buildBody(
-    BuildContext context,
-    double screenWidth,
-    double screenHeight,
-    double textScaleFactor,
-    SendPdpViewModel vm,
-  ) {
-    // Trigger fetch when provider is ready and we have a token symbol.
-    if (!vm.loading &&
-        vm.networks.isEmpty &&
-        token != null &&
-        token?['symbol'] != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        vm.fetchNetworks(token!['symbol'].toString());
-      });
+  void _setMaxAmount() {
+    if (balance != null) {
+      _amountController.text = balance!.balance.toString();
+    }
+  }
+
+  Future<void> _submitWithdraw() async {
+    // Validate
+    if (_addressController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('请输入接收地址')),
+      );
+      return;
     }
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Select token and network section
-          const Text(
-            'Select token and network',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: Colors.black87,
-            ),
-          ),
-          const SizedBox(height: 12),
-          _buildNetworkCard(vm, textScaleFactor),
-          const SizedBox(height: 24),
+    final amount = double.tryParse(_amountController.text) ?? 0.0;
+    if (amount <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('请输入有效金额')),
+      );
+      return;
+    }
 
-          // To section
-          const Text(
-            'To',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: Colors.black87,
-            ),
-          ),
-          const SizedBox(height: 12),
-          _buildAddressCard(textScaleFactor),
-          const SizedBox(height: 24),
+    if (amount > balance!.balance) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('余额不足')),
+      );
+      return;
+    }
 
-          // Amount section
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Amount',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black87,
-                ),
-              ),
-              Text(
-                'Available: ${token?['balance'] ?? '0.0'} ${token?['symbol'] ?? 'BTC'}',
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Colors.black54,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          _buildAmountCard(textScaleFactor),
-          const SizedBox(height: 12),
+    // Show loading
+    setState(() {
+      _isLoading = true;
+    });
 
-          // BRC20 info text
-          const Text(
-            'This transfer will not reduce your BRC20 assets',
-            style: TextStyle(fontSize: 12, color: Colors.grey),
-          ),
-          const SizedBox(height: 40),
+    try {
+      // Call withdraw API
+      final request = WithdrawRequestModel(
+        address: _addressController.text.trim(),
+        amount: amount,
+        currency: balance!.currency,
+        memo: '',
+      );
 
-          // Confirm button
-          SizedBox(
-            width: double.infinity,
-            height: 52,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF4C7FFF),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(26),
-                ),
-                elevation: 0,
-              ),
-              onPressed: vm.withdrawing
-                  ? null
-                  : () async {
-                      // Validate required fields
-                      if (token == null || token?['symbol'] == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Token not found')),
-                        );
-                        return;
-                      }
+      final response = await _withdrawService.withdraw(request);
 
-                      if (_toAddress == null || _toAddress!.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content:
-                                  Text('Please select a receiving address')),
-                        );
-                        return;
-                      }
+      if (!mounted) return;
 
-                      if (_amount <= 0) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Amount must be greater than 0')),
-                        );
-                        return;
-                      }
+      // Success - Navigate to confirmation page
+      Navigator.pushReplacementNamed(
+        context,
+        '/SendPdpDetail',
+        arguments: {
+          'balance': balance,
+          'toAddress': _addressController.text.trim(),
+          'amount': amount,
+          'withdrawalId': response.withdrawalId,
+          'fee': response.fee,
+          'estimatedTime': response.estimatedTime,
+        },
+      );
 
-                      // Call withdraw API
-                      final success = await vm.withdrawRequest(
-                        coinId: 1, // TODO: Get from token data
-                        networkId: vm.selectedNetwork?['network_id'] ?? 1,
-                        toAddress: _toAddress!,
-                        amount: _amount,
-                        userId: _hardcodedUserId,
-                      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(response.message),
+          backgroundColor: AppColors.success,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
 
-                      if (success) {
-                        // Navigate to SendPdpDetail on success
-                        Navigator.pushNamed(context, '/SendPdpDetail',
-                            arguments: {
-                              'token': token,
-                              'network': network,
-                              'amount': _amount,
-                            });
-                      } else {
-                        // Show error message
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content:
-                                Text(vm.errorMessage ?? 'Withdrawal failed'),
-                          ),
-                        );
-                      }
-                    },
-              child: vm.withdrawing
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
-                    )
-                  : const Text(
-                      'Confirm',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-            ),
-          ),
-        ],
-      ),
-    );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('提现失败: ${e.toString()}'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
-  Widget _buildNetworkCard(SendPdpViewModel vm, double textScaleFactor) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+  @override
+  Widget build(BuildContext context) {
+    if (balance == null) {
+      return Scaffold(
+        backgroundColor: AppColors.pageBackground,
+        appBar: AppBar(
+          backgroundColor: AppColors.pageBackground,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+            onPressed: () => Navigator.pop(context),
           ),
-        ],
+        ),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: AppColors.pageBackground,
+      appBar: AppBar(
+        backgroundColor: AppColors.pageBackground,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          'Send',
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
       ),
-      child: Row(
-        children: [
-          // Token icon
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFA726).withOpacity(0.2),
-              shape: BoxShape.circle,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Token Info Card
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.cardBackground,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.border, width: 1),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.shadow,
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  // Token icon
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryLight.withOpacity(0.3),
+                      shape: BoxShape.circle,
+                    ),
+                    child: balance!.logo.isNotEmpty
+                        ? ClipOval(
+                            child: Image.network(
+                              balance!.logo,
+                              width: 48,
+                              height: 48,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Icon(
+                                  Icons.currency_bitcoin,
+                                  color: AppColors.primary,
+                                  size: 24,
+                                );
+                              },
+                            ),
+                          )
+                        : Icon(
+                            Icons.currency_bitcoin,
+                            color: AppColors.primary,
+                            size: 24,
+                          ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          balance!.currency,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          balance!.coinName.isNotEmpty
+                              ? balance!.coinName
+                              : balance!.symbol,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-            child: Icon(
-              token?['icon'] ?? Icons.currency_bitcoin,
-              color: const Color(0xFFFFA726),
-              size: 24,
+            const SizedBox(height: 24),
+
+            // To Address section
+            const Text(
+              '接收地址',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            const SizedBox(height: 12),
+            TextField(
+              controller: _addressController,
+              enabled: !_isLoading,
+              style: const TextStyle(
+                fontSize: 14,
+                color: AppColors.textPrimary,
+              ),
+              decoration: InputDecoration(
+                hintText: '请输入或粘贴地址',
+                hintStyle: const TextStyle(
+                  fontSize: 14,
+                  color: AppColors.textPlaceholder,
+                ),
+                filled: true,
+                fillColor: AppColors.cardBackground,
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide:
+                      const BorderSide(color: AppColors.border, width: 1),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide:
+                      const BorderSide(color: AppColors.border, width: 1),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide:
+                      const BorderSide(color: AppColors.primary, width: 1),
+                ),
+                disabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                      color: AppColors.border.withOpacity(0.5), width: 1),
+                ),
+                suffixIcon: IconButton(
+                  icon: const Icon(
+                    Icons.qr_code_scanner,
+                    color: AppColors.primary,
+                    size: 20,
+                  ),
+                  onPressed: _isLoading
+                      ? null
+                      : () {
+                          // TODO: Implement QR scanner
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('扫描二维码功能开发中')),
+                          );
+                        },
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Amount section
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  token?['symbol'] ?? 'BTC',
-                  style: const TextStyle(
-                    fontSize: 16,
+                const Text(
+                  '数量',
+                  style: TextStyle(
+                    fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Colors.black87,
+                    color: AppColors.textPrimary,
                   ),
                 ),
-                const SizedBox(height: 2),
                 Text(
-                  'Network: ${vm.selectedNetwork?['network_name'] ?? network ?? 'Bitcoin'}',
+                  '可用: ${balance!.balance} ${balance!.symbol}',
                   style: const TextStyle(
                     fontSize: 12,
-                    color: Colors.black54,
+                    color: AppColors.textSecondary,
                   ),
                 ),
               ],
             ),
-          ),
-          if (vm.loading)
-            const SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4C7FFF)),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _amountController,
+              enabled: !_isLoading,
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
               ),
-            )
-          else if (vm.networks.isNotEmpty)
-            PopupMenuButton<Map<String, dynamic>>(
-              icon:
-                  const Icon(Icons.keyboard_arrow_down, color: Colors.black54),
-              onSelected: (val) {
-                vm.selectNetwork(val);
-                setState(() {
-                  network = val['network_name'] ?? val['network']?.toString();
-                });
-              },
-              itemBuilder: (context) {
-                return vm.networks.map((n) {
-                  return PopupMenuItem<Map<String, dynamic>>(
-                    value: n,
-                    child: Text(n['network_name'] ?? n['network'] ?? ''),
-                  );
-                }).toList();
-              },
+              decoration: InputDecoration(
+                hintText: '0.00',
+                hintStyle: const TextStyle(
+                  fontSize: 16,
+                  color: AppColors.textPlaceholder,
+                ),
+                filled: true,
+                fillColor: AppColors.cardBackground,
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide:
+                      const BorderSide(color: AppColors.border, width: 1),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide:
+                      const BorderSide(color: AppColors.border, width: 1),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide:
+                      const BorderSide(color: AppColors.primary, width: 1),
+                ),
+                disabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                      color: AppColors.border.withOpacity(0.5), width: 1),
+                ),
+                suffixIcon: Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '${balance!.symbol} ',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: AppColors.textSecondary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Container(
+                        width: 1,
+                        height: 20,
+                        color: AppColors.border,
+                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                      ),
+                      GestureDetector(
+                        onTap: _isLoading ? null : _setMaxAmount,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            gradient:
+                                _isLoading ? null : AppColors.primaryGradient,
+                            color: _isLoading ? Colors.grey : null,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: const Text(
+                            '全部',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
-        ],
-      ),
-    );
-  }
+            const SizedBox(height: 40),
 
-  Widget _buildAddressCard(double textScaleFactor) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: TextField(
-        onChanged: (value) {
-          setState(() {
-            _toAddress = value;
-          });
-        },
-        style: const TextStyle(
-          fontSize: 14,
-          color: Colors.black87,
-        ),
-        decoration: InputDecoration(
-          hintText: 'receiving address',
-          hintStyle: const TextStyle(
-            fontSize: 14,
-            color: Colors.black38,
-          ),
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.zero,
-          isDense: true,
-          suffixIcon: IconButton(
-            icon: const Icon(
-              Icons.qr_code_scanner,
-              color: Colors.black38,
-              size: 20,
+            // Confirm button
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: _isLoading ? null : AppColors.primaryGradient,
+                  color: _isLoading ? Colors.grey : null,
+                  borderRadius: BorderRadius.circular(26),
+                  boxShadow: _isLoading
+                      ? null
+                      : [
+                          BoxShadow(
+                            color: AppColors.primary.withOpacity(0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                ),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(26),
+                    ),
+                  ),
+                  onPressed: _isLoading ? null : _submitWithdraw,
+                  child: _isLoading
+                      ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : const Text(
+                          '确认',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                ),
+              ),
             ),
-            onPressed: () {
-              // TODO: Implement QR code scanner
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('QR scanner not implemented yet')),
-              );
-            },
-          ),
+          ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildAmountCard(double textScaleFactor) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                  ),
-                  decoration: const InputDecoration(
-                    hintText: '0.00',
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.zero,
-                    isDense: true,
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                      _amount = double.tryParse(value) ?? 0.0;
-                    });
-                  },
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                '${token?['symbol'] ?? 'BTC'} | ',
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.black54,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  // Set to max available balance
-                  final balance =
-                      double.tryParse(token?['balance']?.toString() ?? '0') ??
-                          0.0;
-                  setState(() {
-                    _amount = balance;
-                  });
-                },
-                child: const Text(
-                  'All',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF4C7FFF),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }

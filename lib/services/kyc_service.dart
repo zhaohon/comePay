@@ -2,30 +2,15 @@ import 'package:dio/dio.dart';
 import 'package:comecomepay/core/base_service.dart';
 import 'package:comecomepay/models/kyc_model.dart';
 import 'package:comecomepay/models/kyc_eligibility_model.dart';
-import 'package:comecomepay/services/hive_storage_service.dart';
 
 class KycService extends BaseService {
-  // Override dio to use different baseUrl for KYC API
-  @override
-  Dio get dio => Dio(BaseOptions(
-        baseUrl: 'http://149.88.65.193:8010/api',
-        connectTimeout: const Duration(seconds: 60),
-        receiveTimeout: const Duration(seconds: 60),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        validateStatus: (status) => true,
-      ));
+  KycService() {
+    // 修改baseUrl而不是创建新的Dio实例，这样可以保留父类的拦截器（包括token）
+    dio.options.baseUrl = 'http://149.88.65.193:8010/api';
+  }
 
   Future<Map<String, dynamic>> getUserKyc(String email) async {
     print('Starting KYC request for email: $email');
-    final token = HiveStorageService.getAccessToken();
-
-    if (token == null) {
-      print('Error: User not authenticated');
-      throw Exception('User not authenticated');
-    }
 
     final endpoint = '/kyc';
     final queryParams = {
@@ -34,9 +19,8 @@ class KycService extends BaseService {
       'email': email,
     };
 
-    final response = await dio.get(endpoint,
-        queryParameters: queryParams,
-        options: Options(headers: {'Authorization': 'Bearer $token'}));
+    // 不需要手动添加token，父类拦截器会自动处理
+    final response = await dio.get(endpoint, queryParameters: queryParams);
 
     if (response.statusCode == 200) {
       final data = response.data;
@@ -62,19 +46,11 @@ class KycService extends BaseService {
   /// 返回资格状态，包括是否已支付开卡费
   Future<KycEligibilityModel> checkEligibility() async {
     print('Checking KYC eligibility...');
-    final token = HiveStorageService.getAccessToken();
-
-    if (token == null) {
-      print('Error: User not authenticated');
-      throw Exception('User not authenticated');
-    }
 
     final endpoint = '/v1/kyc/eligibility';
 
-    final response = await dio.get(
-      endpoint,
-      options: Options(headers: {'Authorization': 'Bearer $token'}),
-    );
+    // 不需要手动添加token，父类拦截器会自动处理
+    final response = await dio.get(endpoint);
 
     if (response.statusCode == 200) {
       final data = response.data;

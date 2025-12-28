@@ -1,34 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:comecomepay/core/base_service.dart';
-import 'package:comecomepay/services/hive_storage_service.dart';
 
 class SwapService extends BaseService {
-  // Swap API使用不同的base URL
-  @override
-  Dio get dio {
-    final dioInstance = Dio(BaseOptions(
-      baseUrl: 'http://149.88.65.193:8010/api/v1',
-      connectTimeout: const Duration(seconds: 60),
-      receiveTimeout: const Duration(seconds: 60),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      validateStatus: (status) => true,
-    ));
-
-    // 添加拦截器以自动添加token
-    dioInstance.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) {
-        final token = HiveStorageService.getAccessToken();
-        if (token != null) {
-          options.headers['Authorization'] = 'Bearer $token';
-        }
-        handler.next(options);
-      },
-    ));
-
-    return dioInstance;
+  SwapService() {
+    // 修改baseUrl而不是创建新的Dio实例，这样可以保留父类的拦截器（包括token）
+    dio.options.baseUrl = 'http://149.88.65.193:8010/api/v1';
   }
 
   /// 获取特定货币对的汇率

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
-import 'package:comecomepay/viewmodels/token_receive_viewmodel.dart';
+import 'package:comecomepay/viewmodels/wallet_viewmodel.dart';
+import 'package:comecomepay/models/wallet_model.dart';
+import 'package:comecomepay/utils/app_colors.dart';
 import 'package:provider/provider.dart';
 
-/// 发送页面的代币网络列表（BTC/ETH + USDT/USDC 多网络 + HKD）
+/// 发送页面的代币网络列表（使用钱包真实数据）
 class TokenNetworkListSend extends StatefulWidget {
   final double totalAssets;
 
@@ -17,155 +18,212 @@ class TokenNetworkListSend extends StatefulWidget {
 }
 
 class _TokenNetworkListSendState extends State<TokenNetworkListSend> {
-  final TextEditingController _searchController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
-    _searchController.addListener(_filterTokens);
+    // 初始化时获取钱包数据
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<WalletViewModel>(context, listen: false).fetchWalletData();
+    });
   }
 
   @override
   void dispose() {
-    _searchController.dispose();
     super.dispose();
   }
 
-  void _filterTokens() {
-    final viewModel =
-        Provider.of<TokenReceiveViewModel>(context, listen: false);
-    viewModel.filterTokens(_searchController.text);
-  }
-
-  void _goToSendDetail(BuildContext context, Map<String, dynamic> token) {
-    if (token["symbol"] == "HKD") {
-      // HKD 仅展示，不跳详情
+  void _goToSendDetail(BuildContext context, WalletBalance balance) {
+    // HKD 暂时不支持发送
+    if (balance.currency == "HKD") {
       return;
     }
-
-    final String network =
-        (token["networks"] as List).isNotEmpty ? token["networks"][0] : '';
 
     Navigator.pushNamed(
       context,
       '/SendPdp',
       arguments: {
-        'token': token,
-        'network': network,
+        'balance': balance,
       },
     );
   }
 
+  /// 格式化余额：去掉尾部的0，如果是0则只显示"0"
+  String _formatBalance(double balance, int decimals) {
+    if (balance == 0) {
+      return '0';
+    }
+
+    // 根据decimals决定最大小数位数
+    int maxDecimals = decimals > 0 ? decimals.clamp(0, 8) : 2;
+    String formatted = balance.toStringAsFixed(maxDecimals);
+
+    // 去掉尾部的0和可能的小数点
+    formatted = formatted.replaceAll(RegExp(r'\.?0+$'), '');
+
+    // 如果结果为空或者只剩下小数点，返回'0'
+    if (formatted.isEmpty || formatted == '.') {
+      return '0';
+    }
+
+    return formatted;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<TokenReceiveViewModel>(
-      create: (context) => TokenReceiveViewModel()
-        ..fetchCryptoData()
-        ..setTotalAssets(widget.totalAssets),
-      child: Consumer<TokenReceiveViewModel>(
-        builder: (context, viewModel, child) {
-          return Column(
-            children: [
-              // 搜索框
-              TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: AppLocalizations.of(context)!.searchTokenHint,
-                  prefixIcon: const Icon(Icons.search),
-                  filled: true,
-                  fillColor: Colors.grey[100],
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
+    return Consumer<WalletViewModel>(
+      builder: (context, viewModel, child) {
+        return Column(
+          children: [
+            // 搜索框已隐藏
+            // const SizedBox(height: 12),
 
-              // 列表
-              Expanded(
-                child: viewModel.busy
-                    ? const Center(child: CircularProgressIndicator())
-                    : ListView.separated(
-                        physics: const BouncingScrollPhysics(),
-                        itemCount: viewModel.filteredTokens.length,
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(height: 12),
-                        itemBuilder: (context, index) {
-                          return _buildTokenItem(
-                              context, viewModel.filteredTokens[index]);
-                        },
+            // 列表
+            Expanded(
+              child: viewModel.busy
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.primary,
                       ),
-              ),
-            ],
-          );
-        },
-      ),
+                    )
+                  : viewModel.balances.isEmpty
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.account_balance_wallet_outlined,
+                                  size: 64, color: AppColors.textSecondary),
+                              const SizedBox(height: 16),
+                              Text(
+                                '暂无资产',
+                                style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : ListView.separated(
+                          physics: const BouncingScrollPhysics(),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 15),
+                          itemCount: viewModel.balances.length,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 8),
+                          itemBuilder: (context, index) {
+                            return _buildTokenItem(
+                                context, viewModel.balances[index]);
+                          },
+                        ),
+            ),
+          ],
+        );
+      },
     );
   }
 
-  Widget _buildTokenItem(BuildContext context, Map<String, dynamic> token) {
-    return Card(
-      color: Colors.white,
-      elevation: 3,
-      shape: RoundedRectangleBorder(
+  Widget _buildTokenItem(BuildContext context, WalletBalance balance) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadow,
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () => _goToSendDetail(context, token),
+        onTap: () => _goToSendDetail(context, balance),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: const EdgeInsets.all(16),
           child: Row(
             children: [
-              CircleAvatar(
-                backgroundColor: Colors.white,
-                radius: 20,
-                child: Image.asset(token["iconPath"], width: 28, height: 28),
+              // 币种图标
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: AppColors.primaryLight.withOpacity(0.3),
+                  shape: BoxShape.circle,
+                ),
+                child: balance.logo.isNotEmpty
+                    ? ClipOval(
+                        child: Image.network(
+                          balance.logo,
+                          width: 44,
+                          height: 44,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Icon(
+                              Icons.currency_bitcoin,
+                              color: AppColors.primary,
+                              size: 24,
+                            );
+                          },
+                        ),
+                      )
+                    : Icon(
+                        Icons.currency_bitcoin,
+                        color: AppColors.primary,
+                        size: 24,
+                      ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // 币种名称（currency包含完整信息，如USDT-TRC20）
                     Text(
-                      () {
-                        final symbol = (token["symbol"] ?? "") as String;
-                        final network = (token["networks"] as List).isNotEmpty
-                            ? token["networks"][0] as String
-                            : "";
-                        if (symbol == 'BTC' ||
-                            symbol == 'ETH' ||
-                            symbol == 'HKD') {
-                          return symbol;
-                        }
-                        return network.isNotEmpty
-                            ? "$symbol ($network)"
-                            : symbol;
-                      }(),
+                      balance.currency,
                       style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: AppColors.textPrimary,
+                      ),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
-                      "\$0.00",
-                      style: TextStyle(color: Colors.grey, fontSize: 13),
+                    // 币种全名
+                    Text(
+                      balance.coinName.isNotEmpty
+                          ? balance.coinName
+                          : balance.symbol,
+                      style: const TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 13,
+                      ),
                     ),
                   ],
                 ),
               ),
-              const Column(
+              const SizedBox(width: 8),
+              Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text("0",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                  SizedBox(height: 2),
-                  Text("\$0.00",
-                      style: TextStyle(color: Colors.grey, fontSize: 12)),
+                  // 余额数量（优化格式）
+                  Text(
+                    _formatBalance(balance.balance, balance.decimals),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  // 币种符号
+                  Text(
+                    balance.symbol,
+                    style: const TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 12,
+                    ),
+                  ),
                 ],
               ),
             ],

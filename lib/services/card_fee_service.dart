@@ -5,18 +5,10 @@ import 'package:comecomepay/models/payment_currency_model.dart';
 import 'package:comecomepay/models/card_fee_payment_model.dart';
 
 class CardFeeService extends BaseService {
-  // Override dio to use the new base URL for card fee APIs
-  @override
-  Dio get dio => Dio(BaseOptions(
-        baseUrl: 'http://149.88.65.193:8010/api/v1',
-        connectTimeout: const Duration(seconds: 60),
-        receiveTimeout: const Duration(seconds: 60),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        validateStatus: (status) => true,
-      ));
+  CardFeeService() {
+    // 修改baseUrl而不是创建新的Dio实例，这样可以保留父类的拦截器（包括token）
+    dio.options.baseUrl = 'http://149.88.65.193:8010/api/v1';
+  }
 
   /// 获取开卡费配置
   /// [cardType] 卡片类型: 'virtual' 或 'physical'

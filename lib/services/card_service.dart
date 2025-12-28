@@ -6,30 +6,22 @@ import 'package:comecomepay/models/card_list_model.dart';
 import 'package:comecomepay/models/card_account_details_model.dart';
 
 class CardService extends BaseService {
-  // Override dio to use the new base URL for card APIs
-  @override
-  Dio get dio => Dio(BaseOptions(
-        baseUrl: 'http://149.88.65.193:8010/api/v1',
-        connectTimeout: const Duration(seconds: 60),
-        receiveTimeout: const Duration(seconds: 60),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        validateStatus: (status) => true,
-      ));
+  CardService() {
+    // 修改baseUrl而不是创建新的Dio实例，这样可以保留父类的拦截器（包括token）
+    dio.options.baseUrl = 'http://149.88.65.193:8010/api/v1';
+  }
 
   /// 申请卡片
   /// [request] 卡片申请请求模型
-  Future<CardApplyResponseModel> applyCard(CardApplyRequestModel request) async {
+  Future<CardApplyResponseModel> applyCard(
+      CardApplyRequestModel request) async {
     try {
       final response = await post('/card/apply', data: request.toJson());
 
       if (response['status'] == 'success' && response['data'] != null) {
         return CardApplyResponseModel.fromJson(response);
       } else {
-        throw Exception(
-            response['message'] ?? 'Failed to apply card');
+        throw Exception(response['message'] ?? 'Failed to apply card');
       }
     } catch (e) {
       print('Error applying card: $e');
@@ -69,7 +61,8 @@ class CardService extends BaseService {
         }
       } else {
         // 如果status不是success，返回空列表而不是抛错
-        print('Card list API returned non-success status: ${response['status']}');
+        print(
+            'Card list API returned non-success status: ${response['status']}');
         return CardListResponseModel(total: 0, cards: []);
       }
     } catch (e) {
@@ -81,7 +74,8 @@ class CardService extends BaseService {
 
   /// 获取卡片详情（含余额）
   /// [publicToken] 卡片唯一标识
-  Future<CardAccountDetailsModel> getCardAccountDetails(String publicToken) async {
+  Future<CardAccountDetailsModel> getCardAccountDetails(
+      String publicToken) async {
     try {
       final response = await get(
         '/card/account-details',
@@ -112,8 +106,7 @@ class CardService extends BaseService {
       if (response['status'] == 'success' && response['data'] != null) {
         return response['data'] as Map<String, dynamic>;
       } else {
-        throw Exception(
-            response['message'] ?? 'Failed to get card status');
+        throw Exception(response['message'] ?? 'Failed to get card status');
       }
     } catch (e) {
       print('Error getting card status: $e');
@@ -165,8 +158,7 @@ class CardService extends BaseService {
         final data = response['data'] as Map<String, dynamic>;
         return data['cvv'] as String? ?? '';
       } else {
-        throw Exception(
-            response['message'] ?? 'Failed to get CVV');
+        throw Exception(response['message'] ?? 'Failed to get CVV');
       }
     } catch (e) {
       print('Error getting CVV: $e');
@@ -187,8 +179,7 @@ class CardService extends BaseService {
         final data = response['data'] as Map<String, dynamic>;
         return data['pin'] as String? ?? '';
       } else {
-        throw Exception(
-            response['message'] ?? 'Failed to get PIN');
+        throw Exception(response['message'] ?? 'Failed to get PIN');
       }
     } catch (e) {
       print('Error getting PIN: $e');
@@ -221,4 +212,3 @@ class CardService extends BaseService {
     }
   }
 }
-

@@ -304,8 +304,6 @@ class _CardScreenState extends State<CardScreen> {
   Widget _buildCardDetailScreen() {
     final currentCard = _cardList!.cards[_currentCardIndex];
     final cardCount = _cardList!.cards.length;
-    final hasLeftCard = _currentCardIndex > 0;
-    final hasRightCard = _currentCardIndex < cardCount - 1;
 
     return Scaffold(
       backgroundColor: AppColors.pageBackground,
@@ -452,73 +450,44 @@ class _CardScreenState extends State<CardScreen> {
 
               const SizedBox(height: 15),
 
-              // ===== 卡片展示区域（全宽，带边缘渐变效果） =====
+              // ===== 卡片展示区域（全宽） =====
               SizedBox(
                 height: 200,
-                child: Stack(
-                  children: [
-                    // 卡片轮播
-                    PageView.builder(
-                      controller: _pageController,
-                      itemCount: cardCount,
-                      onPageChanged: _onCardChanged,
-                      itemBuilder: (context, index) {
-                        final card = _cardList!.cards[index];
-                        return _buildCardWidget(card);
-                      },
-                    ),
-                    // 左侧渐变遮罩（表示有前一张卡片）
-                    if (hasLeftCard)
-                      Positioned(
-                        left: 0,
-                        top: 0,
-                        bottom: 0,
-                        child: Container(
-                          width: 40,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
-                              colors: [
-                                AppColors.pageBackground,
-                                AppColors.pageBackground.withOpacity(0),
-                              ],
-                            ),
-                            borderRadius: const BorderRadius.only(
-                              topRight: Radius.circular(2),
-                              bottomRight: Radius.circular(2),
-                            ),
-                          ),
-                        ),
-                      ),
-                    // 右侧渐变遮罩（表示有后一张卡片）
-                    if (hasRightCard)
-                      Positioned(
-                        right: 0,
-                        top: 0,
-                        bottom: 0,
-                        child: Container(
-                          width: 40,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.centerRight,
-                              end: Alignment.centerLeft,
-                              colors: [
-                                AppColors.pageBackground,
-                                AppColors.pageBackground.withOpacity(0),
-                              ],
-                            ),
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(2),
-                              bottomLeft: Radius.circular(2),
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
+                child: PageView.builder(
+                  controller: _pageController,
+                  itemCount: cardCount,
+                  onPageChanged: _onCardChanged,
+                  itemBuilder: (context, index) {
+                    final card = _cardList!.cards[index];
+                    return _buildCardWidget(card);
+                  },
                 ),
               ),
-              const SizedBox(height: 10),
+
+              // ===== 卡片指示点 =====
+              if (cardCount > 1)
+                Padding(
+                  padding: const EdgeInsets.only(top: 12.0, bottom: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      cardCount,
+                      (index) => Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        width: _currentCardIndex == index ? 24 : 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                          color: _currentCardIndex == index
+                              ? AppColors.primary
+                              : AppColors.textSecondary.withOpacity(0.3),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              else
+                const SizedBox(height: 10),
 
               // ===== 操作按钮区域（3列布局） =====
               Padding(
@@ -540,82 +509,82 @@ class _CardScreenState extends State<CardScreen> {
               ),
 
               // ===== 交易记录区域（暂时隐藏） =====
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              //   child: Column(
-              //     crossAxisAlignment: CrossAxisAlignment.start,
-              //     children: [
-              //       Row(
-              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //         children: [
-              //           Text(
-              //             '賬單',
-              //             style: TextStyle(
-              //               fontWeight: FontWeight.bold,
-              //               fontSize: 18,
-              //               color: AppColors.textPrimary,
-              //             ),
-              //           ),
-              //           IconButton(
-              //             icon: const Icon(Icons.grid_view),
-              //             onPressed: () {
-              //               // TODO: 查看更多交易或筛选
-              //             },
-              //           ),
-              //         ],
-              //       ),
-              //     ],
-              //   ),
-              // ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '賬單',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.grid_view),
+                          onPressed: () {
+                            // TODO: 查看更多交易或筛选
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
 
-              // // 交易记录列表（暂时隐藏）
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              //   child: Column(
-              //     children: [
-              //       if (_isLoadingTransactions && _transactions.isEmpty)
-              //         const Center(
-              //           child: Padding(
-              //             padding: EdgeInsets.all(16.0),
-              //             child: CircularProgressIndicator(),
-              //           ),
-              //         )
-              //       else if (_transactions.isEmpty)
-              //         Center(
-              //           child: Column(
-              //             children: [
-              //               Icon(Icons.inbox,
-              //                   size: 48, color: AppColors.textSecondary),
-              //               const SizedBox(height: 8),
-              //               Text(
-              //                 '暫無交易記錄',
-              //                 style: TextStyle(
-              //                   color: AppColors.textSecondary,
-              //                   fontSize: 14,
-              //                 ),
-              //               ),
-              //             ],
-              //           ),
-              //         )
-              //       else
-              //         ..._transactions
-              //             .map((transaction) =>
-              //                 _buildTransactionItem(transaction))
-              //             .toList(),
+              // 交易记录列表（暂时隐藏）
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  children: [
+                    if (_isLoadingTransactions && _transactions.isEmpty)
+                      const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    else if (_transactions.isEmpty)
+                      Center(
+                        child: Column(
+                          children: [
+                            Icon(Icons.inbox,
+                                size: 48, color: AppColors.textSecondary),
+                            const SizedBox(height: 8),
+                            Text(
+                              '暫無交易記錄',
+                              style: TextStyle(
+                                color: AppColors.textSecondary,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    else
+                      ..._transactions
+                          .map((transaction) =>
+                              _buildTransactionItem(transaction))
+                          .toList(),
 
-              //       // 加载更多指示器
-              //       if (_isLoadingTransactions && _transactions.isNotEmpty)
-              //         const Center(
-              //           child: Padding(
-              //             padding: EdgeInsets.all(8.0),
-              //             child: CircularProgressIndicator(),
-              //           ),
-              //         ),
+                    // 加载更多指示器
+                    if (_isLoadingTransactions && _transactions.isNotEmpty)
+                      const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
 
-              //       const SizedBox(height: 20),
-              //     ],
-              //   ),
-              // ),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+              ),
               const SizedBox(height: 100),
             ],
           ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:comecomepay/utils/app_colors.dart';
 import 'package:comecomepay/views/homes/widgets/token_network_list.dart';
 
 class TokenReceiveScreen extends StatelessWidget {
@@ -27,11 +28,11 @@ class _TokenReceiveScreenContentState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.pageBackground,
 
       // AppBar
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.pageBackground,
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
@@ -46,10 +47,7 @@ class _TokenReceiveScreenContentState
       ),
 
       // Body
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: TokenNetworkList(totalAssets: widget.totalAssets),
-      ),
+      body: TokenNetworkList(totalAssets: widget.totalAssets),
     );
   }
 }
