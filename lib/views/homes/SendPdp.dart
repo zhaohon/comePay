@@ -72,38 +72,42 @@ class _SendPdpState extends State<SendPdp> {
     });
 
     try {
+      // Extract network from currency (e.g., "USDT-TRC20" -> "TRC20")
+      String network = '';
+      if (balance!.currency.contains('-')) {
+        network = balance!.currency.split('-').last;
+      } else {
+        // Default fallback if no network specified
+        network =
+            balance!.mainSymbol.isNotEmpty ? balance!.mainSymbol : 'UNKNOWN';
+      }
+
       // Call withdraw API
       final request = WithdrawRequestModel(
-        address: _addressController.text.trim(),
-        amount: amount,
         currency: balance!.currency,
-        memo: '',
+        amount: amount,
+        address: _addressController.text.trim(),
+        network: network,
       );
 
       final response = await _withdrawService.withdraw(request);
 
       if (!mounted) return;
 
-      // Success - Navigate to confirmation page
-      Navigator.pushReplacementNamed(
-        context,
-        '/SendPdpDetail',
-        arguments: {
-          'balance': balance,
-          'toAddress': _addressController.text.trim(),
-          'amount': amount,
-          'withdrawalId': response.withdrawalId,
-          'fee': response.fee,
-          'estimatedTime': response.estimatedTime,
-        },
-      );
-
+      // Success - Show success message and go back
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(response.message),
           backgroundColor: AppColors.success,
+          duration: const Duration(seconds: 2),
         ),
       );
+
+      // Wait a bit then go back
+      await Future.delayed(const Duration(milliseconds: 500));
+      if (mounted) {
+        Navigator.pop(context);
+      }
     } catch (e) {
       if (!mounted) return;
 
@@ -156,6 +160,14 @@ class _SendPdpState extends State<SendPdp> {
           ),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.history, color: AppColors.textPrimary),
+            onPressed: () {
+              Navigator.pushNamed(context, '/WithdrawHistory');
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),

@@ -2,24 +2,24 @@ import 'package:comecomepay/core/base_service.dart';
 
 /// 提现请求模型
 class WithdrawRequestModel {
-  final String address;
-  final double amount;
   final String currency;
-  final String memo;
+  final double amount;
+  final String address;
+  final String network;
 
   WithdrawRequestModel({
-    required this.address,
-    required this.amount,
     required this.currency,
-    this.memo = '',
+    required this.amount,
+    required this.address,
+    required this.network,
   });
 
   Map<String, dynamic> toJson() {
     return {
-      'address': address,
-      'amount': amount,
       'currency': currency,
-      'memo': memo,
+      'amount': amount,
+      'address': address,
+      'network': network,
     };
   }
 }
@@ -28,31 +28,19 @@ class WithdrawRequestModel {
 class WithdrawResponseModel {
   final String status;
   final String message;
-  final int withdrawalId;
-  final double amount;
-  final String currency;
-  final double fee;
-  final String estimatedTime;
+  final dynamic withdrawal; // 可能为 null
 
   WithdrawResponseModel({
     required this.status,
     required this.message,
-    required this.withdrawalId,
-    required this.amount,
-    required this.currency,
-    required this.fee,
-    required this.estimatedTime,
+    this.withdrawal,
   });
 
   factory WithdrawResponseModel.fromJson(Map<String, dynamic> json) {
     return WithdrawResponseModel(
       status: json['status'] ?? '',
       message: json['message'] ?? '',
-      withdrawalId: json['withdrawal_id'] ?? 0,
-      amount: (json['amount'] ?? 0).toDouble(),
-      currency: json['currency'] ?? '',
-      fee: (json['fee'] ?? 0).toDouble(),
-      estimatedTime: json['estimated_time'] ?? '',
+      withdrawal: json['withdrawal'],
     );
   }
 
@@ -60,11 +48,7 @@ class WithdrawResponseModel {
     return {
       'status': status,
       'message': message,
-      'withdrawal_id': withdrawalId,
-      'amount': amount,
-      'currency': currency,
-      'fee': fee,
-      'estimated_time': estimatedTime,
+      'withdrawal': withdrawal,
     };
   }
 }
@@ -80,7 +64,7 @@ class WithdrawService extends BaseService {
   /// [request] 提现请求模型
   Future<WithdrawResponseModel> withdraw(WithdrawRequestModel request) async {
     try {
-      final response = await post('/card/withdraw', data: request.toJson());
+      final response = await post('/wallet/withdrawal', data: request.toJson());
 
       if (response['status'] == 'success') {
         return WithdrawResponseModel.fromJson(response);
@@ -91,5 +75,72 @@ class WithdrawService extends BaseService {
       print('Error submitting withdrawal: $e');
       rethrow;
     }
+  }
+
+  /// 获取提现历史记录
+  /// [page] 页码（默认1）
+  /// [limit] 每页数量（默认20）
+  /// [status] 提现状态（可选）
+  Future<WithdrawHistoryResponseModel> getWithdrawHistory({
+    int page = 1,
+    int limit = 20,
+    String? status,
+  }) async {
+    try {
+      final queryParams = {
+        'page': page,
+        'limit': limit,
+        if (status != null && status.isNotEmpty) 'status': status,
+      };
+
+      final response =
+          await get('/wallet/withdrawals', queryParameters: queryParams);
+
+      return WithdrawHistoryResponseModel.fromJson(response);
+    } catch (e) {
+      print('Error fetching withdrawal history: $e');
+      rethrow;
+    }
+  }
+}
+
+/// 提现历史记录响应模型
+class WithdrawHistoryResponseModel {
+  final String status;
+  final int page;
+  final int limit;
+  final int total;
+  final int totalPages;
+  final List<dynamic> items; // 实际字段名是 items
+
+  WithdrawHistoryResponseModel({
+    required this.status,
+    required this.page,
+    required this.limit,
+    required this.total,
+    required this.totalPages,
+    required this.items,
+  });
+
+  factory WithdrawHistoryResponseModel.fromJson(Map<String, dynamic> json) {
+    return WithdrawHistoryResponseModel(
+      status: json['status'] ?? '',
+      page: json['page'] ?? 1,
+      limit: json['limit'] ?? 20,
+      total: json['total'] ?? 0,
+      totalPages: json['total_pages'] ?? 1,
+      items: json['items'] ?? [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'status': status,
+      'page': page,
+      'limit': limit,
+      'total': total,
+      'total_pages': totalPages,
+      'items': items,
+    };
   }
 }
