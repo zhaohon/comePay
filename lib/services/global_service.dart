@@ -21,6 +21,7 @@ import 'package:comecomepay/models/responses/set_password_response_model.dart';
 import 'package:comecomepay/services/api_logger_service.dart';
 import 'package:comecomepay/models/responses/coupon_response_model.dart';
 import 'package:comecomepay/models/responses/coupon_error_model.dart';
+import 'package:comecomepay/models/responses/new_coupon_model.dart';
 import 'package:comecomepay/models/requests/claim_coupon_request_model.dart';
 import 'package:comecomepay/models/responses/claim_coupon_response_model.dart';
 import 'package:comecomepay/models/requests/change_email_request_model.dart';
@@ -996,6 +997,56 @@ class GlobalService extends BaseService {
       _apiLogger.logFailure('getMyCoupons', 'Exception occurred',
           error: e.toString());
       _apiLogger.logMethodExit('getMyCoupons',
+          result: 'Exception: ${e.toString()}');
+      throw Exception('Failed to retrieve coupons: ${e.toString()}');
+    }
+  }
+
+  // Method untuk get coupons (新API)
+  Future<NewCouponResponseModel> getCoupons({bool onlyValid = true}) async {
+    _apiLogger.logMethodEntry('getCoupons', parameters: {
+      'only_valid': onlyValid,
+    });
+
+    try {
+      final accessToken = HiveStorageService.getAccessToken();
+      if (accessToken == null) {
+        throw UnauthorizedException('No access token available');
+      }
+
+      final response = await dio.get(
+        '/coupons/',
+        queryParameters: {
+          'only_valid': onlyValid,
+        },
+        options: Options(
+          headers: {'Authorization': 'Bearer $accessToken'},
+        ),
+      );
+
+      final data = handleResponse(response);
+      if (data['status'] == 'success') {
+        _apiLogger.logSuccess('getCoupons', 'Coupons retrieved successfully');
+        _apiLogger.logMethodExit('getCoupons', result: 'Success');
+        return NewCouponResponseModel.fromJson(data);
+      } else {
+        _apiLogger.logFailure('getCoupons', 'Failed to retrieve coupons',
+            error: data['error']);
+        _apiLogger.logMethodExit('getCoupons', result: 'Failed');
+        throw Exception(data['error'] ?? 'Failed to retrieve coupons');
+      }
+    } on UnauthorizedException catch (e) {
+      _apiLogger.logFailure('getCoupons', 'Unauthorized', error: e.toString());
+      _apiLogger.logMethodExit('getCoupons', result: 'Unauthorized');
+      throw e;
+    } on DioException catch (e) {
+      _apiLogger.logFailure('getCoupons', 'Dio error', error: e.toString());
+      _apiLogger.logMethodExit('getCoupons', result: 'Dio error');
+      throw handleDioError(e);
+    } catch (e) {
+      _apiLogger.logFailure('getCoupons', 'Exception occurred',
+          error: e.toString());
+      _apiLogger.logMethodExit('getCoupons',
           result: 'Exception: ${e.toString()}');
       throw Exception('Failed to retrieve coupons: ${e.toString()}');
     }

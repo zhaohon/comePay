@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:comecomepay/core/base_viewmodel.dart';
 import 'package:comecomepay/models/responses/coupon_model.dart';
+import 'package:comecomepay/models/responses/new_coupon_model.dart';
 import 'package:comecomepay/models/responses/pagination_model.dart';
 import 'package:comecomepay/models/responses/claim_coupon_response_model.dart';
 import 'package:comecomepay/services/global_service.dart';
@@ -138,5 +139,48 @@ class CouponViewModel extends BaseViewModel {
       _isClaiming = false;
       notifyListeners();
     }
+  }
+
+  // ========== 新的优惠券加载逻辑（使用 /coupons API） ==========
+  List<NewCouponModel> _newCoupons = [];
+  List<NewCouponModel> get newCoupons => _newCoupons;
+
+  // 获取优惠券列表（新API）
+  Future<void> loadNewCoupons({bool onlyValid = true}) async {
+    setBusy(true);
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final response = await _globalService.getCoupons(onlyValid: onlyValid);
+      _newCoupons = response.coupons;
+      _errorMessage = null;
+    } catch (e) {
+      _errorMessage = e.toString();
+      _newCoupons = [];
+    } finally {
+      setBusy(false);
+      notifyListeners();
+    }
+  }
+
+  // 按状态过滤优惠券
+  List<NewCouponModel> getCouponsByStatus(String status) {
+    switch (status.toLowerCase()) {
+      case 'available':
+      case 'unused':
+        return _newCoupons.where((c) => c.isAvailable).toList();
+      case 'used':
+        return _newCoupons.where((c) => c.isUsed).toList();
+      case 'expired':
+        return _newCoupons.where((c) => c.isExpired).toList();
+      default:
+        return _newCoupons;
+    }
+  }
+
+  // 刷新优惠券
+  Future<void> refreshNewCoupons() async {
+    await loadNewCoupons(onlyValid: false); // 加载所有优惠券以支持三个标签
   }
 }

@@ -236,25 +236,20 @@ class _CardApplyCardScreenState extends State<CardApplyCardScreen> {
   /// 显示优惠券选择底部弹窗
   Future<void> _showCouponSelectionSheet() async {
     try {
-      // 获取可用优惠券列表
-      // getMyCoupons使用位置参数: (String status, int page, int limit)
-      final response = await _globalService.getMyCoupons(
-        '1', // status: 1 = available
-        1, // page
-        50, // limit
-      );
+      // 使用新的 getCoupons API，只获取有效优惠券
+      final response = await _globalService.getCoupons(onlyValid: true);
 
       if (!mounted) return;
 
-      // CouponModel包含coupon属性，类型是CouponDetailModel
-      final coupons = response.coupons.map((c) => c.coupon).toList();
+      // 使用新的 NewCouponModel
+      final coupons = response.coupons;
 
       if (coupons.isEmpty) {
         _showMessage(AppLocalizations.of(context)!.noAvailableCoupons);
         return;
       }
 
-      final selected = await showModalBottomSheet<CouponDetailModel>(
+      final selected = await showModalBottomSheet<dynamic>(
         context: context,
         isScrollControlled: true,
         backgroundColor: Colors.white,
@@ -333,7 +328,7 @@ class _CardApplyCardScreenState extends State<CardApplyCardScreen> {
                         }
 
                         final coupon = coupons[index - 1];
-                        return _buildCouponItem(coupon);
+                        return _buildNewCouponItem(coupon);
                       },
                     ),
                   ),
@@ -345,8 +340,26 @@ class _CardApplyCardScreenState extends State<CardApplyCardScreen> {
       );
 
       if (selected != null) {
+        // 将 NewCouponModel 转换为 CouponDetailModel 以兼容现有代码
         setState(() {
-          _selectedCoupon = selected;
+          _selectedCoupon = CouponDetailModel(
+            id: selected.id,
+            code: selected.code,
+            name: selected.name,
+            description: '',
+            value: selected.value,
+            valueType: selected.type, // 'fixed' or 'percentage'
+            minTransactionAmount: selected.minFee,
+            maxDiscount: selected.maxDiscount,
+            usageLimit: 0,
+            usageLimitPerUser: 0,
+            usedCount: 0,
+            status: 'active',
+            expiresAt: selected.validUntil,
+            createdBy: 0,
+            createdAt: selected.assignedAt,
+            updatedAt: selected.assignedAt,
+          );
         });
       } else if (selected == null && _selectedCoupon != null) {
         // 用户选择了"No coupon"
@@ -358,6 +371,132 @@ class _CardApplyCardScreenState extends State<CardApplyCardScreen> {
       print('Error loading coupons: $e');
       _showMessage(AppLocalizations.of(context)!.failedToLoadCoupons);
     }
+  }
+
+  /// 构建新优惠券列表项（使用 NewCouponModel）
+  Widget _buildNewCouponItem(dynamic coupon) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: AppColors.primary.withOpacity(0.2)),
+      ),
+      child: InkWell(
+        onTap: () => Navigator.pop(context, coupon),
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            gradient: LinearGradient(
+              colors: [
+                Colors.white,
+                AppColors.primary.withOpacity(0.05),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      coupon.name,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      gradient: AppColors.primaryGradient,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      coupon.type == 'percentage'
+                          ? '-${coupon.value.toStringAsFixed(0)}%'
+                          : '-\$${coupon.value.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Icon(Icons.receipt_long,
+                      size: 14, color: Colors.grey.shade600),
+                  const SizedBox(width: 6),
+                  Text(
+                    '${AppLocalizations.of(context)!.code}: ${coupon.code}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  Icon(Icons.shopping_bag,
+                      size: 14, color: Colors.grey.shade600),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Min Fee: \$${coupon.minFee.toStringAsFixed(2)}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Icon(Icons.discount, size: 14, color: Colors.grey.shade600),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Max Discount: \$${coupon.maxDiscount.toStringAsFixed(2)}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  Icon(Icons.event_available,
+                      size: 14, color: Colors.grey.shade600),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Valid until: ${_formatDate(coupon.validUntil)}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// 格式化日期
+  String _formatDate(DateTime date) {
+    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
   }
 
   /// 构建优惠券列表项
@@ -477,45 +616,109 @@ class _CardApplyCardScreenState extends State<CardApplyCardScreen> {
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 16),
-                      // 卡片信息网格布局（一行最多3个）
-                      LayoutBuilder(
-                        builder: (context, constraints) {
-                          final cardWidth = (constraints.maxWidth - 24) / 3; // 减去spacing
-                          return Wrap(
-                            spacing: 12,
-                            runSpacing: 12,
+
+                      // 卡片信息列表
+                      _buildReadOnlyInfoRow(
+                        AppLocalizations.of(context)!.cardName,
+                        _cardFeeConfig?.description ??
+                            AppLocalizations.of(context)!.comeComePayCard,
+                        Icons.credit_card,
+                      ),
+                      const SizedBox(height: 12),
+                      _buildReadOnlyInfoRow(
+                        AppLocalizations.of(context)!.cardOrganization,
+                        'VISA',
+                        Icons.payment,
+                      ),
+                      const SizedBox(height: 12),
+                      _buildReadOnlyInfoRow(
+                        AppLocalizations.of(context)!.cardFee,
+                        '${_cardFeeConfig?.feeAmount.toStringAsFixed(2) ?? '0.00'} USD',
+                        Icons.attach_money,
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // 优惠券选择区域 - 更突出
+                      Text(
+                        'Coupon',
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 12),
+                      InkWell(
+                        onTap: _showCouponSelectionSheet,
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: _selectedCoupon == null
+                                ? Colors.grey.shade100
+                                : AppColors.primary.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: _selectedCoupon == null
+                                  ? Colors.grey.shade300
+                                  : AppColors.primary,
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Row(
                             children: [
-                              _buildInfoCard(
-                                context,
-                                cardWidth,
-                                AppLocalizations.of(context)!.cardName,
-                                _cardFeeConfig?.description ??
-                                    AppLocalizations.of(context)!.comeComePayCard,
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: _selectedCoupon == null
+                                      ? Colors.grey.shade200
+                                      : AppColors.primary.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Icon(
+                                  Icons.discount,
+                                  color: _selectedCoupon == null
+                                      ? Colors.grey.shade600
+                                      : AppColors.primary,
+                                  size: 24,
+                                ),
                               ),
-                              _buildInfoCard(
-                                context,
-                                cardWidth,
-                                AppLocalizations.of(context)!.cardOrganization,
-                                'VISA',
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      _selectedCoupon == null
+                                          ? 'Select a Coupon'
+                                          : _selectedCoupon!.name,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: _selectedCoupon == null
+                                            ? Colors.grey.shade700
+                                            : AppColors.textPrimary,
+                                      ),
+                                    ),
+                                    if (_selectedCoupon != null) ...[
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        'Code: ${_selectedCoupon!.code}',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey.shade600,
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
                               ),
-                              _buildInfoCard(
-                                context,
-                                cardWidth,
-                                AppLocalizations.of(context)!.cardFee,
-                                '${_cardFeeConfig?.feeAmount.toStringAsFixed(2) ?? '0.00'} USD',
-                              ),
-                              _buildInfoCard(
-                                context,
-                                cardWidth,
-                                AppLocalizations.of(context)!.coupon,
-                                _selectedCoupon == null
-                                    ? AppLocalizations.of(context)!.available
-                                    : _selectedCoupon!.name,
-                                onTap: _showCouponSelectionSheet,
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                size: 16,
+                                color: Colors.grey.shade400,
                               ),
                             ],
-                          );
-                        },
+                          ),
+                        ),
                       ),
                       const Spacer(),
                       Center(
@@ -535,12 +738,53 @@ class _CardApplyCardScreenState extends State<CardApplyCardScreen> {
                             backgroundColor: Colors.blue,
                             minimumSize: const Size(double.infinity, 50),
                           ),
-                          child: Text(AppLocalizations.of(context)!.submit                          ),
+                          child: Text(AppLocalizations.of(context)!.submit),
                         ),
                       ),
                     ],
                   ),
                 ),
+    );
+  }
+
+  /// 构建只读信息行
+  Widget _buildReadOnlyInfoRow(String label, String value, IconData icon) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: AppColors.primary),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
