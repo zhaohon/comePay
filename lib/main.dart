@@ -68,6 +68,7 @@ import 'package:comecomepay/views/homes/CardCompliteStatusScreen.dart';
 import 'package:comecomepay/views/homes/CardVerificationProfilScreen.dart';
 import 'package:comecomepay/views/homes/CardApplyScreen.dart';
 import 'package:comecomepay/views/homes/CardCompliteApplyScreen.dart';
+import 'package:comecomepay/views/homes/CardVerificationScreen.dart';
 import 'package:comecomepay/views/homes/ProfilKycScreen.dart';
 import 'package:comecomepay/views/homes/SecurityScreen.dart'
     show Securityscreen;
@@ -242,6 +243,8 @@ class MyApp extends StatelessWidget {
                 '/Cardselectdocumentscreen': (context) =>
                     const Cardselectdocumentscreen(),
                 '/CardKycScreen': (context) => const CardKycScreen(),
+                '/CardVerificationScreen': (context) =>
+                    const Cardverificationscreen(),
                 '/CardOtpScreen': (context) => CardOtpScreen(),
                 '/CardCompliteScreen': (context) => const CardCompliteScreen(),
                 '/CardVerifyIdentityScreen': (context) =>

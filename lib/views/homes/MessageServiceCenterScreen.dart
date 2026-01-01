@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
-import 'package:comecomepay/viewmodels/messageservicecenter_viewmodel.dart';
 import 'package:comecomepay/utils/app_colors.dart';
-import 'package:intl/intl.dart';
+import 'package:comecomepay/services/zoho_chat_service.dart';
 
 class MessageServiceCenterScreen extends StatefulWidget {
   const MessageServiceCenterScreen({super.key});
@@ -15,22 +13,61 @@ class MessageServiceCenterScreen extends StatefulWidget {
 
 class _MessageServiceCenterScreenState
     extends State<MessageServiceCenterScreen> {
-  final TextEditingController _controller = TextEditingController();
+  final ZohoChatService _chatService = ZohoChatService();
+  double _progress = 0;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final viewModel =
-          Provider.of<MessageServiceCenterViewModel>(context, listen: false);
-      viewModel.getChatHistory();
-    });
+
+    // 添加监听器
+    _chatService.addProgressListener(_onProgressChanged);
+    _chatService.addLoadingListener(_onLoadingChanged);
+
+    // 如果已经初始化，直接显示
+    if (_chatService.isInitialized) {
+      setState(() {
+        _isLoading = false;
+        _progress = 1.0;
+      });
+    }
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    // 移除监听器
+    _chatService.removeProgressListener(_onProgressChanged);
+    _chatService.removeLoadingListener(_onLoadingChanged);
     super.dispose();
+  }
+
+  void _onProgressChanged(double progress) {
+    if (mounted) {
+      setState(() {
+        _progress = progress;
+      });
+    }
+  }
+
+  void _onLoadingChanged(bool isLoading) {
+    if (mounted) {
+      setState(() {
+        _isLoading = isLoading;
+      });
+    }
+  }
+
+  String _getLoadingMessage() {
+    if (_progress < 0.3) {
+      return 'Initializing connection...';
+    } else if (_progress < 0.7) {
+      return 'Loading chat service...';
+    } else if (_progress < 0.9) {
+      return 'Setting up secure channel...';
+    } else {
+      return 'Almost ready...';
+    }
   }
 
   @override
@@ -49,176 +86,152 @@ class _MessageServiceCenterScreenState
           style: const TextStyle(color: Colors.black),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh, color: Colors.black),
+            onPressed: () {
+              _chatService.controller?.reload();
+            },
+          ),
+        ],
       ),
-      body: Consumer<MessageServiceCenterViewModel>(
-        builder: (context, viewModel, child) {
-          if (viewModel.isLoading && viewModel.chatHistory.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: Stack(
+        children: [
+          // 使用全局单例的WebView
+          _chatService.buildWebView(),
 
-          if (viewModel.chatHistory.isEmpty) {
-            return const Center(
-              child: Text(
-                'No messages yet. Start a conversation!',
-                style: TextStyle(color: Colors.grey),
-              ),
-            );
-          }
-          return Column(
-            children: [
-              Expanded(
-                child: RefreshIndicator(
-                  onRefresh: () async {
-                    await viewModel.refreshChatHistory();
-                  },
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: viewModel.chatHistory.length +
-                        (viewModel.isLoadingHistoryMore ? 1 : 0),
-                    itemBuilder: (context, index) {
-                      if (index == 0 && viewModel.isLoadingHistoryMore) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-
-                      final actualIndex =
-                          viewModel.isLoadingHistoryMore ? index - 1 : index;
-                      if (actualIndex < 0) return const SizedBox.shrink();
-
-                      final msg = viewModel.chatHistory[actualIndex];
-                      final isUser = msg.sender.toLowerCase() == 'user';
-                      final messageText = msg.message;
-                      final createdAt = msg.createdAt;
-                      String timeString = "";
-                      try {
-                        timeString = DateFormat('HH:mm').format(createdAt);
-                      } catch (e) {
-                        timeString = "Unknown";
-                      }
-
-                      // Load more when reaching near the top (only if not already loading)
-                      if (actualIndex == 0 &&
-                          !viewModel.isLoadingHistoryMore &&
-                          viewModel.historyHasMorePages) {
-                        viewModel.loadMoreChatHistory();
-                      }
-
-                      return Align(
-                        alignment: isUser
-                            ? Alignment.centerRight
-                            : Alignment.centerLeft,
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                          transform: Matrix4.translationValues(0, 0, 0),
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(vertical: 4),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 14),
-                            constraints: BoxConstraints(
-                              maxWidth:
-                                  MediaQuery.of(context).size.width * 0.75,
-                            ),
-                            decoration: BoxDecoration(
-                              gradient:
-                                  isUser ? AppColors.primaryGradient : null,
-                              color: isUser ? null : Colors.grey[200],
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  messageText,
-                                  style: TextStyle(
-                                    color: isUser ? Colors.white : Colors.black,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      timeString,
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        color: isUser
-                                            ? Colors.white70
-                                            : Colors.black54,
-                                      ),
-                                    ),
-                                    if (!msg.isRead && !isUser) ...[
-                                      const SizedBox(width: 4),
-                                      Container(
-                                        width: 6,
-                                        height: 6,
-                                        decoration: const BoxDecoration(
-                                          color: Colors.blue,
-                                          shape: BoxShape.circle,
-                                        ),
-                                      ),
-                                    ],
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+          // 加载动画（仅首次加载时显示）
+          if (_isLoading && !_chatService.isInitialized)
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.white,
+                    const Color(0xFFF3E8FF),
+                  ],
                 ),
               ),
-              SafeArea(
-                child: Container(
-                  margin: const EdgeInsets.all(12),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _controller,
-                          decoration: const InputDecoration(
-                            hintText: "Type Message",
-                            border: InputBorder.none,
-                          ),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // 客服图标
+                    Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            const Color(0xFFA855F7),
+                            const Color(0xFF9333EA),
+                          ],
                         ),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFFA855F7).withOpacity(0.3),
+                            blurRadius: 20,
+                            spreadRadius: 5,
+                          ),
+                        ],
                       ),
-                      IconButton(
-                        icon: Icon(Icons.send, color: AppColors.primary),
-                        onPressed: () async {
-                          final viewModel =
-                              Provider.of<MessageServiceCenterViewModel>(
-                                  context,
-                                  listen: false);
-                          final message = _controller.text.trim();
-                          if (message.isNotEmpty) {
-                            try {
-                              await viewModel.sendChatHistoryMessage(message);
-                              _controller.clear();
-                            } catch (e) {
-                              // Show error message to user
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content:
-                                        Text('Failed to send message: $e')),
-                              );
-                            }
-                          }
-                        },
+                      child: const Icon(
+                        Icons.support_agent,
+                        size: 50,
+                        color: Colors.white,
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 32),
+
+                    // 标题
+                    const Text(
+                      'Connecting to Customer Service',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1F2937),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // 副标题
+                    Text(
+                      'Setting up your chat session...',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+
+                    // 进度条
+                    SizedBox(
+                      width: 200,
+                      child: Column(
+                        children: [
+                          LinearProgressIndicator(
+                            value: _progress > 0 ? _progress : null,
+                            backgroundColor: Colors.grey.shade200,
+                            valueColor: const AlwaysStoppedAnimation<Color>(
+                              Color(0xFFA855F7),
+                            ),
+                            minHeight: 4,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            '${(_progress * 100).toInt()}%',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey.shade500,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // 加载步骤提示
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.8),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: const AlwaysStoppedAnimation<Color>(
+                                Color(0xFFA855F7),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            _getLoadingMessage(),
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.grey.shade700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              )
-            ],
-          );
-        },
+              ),
+            ),
+        ],
       ),
     );
   }

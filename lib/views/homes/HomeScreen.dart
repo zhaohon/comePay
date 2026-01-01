@@ -224,21 +224,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         ? 14
                                                         : 16),
                                               ),
-                                              SizedBox(
-                                                  width: screenWidth * 0.02),
-                                              Text(
-                                                _isVisible
-                                                    ? walletViewModel
-                                                        .totalAssets
-                                                        .toStringAsFixed(2)
-                                                    : "****",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize:
-                                                      isSmallScreen ? 14 : 16,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
+                                              // SizedBox(
+                                              //     width: screenWidth * 0.02),
+                                              // Text(
+                                              //   _isVisible
+                                              //       ? walletViewModel
+                                              //           .totalAssets
+                                              //           .toStringAsFixed(2)
+                                              //       : "****",
+                                              //   style: TextStyle(
+                                              //     color: Colors.white,
+                                              //     fontSize:
+                                              //         isSmallScreen ? 14 : 16,
+                                              //     fontWeight: FontWeight.bold,
+                                              //   ),
+                                              // ),
                                               IconButton(
                                                 icon: Icon(Icons.visibility,
                                                     color: Colors.white,

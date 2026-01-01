@@ -355,7 +355,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcomeToComeComePay => 'Welcome to Come Come Pay';
 
   @override
-  String get totalAssets => 'Total Assets 👁️';
+  String get totalAssets => 'Total Assets';
 
   @override
   String get account => 'Account';

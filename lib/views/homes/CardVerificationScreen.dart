@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:comecomepay/viewmodels/profile_screen_viewmodel.dart';
 import 'package:comecomepay/views/homes/ProfilKycDiditScreen.dart';
 import 'package:comecomepay/models/requests/didit_initialize_token_request_model.dart';
+import 'package:comecomepay/models/country_model.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
 import 'package:comecomepay/services/kyc_service.dart';
 import 'package:comecomepay/utils/app_colors.dart';
@@ -28,22 +30,40 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _postcodeController = TextEditingController();
 
-  // Negara dan kode
-  String _selectedCountry = "China";
-  String _selectedFlag = 'assets/vn.png';
-  String _selectedCode = '+86';
-
-  final List<Map<String, String>> _countries = [
-    {'name': 'China', 'code': '+86', 'flag': 'assets/vn.png'},
-    {'name': 'Vietnam', 'code': '+84', 'flag': 'assets/vn.png'},
-    {'name': 'Indonesia', 'code': '+62', 'flag': 'assets/indonesia.png'},
-  ];
+  // 国家数据
+  List<Country> _countries = [];
+  Country? _selectedCountry;
+  bool _isLoadingCountries = true;
 
   @override
   void initState() {
     super.initState();
     _viewModel = ProfileScreenViewModel();
+    _loadCountries(); // 加载国家数据
     _checkEligibility(); // 检查KYC资格
+  }
+
+  /// 从JSON文件加载国家数据
+  Future<void> _loadCountries() async {
+    try {
+      final String jsonString =
+          await rootBundle.loadString('assets/data/countries.json');
+      final List<dynamic> jsonList = json.decode(jsonString);
+      setState(() {
+        _countries = jsonList.map((json) => Country.fromJson(json)).toList();
+        // 默认选择中国
+        _selectedCountry = _countries.firstWhere(
+          (country) => country.code == 'CN',
+          orElse: () => _countries.first,
+        );
+        _isLoadingCountries = false;
+      });
+    } catch (e) {
+      print('Error loading countries: $e');
+      setState(() {
+        _isLoadingCountries = false;
+      });
+    }
   }
 
   /// 检查用户是否有资格进行KYC认证
@@ -131,10 +151,13 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Image.asset(_selectedFlag, width: 24, height: 24),
+                          Text(
+                            _selectedCountry?.flag ?? '🏳️',
+                            style: const TextStyle(fontSize: 24),
+                          ),
                           const SizedBox(width: 8),
                           Text(
-                            _selectedCode,
+                            _selectedCountry?.dialCode ?? '+86',
                             style: const TextStyle(fontSize: 14),
                           ),
                         ],
@@ -174,34 +197,33 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: _selectedCountry,
-                      isExpanded: true,
-                      icon: const Icon(Icons.keyboard_arrow_down),
-                      items: _countries.map((country) {
-                        return DropdownMenuItem<String>(
-                          value: country['name'],
-                          child: Row(
-                            children: [
-                              Image.asset(country['flag']!,
-                                  width: 24, height: 24),
-                              const SizedBox(width: 10),
-                              Text(country['name']!),
-                            ],
+                    child: _isLoadingCountries
+                        ? const Center(child: CircularProgressIndicator())
+                        : DropdownButton<Country>(
+                            value: _selectedCountry,
+                            isExpanded: true,
+                            icon: const Icon(Icons.keyboard_arrow_down),
+                            items: _countries.map((country) {
+                              return DropdownMenuItem<Country>(
+                                value: country,
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      country.flag,
+                                      style: const TextStyle(fontSize: 24),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Text(country.name),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedCountry = value;
+                              });
+                            },
                           ),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          final selected = _countries.firstWhere(
-                              (c) => c['name'] == value,
-                              orElse: () => _countries[0]);
-                          _selectedCountry = selected['name']!;
-                          _selectedFlag = selected['flag']!;
-                          _selectedCode = selected['code']!;
-                        });
-                      },
-                    ),
                   ),
                 ),
                 const SizedBox(height: 15),
@@ -246,12 +268,9 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
                             address: _addressController.text,
                             agentUid:
                                 '${_nameController.text}_${_surnameController.text}_${DateTime.now().millisecondsSinceEpoch}',
-                            areaCode: _selectedCode.replaceAll('+', ''),
-                            billCountryCode: _selectedCountry == 'China'
-                                ? 'CN'
-                                : _selectedCountry == 'Vietnam'
-                                    ? 'VN'
-                                    : 'ID',
+                            areaCode: (_selectedCountry?.dialCode ?? '+86')
+                                .replaceAll('+', ''),
+                            billCountryCode: _selectedCountry?.code ?? 'CN',
                             city: _cityController.text,
                             email: email,
                             firstEnName: _nameController.text.toUpperCase(),

@@ -765,7 +765,7 @@ abstract class AppLocalizations {
   /// No description provided for @totalAssets.
   ///
   /// In en, this message translates to:
-  /// **'Total Assets 👁️'**
+  /// **'Total Assets'**
   String get totalAssets;
 
   /// No description provided for @account.

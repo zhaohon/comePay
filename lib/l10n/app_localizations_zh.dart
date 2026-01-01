@@ -339,7 +339,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get welcomeToComeComePay => '欢迎来到 Come Come Pay';
 
   @override
-  String get totalAssets => '总资产 👁️';
+  String get totalAssets => '总资产';
 
   @override
   String get account => '账户';
