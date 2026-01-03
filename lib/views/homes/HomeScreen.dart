@@ -286,10 +286,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 SizedBox(height: screenWidth * 0.05),
                                 LayoutBuilder(
                                   builder: (context, constraints) {
-                                    return Wrap(
+                                    return Row(
                                       spacing: screenWidth * 0.05,
-                                      runSpacing: screenWidth * 0.05,
-                                      alignment: WrapAlignment.spaceAround,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      // runSpacing: screenWidth * 0.05,
+                                      // alignment: WrapAlignment.spaceBetween,
                                       children: [
                                         buildActionIcon(Icons.send,
                                             AppLocalizations.of(context)!.send,
@@ -316,16 +318,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                           Navigator.pushNamed(
                                               context, '/SwapDetailScreen');
                                         }),
-                                        buildActionIcon(
-                                            Icons.account_circle,
-                                            AppLocalizations.of(context)!
-                                                .account, () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      WalletScreen()));
-                                        }),
+                                        // buildActionIcon(
+                                        //     Icons.account_circle,
+                                        //     AppLocalizations.of(context)!
+                                        //         .account, () {
+                                        //   Navigator.push(
+                                        //       context,
+                                        //       MaterialPageRoute(
+                                        //           builder: (_) =>
+                                        //               WalletScreen()));
+                                        // }),
                                       ],
                                     );
                                   },
