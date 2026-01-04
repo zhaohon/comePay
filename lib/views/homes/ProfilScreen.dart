@@ -16,6 +16,7 @@ import 'package:comecomepay/services/hive_storage_service.dart';
 import 'package:comecomepay/viewmodels/profile_screen_viewmodel.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/utils/app_colors.dart';
+import 'package:comecomepay/views/debug/token_refresh_test_page.dart';
 
 import 'ProfilKycScreen.dart';
 
@@ -184,11 +185,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     title: AppLocalizations.of(context)!.inviteFriend,
                     iconColor: const Color(0xFF2196F3),
                     onTap: () {
+                      // 在任意按钮或初始化时
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => InviteFriendScreen()),
+                            builder: (_) => TokenRefreshTestPage()),
                       );
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //       builder: (context) => InviteFriendScreen()),
+                      // );
                     },
                   ),
                   _buildDivider(),

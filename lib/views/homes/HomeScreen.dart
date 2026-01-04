@@ -2,16 +2,18 @@ import 'package:comecomepay/views/homes/SendScreen.dart' show Sendscreen;
 
 import 'package:comecomepay/views/homes/WalletAccountScreen.dart'
     show WalletScreen;
-import 'package:comecomepay/views/homes/TransactionHistoryHistory.dart';
+import 'package:comecomepay/views/transactions/unified_transaction_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../l10n/app_localizations.dart';
 import '../../viewmodels/locale_provider.dart';
 import '../../viewmodels/notification_viewmodel.dart';
 import '../../viewmodels/home_screen_viewmodel.dart';
-import '../../viewmodels/transaction_record_viewmodel.dart';
+import '../../viewmodels/unified_transaction_viewmodel.dart';
 import '../../viewmodels/wallet_viewmodel.dart';
 import '../../utils/app_colors.dart';
+import '../../widgets/transaction_item_widget.dart';
+import 'package:comecomepay/views/transactions/transaction_detail_screen.dart';
 
 import 'ReceiveScreen.dart';
 
@@ -30,20 +32,26 @@ class _HomeScreenState extends State<HomeScreen> {
     final notificationViewModel =
         Provider.of<NotificationViewModel>(context, listen: false);
     notificationViewModel.fetchUnreadNotificationCount();
-    // Transaction records are now fetched in the Consumer below
 
+    // Fetch wallet data
     _walletViewModel = Provider.of<WalletViewModel>(context, listen: false);
+
+    // Fetch latest transactions
+    final transactionViewModel =
+        Provider.of<UnifiedTransactionViewModel>(context, listen: false);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _walletViewModel.fetchWalletData();
+      transactionViewModel.fetchLatestTransactions(limit: 10);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer4<LocaleProvider, NotificationViewModel,
-        TransactionRecordViewModel, WalletViewModel>(
+        UnifiedTransactionViewModel, WalletViewModel>(
       builder: (context, localeProvider, notificationViewModel,
-          transactionRecordViewModel, walletViewModel, child) {
+          transactionViewModel, walletViewModel, child) {
         final screenWidth = MediaQuery.of(context).size.width;
         final screenHeight = MediaQuery.of(context).size.height;
         final isSmallScreen = screenWidth < 600;
@@ -58,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
               return LayoutBuilder(
                 builder: (context, constraints) {
                   return Padding(
-                    padding: EdgeInsets.all(paddingValue),
+                    padding: EdgeInsets.symmetric(horizontal: paddingValue),
                     child: RefreshIndicator(
                       onRefresh: () => walletViewModel.fetchWalletData(),
                       child: CustomScrollView(
@@ -333,100 +341,192 @@ class _HomeScreenState extends State<HomeScreen> {
                                   },
                                 ),
                                 SizedBox(height: screenWidth * 0.05),
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    AppLocalizations.of(context)!
-                                        .latestTransactions,
-                                    style: TextStyle(
-                                      fontSize: isSmallScreen ? 16 : 18,
-                                      fontWeight: FontWeight.bold,
+                                // 最新交易标题和更多按钮
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of(context)!
+                                          .latestTransactions,
+                                      style: TextStyle(
+                                        fontSize: isSmallScreen ? 16 : 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const UnifiedTransactionListScreen(),
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        '更多',
+                                        style: TextStyle(
+                                          color: const Color(0xFFA855F7),
+                                          fontSize: isSmallScreen ? 14 : 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 SizedBox(height: screenWidth * 0.02),
                               ],
                             ),
                           ),
-                          // Available Currencies as Latest Transactions
-                          SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                                final currency = walletViewModel
-                                    .availableCurrenciesList[index];
-                                return Card(
-                                  color: Colors.white,
-                                  margin: EdgeInsets.symmetric(
-                                      vertical: screenWidth * 0.015),
-                                  elevation: 2,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(40)),
-                                  child: ListTile(
-                                    leading: CircleAvatar(
-                                      backgroundColor: Colors.blue[100],
-                                      child: Icon(
-                                        Icons.currency_exchange,
-                                        color: Colors.blue,
-                                        size: isSmallScreen ? 16 : 20,
-                                      ),
+                          // 最新交易记录列表 - 优化版
+                          transactionViewModel.isLoading
+                              ? SliverToBoxAdapter(
+                                  child: Container(
+                                    margin: EdgeInsets.symmetric(
+                                      horizontal: screenWidth * 0.04,
+                                      vertical: screenWidth * 0.02,
                                     ),
-                                    title: Text(
-                                      '${currency.chain} - ${currency.native}',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: isSmallScreen ? 14 : 16,
-                                      ),
+                                    padding: EdgeInsets.all(screenWidth * 0.08),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(16),
                                     ),
-                                    subtitle: Text(
-                                      'Address: ${currency.address}',
-                                      style: TextStyle(
-                                        fontSize: isSmallScreen ? 12 : 14,
-                                      ),
-                                    ),
-                                    trailing: Text(
-                                      currency.chain,
-                                      style: TextStyle(
-                                        color: Colors.blue,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: isSmallScreen ? 14 : 16,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                              childCount: walletViewModel
-                                  .availableCurrenciesList.length,
-                            ),
-                          ),
-                          SliverToBoxAdapter(
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: screenWidth * 0.04),
-                              child: Center(
-                                child: TextButton(
-                                  onPressed: () {
-                                    // Navigasi ke riwayat transaksi dengan data available currencies
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            TransactionHistoryHistory(
-                                          availableCurrencies: walletViewModel
-                                              .availableCurrenciesList,
+                                    child: const Center(
+                                      child: CircularProgressIndicator(
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                          Color(0xFFA855F7),
                                         ),
                                       ),
-                                    );
-                                  },
-                                  child: Text(
-                                    AppLocalizations.of(context)!
-                                        .seeAllTransactions,
-                                    style: TextStyle(
-                                        color: Colors.blue,
-                                        fontSize: isSmallScreen ? 14 : 16),
+                                    ),
                                   ),
-                                ),
-                              ),
-                            ),
+                                )
+                              : transactionViewModel.latestTransactions.isEmpty
+                                  ? SliverToBoxAdapter(
+                                      child: Container(
+                                        margin: EdgeInsets.symmetric(
+                                          horizontal: screenWidth * 0.04,
+                                          vertical: screenWidth * 0.02,
+                                        ),
+                                        padding:
+                                            EdgeInsets.all(screenWidth * 0.08),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                        ),
+                                        child: Center(
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                width: 70,
+                                                height: 70,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.grey[100],
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Icon(
+                                                  Icons.receipt_long_outlined,
+                                                  size: 35,
+                                                  color: Colors.grey[400],
+                                                ),
+                                              ),
+                                              const SizedBox(height: 16),
+                                              Text(
+                                                '暂无交易记录',
+                                                style: TextStyle(
+                                                  fontSize:
+                                                      isSmallScreen ? 14 : 15,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.grey[700],
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                '开始您的第一笔交易吧',
+                                                style: TextStyle(
+                                                  fontSize:
+                                                      isSmallScreen ? 12 : 13,
+                                                  color: Colors.grey[500],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : SliverToBoxAdapter(
+                                      child: Container(
+                                        margin: EdgeInsets.symmetric(
+                                          horizontal: screenWidth * 0,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black
+                                                  .withOpacity(0.04),
+                                              blurRadius: 8,
+                                              offset: const Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            ...List.generate(
+                                              transactionViewModel
+                                                  .latestTransactions.length,
+                                              (index) {
+                                                final transaction =
+                                                    transactionViewModel
+                                                            .latestTransactions[
+                                                        index];
+                                                final isLast = index ==
+                                                    transactionViewModel
+                                                            .latestTransactions
+                                                            .length -
+                                                        1;
+                                                return Column(
+                                                  children: [
+                                                    TransactionItemWidget(
+                                                      transaction: transaction,
+                                                      isInList: false,
+                                                      onTap: () {
+                                                        // 导航到交易详情页
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                TransactionDetailScreen(
+                                                              transaction:
+                                                                  transaction,
+                                                            ),
+                                                          ),
+                                                        );
+                                                      },
+                                                    ),
+                                                    if (!isLast)
+                                                      Divider(
+                                                        height: 1,
+                                                        thickness: 1,
+                                                        color: Colors.grey[200],
+                                                        indent:
+                                                            screenWidth * 0.04 +
+                                                                60,
+                                                      ),
+                                                  ],
+                                                );
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                          // 底部空白 - 在卡片外面
+                          const SliverToBoxAdapter(
+                            child: SizedBox(height: 100),
                           ),
                         ],
                       ),

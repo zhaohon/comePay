@@ -7,7 +7,8 @@ import 'package:comecomepay/main.dart';
 /// ViewModel responsible for managing transaction record state and business logic.
 /// Follows MVVM pattern and clean code principles with single responsibility.
 class TransactionRecordViewModel extends BaseViewModel {
-  final TransactionRecordService _transactionRecordService = TransactionRecordService();
+  final TransactionRecordService _transactionRecordService =
+      TransactionRecordService();
 
   List<TransactionRecord> _transactionRecords = [];
   String? _errorMessage;
@@ -36,28 +37,13 @@ class TransactionRecordViewModel extends BaseViewModel {
       _transactionRecords = response.data;
       notifyListeners();
     } catch (e) {
-      // Check if the error is due to expired token
-      if (e.toString().contains('Unauthorized') || e.toString().contains('401')) {
-        _errorMessage = 'Session expired. Please login again.';
-        // Navigate to login screen
-        _navigateToLogin();
-      } else {
-        _errorMessage = 'Failed to load transaction records: ${e.toString()}';
-      }
+      // ⚠️ DO NOT manually handle 401 errors!
+      // Let the BaseService interceptor handle token refresh automatically
+      _errorMessage = 'Failed to load transaction records: ${e.toString()}';
       print('Error fetching transaction records: $e');
       notifyListeners();
     } finally {
       setBusy(false);
-    }
-  }
-
-  /// Navigates to login screen when token is expired
-  void _navigateToLogin() {
-    // Get the current context from the navigator key or similar mechanism
-    // This assumes there's a global navigator key in the app
-    final context = MyApp.navigatorKey.currentContext;
-    if (context != null) {
-      Navigator.pushReplacementNamed(context, '/login_screen');
     }
   }
 
@@ -75,7 +61,8 @@ class TransactionRecordViewModel extends BaseViewModel {
       final formattedDate = '${date.day}/${date.month}/${date.year}';
 
       final isPositive = record.tradeTotal >= 0;
-      final amount = '${record.currencyCode} ${record.tradeTotal.abs().toStringAsFixed(2)}';
+      final amount =
+          '${record.currencyCode} ${record.tradeTotal.abs().toStringAsFixed(2)}';
       final description = record.merchantName;
       final type = isPositive ? 'Credit' : 'Debit';
 

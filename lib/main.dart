@@ -16,6 +16,7 @@ import 'package:comecomepay/viewmodels/profile_screen_viewmodel.dart';
 import 'package:comecomepay/viewmodels/home_screen_viewmodel.dart';
 import 'package:comecomepay/viewmodels/locale_provider.dart';
 import 'package:comecomepay/viewmodels/transaction_record_viewmodel.dart';
+import 'package:comecomepay/viewmodels/unified_transaction_viewmodel.dart';
 import 'package:comecomepay/viewmodels/card_viewmodel.dart';
 import 'package:comecomepay/viewmodels/wallet_viewmodel.dart';
 import 'package:comecomepay/viewmodels/send_pdp_detail_viewmodel.dart';
@@ -141,6 +142,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<TransactionRecordViewModel>(
           create: (context) => TransactionRecordViewModel(),
+        ),
+        ChangeNotifierProvider<UnifiedTransactionViewModel>(
+          create: (context) => UnifiedTransactionViewModel(),
         ),
         ChangeNotifierProvider<CardViewModel>(
           create: (context) => CardViewModel(),
