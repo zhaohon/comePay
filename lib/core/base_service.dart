@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer' as developer;
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:comecomepay/main.dart';
 import 'package:comecomepay/utils/constants.dart';
 import 'package:comecomepay/services/api_logger_service.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
@@ -59,8 +61,9 @@ abstract class BaseService {
     },
   ));
 
-  // Token refresh lock mechanism to prevent concurrent refreshes
-  bool _isRefreshing = false;
+  // Token refresh lock mechanism using Completer for true mutex behavior
+  // Prevents race conditions when multiple 401 errors arrive simultaneously
+  Completer<Map<String, dynamic>>? _refreshCompleter;
   final List<Function> _pendingRequests = [];
 
   BaseService() {
@@ -140,8 +143,18 @@ abstract class BaseService {
           if (error.requestOptions.path.contains('/auth/refresh')) {
             developer.log('❌ 这是refresh接口本身返回401', name: 'TokenRefresh');
             developer.log('❌ Refresh Token已过期，需要重新登录', name: 'TokenRefresh');
+            developer.log('🔄 准备清除认证数据并跳转登录页...', name: 'TokenRefresh');
             _apiLogger.logError(error, StackTrace.current);
+
+            // ⚠️ CRITICAL: Clear auth data when refresh token is expired
+            developer.log('📞 调用 _handleRefreshFailure()...',
+                name: 'TokenRefresh');
             await _handleRefreshFailure();
+            developer.log('✅ _handleRefreshFailure() 调用完成',
+                name: 'TokenRefresh');
+
+            // Reject with error to stop subsequent API calls
+            developer.log('🔴 返回错误，停止后续API调用', name: 'TokenRefresh');
             return handler.reject(error);
           }
 
@@ -153,14 +166,30 @@ abstract class BaseService {
           if (refreshToken != null && refreshToken.isNotEmpty) {
             developer.log('✅ 有有效的Refresh Token，准备刷新', name: 'TokenRefresh');
 
-            // If already refreshing, queue this request
-            if (_isRefreshing) {
-              developer.log('⏳ 已经在刷新中，将此请求加入等待队列', name: 'TokenRefresh');
-              return _addRequestToQueue(error, handler);
+            // 🔒 Check if refresh is already in progress using Completer
+            if (_refreshCompleter != null) {
+              developer.log('⏳ 已经在刷新中，等待刷新完成...', name: 'TokenRefresh');
+              try {
+                // Wait for the ongoing refresh to complete
+                final newTokens = await _refreshCompleter!.future;
+                developer.log('✅ 等待刷新完成，使用新Token重试', name: 'TokenRefresh');
+
+                // Retry the original request with new token
+                final options = error.requestOptions;
+                options.headers['Authorization'] =
+                    'Bearer ${newTokens['access_token']}';
+                final response = await _dio.fetch(options);
+                return handler.resolve(response);
+              } catch (e) {
+                developer.log('❌ 等待刷新失败: $e', name: 'TokenRefresh');
+                return handler.reject(error);
+              }
             }
 
-            developer.log('🔄 开始刷新Access Token...', name: 'TokenRefresh');
-            _isRefreshing = true;
+            // 🔒 Create new Completer to lock the refresh process
+            _refreshCompleter = Completer<Map<String, dynamic>>();
+            developer.log('🔒 已创建刷新锁，开始刷新Access Token...',
+                name: 'TokenRefresh');
 
             try {
               // Attempt to refresh the token
@@ -177,6 +206,9 @@ abstract class BaseService {
 
               developer.log('✅ 新Token已保存到本地存储', name: 'TokenRefresh');
 
+              // Complete the Completer to notify waiting requests
+              _refreshCompleter!.complete(newTokens);
+
               // Retry the original request with new token
               final options = error.requestOptions;
               options.headers['Authorization'] =
@@ -184,9 +216,6 @@ abstract class BaseService {
 
               developer.log('🔄 使用新Token重试原始请求: ${options.uri}',
                   name: 'TokenRefresh');
-
-              // Resolve pending requests
-              _resolvePendingRequests();
 
               final response = await _dio.fetch(options);
               developer.log('✅ 原始请求重试成功！', name: 'TokenRefresh');
@@ -202,16 +231,18 @@ abstract class BaseService {
                   ),
                   StackTrace.current);
 
-              // Refresh failed, clear auth and reject pending requests
-              developer.log('❌ 清除本地认证数据...', name: 'TokenRefresh');
-              await _handleRefreshFailure();
-              _rejectPendingRequests(error);
+              // Complete with error to notify waiting requests
+              if (!_refreshCompleter!.isCompleted) {
+                _refreshCompleter!.completeError(refreshError);
+              }
 
-              developer.log('🔴 ========== 401处理失败 ==========',
+              // ⚠️ DO NOT clear auth data - preserve tokens!
+              developer.log('🔴 ========== Token刷新失败，保留原Token ==========',
                   name: 'TokenRefresh');
               return handler.reject(error);
             } finally {
-              _isRefreshing = false;
+              // Clear the Completer
+              _refreshCompleter = null;
             }
           } else {
             // No refresh token available
@@ -416,24 +447,60 @@ abstract class BaseService {
 
   /// Handle refresh failure - clear auth data and notify app
   Future<void> _handleRefreshFailure() async {
+    developer.log('⚠️⚠️⚠️ ========== _handleRefreshFailure 开始 ==========',
+        name: 'TokenRefresh');
     try {
+      developer.log('🗑️ 清除认证数据...', name: 'TokenRefresh');
       await HiveStorageService.clearAuthData();
+      developer.log('✅ 认证数据已清除', name: 'TokenRefresh');
+
       // Fire session expired event
+      developer.log('📢 触发 SessionExpired 事件...', name: 'TokenRefresh');
       _fireSessionExpiredEvent();
+      developer.log('✅ SessionExpired 事件已触发', name: 'TokenRefresh');
     } catch (e) {
-      developer.log('Error clearing auth data: $e');
+      developer.log('❌ Error clearing auth data: $e', name: 'TokenRefresh');
     }
+    developer.log('⚠️⚠️⚠️ ========== _handleRefreshFailure 完成 ==========',
+        name: 'TokenRefresh');
   }
 
   /// Fire session expired event to notify the app
   void _fireSessionExpiredEvent() {
+    developer.log('🔔 ========== _fireSessionExpiredEvent 开始 ==========',
+        name: 'TokenRefresh');
+
     // Post event to DevTools
     developer.postEvent('SessionExpired', {
       'message': '会话已过期，请重新登录',
       'timestamp': DateTime.now().toIso8601String(),
     });
+    developer.log('✅ DevTools事件已发送', name: 'TokenRefresh');
 
-    // You can add additional event bus logic here if needed
-    // For now, we'll use a simple broadcast approach
+    developer.log('🔍 获取Navigator context...', name: 'TokenRefresh');
+    final context = MyApp.navigatorKey.currentContext;
+
+    if (context != null) {
+      developer.log('✅ Context获取成功', name: 'TokenRefresh');
+      developer.log('🚀 准备跳转到 CreateAccountScreen...', name: 'TokenRefresh');
+
+      try {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/create_account',
+          (Route<dynamic> route) => false,
+        );
+        developer.log('✅ 导航命令已发送', name: 'TokenRefresh');
+      } catch (e) {
+        developer.log('❌ 导航失败: $e', name: 'TokenRefresh');
+      }
+    } else {
+      developer.log('❌ Context为null，无法导航', name: 'TokenRefresh');
+      developer.log('⚠️ MyApp.navigatorKey.currentContext = null',
+          name: 'TokenRefresh');
+    }
+
+    developer.log('🔔 ========== _fireSessionExpiredEvent 完成 ==========',
+        name: 'TokenRefresh');
   }
 }

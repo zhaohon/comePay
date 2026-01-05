@@ -53,6 +53,8 @@ class NotificationViewModel extends BaseViewModel {
     } catch (e) {
       _errorMessage = e.toString();
       notifyListeners();
+      // Rethrow to let HomeScreen know the call failed
+      rethrow;
     }
   }
 }

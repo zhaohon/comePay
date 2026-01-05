@@ -29,20 +29,27 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    final notificationViewModel =
-        Provider.of<NotificationViewModel>(context, listen: false);
-    notificationViewModel.fetchUnreadNotificationCount();
 
-    // Fetch wallet data
-    _walletViewModel = Provider.of<WalletViewModel>(context, listen: false);
+    // ⚠️ IMPORTANT: Serialize API calls to prevent concurrent 401 errors
+    // If all three APIs are called simultaneously and all return 401,
+    // they will all try to refresh the token at the same time
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      try {
+        // Call APIs sequentially
+        final notificationViewModel =
+            Provider.of<NotificationViewModel>(context, listen: false);
+        await notificationViewModel.fetchUnreadNotificationCount();
 
-    // Fetch latest transactions
-    final transactionViewModel =
-        Provider.of<UnifiedTransactionViewModel>(context, listen: false);
+        _walletViewModel = Provider.of<WalletViewModel>(context, listen: false);
+        await _walletViewModel.fetchWalletData();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _walletViewModel.fetchWalletData();
-      transactionViewModel.fetchLatestTransactions(limit: 10);
+        final transactionViewModel =
+            Provider.of<UnifiedTransactionViewModel>(context, listen: false);
+        await transactionViewModel.fetchLatestTransactions(limit: 10);
+      } catch (e) {
+        // If any API call fails (e.g., refresh token expired), stop subsequent calls
+        print('❌ HomeScreen API调用失败: $e');
+      }
     });
   }
 
