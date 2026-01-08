@@ -8,6 +8,7 @@ import 'package:comecomepay/models/country_model.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
 import 'package:comecomepay/services/kyc_service.dart';
 import 'package:comecomepay/utils/app_colors.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 class Cardverificationscreen extends StatefulWidget {
   const Cardverificationscreen({Key? key}) : super(key: key);
@@ -79,7 +80,7 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
           context: context,
           barrierDismissible: false,
           builder: (context) => AlertDialog(
-            title: const Text('Payment Required'),
+            title: Text(AppLocalizations.of(context)!.paymentRequired),
             content: Text(
               eligibility.reason.isEmpty
                   ? 'You need to complete the card fee payment before proceeding with KYC verification.'
@@ -91,7 +92,7 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
                   Navigator.pop(context); // Close dialog
                   Navigator.pop(context); // Go back to previous screen
                 },
-                child: const Text('Go Back'),
+                child: Text(AppLocalizations.of(context)!.goBack),
               ),
             ],
           ),
@@ -115,9 +116,10 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          "Verification",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        title: Text(
+          AppLocalizations.of(context)!.verification,
+          style:
+              const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -315,9 +317,9 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
                         child: Container(
                           height: 52,
                           alignment: Alignment.center,
-                          child: const Text(
-                            "Continue",
-                            style: TextStyle(
+                          child: Text(
+                            AppLocalizations.of(context)!.continueButton,
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -411,14 +413,14 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Invalid Input'),
+          title: Text(AppLocalizations.of(context)!.invalidInput),
           content: Text(
             '$fieldName must contain only uppercase English letters (A-Z).\n\nCurrent value: $value',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('OK'),
+              child: Text(AppLocalizations.of(context)!.okButton),
             ),
           ],
         ),

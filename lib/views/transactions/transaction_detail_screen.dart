@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/models/unified_transaction_model.dart';
 import 'package:intl/intl.dart';
 
@@ -14,12 +15,13 @@ class TransactionDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
-        title: const Text(
-          '资金流水明细',
-          style: TextStyle(
+        title: Text(
+          localizations.transactionDetails,
+          style: const TextStyle(
             color: Colors.black87,
             fontWeight: FontWeight.w600,
             fontSize: 18,
@@ -45,7 +47,7 @@ class TransactionDetailScreen extends StatelessWidget {
             const SizedBox(height: 40),
 
             // 交易信息列表
-            _buildInfoSection(),
+            _buildInfoSection(localizations),
           ],
         ),
       ),
@@ -87,7 +89,7 @@ class TransactionDetailScreen extends StatelessWidget {
   }
 
   /// 交易信息区域
-  Widget _buildInfoSection() {
+  Widget _buildInfoSection(AppLocalizations localizations) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
@@ -103,36 +105,41 @@ class TransactionDetailScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _buildInfoRow('消耗货币', transaction.currency),
+          _buildInfoRow(localizations.spentCurrency, transaction.currency),
           _buildDivider(),
-          _buildInfoRow('交易类型', transaction.typeLabel),
+          _buildInfoRow(localizations.transactionType, transaction.typeLabel),
           _buildDivider(),
-          _buildInfoRow('交易时间', _formatDateTime(transaction.createdAt)),
+          _buildInfoRow(localizations.transactionTime,
+              _formatDateTime(transaction.createdAt)),
 
           // 如果有完成时间，显示完成时间
           if (transaction.completedAt != null &&
               transaction.completedAt!.isNotEmpty) ...[
             _buildDivider(),
-            _buildInfoRow('完成时间', _formatDateTime(transaction.completedAt)),
+            _buildInfoRow(localizations.completionTime,
+                _formatDateTime(transaction.completedAt)),
           ],
 
           // 如果有手续费，显示手续费
           if (transaction.fee != null && transaction.fee! > 0) ...[
             _buildDivider(),
-            _buildInfoRow('手续费', '${transaction.fee} ${transaction.currency}'),
+            _buildInfoRow(localizations.fee,
+                '${transaction.fee} ${transaction.currency}'),
           ],
 
           // 如果有地址，显示地址
           if (transaction.address != null &&
               transaction.address!.isNotEmpty) ...[
             _buildDivider(),
-            _buildInfoRow('地址', transaction.address!, canCopy: true),
+            _buildInfoRow(localizations.address, transaction.address!,
+                canCopy: true),
           ],
 
           // 如果有交易哈希，显示交易哈希
           if (transaction.txHash != null && transaction.txHash!.isNotEmpty) ...[
             _buildDivider(),
-            _buildInfoRow('交易哈希', transaction.txHash!, canCopy: true),
+            _buildInfoRow(localizations.txHash, transaction.txHash!,
+                canCopy: true),
           ],
 
           // 如果是兑换交易，显示兑换信息
@@ -140,18 +147,19 @@ class TransactionDetailScreen extends StatelessWidget {
             if (transaction.fromAmount != null &&
                 transaction.fromCurrency != null) ...[
               _buildDivider(),
-              _buildInfoRow('兑换数量',
+              _buildInfoRow(localizations.swapAmount,
                   '${transaction.fromAmount} ${transaction.fromCurrency}'),
             ],
             if (transaction.toAmount != null &&
                 transaction.toCurrency != null) ...[
               _buildDivider(),
-              _buildInfoRow(
-                  '兑换为', '${transaction.toAmount} ${transaction.toCurrency}'),
+              _buildInfoRow(localizations.swapTo,
+                  '${transaction.toAmount} ${transaction.toCurrency}'),
             ],
             if (transaction.exchangeRate != null) ...[
               _buildDivider(),
-              _buildInfoRow('汇率', '${transaction.exchangeRate}'),
+              _buildInfoRow(
+                  localizations.exchangeRate, '${transaction.exchangeRate}'),
             ],
           ],
 
@@ -159,12 +167,12 @@ class TransactionDetailScreen extends StatelessWidget {
           if (transaction.description != null &&
               transaction.description!.isNotEmpty) ...[
             _buildDivider(),
-            _buildInfoRow('描述', transaction.description!),
+            _buildInfoRow(localizations.description, transaction.description!),
           ],
 
           // 状态
           _buildDivider(),
-          _buildInfoRow('状态', transaction.statusLabel,
+          _buildInfoRow(localizations.status, transaction.statusLabel,
               valueColor: _getStatusColor(transaction.status)),
         ],
       ),

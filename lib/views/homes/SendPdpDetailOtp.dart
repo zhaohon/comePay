@@ -3,6 +3,7 @@ import 'package:comecomepay/views/homes/SendPdpDetailDone.dart'
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:comecomepay/viewmodels/send_pdp_detail_otp_viewmodel.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 class SendPdpDetailOtp extends StatelessWidget {
   const SendPdpDetailOtp({super.key});
@@ -62,7 +63,8 @@ class _SendPdpDetailOtpContentState extends State<_SendPdpDetailOtpContent> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text(viewModel.errorMessage ?? 'Verification failed')),
+              content: Text(viewModel.errorMessage ??
+                  AppLocalizations.of(context)!.verificationFailed)),
         );
       }
     }
@@ -83,8 +85,8 @@ class _SendPdpDetailOtpContentState extends State<_SendPdpDetailOtpContent> {
           icon: Icon(Icons.arrow_back),
           onPressed: () {},
         ),
-        title:
-            Text('OTP Send', style: TextStyle(fontSize: 18 * textScaleFactor)),
+        title: Text(AppLocalizations.of(context)!.otpSend,
+            style: TextStyle(fontSize: 18 * textScaleFactor)),
         centerTitle: true,
         actions: viewModel.busy
             ? [
@@ -117,7 +119,7 @@ class _SendPdpDetailOtpContentState extends State<_SendPdpDetailOtpContent> {
               ),
               SizedBox(height: screenHeight * 0.02),
               Text(
-                'Enter your password \nto confirm the transaction',
+                AppLocalizations.of(context)!.enterPasswordToConfirmTransaction,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 16 * textScaleFactor, color: Colors.black),

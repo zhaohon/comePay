@@ -81,9 +81,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
               // 显示提示
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('再按一次退出应用'),
-                  duration: Duration(seconds: 2),
+                SnackBar(
+                  content: Text(AppLocalizations.of(context)!.pressAgainToExit),
+                  duration: const Duration(seconds: 2),
                   behavior: SnackBarBehavior.floating,
                 ),
               );
@@ -407,7 +407,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                           );
                                         },
                                         child: Text(
-                                          '更多',
+                                          AppLocalizations.of(context)!
+                                              .moreButton,
                                           style: TextStyle(
                                             color: const Color(0xFFA855F7),
                                             fontSize: isSmallScreen ? 14 : 16,
@@ -477,7 +478,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 ),
                                                 const SizedBox(height: 16),
                                                 Text(
-                                                  '暂无交易记录',
+                                                  AppLocalizations.of(context)!
+                                                      .noTransactionsYet,
                                                   style: TextStyle(
                                                     fontSize:
                                                         isSmallScreen ? 14 : 15,
@@ -487,7 +489,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 ),
                                                 const SizedBox(height: 4),
                                                 Text(
-                                                  '开始您的第一笔交易吧',
+                                                  AppLocalizations.of(context)!
+                                                      .startFirstTransaction,
                                                   style: TextStyle(
                                                     fontSize:
                                                         isSmallScreen ? 12 : 13,

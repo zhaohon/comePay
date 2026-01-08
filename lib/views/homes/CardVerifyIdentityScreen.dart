@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 class CardVerifyIdentityScreen extends StatelessWidget {
   const CardVerifyIdentityScreen({super.key});
@@ -39,12 +40,14 @@ class CardVerifyIdentityScreen extends StatelessWidget {
 
           // Tombol Identity document
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20), // margin kanan kiri
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20), // margin kanan kiri
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
-                minimumSize: const Size(double.infinity, 50), // lebar penuh di dalam padding
+                minimumSize: const Size(
+                    double.infinity, 50), // lebar penuh di dalam padding
                 padding: const EdgeInsets.symmetric(horizontal: 16),
               ),
               child: Stack(
@@ -65,17 +68,18 @@ class CardVerifyIdentityScreen extends StatelessWidget {
             ),
           ),
 
-
           const SizedBox(height: 20),
 
           // Tombol Selfie
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20), // margin kanan kiri
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20), // margin kanan kiri
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
-                minimumSize: const Size(double.infinity, 50), // lebar penuh di dalam padding
+                minimumSize: const Size(
+                    double.infinity, 50), // lebar penuh di dalam padding
                 padding: const EdgeInsets.symmetric(horizontal: 16),
               ),
               child: Stack(
@@ -96,7 +100,6 @@ class CardVerifyIdentityScreen extends StatelessWidget {
             ),
           ),
 
-
           const Spacer(),
 
           // Tombol Continue di bawah
@@ -110,7 +113,7 @@ class CardVerifyIdentityScreen extends StatelessWidget {
                 backgroundColor: Colors.blue,
                 minimumSize: const Size(double.infinity, 50),
               ),
-              child: const Text('Continue'),
+              child: Text(AppLocalizations.of(context)!.continueButton),
             ),
           ),
         ],

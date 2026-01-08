@@ -1523,6 +1523,534 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Insufficient'**
   String get insufficient;
+
+  /// No description provided for @skipButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get skipButton;
+
+  /// No description provided for @appUpgradeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'ComeComePay Upgrade'**
+  String get appUpgradeTitle;
+
+  /// No description provided for @upgradeAppButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade ComeComePay'**
+  String get upgradeAppButton;
+
+  /// No description provided for @updateDefaultMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please update ComeComePay to the latest version. The version you are using is out of date and may stop working soon.'**
+  String get updateDefaultMessage;
+
+  /// No description provided for @pressAgainToExit.
+  ///
+  /// In en, this message translates to:
+  /// **'Press again to exit'**
+  String get pressAgainToExit;
+
+  /// No description provided for @moreButton.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get moreButton;
+
+  /// No description provided for @noTransactionsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t have any transaction records yet'**
+  String get noTransactionsYet;
+
+  /// No description provided for @startFirstTransaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Start your first transaction'**
+  String get startFirstTransaction;
+
+  /// No description provided for @noCardsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No cards available, please apply for a card first'**
+  String get noCardsAvailable;
+
+  /// No description provided for @pleaseEnterValidAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid amount'**
+  String get pleaseEnterValidAmount;
+
+  /// No description provided for @pleaseSelectCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a card'**
+  String get pleaseSelectCard;
+
+  /// No description provided for @balanceInsufficient.
+  ///
+  /// In en, this message translates to:
+  /// **'Insufficient balance'**
+  String get balanceInsufficient;
+
+  /// No description provided for @swapSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap successful!'**
+  String get swapSuccess;
+
+  /// No description provided for @swapFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap failed'**
+  String get swapFailed;
+
+  /// No description provided for @loadingFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading failed'**
+  String get loadingFailed;
+
+  /// No description provided for @retryButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retryButton;
+
+  /// No description provided for @goBackButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Go Back'**
+  String get goBackButton;
+
+  /// No description provided for @selectCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Card'**
+  String get selectCard;
+
+  /// No description provided for @selectCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Currency'**
+  String get selectCurrency;
+
+  /// No description provided for @swapPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap Preview'**
+  String get swapPreview;
+
+  /// No description provided for @swapAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap Amount'**
+  String get swapAmount;
+
+  /// No description provided for @netReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Net Received'**
+  String get netReceived;
+
+  /// No description provided for @exchangeRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Exchange Rate'**
+  String get exchangeRate;
+
+  /// No description provided for @feeRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Fee Rate'**
+  String get feeRate;
+
+  /// No description provided for @feeAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Fee Amount'**
+  String get feeAmount;
+
+  /// No description provided for @cancelButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancelButton;
+
+  /// No description provided for @confirmSwap.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Swap'**
+  String get confirmSwap;
+
+  /// No description provided for @pleaseEnterRecipientAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter recipient address'**
+  String get pleaseEnterRecipientAddress;
+
+  /// No description provided for @withdrawalFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdrawal failed'**
+  String get withdrawalFailed;
+
+  /// No description provided for @scanQRCodeInDevelopment.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR code feature in development'**
+  String get scanQRCodeInDevelopment;
+
+  /// No description provided for @addressCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Address copied'**
+  String get addressCopied;
+
+  /// No description provided for @pleaseEnter6DigitCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter 6-digit code'**
+  String get pleaseEnter6DigitCode;
+
+  /// No description provided for @applicationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Application failed'**
+  String get applicationFailed;
+
+  /// No description provided for @availableCreditEstimate.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Credit Estimate'**
+  String get availableCreditEstimate;
+
+  /// No description provided for @okButton.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get okButton;
+
+  /// No description provided for @getCardInfoFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to get card information'**
+  String get getCardInfoFailed;
+
+  /// No description provided for @currency.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get currency;
+
+  /// No description provided for @cardApplicationSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Card application successful'**
+  String get cardApplicationSuccess;
+
+  /// No description provided for @cardApplicationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Card application failed'**
+  String get cardApplicationFailed;
+
+  /// No description provided for @cardApplicationProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Application Progress'**
+  String get cardApplicationProgress;
+
+  /// No description provided for @cardApplicationFailedRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Card application failed, please try again later'**
+  String get cardApplicationFailedRetry;
+
+  /// No description provided for @loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get loading;
+
+  /// No description provided for @waitingToProcess.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting to process'**
+  String get waitingToProcess;
+
+  /// No description provided for @processing.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing'**
+  String get processing;
+
+  /// No description provided for @completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get completed;
+
+  /// No description provided for @failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get failed;
+
+  /// No description provided for @cardsCreatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully created {count} card(s)'**
+  String cardsCreatedSuccessfully(Object count);
+
+  /// No description provided for @recipient.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipient'**
+  String get recipient;
+
+  /// No description provided for @sum.
+  ///
+  /// In en, this message translates to:
+  /// **'Sum'**
+  String get sum;
+
+  /// No description provided for @gasFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Gas fee'**
+  String get gasFee;
+
+  /// No description provided for @comment.
+  ///
+  /// In en, this message translates to:
+  /// **'Comment'**
+  String get comment;
+
+  /// No description provided for @textForRecipientOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Text for the recipient (Optional)'**
+  String get textForRecipientOptional;
+
+  /// No description provided for @detailTransaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Detail Transaction'**
+  String get detailTransaction;
+
+  /// No description provided for @confirmAndSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm and Send'**
+  String get confirmAndSend;
+
+  /// No description provided for @notSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get notSet;
+
+  /// No description provided for @areYouSureLogout.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to logout?'**
+  String get areYouSureLogout;
+
+  /// No description provided for @updateProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Profile'**
+  String get updateProfile;
+
+  /// No description provided for @firstName.
+  ///
+  /// In en, this message translates to:
+  /// **'First Name'**
+  String get firstName;
+
+  /// No description provided for @lastName.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Name'**
+  String get lastName;
+
+  /// No description provided for @dateOfBirth.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of Birth'**
+  String get dateOfBirth;
+
+  /// No description provided for @accountType.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Type'**
+  String get accountType;
+
+  /// No description provided for @referralCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral Code'**
+  String get referralCode;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @profileUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully'**
+  String get profileUpdatedSuccessfully;
+
+  /// No description provided for @failedToUpdateProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update profile'**
+  String get failedToUpdateProfile;
+
+  /// No description provided for @message.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get message;
+
+  /// No description provided for @otpSend.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP Send'**
+  String get otpSend;
+
+  /// No description provided for @continueButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueButton;
+
+  /// No description provided for @noAvailableCurrencies.
+  ///
+  /// In en, this message translates to:
+  /// **'No available currencies'**
+  String get noAvailableCurrencies;
+
+  /// No description provided for @authorizationRecord.
+  ///
+  /// In en, this message translates to:
+  /// **'Authorization Record'**
+  String get authorizationRecord;
+
+  /// No description provided for @verification.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification'**
+  String get verification;
+
+  /// No description provided for @invalidInput.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid Input'**
+  String get invalidInput;
+
+  /// No description provided for @verificationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification failed'**
+  String get verificationFailed;
+
+  /// No description provided for @enterPasswordToConfirmTransaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password \nto confirm the transaction'**
+  String get enterPasswordToConfirmTransaction;
+
+  /// No description provided for @transactionDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Details'**
+  String get transactionDetails;
+
+  /// No description provided for @spentCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent Currency'**
+  String get spentCurrency;
+
+  /// No description provided for @transactionType.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Type'**
+  String get transactionType;
+
+  /// No description provided for @transactionTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Time'**
+  String get transactionTime;
+
+  /// No description provided for @completionTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Completion Time'**
+  String get completionTime;
+
+  /// No description provided for @address.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get address;
+
+  /// No description provided for @txHash.
+  ///
+  /// In en, this message translates to:
+  /// **'Tx Hash'**
+  String get txHash;
+
+  /// No description provided for @swapTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap To'**
+  String get swapTo;
+
+  /// No description provided for @description.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get description;
+
+  /// No description provided for @transactionList.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction List'**
+  String get transactionList;
+
+  /// No description provided for @noTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'No Transactions'**
+  String get noTransactions;
+
+  /// No description provided for @loadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Load Failed'**
+  String get loadFailed;
+
+  /// No description provided for @reload.
+  ///
+  /// In en, this message translates to:
+  /// **'Reload'**
+  String get reload;
+
+  /// No description provided for @noMoreData.
+  ///
+  /// In en, this message translates to:
+  /// **'No more data'**
+  String get noMoreData;
 }
 
 class _AppLocalizationsDelegate

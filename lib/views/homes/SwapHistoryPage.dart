@@ -3,6 +3,7 @@ import 'package:comecomepay/services/swap_service.dart';
 import 'package:comecomepay/models/swap_transaction_model.dart';
 import 'package:comecomepay/utils/app_colors.dart';
 import 'package:intl/intl.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 class SwapHistoryPage extends StatefulWidget {
   const SwapHistoryPage({super.key});
@@ -68,7 +69,9 @@ class _SwapHistoryPageState extends State<SwapHistoryPage> {
           _isLoading = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('加载失败: ${e.toString()}')),
+          SnackBar(
+              content: Text(
+                  '${AppLocalizations.of(context)!.loadingFailed}: ${e.toString()}')),
         );
       }
     }

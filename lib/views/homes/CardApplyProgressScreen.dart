@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:comecomepay/services/card_service.dart';
 import 'package:comecomepay/models/card_apply_progress_model.dart';
 import 'package:comecomepay/utils/app_colors.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 class CardApplyProgressScreen extends StatefulWidget {
   final int taskId;
@@ -13,12 +14,13 @@ class CardApplyProgressScreen extends StatefulWidget {
   });
 
   @override
-  State<CardApplyProgressScreen> createState() => _CardApplyProgressScreenState();
+  State<CardApplyProgressScreen> createState() =>
+      _CardApplyProgressScreenState();
 }
 
 class _CardApplyProgressScreenState extends State<CardApplyProgressScreen> {
   final CardService _cardService = CardService();
-  
+
   CardApplyProgressModel? _progress;
   bool _isLoading = true;
   String? _errorMessage;
@@ -74,7 +76,7 @@ class _CardApplyProgressScreenState extends State<CardApplyProgressScreen> {
       // 如果已完成或失败，停止轮询
       if (progress.isCompleted || progress.isFailed) {
         _pollTimer?.cancel();
-        
+
         // 如果完成，显示成功弹窗后返回
         if (progress.isCompleted && mounted) {
           Future.delayed(const Duration(milliseconds: 500), () {
@@ -97,7 +99,7 @@ class _CardApplyProgressScreenState extends State<CardApplyProgressScreen> {
   /// 获取状态文本
   String _getStatusText() {
     if (_progress == null) return '加载中...';
-    
+
     switch (_progress!.status) {
       case 'pending':
         return '等待处理';
@@ -115,7 +117,7 @@ class _CardApplyProgressScreenState extends State<CardApplyProgressScreen> {
   /// 获取状态颜色
   Color _getStatusColor() {
     if (_progress == null) return AppColors.textSecondary;
-    
+
     switch (_progress!.status) {
       case 'pending':
         return AppColors.warning;
@@ -197,8 +199,8 @@ class _CardApplyProgressScreenState extends State<CardApplyProgressScreen> {
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  '开卡成功',
-                  style: TextStyle(
+                  AppLocalizations.of(context)!.cardApplicationSuccess,
+                  style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
@@ -266,7 +268,7 @@ class _CardApplyProgressScreenState extends State<CardApplyProgressScreen> {
   /// 获取进度百分比
   double _getProgressPercentage() {
     if (_progress == null) return 0.0;
-    
+
     if (_progress!.isCompleted) return 1.0;
     if (_progress!.isFailed) return 0.0;
     if (_progress!.status == 'processing') return 0.5;
@@ -281,9 +283,9 @@ class _CardApplyProgressScreenState extends State<CardApplyProgressScreen> {
         backgroundColor: AppColors.pageBackground,
         elevation: 0,
         automaticallyImplyLeading: false, // 不显示返回按钮
-        title: const Text(
-          '开卡进度',
-          style: TextStyle(
+        title: Text(
+          AppLocalizations.of(context)!.cardApplicationProgress,
+          style: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
@@ -299,7 +301,8 @@ class _CardApplyProgressScreenState extends State<CardApplyProgressScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                      const Icon(Icons.error_outline,
+                          size: 64, color: Colors.red),
                       const SizedBox(height: 16),
                       Text(
                         '加载失败',
@@ -321,7 +324,7 @@ class _CardApplyProgressScreenState extends State<CardApplyProgressScreen> {
                       const SizedBox(height: 24),
                       ElevatedButton(
                         onPressed: _loadProgress,
-                        child: const Text('重试'),
+                        child: Text(AppLocalizations.of(context)!.retryButton),
                       ),
                     ],
                   ),
@@ -369,7 +372,8 @@ class _CardApplyProgressScreenState extends State<CardApplyProgressScreen> {
                                     // 状态图标（带动画）
                                     TweenAnimationBuilder<double>(
                                       tween: Tween(begin: 0.0, end: 1.0),
-                                      duration: const Duration(milliseconds: 600),
+                                      duration:
+                                          const Duration(milliseconds: 600),
                                       curve: Curves.elasticOut,
                                       builder: (context, iconValue, child) {
                                         return Transform.scale(
@@ -381,13 +385,15 @@ class _CardApplyProgressScreenState extends State<CardApplyProgressScreen> {
                                               gradient: LinearGradient(
                                                 colors: [
                                                   _getStatusColor(),
-                                                  _getStatusColor().withOpacity(0.7),
+                                                  _getStatusColor()
+                                                      .withOpacity(0.7),
                                                 ],
                                               ),
                                               shape: BoxShape.circle,
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: _getStatusColor().withOpacity(0.3),
+                                                  color: _getStatusColor()
+                                                      .withOpacity(0.3),
                                                   blurRadius: 20,
                                                   offset: const Offset(0, 8),
                                                 ),
@@ -425,15 +431,18 @@ class _CardApplyProgressScreenState extends State<CardApplyProgressScreen> {
                                         begin: 0.0,
                                         end: _getProgressPercentage(),
                                       ),
-                                      duration: const Duration(milliseconds: 1000),
+                                      duration:
+                                          const Duration(milliseconds: 1000),
                                       curve: Curves.easeOutCubic,
                                       builder: (context, progressValue, child) {
                                         return ClipRRect(
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                           child: LinearProgressIndicator(
                                             value: progressValue,
                                             backgroundColor: AppColors.border,
-                                            valueColor: AlwaysStoppedAnimation<Color>(
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
                                               _getStatusColor(),
                                             ),
                                             minHeight: 10,
@@ -445,11 +454,21 @@ class _CardApplyProgressScreenState extends State<CardApplyProgressScreen> {
 
                                     // 统计信息
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
                                       children: [
-                                        _buildStatItem('总数', '${_progress!.total}', AppColors.textPrimary),
-                                        _buildStatItem('成功', '${_progress!.succeed}', AppColors.success),
-                                        _buildStatItem('失败', '${_progress!.failed}', AppColors.error),
+                                        _buildStatItem(
+                                            '总数',
+                                            '${_progress!.total}',
+                                            AppColors.textPrimary),
+                                        _buildStatItem(
+                                            '成功',
+                                            '${_progress!.succeed}',
+                                            AppColors.success),
+                                        _buildStatItem(
+                                            '失败',
+                                            '${_progress!.failed}',
+                                            AppColors.error),
                                       ],
                                     ),
                                   ],
@@ -506,11 +525,13 @@ class _CardApplyProgressScreenState extends State<CardApplyProgressScreen> {
                             padding: const EdgeInsets.all(16.0),
                             child: Row(
                               children: [
-                                Icon(Icons.error_outline, color: Colors.red[700]),
+                                Icon(Icons.error_outline,
+                                    color: Colors.red[700]),
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: Text(
-                                    '开卡失败，请稍后重试',
+                                    AppLocalizations.of(context)!
+                                        .cardApplicationFailedRetry,
                                     style: TextStyle(color: Colors.red[700]),
                                   ),
                                 ),
@@ -530,7 +551,8 @@ class _CardApplyProgressScreenState extends State<CardApplyProgressScreen> {
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(vertical: 12),
                             ),
-                            child: const Text('返回'),
+                            child: Text(
+                                AppLocalizations.of(context)!.goBackButton),
                           ),
                         ),
                       ],
@@ -643,7 +665,8 @@ class _CardApplyProgressScreenState extends State<CardApplyProgressScreen> {
           item.maskedPan,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        subtitle: Text('币种: ${item.currency}'),
+        subtitle:
+            Text('${AppLocalizations.of(context)!.currency}: ${item.currency}'),
         trailing: Text(
           item.status == 'succeed' ? '成功' : '失败',
           style: TextStyle(
@@ -655,4 +678,3 @@ class _CardApplyProgressScreenState extends State<CardApplyProgressScreen> {
     );
   }
 }
-

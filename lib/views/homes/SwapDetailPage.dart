@@ -7,6 +7,7 @@ import 'package:comecomepay/models/card_list_model.dart';
 import 'package:comecomepay/models/card_account_details_model.dart';
 import 'package:comecomepay/models/wallet_model.dart';
 import 'package:comecomepay/utils/app_colors.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 import 'dart:async';
 
 class SwapDetailPage extends StatefulWidget {
@@ -263,9 +264,9 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      '选择卡片',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)!.selectCard,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: AppColors.textPrimary,
@@ -409,9 +410,9 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                '选择币种',
-                style: TextStyle(
+              Text(
+                AppLocalizations.of(context)!.selectCurrency,
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
@@ -510,7 +511,7 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
     if (amount <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('请输入有效金额'),
+          content: Text(AppLocalizations.of(context)!.pleaseEnterValidAmount),
           backgroundColor: AppColors.error,
         ),
       );
@@ -522,7 +523,7 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
       if (_selectedCard == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('请选择一张卡片'),
+            content: Text(AppLocalizations.of(context)!.pleaseSelectCard),
             backgroundColor: AppColors.error,
           ),
         );
@@ -589,9 +590,9 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    '兌換預覽',
-                    style: TextStyle(
+                  Text(
+                    AppLocalizations.of(context)!.swapPreview,
+                    style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: AppColors.textPrimary,
@@ -619,8 +620,8 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '兌換金額',
-                          style: TextStyle(
+                          AppLocalizations.of(context)!.swapAmount,
+                          style: const TextStyle(
                             fontSize: 14,
                             color: AppColors.textSecondary,
                           ),
@@ -642,8 +643,8 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '淨到賬',
-                          style: TextStyle(
+                          AppLocalizations.of(context)!.netReceived,
+                          style: const TextStyle(
                             fontSize: 14,
                             color: AppColors.textSecondary,
                           ),
@@ -665,16 +666,16 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
               const SizedBox(height: 16),
 
               // 汇率信息
-              _buildPreviewRow('匯率',
+              _buildPreviewRow(AppLocalizations.of(context)!.exchangeRate,
                   '1 $topCoin = ${swapViewModel.exchangeRate.toStringAsFixed(4)} $bottomCoin'),
 
               const Divider(height: 24),
 
               // 手续费信息
-              _buildPreviewRow('手續費率',
+              _buildPreviewRow(AppLocalizations.of(context)!.feeRate,
                   '${(swapViewModel.feeRate * 100).toStringAsFixed(2)}%'),
-              _buildPreviewRow(
-                  '手續費金額', '${swapViewModel.feeAmount.toStringAsFixed(2)} HKD'),
+              _buildPreviewRow(AppLocalizations.of(context)!.feeAmount,
+                  '${swapViewModel.feeAmount.toStringAsFixed(2)} HKD'),
 
               const SizedBox(height: 24),
 
@@ -691,9 +692,9 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text(
-                        '取消',
-                        style: TextStyle(
+                      child: Text(
+                        AppLocalizations.of(context)!.cancelButton,
+                        style: const TextStyle(
                           fontSize: 16,
                           color: AppColors.textPrimary,
                         ),
@@ -720,9 +721,9 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text(
-                          '確認兌換',
-                          style: TextStyle(
+                        child: Text(
+                          AppLocalizations.of(context)!.confirmSwap,
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
@@ -795,7 +796,7 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('兑换成功！'),
+          content: Text(AppLocalizations.of(context)!.swapSuccess),
           backgroundColor: AppColors.success,
         ),
       );

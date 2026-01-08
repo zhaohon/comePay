@@ -607,7 +607,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get id => 'ID';
 
   @override
-  String get status => 'حالة';
+  String get status => 'الحالة';
 
   @override
   String get readAt => 'وقت القراءة';
@@ -717,13 +717,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get actualPayment => 'Actual Payment';
 
   @override
-  String get paymentRequired => 'Payment Required';
+  String get paymentRequired => 'الدفع مطلوب';
 
   @override
-  String get goBack => 'Go Back';
+  String get goBack => 'عودة';
 
   @override
-  String get cancel => 'Cancel';
+  String get cancel => 'إلغاء';
 
   @override
   String get paymentSuccessful => 'Payment successful!';
@@ -751,4 +751,275 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get insufficient => 'Insufficient';
+
+  @override
+  String get skipButton => 'تخطي';
+
+  @override
+  String get appUpgradeTitle => 'ترقية ComeComePay';
+
+  @override
+  String get upgradeAppButton => 'ترقية ComeComePay';
+
+  @override
+  String get updateDefaultMessage =>
+      'يرجى تحديث ComeComePay إلى أحدث إصدار. الإصدار الذي تستخدمه قديم وقد يتوقف عن العمل قريبًا.';
+
+  @override
+  String get pressAgainToExit => 'اضغط مرة أخرى للخروج';
+
+  @override
+  String get moreButton => 'المزيد';
+
+  @override
+  String get noTransactionsYet => 'ليس لديك أي سجلات معاملات بعد';
+
+  @override
+  String get startFirstTransaction => 'ابدأ معاملتك الأولى';
+
+  @override
+  String get noCardsAvailable =>
+      'لا توجد بطاقات متاحة، يرجى التقدم للحصول على بطاقة أولاً';
+
+  @override
+  String get pleaseEnterValidAmount => 'يرجى إدخال مبلغ صالح';
+
+  @override
+  String get pleaseSelectCard => 'يرجى اختيار بطاقة';
+
+  @override
+  String get balanceInsufficient => 'الرصيد غير كافٍ';
+
+  @override
+  String get swapSuccess => 'تمت المبادلة بنجاح!';
+
+  @override
+  String get swapFailed => 'فشلت المبادلة';
+
+  @override
+  String get loadingFailed => 'فشل التحميل';
+
+  @override
+  String get retryButton => 'إعادة المحاولة';
+
+  @override
+  String get goBackButton => 'العودة';
+
+  @override
+  String get selectCard => 'اختر بطاقة';
+
+  @override
+  String get selectCurrency => 'اختر العملة';
+
+  @override
+  String get swapPreview => 'معاينة المبادلة';
+
+  @override
+  String get swapAmount => 'مبلغ التبادل';
+
+  @override
+  String get netReceived => 'صافي المستلم';
+
+  @override
+  String get exchangeRate => 'سعر الصرف';
+
+  @override
+  String get feeRate => 'معدل الرسوم';
+
+  @override
+  String get feeAmount => 'مبلغ الرسوم';
+
+  @override
+  String get cancelButton => 'إلغاء';
+
+  @override
+  String get confirmSwap => 'تأكيد المبادلة';
+
+  @override
+  String get pleaseEnterRecipientAddress => 'يرجى إدخال عنوان المستلم';
+
+  @override
+  String get withdrawalFailed => 'فشل السحب';
+
+  @override
+  String get scanQRCodeInDevelopment =>
+      'ميزة مسح رمز الاستجابة السريعة قيد التطوير';
+
+  @override
+  String get addressCopied => 'تم نسخ العنوان';
+
+  @override
+  String get pleaseEnter6DigitCode => 'يرجى إدخال رمز مكون من 6 أرقام';
+
+  @override
+  String get applicationFailed => 'فشل التطبيق';
+
+  @override
+  String get availableCreditEstimate => 'تقدير الائتمان المتاح';
+
+  @override
+  String get okButton => 'موافق';
+
+  @override
+  String get getCardInfoFailed => 'فشل الحصول على معلومات البطاقة';
+
+  @override
+  String get currency => 'العملة';
+
+  @override
+  String get cardApplicationSuccess => 'تم تقديم طلب البطاقة بنجاح';
+
+  @override
+  String get cardApplicationFailed => 'فشل تقديم طلب البطاقة';
+
+  @override
+  String get cardApplicationProgress => 'تقدم طلب البطاقة';
+
+  @override
+  String get cardApplicationFailedRetry =>
+      'فشل تقديم طلب البطاقة، يرجى المحاولة مرة أخرى لاحقًا';
+
+  @override
+  String get loading => 'جاري التحميل...';
+
+  @override
+  String get waitingToProcess => 'في انتظار المعالجة';
+
+  @override
+  String get processing => 'قيد المعالجة';
+
+  @override
+  String get completed => 'مكتمل';
+
+  @override
+  String get failed => 'فشل';
+
+  @override
+  String cardsCreatedSuccessfully(Object count) {
+    return 'تم إنشاء $count بطاقة بنجاح';
+  }
+
+  @override
+  String get recipient => 'المستلم';
+
+  @override
+  String get sum => 'المبلغ';
+
+  @override
+  String get gasFee => 'رسوم الغاز';
+
+  @override
+  String get comment => 'تعليق';
+
+  @override
+  String get textForRecipientOptional => 'نص للمستلم (اختياري)';
+
+  @override
+  String get detailTransaction => 'تفاصيل المعاملة';
+
+  @override
+  String get confirmAndSend => 'تأكيد وإرسال';
+
+  @override
+  String get notSet => 'غير محدد';
+
+  @override
+  String get areYouSureLogout => 'هل أنت متأكد من أنك تريد تسجيل الخروج؟';
+
+  @override
+  String get updateProfile => 'تحديث الملف الشخصي';
+
+  @override
+  String get firstName => 'الاسم الأول';
+
+  @override
+  String get lastName => 'الاسم الأخير';
+
+  @override
+  String get dateOfBirth => 'تاريخ الميلاد';
+
+  @override
+  String get accountType => 'نوع الحساب';
+
+  @override
+  String get referralCode => 'رمز الإحالة';
+
+  @override
+  String get save => 'حفظ';
+
+  @override
+  String get profileUpdatedSuccessfully => 'تم تحديث الملف الشخصي بنجاح';
+
+  @override
+  String get failedToUpdateProfile => 'فشل تحديث الملف الشخصي';
+
+  @override
+  String get message => 'رسالة';
+
+  @override
+  String get otpSend => 'إرسال رمز التحقق';
+
+  @override
+  String get continueButton => 'متابعة';
+
+  @override
+  String get noAvailableCurrencies => 'لا توجد عملات متاحة';
+
+  @override
+  String get authorizationRecord => 'سجل التفويض';
+
+  @override
+  String get verification => 'التحقق';
+
+  @override
+  String get invalidInput => 'إدخال غير صالح';
+
+  @override
+  String get verificationFailed => 'فشل التحقق';
+
+  @override
+  String get enterPasswordToConfirmTransaction =>
+      'أدخل كلمة المرور \nلتأكيد المعاملة';
+
+  @override
+  String get transactionDetails => 'تفاصيل المعاملة';
+
+  @override
+  String get spentCurrency => 'العملة المستهلكة';
+
+  @override
+  String get transactionType => 'نوع المعاملة';
+
+  @override
+  String get transactionTime => 'وقت المعاملة';
+
+  @override
+  String get completionTime => 'وقت الإنجاز';
+
+  @override
+  String get address => 'العنوان';
+
+  @override
+  String get txHash => 'تجزئة المعاملة';
+
+  @override
+  String get swapTo => 'تبادل إلى';
+
+  @override
+  String get description => 'الوصف';
+
+  @override
+  String get transactionList => 'قائمة المعاملات';
+
+  @override
+  String get noTransactions => 'لا توجد معاملات';
+
+  @override
+  String get loadFailed => 'فشل التحميل';
+
+  @override
+  String get reload => 'إعادة التحميل';
+
+  @override
+  String get noMoreData => 'لا مزيد من البيانات';
 }

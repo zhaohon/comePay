@@ -48,7 +48,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        title:  Text(
+        title: Text(
           AppLocalizations.of(context)!.messageCenter,
           style: TextStyle(color: Colors.black),
         ),
@@ -67,7 +67,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                 Text(
+                Text(
                   AppLocalizations.of(context)!.systemNotification,
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                 ),
@@ -117,7 +117,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "Subject: ${notif.title}",
+                                      "${AppLocalizations.of(context)!.subject}: ${notif.title}",
                                       style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
@@ -126,7 +126,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      "Message: ${notif.body}",
+                                      "${AppLocalizations.of(context)!.message}: ${notif.body}",
                                       style: const TextStyle(
                                         fontSize: 13,
                                         color: Colors.white,

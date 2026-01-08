@@ -749,4 +749,274 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get insufficient => 'Insufficient';
+
+  @override
+  String get skipButton => 'Skip';
+
+  @override
+  String get appUpgradeTitle => 'ComeComePay Upgrade';
+
+  @override
+  String get upgradeAppButton => 'Upgrade ComeComePay';
+
+  @override
+  String get updateDefaultMessage =>
+      'Please update ComeComePay to the latest version. The version you are using is out of date and may stop working soon.';
+
+  @override
+  String get pressAgainToExit => 'Press again to exit';
+
+  @override
+  String get moreButton => 'More';
+
+  @override
+  String get noTransactionsYet => 'You don\'t have any transaction records yet';
+
+  @override
+  String get startFirstTransaction => 'Start your first transaction';
+
+  @override
+  String get noCardsAvailable =>
+      'No cards available, please apply for a card first';
+
+  @override
+  String get pleaseEnterValidAmount => 'Please enter a valid amount';
+
+  @override
+  String get pleaseSelectCard => 'Please select a card';
+
+  @override
+  String get balanceInsufficient => 'Insufficient balance';
+
+  @override
+  String get swapSuccess => 'Swap successful!';
+
+  @override
+  String get swapFailed => 'Swap failed';
+
+  @override
+  String get loadingFailed => 'Loading failed';
+
+  @override
+  String get retryButton => 'Retry';
+
+  @override
+  String get goBackButton => 'Go Back';
+
+  @override
+  String get selectCard => 'Select Card';
+
+  @override
+  String get selectCurrency => 'Select Currency';
+
+  @override
+  String get swapPreview => 'Swap Preview';
+
+  @override
+  String get swapAmount => 'Swap Amount';
+
+  @override
+  String get netReceived => 'Net Received';
+
+  @override
+  String get exchangeRate => 'Exchange Rate';
+
+  @override
+  String get feeRate => 'Fee Rate';
+
+  @override
+  String get feeAmount => 'Fee Amount';
+
+  @override
+  String get cancelButton => 'Cancel';
+
+  @override
+  String get confirmSwap => 'Confirm Swap';
+
+  @override
+  String get pleaseEnterRecipientAddress => 'Please enter recipient address';
+
+  @override
+  String get withdrawalFailed => 'Withdrawal failed';
+
+  @override
+  String get scanQRCodeInDevelopment => 'Scan QR code feature in development';
+
+  @override
+  String get addressCopied => 'Address copied';
+
+  @override
+  String get pleaseEnter6DigitCode => 'Please enter 6-digit code';
+
+  @override
+  String get applicationFailed => 'Application failed';
+
+  @override
+  String get availableCreditEstimate => 'Available Credit Estimate';
+
+  @override
+  String get okButton => 'OK';
+
+  @override
+  String get getCardInfoFailed => 'Failed to get card information';
+
+  @override
+  String get currency => 'Currency';
+
+  @override
+  String get cardApplicationSuccess => 'Card application successful';
+
+  @override
+  String get cardApplicationFailed => 'Card application failed';
+
+  @override
+  String get cardApplicationProgress => 'Card Application Progress';
+
+  @override
+  String get cardApplicationFailedRetry =>
+      'Card application failed, please try again later';
+
+  @override
+  String get loading => 'Loading...';
+
+  @override
+  String get waitingToProcess => 'Waiting to process';
+
+  @override
+  String get processing => 'Processing';
+
+  @override
+  String get completed => 'Completed';
+
+  @override
+  String get failed => 'Failed';
+
+  @override
+  String cardsCreatedSuccessfully(Object count) {
+    return 'Successfully created $count card(s)';
+  }
+
+  @override
+  String get recipient => 'Recipient';
+
+  @override
+  String get sum => 'Sum';
+
+  @override
+  String get gasFee => 'Gas fee';
+
+  @override
+  String get comment => 'Comment';
+
+  @override
+  String get textForRecipientOptional => 'Text for the recipient (Optional)';
+
+  @override
+  String get detailTransaction => 'Detail Transaction';
+
+  @override
+  String get confirmAndSend => 'Confirm and Send';
+
+  @override
+  String get notSet => 'Not set';
+
+  @override
+  String get areYouSureLogout => 'Are you sure you want to logout?';
+
+  @override
+  String get updateProfile => 'Update Profile';
+
+  @override
+  String get firstName => 'First Name';
+
+  @override
+  String get lastName => 'Last Name';
+
+  @override
+  String get dateOfBirth => 'Date of Birth';
+
+  @override
+  String get accountType => 'Account Type';
+
+  @override
+  String get referralCode => 'Referral Code';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get profileUpdatedSuccessfully => 'Profile updated successfully';
+
+  @override
+  String get failedToUpdateProfile => 'Failed to update profile';
+
+  @override
+  String get message => 'Message';
+
+  @override
+  String get otpSend => 'OTP Send';
+
+  @override
+  String get continueButton => 'Continue';
+
+  @override
+  String get noAvailableCurrencies => 'No available currencies';
+
+  @override
+  String get authorizationRecord => 'Authorization Record';
+
+  @override
+  String get verification => 'Verification';
+
+  @override
+  String get invalidInput => 'Invalid Input';
+
+  @override
+  String get verificationFailed => 'Verification failed';
+
+  @override
+  String get enterPasswordToConfirmTransaction =>
+      'Enter your password \nto confirm the transaction';
+
+  @override
+  String get transactionDetails => 'Transaction Details';
+
+  @override
+  String get spentCurrency => 'Spent Currency';
+
+  @override
+  String get transactionType => 'Transaction Type';
+
+  @override
+  String get transactionTime => 'Transaction Time';
+
+  @override
+  String get completionTime => 'Completion Time';
+
+  @override
+  String get address => 'Address';
+
+  @override
+  String get txHash => 'Tx Hash';
+
+  @override
+  String get swapTo => 'Swap To';
+
+  @override
+  String get description => 'Description';
+
+  @override
+  String get transactionList => 'Transaction List';
+
+  @override
+  String get noTransactions => 'No Transactions';
+
+  @override
+  String get loadFailed => 'Load Failed';
+
+  @override
+  String get reload => 'Reload';
+
+  @override
+  String get noMoreData => 'No more data';
 }

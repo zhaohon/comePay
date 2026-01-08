@@ -5,6 +5,7 @@ import 'package:comecomepay/services/card_service.dart';
 import 'package:comecomepay/models/card_apply_model.dart';
 import 'package:comecomepay/views/homes/CardApplyProgressScreen.dart';
 import 'package:comecomepay/viewmodels/card_viewmodel.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 class CardOtpScreen extends StatefulWidget {
   const CardOtpScreen({super.key});
@@ -29,7 +30,8 @@ class _CardOtpScreenState extends State<CardOtpScreen> {
     final otp = otpController.text.trim();
     if (otp.isEmpty || otp.length != 6) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('请输入6位验证码')),
+        SnackBar(
+            content: Text(AppLocalizations.of(context)!.pleaseEnter6DigitCode)),
       );
       return;
     }
@@ -57,12 +59,13 @@ class _CardOtpScreenState extends State<CardOtpScreen> {
           ),
         ),
       );
-      
+
       // 如果返回true，表示开卡成功，需要刷新卡片列表
       if (result == true && mounted) {
         // 刷新卡片列表缓存
         try {
-          final cardViewModel = Provider.of<CardViewModel>(context, listen: false);
+          final cardViewModel =
+              Provider.of<CardViewModel>(context, listen: false);
           await cardViewModel.refreshCardList();
         } catch (e) {
           print('Error refreshing card list: $e');
@@ -72,11 +75,13 @@ class _CardOtpScreenState extends State<CardOtpScreen> {
       setState(() {
         _isProcessing = false;
       });
-      
+
       if (!mounted) return;
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('申请失败: $e')),
+        SnackBar(
+            content:
+                Text('${AppLocalizations.of(context)!.applicationFailed}: $e')),
       );
     }
   }
@@ -94,7 +99,8 @@ class _CardOtpScreenState extends State<CardOtpScreen> {
         ),
         title: const Text(
           "Mobile verification",
-          style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -106,7 +112,8 @@ class _CardOtpScreenState extends State<CardOtpScreen> {
             const SizedBox(height: 20),
 
             // WhatsApp Icon
-            const Icon(FontAwesomeIcons.whatsapp, color: Colors.green, size: 40),
+            const Icon(FontAwesomeIcons.whatsapp,
+                color: Colors.green, size: 40),
             const SizedBox(height: 20),
 
             // Instruction text
@@ -148,14 +155,18 @@ class _CardOtpScreenState extends State<CardOtpScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                const Text("Didn’t get a code? ", style: TextStyle(color: Colors.black54, fontSize: 13)),
+                const Text("Didn’t get a code? ",
+                    style: TextStyle(color: Colors.black54, fontSize: 13)),
                 GestureDetector(
                   onTap: () {
                     // TODO: handle resend action
                   },
                   child: const Text(
                     "Send again",
-                    style: TextStyle(color: Colors.blue, fontSize: 13, fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                        color: Colors.blue,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600),
                   ),
                 ),
               ],
@@ -172,7 +183,8 @@ class _CardOtpScreenState extends State<CardOtpScreen> {
                   padding: EdgeInsets.zero,
                   backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
                 ),
                 child: Ink(
                   decoration: BoxDecoration(
@@ -192,12 +204,16 @@ class _CardOtpScreenState extends State<CardOtpScreen> {
                             height: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
                             ),
                           )
                         : const Text(
                             "Verify",
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
                           ),
                   ),
                 ),

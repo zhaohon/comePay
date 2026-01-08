@@ -64,7 +64,8 @@ class _TransactionHistoryHistoryState extends State<TransactionHistoryHistory> {
         ),
       ),
       body: widget.availableCurrencies.isEmpty
-          ? const Center(child: Text('No available currencies'))
+          ? Center(
+              child: Text(AppLocalizations.of(context)!.noAvailableCurrencies))
           : ListView.builder(
               itemCount: widget.availableCurrencies.length,
               itemBuilder: (context, index) {

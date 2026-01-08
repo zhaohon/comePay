@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../l10n/app_localizations.dart';
 
 /// 版本更新全屏页面 - 严格按照 Telegram 设计
 class VersionUpdateScreen extends StatelessWidget {
@@ -39,9 +40,9 @@ class VersionUpdateScreen extends StatelessWidget {
                         onTap: () {
                           Navigator.of(context).pop();
                         },
-                        child: const Text(
-                          '跳过',
-                          style: TextStyle(
+                        child: Text(
+                          AppLocalizations.of(context)!.skipButton,
+                          style: const TextStyle(
                             color: Color(0xFF007AFF),
                             fontSize: 17,
                             fontWeight: FontWeight.w400,
@@ -52,9 +53,9 @@ class VersionUpdateScreen extends StatelessWidget {
                       const SizedBox(width: 40),
 
                     // 标题
-                    const Text(
-                      'ComeComePay 升级',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)!.appUpgradeTitle,
+                      style: const TextStyle(
                         color: Colors.black,
                         fontSize: 17,
                         fontWeight: FontWeight.w600,
@@ -132,7 +133,7 @@ class VersionUpdateScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(0),
                       child: Text(
                         releaseNotes.isEmpty
-                            ? 'Please update ComeComePay to the latest version. The version you are using is out of date and may stop working soon.'
+                            ? AppLocalizations.of(context)!.updateDefaultMessage
                             : releaseNotes,
                         style: const TextStyle(
                           color: Colors.black,
@@ -163,9 +164,9 @@ class VersionUpdateScreen extends StatelessWidget {
                     ),
                     padding: EdgeInsets.zero,
                   ),
-                  child: const Text(
-                    '升级 ComeComePay',
-                    style: TextStyle(
+                  child: Text(
+                    AppLocalizations.of(context)!.upgradeAppButton,
+                    style: const TextStyle(
                       color: Color(0xFF007AFF),
                       fontSize: 17,
                       fontWeight: FontWeight.w400,

@@ -98,7 +98,7 @@ class _CouponCodeScreenState extends State<CouponCodeScreen>
                             Navigator.of(context)
                                 .pop(); // Go back to previous screen
                           },
-                          child: const Text('OK'),
+                          child: Text(localizations.okButton),
                         ),
                       ],
                     );

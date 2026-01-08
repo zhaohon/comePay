@@ -202,7 +202,7 @@ class _SecurityscreenState extends State<Securityscreen> {
   }
 
   String _maskEmail(String email) {
-    if (email.isEmpty) return "Not set";
+    if (email.isEmpty) return AppLocalizations.of(context)!.notSet;
     final parts = email.split('@');
     if (parts.length != 2) return email;
 
@@ -277,14 +277,14 @@ class _SecurityscreenState extends State<Securityscreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(localizations.logout),
-        content: const Text('Are you sure you want to logout?'),
+        content: Text(localizations.areYouSureLogout),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text(localizations.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),

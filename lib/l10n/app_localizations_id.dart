@@ -714,13 +714,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get actualPayment => 'Actual Payment';
 
   @override
-  String get paymentRequired => 'Payment Required';
+  String get paymentRequired => 'Pembayaran Diperlukan';
 
   @override
-  String get goBack => 'Go Back';
+  String get goBack => 'Kembali';
 
   @override
-  String get cancel => 'Cancel';
+  String get cancel => 'Batal';
 
   @override
   String get paymentSuccessful => 'Payment successful!';
@@ -748,4 +748,275 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get insufficient => 'Insufficient';
+
+  @override
+  String get skipButton => 'Lewati';
+
+  @override
+  String get appUpgradeTitle => 'Upgrade ComeComePay';
+
+  @override
+  String get upgradeAppButton => 'Upgrade ComeComePay';
+
+  @override
+  String get updateDefaultMessage =>
+      'Silakan perbarui ComeComePay ke versi terbaru. Versi yang Anda gunakan sudah usang dan mungkin akan segera berhenti bekerja.';
+
+  @override
+  String get pressAgainToExit => 'Tekan lagi untuk keluar';
+
+  @override
+  String get moreButton => 'Lebih Banyak';
+
+  @override
+  String get noTransactionsYet => 'Anda belum memiliki catatan transaksi';
+
+  @override
+  String get startFirstTransaction => 'Mulai transaksi pertama Anda';
+
+  @override
+  String get noCardsAvailable =>
+      'Tidak ada kartu tersedia, silakan ajukan kartu terlebih dahulu';
+
+  @override
+  String get pleaseEnterValidAmount => 'Silakan masukkan jumlah yang valid';
+
+  @override
+  String get pleaseSelectCard => 'Silakan pilih kartu';
+
+  @override
+  String get balanceInsufficient => 'Saldo tidak mencukupi';
+
+  @override
+  String get swapSuccess => 'Swap berhasil!';
+
+  @override
+  String get swapFailed => 'Swap gagal';
+
+  @override
+  String get loadingFailed => 'Gagal memuat';
+
+  @override
+  String get retryButton => 'Coba Lagi';
+
+  @override
+  String get goBackButton => 'Kembali';
+
+  @override
+  String get selectCard => 'Pilih Kartu';
+
+  @override
+  String get selectCurrency => 'Pilih Mata Uang';
+
+  @override
+  String get swapPreview => 'Pratinjau Swap';
+
+  @override
+  String get swapAmount => 'Jumlah Tukar';
+
+  @override
+  String get netReceived => 'Diterima Bersih';
+
+  @override
+  String get exchangeRate => 'Nilai Tukar';
+
+  @override
+  String get feeRate => 'Tarif Biaya';
+
+  @override
+  String get feeAmount => 'Jumlah Biaya';
+
+  @override
+  String get cancelButton => 'Batal';
+
+  @override
+  String get confirmSwap => 'Konfirmasi Swap';
+
+  @override
+  String get pleaseEnterRecipientAddress => 'Silakan masukkan alamat penerima';
+
+  @override
+  String get withdrawalFailed => 'Penarikan gagal';
+
+  @override
+  String get scanQRCodeInDevelopment =>
+      'Fitur pindai kode QR sedang dalam pengembangan';
+
+  @override
+  String get addressCopied => 'Alamat disalin';
+
+  @override
+  String get pleaseEnter6DigitCode => 'Silakan masukkan kode 6 digit';
+
+  @override
+  String get applicationFailed => 'Aplikasi gagal';
+
+  @override
+  String get availableCreditEstimate => 'Estimasi Kredit Tersedia';
+
+  @override
+  String get okButton => 'OK';
+
+  @override
+  String get getCardInfoFailed => 'Gagal mendapatkan informasi kartu';
+
+  @override
+  String get currency => 'Mata Uang';
+
+  @override
+  String get cardApplicationSuccess => 'Aplikasi kartu berhasil';
+
+  @override
+  String get cardApplicationFailed => 'Aplikasi kartu gagal';
+
+  @override
+  String get cardApplicationProgress => 'Progres Aplikasi Kartu';
+
+  @override
+  String get cardApplicationFailedRetry =>
+      'Aplikasi kartu gagal, silakan coba lagi nanti';
+
+  @override
+  String get loading => 'Memuat...';
+
+  @override
+  String get waitingToProcess => 'Menunggu untuk diproses';
+
+  @override
+  String get processing => 'Memproses';
+
+  @override
+  String get completed => 'Selesai';
+
+  @override
+  String get failed => 'Gagal';
+
+  @override
+  String cardsCreatedSuccessfully(Object count) {
+    return 'Berhasil membuat $count kartu';
+  }
+
+  @override
+  String get recipient => 'Penerima';
+
+  @override
+  String get sum => 'Jumlah';
+
+  @override
+  String get gasFee => 'Biaya gas';
+
+  @override
+  String get comment => 'Komentar';
+
+  @override
+  String get textForRecipientOptional => 'Teks untuk penerima (Opsional)';
+
+  @override
+  String get detailTransaction => 'Detail Transaksi';
+
+  @override
+  String get confirmAndSend => 'Konfirmasi dan Kirim';
+
+  @override
+  String get notSet => 'Tidak diatur';
+
+  @override
+  String get areYouSureLogout => 'Apakah Anda yakin ingin keluar?';
+
+  @override
+  String get updateProfile => 'Perbarui Profil';
+
+  @override
+  String get firstName => 'Nama Depan';
+
+  @override
+  String get lastName => 'Nama Belakang';
+
+  @override
+  String get dateOfBirth => 'Tanggal Lahir';
+
+  @override
+  String get accountType => 'Jenis Akun';
+
+  @override
+  String get referralCode => 'Kode Referral';
+
+  @override
+  String get save => 'Simpan';
+
+  @override
+  String get profileUpdatedSuccessfully => 'Profil berhasil diperbarui';
+
+  @override
+  String get failedToUpdateProfile => 'Gagal memperbarui profil';
+
+  @override
+  String get message => 'Pesan';
+
+  @override
+  String get otpSend => 'Kirim OTP';
+
+  @override
+  String get continueButton => 'Lanjutkan';
+
+  @override
+  String get noAvailableCurrencies => 'Tidak ada mata uang yang tersedia';
+
+  @override
+  String get authorizationRecord => 'Catatan Otorisasi';
+
+  @override
+  String get verification => 'Verifikasi';
+
+  @override
+  String get invalidInput => 'Input Tidak Valid';
+
+  @override
+  String get verificationFailed => 'Verifikasi gagal';
+
+  @override
+  String get enterPasswordToConfirmTransaction =>
+      'Masukkan kata sandi Anda \nuntuk mengonfirmasi transaksi';
+
+  @override
+  String get transactionDetails => 'Detail Transaksi';
+
+  @override
+  String get spentCurrency => 'Mata Uang Terpakai';
+
+  @override
+  String get transactionType => 'Jenis Transaksi';
+
+  @override
+  String get transactionTime => 'Waktu Transaksi';
+
+  @override
+  String get completionTime => 'Waktu Penyelesaian';
+
+  @override
+  String get address => 'Alamat';
+
+  @override
+  String get txHash => 'Tx Hash';
+
+  @override
+  String get swapTo => 'Tukar Ke';
+
+  @override
+  String get description => 'Deskripsi';
+
+  @override
+  String get transactionList => 'Daftar Transaksi';
+
+  @override
+  String get noTransactions => 'Tidak Ada Transaksi';
+
+  @override
+  String get loadFailed => 'Gagal Memuat';
+
+  @override
+  String get reload => 'Muat Ulang';
+
+  @override
+  String get noMoreData => 'Tidak ada data lagi';
 }

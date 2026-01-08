@@ -637,7 +637,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get cardFee => '卡费';
 
   @override
-  String get fee => '卡费';
+  String get fee => '手续费';
 
   @override
   String get submit => '提交';
@@ -719,4 +719,271 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get insufficient => '余额不足';
+
+  @override
+  String get skipButton => '跳过';
+
+  @override
+  String get appUpgradeTitle => 'ComeComePay 升级';
+
+  @override
+  String get upgradeAppButton => '升级 ComeComePay';
+
+  @override
+  String get updateDefaultMessage =>
+      '请将 ComeComePay 更新到最新版本。您正在使用的版本已过时,可能很快会停止工作。';
+
+  @override
+  String get pressAgainToExit => '再按一次退出应用';
+
+  @override
+  String get moreButton => '更多';
+
+  @override
+  String get noTransactionsYet => '您还没有任何交易记录';
+
+  @override
+  String get startFirstTransaction => '开始您的第一笔交易吧';
+
+  @override
+  String get noCardsAvailable => '暂无可用卡片,请先申请卡片';
+
+  @override
+  String get pleaseEnterValidAmount => '请输入有效金额';
+
+  @override
+  String get pleaseSelectCard => '请选择一张卡片';
+
+  @override
+  String get balanceInsufficient => '余额不足';
+
+  @override
+  String get swapSuccess => '兑换成功!';
+
+  @override
+  String get swapFailed => '兑换失败';
+
+  @override
+  String get loadingFailed => '加载失败';
+
+  @override
+  String get retryButton => '重试';
+
+  @override
+  String get goBackButton => '返回';
+
+  @override
+  String get selectCard => '选择卡片';
+
+  @override
+  String get selectCurrency => '选择币种';
+
+  @override
+  String get swapPreview => '兑换预览';
+
+  @override
+  String get swapAmount => '兑换数量';
+
+  @override
+  String get netReceived => '净到账';
+
+  @override
+  String get exchangeRate => '汇率';
+
+  @override
+  String get feeRate => '手续费率';
+
+  @override
+  String get feeAmount => '手续费金额';
+
+  @override
+  String get cancelButton => '取消';
+
+  @override
+  String get confirmSwap => '确认兑换';
+
+  @override
+  String get pleaseEnterRecipientAddress => '请输入接收地址';
+
+  @override
+  String get withdrawalFailed => '提现失败';
+
+  @override
+  String get scanQRCodeInDevelopment => '扫描二维码功能开发中';
+
+  @override
+  String get addressCopied => '地址已复制';
+
+  @override
+  String get pleaseEnter6DigitCode => '请输入6位验证码';
+
+  @override
+  String get applicationFailed => '申请失败';
+
+  @override
+  String get availableCreditEstimate => '可用额度估值';
+
+  @override
+  String get okButton => '确定';
+
+  @override
+  String get getCardInfoFailed => '获取卡片信息失败';
+
+  @override
+  String get currency => '币种';
+
+  @override
+  String get cardApplicationSuccess => '开卡成功';
+
+  @override
+  String get cardApplicationFailed => '开卡失败';
+
+  @override
+  String get cardApplicationProgress => '开卡进度';
+
+  @override
+  String get cardApplicationFailedRetry => '开卡失败，请稍后重试';
+
+  @override
+  String get loading => '加载中...';
+
+  @override
+  String get waitingToProcess => '等待处理';
+
+  @override
+  String get processing => '处理中';
+
+  @override
+  String get completed => '已完成';
+
+  @override
+  String get failed => '失败';
+
+  @override
+  String cardsCreatedSuccessfully(Object count) {
+    return '已成功创建 $count 张卡片';
+  }
+
+  @override
+  String get recipient => '接收方';
+
+  @override
+  String get sum => '金额';
+
+  @override
+  String get gasFee => '燃料费';
+
+  @override
+  String get comment => '备注';
+
+  @override
+  String get textForRecipientOptional => '给接收方的文字（可选）';
+
+  @override
+  String get detailTransaction => '交易详情';
+
+  @override
+  String get confirmAndSend => '确认并发送';
+
+  @override
+  String get notSet => '未设置';
+
+  @override
+  String get areYouSureLogout => '您确定要退出登录吗？';
+
+  @override
+  String get updateProfile => '更新资料';
+
+  @override
+  String get firstName => '名字';
+
+  @override
+  String get lastName => '姓氏';
+
+  @override
+  String get dateOfBirth => '出生日期';
+
+  @override
+  String get accountType => '账户类型';
+
+  @override
+  String get referralCode => '推荐码';
+
+  @override
+  String get save => '保存';
+
+  @override
+  String get profileUpdatedSuccessfully => '资料更新成功';
+
+  @override
+  String get failedToUpdateProfile => '更新资料失败';
+
+  @override
+  String get message => '消息';
+
+  @override
+  String get otpSend => '发送验证码';
+
+  @override
+  String get continueButton => '继续';
+
+  @override
+  String get noAvailableCurrencies => '没有可用的货币';
+
+  @override
+  String get authorizationRecord => '授权记录';
+
+  @override
+  String get verification => '验证';
+
+  @override
+  String get invalidInput => '无效输入';
+
+  @override
+  String get verificationFailed => '验证失败';
+
+  @override
+  String get enterPasswordToConfirmTransaction => '请输入密码\n确认交易';
+
+  @override
+  String get transactionDetails => '资金流水明细';
+
+  @override
+  String get spentCurrency => '消耗货币';
+
+  @override
+  String get transactionType => '交易类型';
+
+  @override
+  String get transactionTime => '交易时间';
+
+  @override
+  String get completionTime => '完成时间';
+
+  @override
+  String get address => '地址';
+
+  @override
+  String get txHash => '交易哈希';
+
+  @override
+  String get swapTo => '兑换为';
+
+  @override
+  String get description => '描述';
+
+  @override
+  String get transactionList => '资金流水';
+
+  @override
+  String get noTransactions => '暂无交易记录';
+
+  @override
+  String get loadFailed => '加载失败';
+
+  @override
+  String get reload => '重新加载';
+
+  @override
+  String get noMoreData => '没有更多了';
 }

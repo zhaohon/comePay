@@ -4,6 +4,7 @@ import 'package:comecomepay/viewmodels/profile_screen_viewmodel.dart';
 import 'package:comecomepay/models/requests/update_profile_request_model.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
 import 'package:comecomepay/utils/app_colors.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   const UpdateProfileScreen({super.key});
@@ -71,9 +72,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         return Scaffold(
           backgroundColor: AppColors.pageBackground,
           appBar: AppBar(
-            title: const Text(
-              'Update Profile',
-              style: TextStyle(
+            title: Text(
+              AppLocalizations.of(context)!.updateProfile,
+              style: const TextStyle(
                 color: Colors.black,
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -102,21 +103,21 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       // First Name
                       _buildInputField(
                         controller: _firstNameController,
-                        label: 'First Name',
+                        label: AppLocalizations.of(context)!.firstName,
                       ),
                       const SizedBox(height: 16),
 
                       // Last Name
                       _buildInputField(
                         controller: _lastNameController,
-                        label: 'Last Name',
+                        label: AppLocalizations.of(context)!.lastName,
                       ),
                       const SizedBox(height: 16),
 
                       // Phone
                       _buildInputField(
                         controller: _phoneController,
-                        label: 'Phone',
+                        label: AppLocalizations.of(context)!.phone,
                         keyboardType: TextInputType.phone,
                       ),
                       const SizedBox(height: 16),
@@ -124,7 +125,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       // Date of Birth
                       _buildInputField(
                         controller: _dateOfBirthController,
-                        label: 'Date of Birth',
+                        label: AppLocalizations.of(context)!.dateOfBirth,
                         keyboardType: TextInputType.datetime,
                       ),
                       const SizedBox(height: 16),
@@ -132,7 +133,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       // Account Type
                       _buildInputField(
                         controller: _accountTypeController,
-                        label: 'Account Type',
+                        label: AppLocalizations.of(context)!.accountType,
                         enabled: false,
                       ),
                       const SizedBox(height: 16),
@@ -140,7 +141,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       // Referral Code
                       _buildInputField(
                         controller: _referralCodeController,
-                        label: 'Referral Code',
+                        label: AppLocalizations.of(context)!.referralCode,
                         enabled: false,
                       ),
                     ],
@@ -180,16 +181,17 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                 await viewModel.updateProfile(request);
                             if (success) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content:
-                                        Text('Profile updated successfully')),
+                                SnackBar(
+                                    content: Text(AppLocalizations.of(context)!
+                                        .profileUpdatedSuccessfully)),
                               );
                               Navigator.of(context).pop();
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                     content: Text(viewModel.errorMessage ??
-                                        'Failed to update profile')),
+                                        AppLocalizations.of(context)!
+                                            .failedToUpdateProfile)),
                               );
                             }
                           },
@@ -211,9 +213,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                   color: Colors.grey,
                                 ),
                               )
-                            : const Text(
-                                'Save',
-                                style: TextStyle(
+                            : Text(
+                                AppLocalizations.of(context)!.save,
+                                style: const TextStyle(
                                   fontSize: 16,
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,

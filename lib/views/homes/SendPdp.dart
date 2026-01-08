@@ -3,6 +3,8 @@ import 'package:comecomepay/utils/app_colors.dart';
 import 'package:comecomepay/models/wallet_model.dart';
 import 'package:comecomepay/services/withdraw_service.dart';
 
+import '../../l10n/app_localizations.dart';
+
 class SendPdp extends StatefulWidget {
   const SendPdp({super.key});
 
@@ -46,7 +48,9 @@ class _SendPdpState extends State<SendPdp> {
     // Validate
     if (_addressController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('请输入接收地址')),
+        SnackBar(
+            content: Text(
+                AppLocalizations.of(context)!.pleaseEnterRecipientAddress)),
       );
       return;
     }
@@ -54,14 +58,17 @@ class _SendPdpState extends State<SendPdp> {
     final amount = double.tryParse(_amountController.text) ?? 0.0;
     if (amount <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('请输入有效金额')),
+        SnackBar(
+            content:
+                Text(AppLocalizations.of(context)!.pleaseEnterValidAmount)),
       );
       return;
     }
 
     if (amount > balance!.balance) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('余额不足')),
+        SnackBar(
+            content: Text(AppLocalizations.of(context)!.balanceInsufficient)),
       );
       return;
     }
@@ -310,7 +317,9 @@ class _SendPdpState extends State<SendPdp> {
                       : () {
                           // TODO: Implement QR scanner
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('扫描二维码功能开发中')),
+                            SnackBar(
+                                content: Text(AppLocalizations.of(context)!
+                                    .scanQRCodeInDevelopment)),
                           );
                         },
                 ),

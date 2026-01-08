@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:comecomepay/viewmodels/unified_transaction_viewmodel.dart';
 import 'package:comecomepay/widgets/transaction_item_widget.dart';
 import 'package:comecomepay/views/transactions/transaction_detail_screen.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 /// 统一交易记录列表页面 - 优化版
 /// 支持下拉刷新和上拉加载更多
@@ -61,9 +62,9 @@ class _UnifiedTransactionListScreenState
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
-        title: const Text(
-          '资金流水',
-          style: TextStyle(
+        title: Text(
+          AppLocalizations.of(context)!.transactionList,
+          style: const TextStyle(
             color: Colors.black87,
             fontWeight: FontWeight.w600,
             fontSize: 18,
@@ -86,17 +87,18 @@ class _UnifiedTransactionListScreenState
         builder: (context, viewModel, child) {
           // 错误状态
           if (viewModel.hasError) {
-            return _buildErrorState(viewModel.errorMessage ?? 'Unknown error');
+            return _buildErrorState(
+                context, viewModel.errorMessage ?? 'Unknown error');
           }
 
           // 加载状态（首次加载）
           if (viewModel.isLoading && viewModel.transactions.isEmpty) {
-            return _buildLoadingState();
+            return _buildLoadingState(context);
           }
 
           // 空状态
           if (viewModel.transactions.isEmpty && !viewModel.isLoading) {
-            return _buildEmptyState();
+            return _buildEmptyState(context);
           }
 
           // 数据列表
@@ -129,7 +131,7 @@ class _UnifiedTransactionListScreenState
                 }
 
                 // 底部加载更多指示器
-                return _buildLoadMoreIndicator(viewModel);
+                return _buildLoadMoreIndicator(context, viewModel);
               },
             ),
           );
@@ -139,18 +141,18 @@ class _UnifiedTransactionListScreenState
   }
 
   /// 构建加载状态
-  Widget _buildLoadingState() {
+  Widget _buildLoadingState(BuildContext context) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          CircularProgressIndicator(
+        children: [
+          const CircularProgressIndicator(
             valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFA855F7)),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Text(
-            '加载中...',
-            style: TextStyle(
+            AppLocalizations.of(context)!.loading,
+            style: const TextStyle(
               fontSize: 14,
               color: Colors.grey,
             ),
@@ -161,7 +163,7 @@ class _UnifiedTransactionListScreenState
   }
 
   /// 构建空状态
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(BuildContext context) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -181,7 +183,7 @@ class _UnifiedTransactionListScreenState
           ),
           const SizedBox(height: 24),
           Text(
-            '暂无交易记录',
+            AppLocalizations.of(context)!.noTransactions,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,
@@ -190,7 +192,7 @@ class _UnifiedTransactionListScreenState
           ),
           const SizedBox(height: 8),
           Text(
-            '您还没有任何交易记录',
+            AppLocalizations.of(context)!.noTransactionsYet,
             style: TextStyle(
               fontSize: 14,
               color: Colors.grey[500],
@@ -202,7 +204,7 @@ class _UnifiedTransactionListScreenState
   }
 
   /// 构建错误状态
-  Widget _buildErrorState(String errorMessage) {
+  Widget _buildErrorState(BuildContext context, String errorMessage) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -224,7 +226,7 @@ class _UnifiedTransactionListScreenState
             ),
             const SizedBox(height: 24),
             Text(
-              '加载失败',
+              AppLocalizations.of(context)!.loadFailed,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
@@ -255,9 +257,9 @@ class _UnifiedTransactionListScreenState
                 ),
                 elevation: 0,
               ),
-              child: const Text(
-                '重新加载',
-                style: TextStyle(
+              child: Text(
+                AppLocalizations.of(context)!.reload,
+                style: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
                 ),
@@ -270,7 +272,8 @@ class _UnifiedTransactionListScreenState
   }
 
   /// 构建加载更多指示器
-  Widget _buildLoadMoreIndicator(UnifiedTransactionViewModel viewModel) {
+  Widget _buildLoadMoreIndicator(
+      BuildContext context, UnifiedTransactionViewModel viewModel) {
     if (!viewModel.hasMore) {
       // 没有更多数据
       return Container(
@@ -287,7 +290,7 @@ class _UnifiedTransactionListScreenState
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Text(
-                '没有更多了',
+                AppLocalizations.of(context)!.noMoreData,
                 style: TextStyle(
                   fontSize: 13,
                   color: Colors.grey[500],

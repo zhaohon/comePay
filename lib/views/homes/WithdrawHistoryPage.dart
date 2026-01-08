@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:comecomepay/utils/app_colors.dart';
 import 'package:comecomepay/services/withdraw_service.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 class WithdrawHistoryPage extends StatefulWidget {
   const WithdrawHistoryPage({super.key});
@@ -106,7 +107,8 @@ class _WithdrawHistoryPageState extends State<WithdrawHistoryPage> {
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('加载失败: ${e.toString()}'),
+            content: Text(
+                '${AppLocalizations.of(context)!.loadingFailed}: ${e.toString()}'),
             backgroundColor: AppColors.error,
           ),
         );
@@ -200,8 +202,8 @@ class _WithdrawHistoryPageState extends State<WithdrawHistoryPage> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    '加载失败',
-                    style: TextStyle(
+                    AppLocalizations.of(context)!.loadingFailed,
+                    style: const TextStyle(
                       fontSize: 16,
                       color: AppColors.textSecondary,
                     ),
@@ -221,7 +223,7 @@ class _WithdrawHistoryPageState extends State<WithdrawHistoryPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                     ),
-                    child: const Text('重试'),
+                    child: Text(AppLocalizations.of(context)!.retryButton),
                   ),
                 ],
               ),

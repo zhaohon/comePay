@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:comecomepay/viewmodels/send_pdp_detail_viewmodel.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 class SendPdpDetail extends StatefulWidget {
   const SendPdpDetail({super.key});
@@ -83,7 +84,7 @@ class _SendPdpDetailState extends State<SendPdpDetail> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Comment',
+              AppLocalizations.of(context)!.comment,
               style: TextStyle(
                 fontSize: 16 * textScaleFactor,
                 fontWeight: FontWeight.bold,
@@ -114,7 +115,8 @@ class _SendPdpDetailState extends State<SendPdpDetail> {
                 textAlign: TextAlign.center,
                 maxLines: null,
                 decoration: InputDecoration(
-                  hintText: 'Text for the recipient (Optional)',
+                  hintText:
+                      AppLocalizations.of(context)!.textForRecipientOptional,
                   hintStyle: TextStyle(
                     color: Colors.grey[400],
                     fontSize: 12 * textScaleFactor,
@@ -127,7 +129,7 @@ class _SendPdpDetailState extends State<SendPdpDetail> {
             ),
             SizedBox(height: screenHeight * 0.02), // 2% dari tinggi layar
             Text(
-              'Detail Transaction',
+              AppLocalizations.of(context)!.detailTransaction,
               style: TextStyle(
                 fontSize: 16 * textScaleFactor,
                 fontWeight: FontWeight.bold,
@@ -155,7 +157,7 @@ class _SendPdpDetailState extends State<SendPdpDetail> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text('Recipient',
+                                  Text(AppLocalizations.of(context)!.recipient,
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 16 * textScaleFactor)),
@@ -174,7 +176,7 @@ class _SendPdpDetailState extends State<SendPdpDetail> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text('Sum',
+                                  Text(AppLocalizations.of(context)!.sum,
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 16 * textScaleFactor)),
@@ -192,7 +194,7 @@ class _SendPdpDetailState extends State<SendPdpDetail> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text('Gas fee',
+                                  Text(AppLocalizations.of(context)!.gasFee,
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 16 * textScaleFactor)),
@@ -236,7 +238,7 @@ class _SendPdpDetailState extends State<SendPdpDetail> {
                             ),
                           )
                         : Text(
-                            'Confirm and Send',
+                            AppLocalizations.of(context)!.confirmAndSend,
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16 * textScaleFactor),
