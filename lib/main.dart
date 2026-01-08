@@ -1,9 +1,8 @@
-import 'package:comecomepay/views/homes/AboutUsScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:comecomepay/views/homes/AboutUsScreen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:comecomepay/utils/constants.dart';
 import 'package:comecomepay/utils/service_locator.dart';
 import 'package:comecomepay/utils/app_theme.dart';
 import 'package:comecomepay/viewmodels/login_viewmodel.dart';
@@ -73,6 +72,7 @@ import 'package:comecomepay/views/homes/CardVerificationScreen.dart';
 import 'package:comecomepay/views/homes/ProfilKycScreen.dart';
 import 'package:comecomepay/views/homes/SecurityScreen.dart'
     show Securityscreen;
+import 'package:comecomepay/views/debug/VersionUpdateTestScreen.dart';
 
 class L10n {
   static final all = [
@@ -102,12 +102,29 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   // Global navigator key for navigation from ViewModels
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -185,7 +202,7 @@ class MyApp extends StatelessWidget {
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
               ],
-              navigatorKey: navigatorKey,
+              navigatorKey: MyApp.navigatorKey,
               initialRoute: '/',
               routes: {
                 '/': (context) => const SplashScreen(),
@@ -268,6 +285,8 @@ class MyApp extends StatelessWidget {
                 '/Profilkycscreen': (context) => const Profilkycscreen(),
                 '/security': (context) => const Securityscreen(),
                 '/aboutus': (context) => const AboutUsScreen(),
+                '/version_update_test': (context) =>
+                    const VersionUpdateTestScreen(),
                 /* End home page */
               },
             );

@@ -249,4 +249,34 @@ class HiveStorageService {
       return null;
     }
   }
+
+  // Version update dialog state management
+  static const String _versionDialogShownKey = 'version_dialog_shown';
+
+  /// 保存版本更新弹窗显示状态
+  static Future<void> saveVersionDialogShown(bool shown) async {
+    try {
+      await _authBox.put(_versionDialogShownKey, shown);
+    } catch (e) {
+      throw Exception('Failed to save version dialog shown state: $e');
+    }
+  }
+
+  /// 获取版本更新弹窗显示状态
+  static bool getVersionDialogShown() {
+    try {
+      return _authBox.get(_versionDialogShownKey, defaultValue: false);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// 清除版本更新弹窗显示状态（应用重启时调用）
+  static Future<void> clearVersionDialogShown() async {
+    try {
+      await _authBox.delete(_versionDialogShownKey);
+    } catch (e) {
+      throw Exception('Failed to clear version dialog shown state: $e');
+    }
+  }
 }

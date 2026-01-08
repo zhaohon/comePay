@@ -25,6 +25,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool _isVisible = true; // Untuk toggle visibilitas Total Assets
   late WalletViewModel _walletViewModel;
+  DateTime? _lastPressedAt; // 记录上次按返回键的时间
 
   @override
   void initState() {
@@ -66,483 +67,522 @@ class _HomeScreenState extends State<HomeScreen> {
 
         final notificationCount = notificationViewModel.unreadNotificationCount;
 
-        return Scaffold(
-          backgroundColor: AppColors.pageBackground,
-          body: OrientationBuilder(
-            builder: (context, orientation) {
-              return LayoutBuilder(
-                builder: (context, constraints) {
-                  return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: paddingValue),
-                    child: RefreshIndicator(
-                      onRefresh: () => walletViewModel.fetchWalletData(),
-                      child: CustomScrollView(
-                        slivers: [
-                          SliverAppBar(
-                            title: Text(
-                              AppLocalizations.of(context)!
-                                  .welcomeToComeComePay,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w600,
-                                fontSize: isSmallScreen ? 16 : 18,
+        return PopScope(
+          canPop: false, // 禁止直接返回
+          onPopInvokedWithResult: (bool didPop, dynamic result) {
+            if (didPop) return;
+
+            // 双击返回退出逻辑
+            final now = DateTime.now();
+            if (_lastPressedAt == null ||
+                now.difference(_lastPressedAt!) > const Duration(seconds: 2)) {
+              // 第一次按返回键，或距离上次按键超过2秒
+              _lastPressedAt = now;
+
+              // 显示提示
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('再按一次退出应用'),
+                  duration: Duration(seconds: 2),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            } else {
+              // 两次按键间隔小于2秒，退出应用
+              Navigator.of(context).pop();
+            }
+          },
+          child: Scaffold(
+            backgroundColor: AppColors.pageBackground,
+            body: OrientationBuilder(
+              builder: (context, orientation) {
+                return LayoutBuilder(
+                  builder: (context, constraints) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: paddingValue),
+                      child: RefreshIndicator(
+                        onRefresh: () => walletViewModel.fetchWalletData(),
+                        child: CustomScrollView(
+                          slivers: [
+                            SliverAppBar(
+                              title: Text(
+                                AppLocalizations.of(context)!
+                                    .welcomeToComeComePay,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: isSmallScreen ? 16 : 18,
+                                ),
                               ),
+                              backgroundColor: AppColors.pageBackground,
+                              floating: true,
+                              snap: true,
+                              pinned: false,
+                              elevation: 0,
+                              centerTitle: false, // 左对齐
+                              titleSpacing: 0,
+                              actions: [
+                                Padding(
+                                    padding: const EdgeInsets.only(right: 4),
+                                    child: Container(
+                                      width: isSmallScreen ? 38 : 42,
+                                      height: isSmallScreen ? 38 : 42,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade900,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Stack(
+                                        clipBehavior: Clip.none,
+                                        alignment: Alignment.center,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.pushNamed(context,
+                                                  '/NotificationScreen');
+                                            },
+                                            child: Icon(
+                                              Icons.notifications_none,
+                                              color: Colors.white,
+                                              size: isSmallScreen ? 20 : 24,
+                                            ),
+                                          ),
+                                          if (notificationCount > 0)
+                                            Positioned(
+                                              right: -4,
+                                              top: -4,
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.all(4),
+                                                decoration: const BoxDecoration(
+                                                  color: Colors.red,
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                constraints: BoxConstraints(
+                                                  minWidth:
+                                                      isSmallScreen ? 14 : 16,
+                                                  minHeight:
+                                                      isSmallScreen ? 14 : 16,
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    notificationCount > 99
+                                                        ? '99+'
+                                                        : '$notificationCount',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: isSmallScreen
+                                                          ? 8
+                                                          : 10,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ))
+                              ],
                             ),
-                            backgroundColor: AppColors.pageBackground,
-                            floating: true,
-                            snap: true,
-                            pinned: false,
-                            elevation: 0,
-                            centerTitle: false, // 左对齐
-                            titleSpacing: 0,
-                            actions: [
-                              Padding(
-                                  padding: const EdgeInsets.only(right: 4),
-                                  child: Container(
-                                    width: isSmallScreen ? 38 : 42,
-                                    height: isSmallScreen ? 38 : 42,
+                            SliverToBoxAdapter(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: double.infinity,
+                                    padding: EdgeInsets.all(screenWidth * 0.05),
                                     decoration: BoxDecoration(
-                                      color: Colors.grey.shade900,
-                                      shape: BoxShape.circle,
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          Color(0xFFA855F7),
+                                          Color(0xFFEC4899)
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                      borderRadius: BorderRadius.circular(20),
                                     ),
                                     child: Stack(
-                                      clipBehavior: Clip.none,
-                                      alignment: Alignment.center,
                                       children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            Navigator.pushNamed(
-                                                context, '/NotificationScreen');
-                                          },
-                                          child: Icon(
-                                            Icons.notifications_none,
-                                            color: Colors.white,
-                                            size: isSmallScreen ? 20 : 24,
-                                          ),
-                                        ),
-                                        if (notificationCount > 0)
-                                          Positioned(
-                                            right: -4,
-                                            top: -4,
-                                            child: Container(
-                                              padding: const EdgeInsets.all(4),
-                                              decoration: const BoxDecoration(
-                                                color: Colors.red,
-                                                shape: BoxShape.circle,
-                                              ),
-                                              constraints: BoxConstraints(
-                                                minWidth:
-                                                    isSmallScreen ? 14 : 16,
-                                                minHeight:
-                                                    isSmallScreen ? 14 : 16,
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  notificationCount > 99
-                                                      ? '99+'
-                                                      : '$notificationCount',
+                                        // 主内容
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  _isVisible
+                                                      ? walletViewModel
+                                                          .getFormattedBalance()
+                                                      : "****",
                                                   style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize:
-                                                        isSmallScreen ? 8 : 10,
+                                                        isSmallScreen ? 20 : 24,
                                                     fontWeight: FontWeight.bold,
                                                   ),
-                                                  textAlign: TextAlign.center,
                                                 ),
-                                              ),
+                                                SizedBox(
+                                                    width: screenWidth * 0.02),
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    _showCurrencyBottomSheet(
+                                                        context,
+                                                        walletViewModel);
+                                                  },
+                                                  child: Row(
+                                                    children: [
+                                                      Text(
+                                                        walletViewModel
+                                                            .selectedCurrency,
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize:
+                                                              isSmallScreen
+                                                                  ? 16
+                                                                  : 18,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 4),
+                                                      Icon(
+                                                        Icons
+                                                            .keyboard_arrow_down,
+                                                        color: Colors.white,
+                                                        size: 20,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ),
-                                      ],
-                                    ),
-                                  ))
-                            ],
-                          ),
-                          SliverToBoxAdapter(
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: double.infinity,
-                                  padding: EdgeInsets.all(screenWidth * 0.05),
-                                  decoration: BoxDecoration(
-                                    gradient: const LinearGradient(
-                                      colors: [
-                                        Color(0xFFA855F7),
-                                        Color(0xFFEC4899)
-                                      ],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                    ),
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Stack(
-                                    children: [
-                                      // 主内容
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text(
-                                                _isVisible
-                                                    ? walletViewModel
-                                                        .getFormattedBalance()
-                                                    : "****",
+                                            SizedBox(
+                                                height: screenWidth * 0.015),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  AppLocalizations.of(context)!
+                                                      .totalAssets,
+                                                  style: TextStyle(
+                                                      color: Colors.white70,
+                                                      fontSize: isSmallScreen
+                                                          ? 14
+                                                          : 16),
+                                                ),
+                                                // SizedBox(
+                                                //     width: screenWidth * 0.02),
+                                                // Text(
+                                                //   _isVisible
+                                                //       ? walletViewModel
+                                                //           .totalAssets
+                                                //           .toStringAsFixed(2)
+                                                //       : "****",
+                                                //   style: TextStyle(
+                                                //     color: Colors.white,
+                                                //     fontSize:
+                                                //         isSmallScreen ? 14 : 16,
+                                                //     fontWeight: FontWeight.bold,
+                                                //   ),
+                                                // ),
+                                                IconButton(
+                                                  icon: Icon(Icons.visibility,
+                                                      color: Colors.white,
+                                                      size: isSmallScreen
+                                                          ? 20
+                                                          : 24),
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      _isVisible = !_isVisible;
+                                                    });
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        // 右上角P图标
+                                        Positioned(
+                                          top: 0,
+                                          right: 0,
+                                          child: Container(
+                                            width: 50,
+                                            height: 50,
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  Colors.white.withOpacity(0.2),
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: const Center(
+                                              child: Text(
+                                                'P',
                                                 style: TextStyle(
                                                   color: Colors.white,
-                                                  fontSize:
-                                                      isSmallScreen ? 20 : 24,
+                                                  fontSize: 24,
                                                   fontWeight: FontWeight.bold,
+                                                  fontStyle: FontStyle.italic,
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                  width: screenWidth * 0.02),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  _showCurrencyBottomSheet(
-                                                      context, walletViewModel);
-                                                },
-                                                child: Row(
-                                                  children: [
-                                                    Text(
-                                                      walletViewModel
-                                                          .selectedCurrency,
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: isSmallScreen
-                                                            ? 16
-                                                            : 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                    SizedBox(width: 4),
-                                                    Icon(
-                                                      Icons.keyboard_arrow_down,
-                                                      color: Colors.white,
-                                                      size: 20,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(height: screenWidth * 0.015),
-                                          Row(
-                                            children: [
-                                              Text(
-                                                AppLocalizations.of(context)!
-                                                    .totalAssets,
-                                                style: TextStyle(
-                                                    color: Colors.white70,
-                                                    fontSize: isSmallScreen
-                                                        ? 14
-                                                        : 16),
-                                              ),
-                                              // SizedBox(
-                                              //     width: screenWidth * 0.02),
-                                              // Text(
-                                              //   _isVisible
-                                              //       ? walletViewModel
-                                              //           .totalAssets
-                                              //           .toStringAsFixed(2)
-                                              //       : "****",
-                                              //   style: TextStyle(
-                                              //     color: Colors.white,
-                                              //     fontSize:
-                                              //         isSmallScreen ? 14 : 16,
-                                              //     fontWeight: FontWeight.bold,
-                                              //   ),
-                                              // ),
-                                              IconButton(
-                                                icon: Icon(Icons.visibility,
-                                                    color: Colors.white,
-                                                    size: isSmallScreen
-                                                        ? 20
-                                                        : 24),
-                                                onPressed: () {
-                                                  setState(() {
-                                                    _isVisible = !_isVisible;
-                                                  });
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      // 右上角P图标
-                                      Positioned(
-                                        top: 0,
-                                        right: 0,
-                                        child: Container(
-                                          width: 50,
-                                          height: 50,
-                                          decoration: BoxDecoration(
-                                            color:
-                                                Colors.white.withOpacity(0.2),
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: const Center(
-                                            child: Text(
-                                              'P',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.bold,
-                                                fontStyle: FontStyle.italic,
                                               ),
                                             ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(height: screenWidth * 0.05),
+                                  LayoutBuilder(
+                                    builder: (context, constraints) {
+                                      return Row(
+                                        spacing: screenWidth * 0.05,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        // runSpacing: screenWidth * 0.05,
+                                        // alignment: WrapAlignment.spaceBetween,
+                                        children: [
+                                          buildActionIcon(
+                                              Icons.send,
+                                              AppLocalizations.of(context)!
+                                                  .send, () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        Sendscreen()));
+                                          }),
+                                          buildActionIcon(
+                                              Icons.download,
+                                              AppLocalizations.of(context)!
+                                                  .receive, () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        TokenReceiveScreen()));
+                                          }),
+                                          buildActionIcon(
+                                              Icons.swap_horiz,
+                                              AppLocalizations.of(context)!
+                                                  .swap, () {
+                                            Navigator.pushNamed(
+                                                context, '/SwapDetailScreen');
+                                          }),
+                                          // buildActionIcon(
+                                          //     Icons.account_circle,
+                                          //     AppLocalizations.of(context)!
+                                          //         .account, () {
+                                          //   Navigator.push(
+                                          //       context,
+                                          //       MaterialPageRoute(
+                                          //           builder: (_) =>
+                                          //               WalletScreen()));
+                                          // }),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                  SizedBox(height: screenWidth * 0.05),
+                                  // 最新交易标题和更多按钮
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)!
+                                            .latestTransactions,
+                                        style: TextStyle(
+                                          fontSize: isSmallScreen ? 16 : 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const UnifiedTransactionListScreen(),
+                                            ),
+                                          );
+                                        },
+                                        child: Text(
+                                          '更多',
+                                          style: TextStyle(
+                                            color: const Color(0xFFA855F7),
+                                            fontSize: isSmallScreen ? 14 : 16,
                                           ),
                                         ),
                                       ),
                                     ],
                                   ),
-                                ),
-                                SizedBox(height: screenWidth * 0.05),
-                                LayoutBuilder(
-                                  builder: (context, constraints) {
-                                    return Row(
-                                      spacing: screenWidth * 0.05,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      // runSpacing: screenWidth * 0.05,
-                                      // alignment: WrapAlignment.spaceBetween,
-                                      children: [
-                                        buildActionIcon(Icons.send,
-                                            AppLocalizations.of(context)!.send,
-                                            () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      Sendscreen()));
-                                        }),
-                                        buildActionIcon(
-                                            Icons.download,
-                                            AppLocalizations.of(context)!
-                                                .receive, () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      TokenReceiveScreen()));
-                                        }),
-                                        buildActionIcon(Icons.swap_horiz,
-                                            AppLocalizations.of(context)!.swap,
-                                            () {
-                                          Navigator.pushNamed(
-                                              context, '/SwapDetailScreen');
-                                        }),
-                                        // buildActionIcon(
-                                        //     Icons.account_circle,
-                                        //     AppLocalizations.of(context)!
-                                        //         .account, () {
-                                        //   Navigator.push(
-                                        //       context,
-                                        //       MaterialPageRoute(
-                                        //           builder: (_) =>
-                                        //               WalletScreen()));
-                                        // }),
-                                      ],
-                                    );
-                                  },
-                                ),
-                                SizedBox(height: screenWidth * 0.05),
-                                // 最新交易标题和更多按钮
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      AppLocalizations.of(context)!
-                                          .latestTransactions,
-                                      style: TextStyle(
-                                        fontSize: isSmallScreen ? 16 : 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const UnifiedTransactionListScreen(),
-                                          ),
-                                        );
-                                      },
-                                      child: Text(
-                                        '更多',
-                                        style: TextStyle(
-                                          color: const Color(0xFFA855F7),
-                                          fontSize: isSmallScreen ? 14 : 16,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: screenWidth * 0.02),
-                              ],
+                                  SizedBox(height: screenWidth * 0.02),
+                                ],
+                              ),
                             ),
-                          ),
-                          // 最新交易记录列表 - 优化版
-                          transactionViewModel.isLoading
-                              ? SliverToBoxAdapter(
-                                  child: Container(
-                                    margin: EdgeInsets.symmetric(
-                                      horizontal: screenWidth * 0.04,
-                                      vertical: screenWidth * 0.02,
-                                    ),
-                                    padding: EdgeInsets.all(screenWidth * 0.08),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    child: const Center(
-                                      child: CircularProgressIndicator(
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                          Color(0xFFA855F7),
+                            // 最新交易记录列表 - 优化版
+                            transactionViewModel.isLoading
+                                ? SliverToBoxAdapter(
+                                    child: Container(
+                                      margin: EdgeInsets.symmetric(
+                                        horizontal: screenWidth * 0.04,
+                                        vertical: screenWidth * 0.02,
+                                      ),
+                                      padding:
+                                          EdgeInsets.all(screenWidth * 0.08),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      child: const Center(
+                                        child: CircularProgressIndicator(
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                            Color(0xFFA855F7),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                )
-                              : transactionViewModel.latestTransactions.isEmpty
-                                  ? SliverToBoxAdapter(
-                                      child: Container(
-                                        margin: EdgeInsets.symmetric(
-                                          horizontal: screenWidth * 0.04,
-                                          vertical: screenWidth * 0.02,
+                                  )
+                                : transactionViewModel
+                                        .latestTransactions.isEmpty
+                                    ? SliverToBoxAdapter(
+                                        child: Container(
+                                          margin: EdgeInsets.symmetric(
+                                            horizontal: screenWidth * 0.04,
+                                            vertical: screenWidth * 0.02,
+                                          ),
+                                          padding: EdgeInsets.all(
+                                              screenWidth * 0.08),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                          ),
+                                          child: Center(
+                                            child: Column(
+                                              children: [
+                                                Container(
+                                                  width: 70,
+                                                  height: 70,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.grey[100],
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.receipt_long_outlined,
+                                                    size: 35,
+                                                    color: Colors.grey[400],
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 16),
+                                                Text(
+                                                  '暂无交易记录',
+                                                  style: TextStyle(
+                                                    fontSize:
+                                                        isSmallScreen ? 14 : 15,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Colors.grey[700],
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 4),
+                                                Text(
+                                                  '开始您的第一笔交易吧',
+                                                  style: TextStyle(
+                                                    fontSize:
+                                                        isSmallScreen ? 12 : 13,
+                                                    color: Colors.grey[500],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         ),
-                                        padding:
-                                            EdgeInsets.all(screenWidth * 0.08),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                        ),
-                                        child: Center(
+                                      )
+                                    : SliverToBoxAdapter(
+                                        child: Container(
+                                          margin: EdgeInsets.symmetric(
+                                            horizontal: screenWidth * 0,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black
+                                                    .withOpacity(0.04),
+                                                blurRadius: 8,
+                                                offset: const Offset(0, 2),
+                                              ),
+                                            ],
+                                          ),
                                           child: Column(
                                             children: [
-                                              Container(
-                                                width: 70,
-                                                height: 70,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.grey[100],
-                                                  shape: BoxShape.circle,
-                                                ),
-                                                child: Icon(
-                                                  Icons.receipt_long_outlined,
-                                                  size: 35,
-                                                  color: Colors.grey[400],
-                                                ),
-                                              ),
-                                              const SizedBox(height: 16),
-                                              Text(
-                                                '暂无交易记录',
-                                                style: TextStyle(
-                                                  fontSize:
-                                                      isSmallScreen ? 14 : 15,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Colors.grey[700],
-                                                ),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                '开始您的第一笔交易吧',
-                                                style: TextStyle(
-                                                  fontSize:
-                                                      isSmallScreen ? 12 : 13,
-                                                  color: Colors.grey[500],
-                                                ),
+                                              ...List.generate(
+                                                transactionViewModel
+                                                    .latestTransactions.length,
+                                                (index) {
+                                                  final transaction =
+                                                      transactionViewModel
+                                                              .latestTransactions[
+                                                          index];
+                                                  final isLast = index ==
+                                                      transactionViewModel
+                                                              .latestTransactions
+                                                              .length -
+                                                          1;
+                                                  return Column(
+                                                    children: [
+                                                      TransactionItemWidget(
+                                                        transaction:
+                                                            transaction,
+                                                        isInList: false,
+                                                        onTap: () {
+                                                          // 导航到交易详情页
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  TransactionDetailScreen(
+                                                                transaction:
+                                                                    transaction,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
+                                                      if (!isLast)
+                                                        Divider(
+                                                          height: 1,
+                                                          thickness: 1,
+                                                          color:
+                                                              Colors.grey[200],
+                                                          indent: screenWidth *
+                                                                  0.04 +
+                                                              60,
+                                                        ),
+                                                    ],
+                                                  );
+                                                },
                                               ),
                                             ],
                                           ),
                                         ),
                                       ),
-                                    )
-                                  : SliverToBoxAdapter(
-                                      child: Container(
-                                        margin: EdgeInsets.symmetric(
-                                          horizontal: screenWidth * 0,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.black
-                                                  .withOpacity(0.04),
-                                              blurRadius: 8,
-                                              offset: const Offset(0, 2),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            ...List.generate(
-                                              transactionViewModel
-                                                  .latestTransactions.length,
-                                              (index) {
-                                                final transaction =
-                                                    transactionViewModel
-                                                            .latestTransactions[
-                                                        index];
-                                                final isLast = index ==
-                                                    transactionViewModel
-                                                            .latestTransactions
-                                                            .length -
-                                                        1;
-                                                return Column(
-                                                  children: [
-                                                    TransactionItemWidget(
-                                                      transaction: transaction,
-                                                      isInList: false,
-                                                      onTap: () {
-                                                        // 导航到交易详情页
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                TransactionDetailScreen(
-                                                              transaction:
-                                                                  transaction,
-                                                            ),
-                                                          ),
-                                                        );
-                                                      },
-                                                    ),
-                                                    if (!isLast)
-                                                      Divider(
-                                                        height: 1,
-                                                        thickness: 1,
-                                                        color: Colors.grey[200],
-                                                        indent:
-                                                            screenWidth * 0.04 +
-                                                                60,
-                                                      ),
-                                                  ],
-                                                );
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                          // 底部空白 - 在卡片外面
-                          const SliverToBoxAdapter(
-                            child: SizedBox(height: 100),
-                          ),
-                        ],
+                            // 底部空白 - 在卡片外面
+                            const SliverToBoxAdapter(
+                              child: SizedBox(height: 100),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
-              );
-            },
-          ),
+                    );
+                  },
+                );
+              },
+            ),
+          ), // PopScope 的闭合括号
         );
       },
     );

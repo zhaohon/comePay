@@ -3,6 +3,11 @@ import 'dart:async';
 import 'package:provider/provider.dart';
 import 'package:comecomepay/viewmodels/login_viewmodel.dart';
 import 'package:comecomepay/utils/app_colors.dart';
+import 'package:comecomepay/utils/version_utils.dart';
+import 'package:comecomepay/services/app_version_service.dart';
+import 'package:comecomepay/services/hive_storage_service.dart';
+import 'package:comecomepay/views/homes/VersionUpdateScreen.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -20,6 +25,11 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
+
+    // 应用启动时清除版本弹窗显示标记
+    // 这样每次完全重启应用都会重新检查版本
+    HiveStorageService.clearVersionDialogShown();
+
     _controller = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
@@ -52,8 +62,12 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed && mounted) {
-        Timer(const Duration(milliseconds: 800), () {
+        Timer(const Duration(milliseconds: 800), () async {
           if (mounted) {
+            // 先检查版本更新
+            await _checkVersionUpdate();
+
+            // 然后导航到相应页面
             if (loginViewModel.hasStoredAuthData &&
                 loginViewModel.storedAccessToken != null &&
                 loginViewModel.storedRefreshToken != null) {
@@ -65,6 +79,48 @@ class _SplashScreenState extends State<SplashScreen>
         });
       }
     });
+  }
+
+  /// 检查版本更新
+  Future<void> _checkVersionUpdate() async {
+    try {
+      // 检查是否已经显示过弹窗
+      final hasShown = HiveStorageService.getVersionDialogShown();
+      if (hasShown) {
+        return;
+      }
+
+      // 调用 API 获取最新版本
+      final versionService = AppVersionService();
+      final response =
+          await versionService.getLatestVersion(platform: 'android');
+
+      // 从 pubspec.yaml 获取当前版本
+      final packageInfo = await PackageInfo.fromPlatform();
+      final currentVersion = packageInfo.version;
+      final remoteVersion = response.data.version;
+
+      final isNewer =
+          VersionUtils.isNewerVersion(currentVersion, remoteVersion);
+
+      // 如果有新版本，显示全屏页面
+      if (isNewer && mounted) {
+        // 标记弹窗已显示
+        await HiveStorageService.saveVersionDialogShown(true);
+
+        // 显示更新页面
+        await VersionUpdateScreen.show(
+          context,
+          version: remoteVersion,
+          releaseNotes: response.data.releaseNotes,
+          downloadUrl: response.data.downloadUrl,
+          forceUpdate: response.data.forceUpdate,
+        );
+      }
+    } catch (e) {
+      // 静默处理错误，不影响应用启动
+      debugPrint('Version check failed: $e');
+    }
   }
 
   @override
