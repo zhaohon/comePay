@@ -603,11 +603,14 @@ class _CardScreenState extends State<CardScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 8.0),
       height: 200,
       decoration: BoxDecoration(
-        gradient: AppColors.primaryGradient,
+        image: const DecorationImage(
+          image: AssetImage('assets/card.png'),
+          fit: BoxFit.cover,
+        ),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.3),
+            color: Colors.black.withOpacity(0.2),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -638,29 +641,7 @@ class _CardScreenState extends State<CardScreen> {
             ),
           ),
 
-          // 卡片左上角：P logo（文字）
-          Positioned(
-            left: 16,
-            top: 16,
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                shape: BoxShape.circle,
-              ),
-              child: const Center(
-                child: Text(
-                  'P',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
+          // 卡片左上角：P logo（已移除）
 
           // 卡片中间：卡号（可点击查看）
           Positioned(
@@ -733,19 +714,7 @@ class _CardScreenState extends State<CardScreen> {
             ),
           ),
 
-          // 卡片右下角：VISA Platinum
-          Positioned(
-            right: 16,
-            bottom: 16,
-            child: Text(
-              'VISA Platinum',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
+          // 卡片右下角：VISA Platinum（已移除）
         ],
       ),
     );

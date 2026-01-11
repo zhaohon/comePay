@@ -185,17 +185,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     title: AppLocalizations.of(context)!.inviteFriend,
                     iconColor: const Color(0xFF2196F3),
                     onTap: () {
-                      // 在任意按钮或初始化时
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (_) => TokenRefreshTestPage()),
+                            builder: (context) => InviteFriendScreen()),
                       );
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //       builder: (context) => InviteFriendScreen()),
-                      // );
                     },
                   ),
                   _buildDivider(),

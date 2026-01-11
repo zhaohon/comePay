@@ -92,12 +92,14 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/
     - assets/pokepay.png
     - assets/login.png
     - assets/pokepay_logo.png
     - assets/onboarding1.png
     - assets/onboarding2.png
     - assets/which.png
+    - assets/card.png
     - assets/card1.png
     - assets/card2.png
     - assets/card3.png

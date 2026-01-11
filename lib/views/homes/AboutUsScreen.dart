@@ -33,7 +33,7 @@ class AboutUsScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                  "assets/which.png", // ganti dengan logo kamu
+                  "assets/logo.png", // ganti dengan logo kamu
                   height: 60,
                 ),
                 const SizedBox(width: 8),
