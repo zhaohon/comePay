@@ -122,6 +122,7 @@ class ReferralService extends BaseService {
       final Map<String, dynamic> params = {
         'page': page,
         'page_size': pageSize,
+        "commission_type": "transaction"
       };
       // These params are currently proposed in API Gap Analysis,
       // adding them now as placeholders or if backend implicitly supports them.

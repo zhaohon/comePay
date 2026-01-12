@@ -605,7 +605,7 @@ class _CardScreenState extends State<CardScreen> {
       decoration: BoxDecoration(
         image: const DecorationImage(
           image: AssetImage('assets/card.png'),
-          fit: BoxFit.cover,
+          fit: BoxFit.fill,
         ),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [

@@ -185,28 +185,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     title: AppLocalizations.of(context)!.inviteFriend,
                     iconColor: const Color(0xFF2196F3),
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => InviteFriendScreen()),
-                      );
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //       builder: (context) => InviteFriendScreen()),
+                      // );
                     },
                   ),
                   _buildDivider(),
-                  _buildProfileItem(
-                    context,
-                    icon: Icons.camera_alt,
-                    title: AppLocalizations.of(context)!.kyc,
-                    iconColor: const Color(0xFF9C27B0),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Profilkycscreen()),
-                      );
-                    },
-                  ),
-                  _buildDivider(),
+                  // _buildProfileItem(
+                  //   context,
+                  //   icon: Icons.camera_alt,
+                  //   title: AppLocalizations.of(context)!.kyc,
+                  //   iconColor: const Color(0xFF9C27B0),
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //           builder: (context) => Profilkycscreen()),
+                  //     );
+                  //   },
+                  // ),
+                  // _buildDivider(),
                   _buildProfileItem(
                     context,
                     icon: Icons.language,
