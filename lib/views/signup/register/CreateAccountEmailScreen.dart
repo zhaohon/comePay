@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:comecomepay/viewmodels/signup_viewmodel.dart';
 import 'package:comecomepay/utils/service_locator.dart';
-import 'package:comecomepay/services/global_service.dart';
 import 'package:comecomepay/utils/app_colors.dart';
 import 'package:comecomepay/widgets/gradient_button.dart';
 import 'package:comecomepay/widgets/custom_text_field.dart';
@@ -18,9 +17,9 @@ class CreateAccountEmailScreen extends StatefulWidget {
 class _CreateAccountEmailScreenState extends State<CreateAccountEmailScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _referralCodeController = TextEditingController();
 
   late final SignupViewModel _signupViewModel;
-  late final GlobalService _globalService;
 
   final int _totalProgressSteps = 3;
   final int _currentProgressStep = 1;
@@ -29,43 +28,36 @@ class _CreateAccountEmailScreenState extends State<CreateAccountEmailScreen> {
   void initState() {
     super.initState();
     _signupViewModel = getIt<SignupViewModel>();
-    _globalService = getIt<GlobalService>();
   }
 
   Future<void> _validateEmailAndNavigate() async {
     if (_formKey.currentState!.validate()) {
-      final result =
-          await _signupViewModel.validateEmail(_emailController.text);
+      // 触发重建以显示加载状态
+      setState(() {});
+
+      final result = await _signupViewModel.validateEmail(
+        _emailController.text,
+        referralCode: _referralCodeController.text.trim().isEmpty
+            ? null
+            : _referralCodeController.text.trim(),
+      );
 
       if (!mounted) return;
 
-      if (result.success) {
-        final otp = _signupViewModel.emailValidationResponse?.otp;
-        final email = _emailController.text;
+      // 触发重建以隐藏加载状态
+      setState(() {});
 
-        if (otp != null && email.isNotEmpty) {
-          final name = email.split('@').first;
-          try {
-            final emailSent = await _globalService.sendEmail(email, name, otp);
-            if (emailSent) {
-              Navigator.pushNamed(
-                context,
-                '/create_account_confirm_email',
-                arguments: {
-                  'email': _emailController.text,
-                  'message': result.message,
-                  'otp': _signupViewModel.emailValidationResponse?.otp,
-                },
-              );
-            } else {
-              _showErrorAlert(AppLocalizations.of(context)!.failedToSendOtp);
-            }
-          } catch (e) {
-            _showErrorAlert(AppLocalizations.of(context)!.failedToSendOtp);
-          }
-        } else {
-          _showErrorAlert(AppLocalizations.of(context)!.errorOccurred);
-        }
+      if (result.success) {
+        // /auth/signup 已自动发送验证码，直接导航
+        Navigator.pushNamed(
+          context,
+          '/create_account_confirm_email',
+          arguments: {
+            'email': _emailController.text,
+            'message': result.message,
+            'otp': _signupViewModel.emailValidationResponse?.otp,
+          },
+        );
       } else {
         _showErrorAlert(
             result.message ?? AppLocalizations.of(context)!.errorOccurred);
@@ -82,9 +74,9 @@ class _CreateAccountEmailScreenState extends State<CreateAccountEmailScreen> {
     );
   }
 
-  @override
   void dispose() {
     _emailController.dispose();
+    _referralCodeController.dispose();
     super.dispose();
   }
 
@@ -176,6 +168,20 @@ class _CreateAccountEmailScreenState extends State<CreateAccountEmailScreen> {
                     }
                     return null;
                   },
+                ),
+
+                const SizedBox(height: 20),
+
+                // Referral Code Input (Optional)
+                CustomTextField(
+                  controller: _referralCodeController,
+                  hintText: l10n.referralCodeOptional,
+                  keyboardType: TextInputType.text,
+                  prefixIcon: const Icon(
+                    Icons.card_giftcard,
+                    color: AppColors.textSecondary,
+                  ),
+                  validator: null, // Optional field, no validation needed
                 ),
 
                 const SizedBox(height: 20),

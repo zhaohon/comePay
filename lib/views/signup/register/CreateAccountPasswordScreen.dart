@@ -3,6 +3,8 @@ import 'package:comecomepay/utils/app_colors.dart';
 import 'package:comecomepay/widgets/gradient_button.dart';
 import 'package:comecomepay/widgets/custom_text_field.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:comecomepay/services/global_service.dart';
+import 'package:comecomepay/models/responses/set_password_response_model.dart';
 
 class CreateAccountPasswordScreen extends StatefulWidget {
   const CreateAccountPasswordScreen({super.key});
@@ -22,29 +24,111 @@ class _CreateAccountPasswordScreenState
   bool _showConfirmPassword = false;
   bool _isCreating = false;
 
+  final GlobalService _globalService = GlobalService();
+
   final int _totalProgressSteps = 3;
   final int _currentProgressStep = 3;
 
   Future<void> _createPassword() async {
-    if (!_formKey.currentState!.validate()) return;
+    final l10n = AppLocalizations.of(context)!;
+
+    // Trigger validation to show errors
+    if (!_formKey.currentState!.validate()) {
+      // Show a snackbar to inform user about validation errors
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('请检查密码要求'),
+          backgroundColor: AppColors.error,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
+    // Get email and referral code from route arguments
+    final arguments =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final email = arguments?['email'] as String?;
+    final referralCode = arguments?['referral_code'] as String?;
+
+    if (email == null || email.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.errorOccurred),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
 
     setState(() {
       _isCreating = true;
     });
 
-    // TODO: Implement password creation logic
-    await Future.delayed(const Duration(seconds: 1));
+    try {
+      // Call set-password API
+      final response = await _globalService.setPassword(
+        email,
+        _passwordController.text,
+        referralCode: referralCode,
+      );
 
-    setState(() {
-      _isCreating = false;
-    });
+      if (!mounted) return;
 
-    // Navigate to success or home
-    if (mounted) {
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        '/home',
-        (route) => false,
+      setState(() {
+        _isCreating = false;
+      });
+
+      if (response is SetPasswordResponseModel) {
+        // Password set successfully
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('注册成功！请使用您的邮箱和密码登录'),
+            backgroundColor: AppColors.success,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+
+        // Navigate to login screen, clearing all previous routes
+        if (mounted) {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/login_screen',
+            (route) => false,
+          );
+        }
+      } else if (response is SetPasswordErrorModel) {
+        // Password set failed
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response.error),
+            backgroundColor: AppColors.error,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      } else {
+        // Unexpected response type
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.errorOccurred),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isCreating = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${l10n.errorOccurred}: ${e.toString()}'),
+          backgroundColor: AppColors.error,
+          duration: const Duration(seconds: 3),
+        ),
       );
     }
   }

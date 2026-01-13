@@ -1022,4 +1022,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noMoreData => 'لا مزيد من البيانات';
+
+  @override
+  String get referralCodeOptional => 'رمز الإحالة (اختياري)';
+
+  @override
+  String get enterReferralCode => 'أدخل رمز الإحالة إذا كان لديك';
 }

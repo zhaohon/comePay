@@ -752,19 +752,27 @@ class GlobalService extends BaseService {
   }
 
   // Method untuk set password
-  Future<dynamic> setPassword(String email, String password) async {
+  Future<dynamic> setPassword(String email, String password,
+      {String? referralCode}) async {
     _apiLogger.logMethodEntry('setPassword', parameters: {
       'email': email,
       'password': '***HIDDEN***',
+      'referral_code': referralCode ?? 'N/A',
     });
 
     try {
+      final Map<String, dynamic> data = {
+        'email': email,
+        'password': password,
+      };
+
+      if (referralCode != null && referralCode.isNotEmpty) {
+        data['referral_code'] = referralCode;
+      }
+
       final response = await post(
         '/auth/set-password',
-        data: {
-          'email': email,
-          'password': password,
-        },
+        data: data,
       );
 
       // Handle response berdasarkan struktur data
@@ -2038,11 +2046,11 @@ class GlobalService extends BaseService {
     try {
       print('🔥 [SEND EMAIL] Making API call to send-email endpoint...');
       final response = await dio.post(
-        'http://149.88.65.193:8010/api/send-email',
+        'http://149.88.65.193:8010/api/v1/auth/verify-otp',
         data: {
           'email': email,
-          'name': name,
-          'otp': otp,
+          'referral_code': '',
+          'otp_code': otp,
         },
         options: Options(
           headers: {

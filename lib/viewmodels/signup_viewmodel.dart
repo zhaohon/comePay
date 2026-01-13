@@ -169,7 +169,8 @@ class SignupViewModel extends BaseViewModel {
   String? get walletId => _signupResponse?.walletId;
 
   // Email validation method
-  Future<SignupResult> validateEmail(String email) async {
+  Future<SignupResult> validateEmail(String email,
+      {String? referralCode}) async {
     // Validasi input
     if (email.isEmpty) {
       _errorMessage = 'Email tidak boleh kosong';
@@ -197,7 +198,10 @@ class SignupViewModel extends BaseViewModel {
 
     try {
       // Buat request model
-      final request = EmailValidationRequestModel(email: email);
+      final request = EmailValidationRequestModel(
+        email: email,
+        referralCode: referralCode,
+      );
 
       // Call service
       final response = await _globalService.validateEmail(request);

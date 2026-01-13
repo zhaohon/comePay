@@ -3,6 +3,10 @@ import 'package:comecomepay/utils/app_colors.dart';
 import 'package:comecomepay/widgets/gradient_button.dart';
 import 'package:comecomepay/widgets/otp_input.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:comecomepay/services/global_service.dart';
+import 'package:comecomepay/models/requests/registration_otp_verification_request_model.dart';
+import 'package:comecomepay/models/responses/registration_otp_verification_response_model.dart';
+import 'package:comecomepay/models/responses/registration_otp_verification_error_model.dart';
 
 class CreateAccountOtpConfirmScreen extends StatefulWidget {
   const CreateAccountOtpConfirmScreen({super.key});
@@ -16,6 +20,7 @@ class _CreateAccountOtpConfirmScreenState
     extends State<CreateAccountOtpConfirmScreen> {
   String _otpCode = '';
   bool _isVerifying = false;
+  final GlobalService _globalService = GlobalService();
 
   void _onOtpCompleted(String code) {
     setState(() {
@@ -42,20 +47,95 @@ class _CreateAccountOtpConfirmScreenState
       return;
     }
 
+    // Get email and referral code from route arguments
+    final arguments =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final email = arguments?['email'] as String?;
+    final referralCode = arguments?['referral_code'] as String?;
+
+    if (email == null || email.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.errorOccurred),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
+
     setState(() {
       _isVerifying = true;
     });
 
-    // TODO: Implement OTP verification logic
-    await Future.delayed(const Duration(seconds: 1));
+    try {
+      // Call OTP verification API
+      final request = RegistrationOtpVerificationRequestModel(
+        email: email,
+        otpCode: _otpCode,
+        referralCode: referralCode,
+      );
 
-    setState(() {
-      _isVerifying = false;
-    });
+      final response = await _globalService.verifyRegistrationOtp(request);
 
-    // Navigate to password screen
-    if (mounted) {
-      Navigator.pushNamed(context, '/create_account_password');
+      if (!mounted) return;
+
+      setState(() {
+        _isVerifying = false;
+      });
+
+      if (response is RegistrationOtpVerificationResponseModel) {
+        // OTP verification successful
+        if (response.nextStep == 'set_password') {
+          // Navigate to password screen
+          Navigator.pushNamed(
+            context,
+            '/create_account_password',
+            arguments: {
+              'email': email,
+              'referral_code': response.referralCode,
+            },
+          );
+        } else {
+          // Unexpected next step
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(response.message),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
+      } else if (response is RegistrationOtpVerificationErrorModel) {
+        // OTP verification failed
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response.error),
+            backgroundColor: AppColors.error,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      } else {
+        // Unexpected response type
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.errorOccurred),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isVerifying = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${l10n.errorOccurred}: ${e.toString()}'),
+          backgroundColor: AppColors.error,
+          duration: const Duration(seconds: 3),
+        ),
+      );
     }
   }
 
@@ -73,6 +153,10 @@ class _CreateAccountOtpConfirmScreenState
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
+    // Get email from route arguments
+    final arguments =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final email = arguments?['email'] as String? ?? 'your email';
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -105,16 +189,16 @@ class _CreateAccountOtpConfirmScreenState
 
               // Subtitle with email
               RichText(
-                text: const TextSpan(
-                  style: TextStyle(
+                text: TextSpan(
+                  style: const TextStyle(
                     fontSize: 14,
                     color: AppColors.textSecondary,
                   ),
                   children: [
-                    TextSpan(text: 'We sent email to '),
+                    TextSpan(text: '${l10n.weSentEmailTo} '),
                     TextSpan(
-                      text: 'kasino1992@gmail.com',
-                      style: TextStyle(
+                      text: email,
+                      style: const TextStyle(
                         color: AppColors.textPrimary,
                         fontWeight: FontWeight.w600,
                       ),

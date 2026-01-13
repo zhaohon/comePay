@@ -1019,4 +1019,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get noMoreData => 'Tidak ada data lagi';
+
+  @override
+  String get referralCodeOptional => 'Kode Referral (Opsional)';
+
+  @override
+  String get enterReferralCode =>
+      'Masukkan kode referral jika Anda memilikinya';
 }

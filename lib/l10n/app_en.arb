@@ -341,5 +341,8 @@
   "noTransactionsYet": "You don't have any transaction records yet",
   "loadFailed": "Load Failed",
   "reload": "Reload",
-  "noMoreData": "No more data"
+  "noMoreData": "No more data",
+  "referralCode": "Referral Code",
+  "referralCodeOptional": "Referral Code (Optional)",
+  "enterReferralCode": "Enter referral code if you have one"
 }

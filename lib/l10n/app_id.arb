@@ -316,5 +316,8 @@
   "noTransactionsYet": "Anda belum memiliki catatan transaksi",
   "loadFailed": "Gagal Memuat",
   "reload": "Muat Ulang",
-  "noMoreData": "Tidak ada data lagi"
+  "noMoreData": "Tidak ada data lagi",
+  "referralCode": "Kode Referral",
+  "referralCodeOptional": "Kode Referral (Opsional)",
+  "enterReferralCode": "Masukkan kode referral jika Anda memilikinya"
 }

@@ -1019,4 +1019,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noMoreData => 'No more data';
+
+  @override
+  String get referralCodeOptional => 'Referral Code (Optional)';
+
+  @override
+  String get enterReferralCode => 'Enter referral code if you have one';
 }

@@ -318,5 +318,8 @@
   "noTransactionsYet": "ليس لديك أي سجلات معاملات بعد",
   "loadFailed": "فشل التحميل",
   "reload": "إعادة التحميل",
-  "noMoreData": "لا مزيد من البيانات"
+  "noMoreData": "لا مزيد من البيانات",
+  "referralCode": "رمز الإحالة",
+  "referralCodeOptional": "رمز الإحالة (اختياري)",
+  "enterReferralCode": "أدخل رمز الإحالة إذا كان لديك"
 }

@@ -907,7 +907,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get accountType => '账户类型';
 
   @override
-  String get referralCode => '推荐码';
+  String get referralCode => '邀请码';
 
   @override
   String get save => '保存';
@@ -986,4 +986,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get noMoreData => '没有更多了';
+
+  @override
+  String get referralCodeOptional => '邀请码（选填）';
+
+  @override
+  String get enterReferralCode => '如有邀请码，请输入';
 }

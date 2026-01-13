@@ -2051,6 +2051,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No more data'**
   String get noMoreData;
+
+  /// No description provided for @referralCodeOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral Code (Optional)'**
+  String get referralCodeOptional;
+
+  /// No description provided for @enterReferralCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter referral code if you have one'**
+  String get enterReferralCode;
 }
 
 class _AppLocalizationsDelegate

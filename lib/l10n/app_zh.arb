@@ -344,5 +344,8 @@
   "noTransactionsYet": "您还没有任何交易记录",
   "loadFailed": "加载失败",
   "reload": "重新加载",
-  "noMoreData": "没有更多了"
+  "noMoreData": "没有更多了",
+  "referralCode": "邀请码",
+  "referralCodeOptional": "邀请码（选填）",
+  "enterReferralCode": "如有邀请码，请输入"
 }
