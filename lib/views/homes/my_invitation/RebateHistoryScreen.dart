@@ -101,11 +101,11 @@ class _RebateHistoryScreenState extends State<RebateHistoryScreen>
               String l2Val = "0";
 
               if (widget.type == 'card') {
-                l1Val = "${vm.stats['level1_card_rebate'] ?? 0}";
-                l2Val = "${vm.stats['level2_card_rebate'] ?? 0}";
+                l1Val = "${vm.stats['level1_card_opening_commission'] ?? 0}";
+                l2Val = "${vm.stats['level2_card_opening_commission'] ?? 0}";
               } else {
-                l1Val = "${vm.stats['level1_spending_rebate'] ?? 0}";
-                l2Val = "${vm.stats['level2_spending_rebate'] ?? 0}";
+                l1Val = "${vm.stats['level1_transaction_commission'] ?? 0}";
+                l2Val = "${vm.stats['level2_transaction_commission'] ?? 0}";
               }
 
               return Padding(
@@ -196,13 +196,26 @@ class _RebateHistoryScreenState extends State<RebateHistoryScreen>
   Widget _buildCommissionItem(dynamic item, String type) {
     // Determine labels based on type
     final amountLabel = type == 'card' ? "支付費用" : "消費結算金額";
-    final amountValue = "${item['amount']} ${item['currency'] ?? ''}";
+    final amountValue =
+        "${item['source_amount'] ?? 0} ${item['currency'] ?? ''}";
     final rebateLabel = type == 'card' ? "返佣" : "消費返佣";
     final rebateValue =
         "${item['commission_amount']} ${item['currency'] ?? ''}";
-    final statusText = type == 'card' ? "開卡" : "消費成功"; // Status
+
+    // Status can be 'pending', 'credited', 'failed'
+    // Mapping simply for now
+    String status = item['status'] ?? '';
+    if (status == 'credited')
+      status = "成功";
+    else if (status == 'pending')
+      status = "處理中";
+    else if (status == 'failed') status = "失敗";
+
+    final statusText = (type == 'card' ? "開卡" : "消費") + status;
+
     final date = item['created_at'] ?? '';
-    final email = item['source_user_email'] ?? '';
+    final email =
+        item['referee'] != null ? (item['referee']['email'] ?? '') : '';
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),

@@ -88,10 +88,8 @@ class _MyFriendsScreenState extends State<MyFriendsScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _buildStatItem(
-                      "一級好友人數", "${vm.stats['level1_referrals'] ?? 0}"),
-                  _buildStatItem(
-                      "二級好友人數", "${vm.stats['level2_referrals'] ?? 0}"),
+                  _buildStatItem("一級好友人數", "${vm.stats['level1_count'] ?? 0}"),
+                  _buildStatItem("二級好友人數", "${vm.stats['level2_count'] ?? 0}"),
                 ],
               ),
             );
@@ -185,50 +183,8 @@ class _MyFriendsScreenState extends State<MyFriendsScreen>
           Text(item['email'] ?? '',
               style: const TextStyle(fontSize: 14, color: Color(0xFF546E7A))),
           const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Card Activated
-              Row(
-                children: [
-                  Text("開卡: ",
-                      style: const TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF0B2735),
-                          fontWeight: FontWeight.bold)),
-                  Text(
-                    (item['is_card_activated'] == true) ? "是" : "否",
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: (item['is_card_activated'] == true)
-                            ? const Color(0xFF00C853)
-                            : Colors.red, // Green or Red
-                        fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-              // Physical Card
-              Row(
-                children: [
-                  Text("升級實體卡: ",
-                      style: const TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF0B2735),
-                          fontWeight: FontWeight.bold)),
-                  Text(
-                    (item['has_physical_card'] == true) ? "是" : "否",
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: (item['has_physical_card'] == true)
-                            ? const Color(0xFF00C853)
-                            : Colors.red,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
+          // API doesn't provide card activation status yet.
+          // Removed status rows to avoid confusion.
           Text("註冊時間: ${item['created_at'] ?? ''}",
               style: const TextStyle(fontSize: 12, color: Color(0xFF78909C))),
         ],
