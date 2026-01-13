@@ -80,7 +80,6 @@ class ReferralService extends BaseService {
         throw Exception(response['message'] ?? 'Failed to get referral stats');
       }
     } catch (e) {
-      // Return empty stats if error, to allow UI to render zeros
       Logger.error(
           'getReferralStats', '/user/referral-stats', e, StackTrace.current);
       return {};
@@ -97,8 +96,6 @@ class ReferralService extends BaseService {
         'level': level,
         'page': page,
         'page_size': pageSize,
-        // 'start_date': ..., // Pending backend support
-        // 'end_date': ...
       });
       if (response['status'] == 'success') {
         return {
@@ -116,28 +113,24 @@ class ReferralService extends BaseService {
 
   /// Get commissions history
   /// GET /user/commissions
+  /// type: 'card_opening', 'transaction'
+  /// level: 1, 2
   Future<Map<String, dynamic>> getCommissions(
       {int page = 1, int pageSize = 20, String? type, int? level}) async {
     try {
       final Map<String, dynamic> params = {
         'page': page,
         'page_size': pageSize,
-        "commission_type": "transaction"
       };
-      // These params are currently proposed in API Gap Analysis,
-      // adding them now as placeholders or if backend implicitly supports them.
       if (type != null) params['type'] = type;
       if (level != null) params['level'] = level;
 
       final response = await get('/user/commissions', queryParameters: params);
 
       if (response['status'] == 'success') {
-        // Mocking a 'summary' field if backend doesn't provide it yet,
-        // so ViewModel can handle it or expected UI won't crash.
         return {
           'commissions': response['commissions'] ?? [],
           'pagination': response['pagination'] ?? {},
-          'summary': response['summary'] // Proposed field
         };
       } else {
         throw Exception(response['message'] ?? 'Failed to get commissions');

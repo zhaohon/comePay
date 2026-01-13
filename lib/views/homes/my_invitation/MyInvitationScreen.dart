@@ -46,9 +46,9 @@ class MyInvitationScreen extends StatelessWidget {
                         "邀請好友總人數", // AppLocalizations.of(context)!.totalFriends
                     totalValue: "${stats['total_referrals'] ?? 0}",
                     level1Label: "一級好友人數",
-                    level1Value: "${stats['level1_referrals'] ?? 0}",
+                    level1Value: "${stats['level1_count'] ?? 0}",
                     level2Label: "二級好友人數",
-                    level2Value: "${stats['level2_referrals'] ?? 0}",
+                    level2Value: "${stats['level2_count'] ?? 0}",
                     actionLabel: "我的好友",
                     onTap: () {
                       Navigator.push(
@@ -67,11 +67,14 @@ class MyInvitationScreen extends StatelessWidget {
                   _buildSummaryCard(
                     context,
                     title: "開卡總返傭",
-                    totalValue: "(${stats['total_card_rebate'] ?? 0})",
+                    totalValue:
+                        "(${((stats['level1_card_opening_commission'] ?? 0) + (stats['level2_card_opening_commission'] ?? 0)).toStringAsFixed(2)})",
                     level1Label: "一級好友開卡返傭",
-                    level1Value: "${stats['level1_card_rebate'] ?? 0}",
+                    level1Value:
+                        "${stats['level1_card_opening_commission'] ?? 0}",
                     level2Label: "二級好友開卡返傭",
-                    level2Value: "${stats['level2_card_rebate'] ?? 0}",
+                    level2Value:
+                        "${stats['level2_card_opening_commission'] ?? 0}",
                     actionLabel: "開卡返傭",
                     onTap: () {
                       Navigator.push(
@@ -89,11 +92,14 @@ class MyInvitationScreen extends StatelessWidget {
                   _buildSummaryCard(
                     context,
                     title: "消費總返傭",
-                    totalValue: "(${stats['total_spending_rebate'] ?? 0})",
+                    totalValue:
+                        "(${((stats['level1_transaction_commission'] ?? 0) + (stats['level2_transaction_commission'] ?? 0)).toStringAsFixed(2)})",
                     level1Label: "一級好友消費返傭",
-                    level1Value: "${stats['level1_spending_rebate'] ?? 0}",
+                    level1Value:
+                        "${stats['level1_transaction_commission'] ?? 0}",
                     level2Label: "二級好友消費返傭",
-                    level2Value: "${stats['level2_spending_rebate'] ?? 0}",
+                    level2Value:
+                        "${stats['level2_transaction_commission'] ?? 0}",
                     actionLabel: "消費返傭",
                     onTap: () {
                       Navigator.push(
