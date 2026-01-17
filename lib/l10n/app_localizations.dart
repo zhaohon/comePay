@@ -2063,6 +2063,288 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter referral code if you have one'**
   String get enterReferralCode;
+
+  /// No description provided for @myWalletAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'My {currency} wallet address:\n{address}'**
+  String myWalletAddress(Object address, Object currency);
+
+  /// No description provided for @walletAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet Address'**
+  String get walletAddress;
+
+  /// No description provided for @receiveNetworkWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Only support receiving {currency} network assets, other network assets cannot be recovered.'**
+  String receiveNetworkWarning(Object currency);
+
+  /// No description provided for @shareAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Address'**
+  String get shareAddress;
+
+  /// No description provided for @noReceiveAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'No Receive Address'**
+  String get noReceiveAddress;
+
+  /// No description provided for @coinNoAddressGenerated.
+  ///
+  /// In en, this message translates to:
+  /// **'No address generated for this coin'**
+  String get coinNoAddressGenerated;
+
+  /// No description provided for @receiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive'**
+  String get receiveTitle;
+
+  /// No description provided for @receiveCoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive {currency}'**
+  String receiveCoin(Object currency);
+
+  /// No description provided for @recipientAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipient Address'**
+  String get recipientAddress;
+
+  /// No description provided for @enterOrPasteAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter or paste address'**
+  String get enterOrPasteAddress;
+
+  /// No description provided for @amount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get amount;
+
+  /// No description provided for @balanceAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Available: {balance} {symbol}'**
+  String balanceAvailable(Object balance, Object symbol);
+
+  /// No description provided for @all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
+
+  /// No description provided for @withdrawFailedWithError.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw failed: {error}'**
+  String withdrawFailedWithError(Object error);
+
+  /// No description provided for @withdrawHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw History'**
+  String get withdrawHistory;
+
+  /// No description provided for @noWithdrawHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'No withdraw history'**
+  String get noWithdrawHistory;
+
+  /// No description provided for @pullToRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Pull to refresh'**
+  String get pullToRefresh;
+
+  /// No description provided for @withdrawRecordPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw Record #'**
+  String get withdrawRecordPrefix;
+
+  /// No description provided for @noData.
+  ///
+  /// In en, this message translates to:
+  /// **'No Data'**
+  String get noData;
+
+  /// No description provided for @statusApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get statusApproved;
+
+  /// No description provided for @statusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get statusPending;
+
+  /// No description provided for @statusRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get statusRejected;
+
+  /// No description provided for @typeDeposit.
+  ///
+  /// In en, this message translates to:
+  /// **'Deposit'**
+  String get typeDeposit;
+
+  /// No description provided for @typeWithdraw.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw'**
+  String get typeWithdraw;
+
+  /// No description provided for @typeSwap.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap'**
+  String get typeSwap;
+
+  /// No description provided for @typeCardFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Fee'**
+  String get typeCardFee;
+
+  /// No description provided for @typeCommission.
+  ///
+  /// In en, this message translates to:
+  /// **'Commission'**
+  String get typeCommission;
+
+  /// No description provided for @typeTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer'**
+  String get typeTransfer;
+
+  /// No description provided for @typeFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Fee'**
+  String get typeFee;
+
+  /// No description provided for @statusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get statusCompleted;
+
+  /// No description provided for @statusFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get statusFailed;
+
+  /// No description provided for @statusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get statusCancelled;
+
+  /// No description provided for @statusCredited.
+  ///
+  /// In en, this message translates to:
+  /// **'Credited'**
+  String get statusCredited;
+
+  /// No description provided for @availableAmountEstimateDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated available amount after transaction fees and exchange rate fluctuations'**
+  String get availableAmountEstimateDesc;
+
+  /// No description provided for @lockCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock Card'**
+  String get lockCard;
+
+  /// No description provided for @cardAuthorization.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Authorization'**
+  String get cardAuthorization;
+
+  /// No description provided for @applyPhysicalCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply Physical Card'**
+  String get applyPhysicalCard;
+
+  /// No description provided for @reportLoss.
+  ///
+  /// In en, this message translates to:
+  /// **'Report Loss'**
+  String get reportLoss;
+
+  /// No description provided for @bill.
+  ///
+  /// In en, this message translates to:
+  /// **'Bill'**
+  String get bill;
+
+  /// No description provided for @expiryDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiry Date: '**
+  String get expiryDateLabel;
+
+  /// No description provided for @cvvLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'CVV: '**
+  String get cvvLabel;
+
+  /// No description provided for @transactionDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction'**
+  String get transactionDefault;
+
+  /// No description provided for @billDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Bill Details'**
+  String get billDetail;
+
+  /// No description provided for @orderId.
+  ///
+  /// In en, this message translates to:
+  /// **'Order ID'**
+  String get orderId;
+
+  /// No description provided for @copySuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied to clipboard'**
+  String get copySuccess;
+
+  /// No description provided for @balanceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance'**
+  String get balanceLabel;
+
+  /// No description provided for @transactionId.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction ID'**
+  String get transactionId;
 }
 
 class _AppLocalizationsDelegate

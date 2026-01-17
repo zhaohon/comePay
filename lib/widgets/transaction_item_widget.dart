@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:comecomepay/models/unified_transaction_model.dart';
+import 'package:comecomepay/utils/transaction_utils.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 /// 交易记录Item组件 - 完全按照设计稿
@@ -64,7 +65,8 @@ class TransactionItemWidget extends StatelessWidget {
                     children: [
                       // 交易类型标签
                       Text(
-                        transaction.typeLabel,
+                        TransactionUtils.getLocalizedType(
+                            context, transaction.type),
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,

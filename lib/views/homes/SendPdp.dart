@@ -120,7 +120,8 @@ class _SendPdpState extends State<SendPdp> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('提现失败: ${e.toString()}'),
+          content: Text(AppLocalizations.of(context)!
+              .withdrawFailedWithError(e.toString())),
           backgroundColor: AppColors.error,
         ),
       );
@@ -159,9 +160,9 @@ class _SendPdpState extends State<SendPdp> {
           icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          'Send',
-          style: TextStyle(
+        title: Text(
+          AppLocalizations.of(context)!.send,
+          style: const TextStyle(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.bold,
           ),
@@ -260,9 +261,9 @@ class _SendPdpState extends State<SendPdp> {
             const SizedBox(height: 24),
 
             // To Address section
-            const Text(
-              '接收地址',
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(context)!.recipientAddress,
+              style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
@@ -277,7 +278,7 @@ class _SendPdpState extends State<SendPdp> {
                 color: AppColors.textPrimary,
               ),
               decoration: InputDecoration(
-                hintText: '请输入或粘贴地址',
+                hintText: AppLocalizations.of(context)!.enterOrPasteAddress,
                 hintStyle: const TextStyle(
                   fontSize: 14,
                   color: AppColors.textPlaceholder,
@@ -331,16 +332,17 @@ class _SendPdpState extends State<SendPdp> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  '数量',
-                  style: TextStyle(
+                Text(
+                  AppLocalizations.of(context)!.amount,
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textPrimary,
                   ),
                 ),
                 Text(
-                  '可用: ${balance!.balance} ${balance!.symbol}',
+                  AppLocalizations.of(context)!.balanceAvailable(
+                      balance!.balance.toString(), balance!.symbol),
                   style: const TextStyle(
                     fontSize: 12,
                     color: AppColors.textSecondary,
@@ -419,9 +421,9 @@ class _SendPdpState extends State<SendPdp> {
                             color: _isLoading ? Colors.grey : null,
                             borderRadius: BorderRadius.circular(6),
                           ),
-                          child: const Text(
-                            '全部',
-                            style: TextStyle(
+                          child: Text(
+                            AppLocalizations.of(context)!.all,
+                            style: const TextStyle(
                               fontSize: 12,
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -473,9 +475,9 @@ class _SendPdpState extends State<SendPdp> {
                             strokeWidth: 2,
                           ),
                         )
-                      : const Text(
-                          '确认',
-                          style: TextStyle(
+                      : Text(
+                          AppLocalizations.of(context)!.confirm,
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,

@@ -992,4 +992,155 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get enterReferralCode => '如有邀请码，请输入';
+
+  @override
+  String myWalletAddress(Object address, Object currency) {
+    return '我的$currency钱包地址：\n$address';
+  }
+
+  @override
+  String get walletAddress => '钱包地址';
+
+  @override
+  String receiveNetworkWarning(Object currency) {
+    return '仅支持接收 $currency 网络资产，其他网络资产将无法找回。';
+  }
+
+  @override
+  String get shareAddress => '分享地址';
+
+  @override
+  String get noReceiveAddress => '暂无收款地址';
+
+  @override
+  String get coinNoAddressGenerated => '该币种暂未生成收款地址';
+
+  @override
+  String get receiveTitle => '收款';
+
+  @override
+  String receiveCoin(Object currency) {
+    return '接收 $currency';
+  }
+
+  @override
+  String get recipientAddress => '接收地址';
+
+  @override
+  String get enterOrPasteAddress => '请输入或粘贴地址';
+
+  @override
+  String get amount => '数量';
+
+  @override
+  String balanceAvailable(Object balance, Object symbol) {
+    return '可用: $balance $symbol';
+  }
+
+  @override
+  String get all => '全部';
+
+  @override
+  String withdrawFailedWithError(Object error) {
+    return '提现失败: $error';
+  }
+
+  @override
+  String get withdrawHistory => '提现记录';
+
+  @override
+  String get noWithdrawHistory => '暂无提现记录';
+
+  @override
+  String get pullToRefresh => '下拉刷新试试';
+
+  @override
+  String get withdrawRecordPrefix => '提现记录 #';
+
+  @override
+  String get noData => '暂无数据';
+
+  @override
+  String get statusApproved => '已通过';
+
+  @override
+  String get statusPending => '待审核';
+
+  @override
+  String get statusRejected => '已拒绝';
+
+  @override
+  String get typeDeposit => '充值';
+
+  @override
+  String get typeWithdraw => '提现';
+
+  @override
+  String get typeSwap => '兑换';
+
+  @override
+  String get typeCardFee => '开卡费';
+
+  @override
+  String get typeCommission => '佣金';
+
+  @override
+  String get typeTransfer => '转账';
+
+  @override
+  String get typeFee => '手续费';
+
+  @override
+  String get statusCompleted => '已完成';
+
+  @override
+  String get statusFailed => '失败';
+
+  @override
+  String get statusCancelled => '已取消';
+
+  @override
+  String get statusCredited => '已入账';
+
+  @override
+  String get availableAmountEstimateDesc => '除交易手续费及汇率波动后预估可用金额';
+
+  @override
+  String get lockCard => '锁卡';
+
+  @override
+  String get cardAuthorization => '卡片授权';
+
+  @override
+  String get applyPhysicalCard => '申领实体卡';
+
+  @override
+  String get reportLoss => '挂失';
+
+  @override
+  String get bill => '账单';
+
+  @override
+  String get expiryDateLabel => '到期日: ';
+
+  @override
+  String get cvvLabel => 'CVV: ';
+
+  @override
+  String get transactionDefault => '交易';
+
+  @override
+  String get billDetail => '账单详情';
+
+  @override
+  String get orderId => '订单号';
+
+  @override
+  String get copySuccess => '已复制';
+
+  @override
+  String get balanceLabel => '余额';
+
+  @override
+  String get transactionId => '交易编号';
 }

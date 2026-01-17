@@ -1,18 +1,12 @@
-import 'package:comecomepay/models/carddetail_response_model.dart';
-import 'package:comecomepay/services/hive_storage_service.dart'
-    show HiveStorageService;
-import 'package:comecomepay/views/homes/AuthorizationRecordScreen.dart'
-    show AuthorizationRecordScreen;
 import 'package:comecomepay/views/homes/CardApplyConfirmScreen.dart'
     show CardApplyConfirmScreen;
 import 'package:comecomepay/views/homes/CardTransactionDetailScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import '../../l10n/app_localizations.dart';
 import '../../viewmodels/locale_provider.dart';
 import 'package:comecomepay/viewmodels/profile_screen_viewmodel.dart';
-import 'package:comecomepay/services/kyc_service.dart';
-import 'package:comecomepay/models/kyc_model.dart';
 import 'package:comecomepay/viewmodels/card_trade_viewmodel.dart';
 import 'package:comecomepay/viewmodels/card_viewmodel.dart';
 import 'package:comecomepay/utils/app_colors.dart';
@@ -105,7 +99,7 @@ class _CardScreenState extends State<CardScreen> {
     });
   }
 
-  /// 检查并刷新卡片列表（如果缓存已更新）
+  /// Check and refresh card list (if cache updated)
   void _checkAndRefreshCardList() {
     final cachedList = CardViewModel.cachedCardList;
     if (cachedList != null && _cardList != null) {
@@ -147,6 +141,17 @@ class _CardScreenState extends State<CardScreen> {
       if (_hasMoreTransactions && !_isLoadingTransactions) {
         await _loadTransactions(isLoadMore: true);
       }
+    }
+  }
+
+  /// 格式化日期 (yyyy-MM-dd)
+  String _formatExpiryDate(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) return '***';
+    try {
+      final date = DateTime.parse(dateStr);
+      return DateFormat('yyyy-MM-dd').format(date);
+    } catch (e) {
+      return dateStr;
     }
   }
 
@@ -385,7 +390,8 @@ class _CardScreenState extends State<CardScreen> {
                             Row(
                               children: [
                                 Text(
-                                  '可用額度估值',
+                                  AppLocalizations.of(context)!
+                                      .availableCreditEstimate,
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: AppColors.textSecondary,
@@ -499,11 +505,16 @@ class _CardScreenState extends State<CardScreen> {
                   physics: const NeverScrollableScrollPhysics(),
                   childAspectRatio: 1.2,
                   children: [
-                    _buildActionCard(Icons.info_outline, '卡信息'),
-                    _buildActionCard(Icons.lock_outline, '鎖卡'),
-                    _buildActionCard(Icons.touch_app_outlined, '卡片授權'),
-                    _buildActionCard(Icons.credit_card_outlined, '申領實體卡'),
-                    _buildActionCard(Icons.link_off_outlined, '掛失'),
+                    _buildActionCard(Icons.info_outline,
+                        AppLocalizations.of(context)!.cardInformation),
+                    _buildActionCard(Icons.lock_outline,
+                        AppLocalizations.of(context)!.lockCard),
+                    _buildActionCard(Icons.touch_app_outlined,
+                        AppLocalizations.of(context)!.cardAuthorization),
+                    _buildActionCard(Icons.credit_card_outlined,
+                        AppLocalizations.of(context)!.applyPhysicalCard),
+                    _buildActionCard(Icons.link_off_outlined,
+                        AppLocalizations.of(context)!.reportLoss),
                   ],
                 ),
               ),
@@ -518,7 +529,7 @@ class _CardScreenState extends State<CardScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '賬單',
+                          AppLocalizations.of(context)!.bill,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
@@ -557,7 +568,7 @@ class _CardScreenState extends State<CardScreen> {
                                 size: 48, color: AppColors.textSecondary),
                             const SizedBox(height: 8),
                             Text(
-                              '暫無交易記錄',
+                              AppLocalizations.of(context)!.noTransactionsYet,
                               style: TextStyle(
                                 color: AppColors.textSecondary,
                                 fontSize: 14,
@@ -619,34 +630,34 @@ class _CardScreenState extends State<CardScreen> {
       child: Stack(
         children: [
           // 卡片右上角：费率信息
-          Positioned(
-            right: 16,
-            top: 16,
-            child: Row(
-              children: [
-                Text(
-                  '費率',
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.9),
-                    fontSize: 12,
-                  ),
-                ),
-                const SizedBox(width: 4),
-                Icon(
-                  Icons.help_outline,
-                  size: 14,
-                  color: Colors.white.withOpacity(0.9),
-                ),
-              ],
-            ),
-          ),
+          // Positioned(
+          //   right: 16,
+          //   top: 16,
+          //   child: Row(
+          //     children: [
+          //       Text(
+          //         '費率',
+          //         style: TextStyle(
+          //           color: Colors.white.withOpacity(0.9),
+          //           fontSize: 12,
+          //         ),
+          //       ),
+          //       const SizedBox(width: 4),
+          //       Icon(
+          //         Icons.help_outline,
+          //         size: 14,
+          //         color: Colors.white.withOpacity(0.9),
+          //       ),
+          //     ],
+          //   ),
+          // ),
 
           // 卡片左上角：P logo（已移除）
 
           // 卡片中间：卡号（可点击查看）
           Positioned(
             left: 16,
-            top: 80,
+            top: 100,
             child: GestureDetector(
               onTap: isCurrentCard ? () => _showCardSecurityInfo() : null,
               child: Row(
@@ -676,9 +687,9 @@ class _CardScreenState extends State<CardScreen> {
           // 卡片左下角：持卡人姓名
           Positioned(
             left: 16,
-            bottom: 50,
+            bottom: 45,
             child: Text(
-              'CARDHOLDER NAME', // TODO: 从详情中获取
+              _currentCardDetails?.memberName ?? 'CARDHOLDER NAME',
               style: TextStyle(
                 color: Colors.white.withOpacity(0.9),
                 fontSize: 14,
@@ -695,7 +706,7 @@ class _CardScreenState extends State<CardScreen> {
                 GestureDetector(
                   onTap: isCurrentCard ? () => _showCardSecurityInfo() : null,
                   child: Text(
-                    'CVV: ***',
+                    '${AppLocalizations.of(context)!.cvvLabel}***',
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.9),
                       fontSize: 12,
@@ -704,7 +715,7 @@ class _CardScreenState extends State<CardScreen> {
                 ),
                 const SizedBox(width: 16),
                 Text(
-                  '到期日: ${cardDetails?.expiryDate ?? '***'}',
+                  '${AppLocalizations.of(context)!.expiryDateLabel}${_formatExpiryDate(cardDetails?.expiryDate)}',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.9),
                     fontSize: 12,
@@ -724,8 +735,9 @@ class _CardScreenState extends State<CardScreen> {
   Widget _buildTransactionItem(Map<String, dynamic> transaction) {
     final amount = transaction['amount'] ?? 0.0;
     final isPositive = amount > 0;
-    final description =
-        transaction['description'] ?? transaction['merchant'] ?? '交易';
+    final description = transaction['description'] ??
+        transaction['merchant'] ??
+        AppLocalizations.of(context)!.transactionDefault;
     final date = transaction['date'] ?? transaction['created_at'] ?? '';
     final status = transaction['status'] ?? '';
 
@@ -781,15 +793,15 @@ class _CardScreenState extends State<CardScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        title: const Text('可用額度估值'),
-        content: const Text(
-          '除交易手續費及匯率波動後預估可用金額',
+        title: Text(AppLocalizations.of(context)!.availableCreditEstimate),
+        content: Text(
+          AppLocalizations.of(context)!.availableAmountEstimateDesc,
           style: TextStyle(fontSize: 14),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('確定'),
+            child: Text(AppLocalizations.of(context)!.confirm),
           ),
         ],
       ),

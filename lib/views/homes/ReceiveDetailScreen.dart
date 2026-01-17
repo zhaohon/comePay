@@ -4,6 +4,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:comecomepay/utils/app_colors.dart';
 import 'package:comecomepay/models/wallet_model.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 class ReceiveDetailScreen extends StatefulWidget {
   const ReceiveDetailScreen({super.key});
@@ -31,10 +32,10 @@ class _ReceiveDetailScreenState extends State<ReceiveDetailScreen> {
     if (balance?.address != null && balance!.address.isNotEmpty) {
       Clipboard.setData(ClipboardData(text: balance!.address));
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('地址已复制'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.addressCopied),
           backgroundColor: AppColors.success,
-          duration: Duration(seconds: 2),
+          duration: const Duration(seconds: 2),
         ),
       );
     }
@@ -43,8 +44,9 @@ class _ReceiveDetailScreenState extends State<ReceiveDetailScreen> {
   void _shareAddress() async {
     if (balance?.address != null && balance!.address.isNotEmpty) {
       await Share.share(
-        '我的${balance!.currency}钱包地址：\n${balance!.address}',
-        subject: '钱包地址',
+        AppLocalizations.of(context)!
+            .myWalletAddress(balance!.currency, balance!.address),
+        subject: AppLocalizations.of(context)!.walletAddress,
       );
     }
   }
@@ -79,9 +81,9 @@ class _ReceiveDetailScreenState extends State<ReceiveDetailScreen> {
           icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          '收款',
-          style: TextStyle(
+        title: Text(
+          AppLocalizations.of(context)!.receiveTitle,
+          style: const TextStyle(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.bold,
           ),
@@ -125,7 +127,7 @@ class _ReceiveDetailScreenState extends State<ReceiveDetailScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              '接收 ${balance!.currency}',
+              AppLocalizations.of(context)!.receiveCoin(balance!.currency),
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -224,9 +226,9 @@ class _ReceiveDetailScreenState extends State<ReceiveDetailScreen> {
                   children: [
                     Row(
                       children: [
-                        const Text(
-                          '钱包地址',
-                          style: TextStyle(
+                        Text(
+                          AppLocalizations.of(context)!.walletAddress,
+                          style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                             color: AppColors.textSecondary,
@@ -280,7 +282,8 @@ class _ReceiveDetailScreenState extends State<ReceiveDetailScreen> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        '仅支持接收 ${balance!.currency} 网络资产，其他网络资产将无法找回。',
+                        AppLocalizations.of(context)!
+                            .receiveNetworkWarning(balance!.currency),
                         style: const TextStyle(
                           fontSize: 13,
                           color: AppColors.textSecondary,
@@ -319,9 +322,9 @@ class _ReceiveDetailScreenState extends State<ReceiveDetailScreen> {
                     ),
                     onPressed: _shareAddress,
                     icon: const Icon(Icons.share, color: Colors.white),
-                    label: const Text(
-                      '分享地址',
-                      style: TextStyle(
+                    label: Text(
+                      AppLocalizations.of(context)!.shareAddress,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -348,8 +351,8 @@ class _ReceiveDetailScreenState extends State<ReceiveDetailScreen> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      '暂无收款地址',
-                      style: TextStyle(
+                      AppLocalizations.of(context)!.noReceiveAddress,
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         color: AppColors.textPrimary,
@@ -357,8 +360,8 @@ class _ReceiveDetailScreenState extends State<ReceiveDetailScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      '该币种暂未生成收款地址',
-                      style: TextStyle(
+                      AppLocalizations.of(context)!.coinNoAddressGenerated,
+                      style: const TextStyle(
                         fontSize: 14,
                         color: AppColors.textSecondary,
                       ),

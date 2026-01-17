@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/models/unified_transaction_model.dart';
+import 'package:comecomepay/utils/transaction_utils.dart';
 import 'package:intl/intl.dart';
 
 /// 交易详情页面
@@ -46,8 +47,10 @@ class TransactionDetailScreen extends StatelessWidget {
 
             const SizedBox(height: 40),
 
+            const SizedBox(height: 40),
+
             // 交易信息列表
-            _buildInfoSection(localizations),
+            _buildInfoSection(context, localizations),
           ],
         ),
       ),
@@ -89,7 +92,8 @@ class TransactionDetailScreen extends StatelessWidget {
   }
 
   /// 交易信息区域
-  Widget _buildInfoSection(AppLocalizations localizations) {
+  Widget _buildInfoSection(
+      BuildContext context, AppLocalizations localizations) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
@@ -107,7 +111,8 @@ class TransactionDetailScreen extends StatelessWidget {
         children: [
           _buildInfoRow(localizations.spentCurrency, transaction.currency),
           _buildDivider(),
-          _buildInfoRow(localizations.transactionType, transaction.typeLabel),
+          _buildInfoRow(localizations.transactionType,
+              TransactionUtils.getLocalizedType(context, transaction.type)),
           _buildDivider(),
           _buildInfoRow(localizations.transactionTime,
               _formatDateTime(transaction.createdAt)),
@@ -172,7 +177,8 @@ class TransactionDetailScreen extends StatelessWidget {
 
           // 状态
           _buildDivider(),
-          _buildInfoRow(localizations.status, transaction.statusLabel,
+          _buildInfoRow(localizations.status,
+              TransactionUtils.getLocalizedStatus(context, transaction.status),
               valueColor: _getStatusColor(transaction.status)),
         ],
       ),

@@ -16,3 +16,8 @@ For help getting started with Flutter development, view the
 samples, guidance on mobile development, and a full API reference.
 
 flutter build apk --split-per-abi
+
+TJYxFjQpEyaeFSsgwMUEPF2dZsWCZC2GBJ
+trc
+0x3957bd2316a24fa15d24d4c5be98655759d7e6ea
+erc

@@ -1025,4 +1025,156 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enterReferralCode => 'Enter referral code if you have one';
+
+  @override
+  String myWalletAddress(Object address, Object currency) {
+    return 'My $currency wallet address:\n$address';
+  }
+
+  @override
+  String get walletAddress => 'Wallet Address';
+
+  @override
+  String receiveNetworkWarning(Object currency) {
+    return 'Only support receiving $currency network assets, other network assets cannot be recovered.';
+  }
+
+  @override
+  String get shareAddress => 'Share Address';
+
+  @override
+  String get noReceiveAddress => 'No Receive Address';
+
+  @override
+  String get coinNoAddressGenerated => 'No address generated for this coin';
+
+  @override
+  String get receiveTitle => 'Receive';
+
+  @override
+  String receiveCoin(Object currency) {
+    return 'Receive $currency';
+  }
+
+  @override
+  String get recipientAddress => 'Recipient Address';
+
+  @override
+  String get enterOrPasteAddress => 'Enter or paste address';
+
+  @override
+  String get amount => 'Amount';
+
+  @override
+  String balanceAvailable(Object balance, Object symbol) {
+    return 'Available: $balance $symbol';
+  }
+
+  @override
+  String get all => 'All';
+
+  @override
+  String withdrawFailedWithError(Object error) {
+    return 'Withdraw failed: $error';
+  }
+
+  @override
+  String get withdrawHistory => 'Withdraw History';
+
+  @override
+  String get noWithdrawHistory => 'No withdraw history';
+
+  @override
+  String get pullToRefresh => 'Pull to refresh';
+
+  @override
+  String get withdrawRecordPrefix => 'Withdraw Record #';
+
+  @override
+  String get noData => 'No Data';
+
+  @override
+  String get statusApproved => 'Approved';
+
+  @override
+  String get statusPending => 'Pending';
+
+  @override
+  String get statusRejected => 'Rejected';
+
+  @override
+  String get typeDeposit => 'Deposit';
+
+  @override
+  String get typeWithdraw => 'Withdraw';
+
+  @override
+  String get typeSwap => 'Swap';
+
+  @override
+  String get typeCardFee => 'Card Fee';
+
+  @override
+  String get typeCommission => 'Commission';
+
+  @override
+  String get typeTransfer => 'Transfer';
+
+  @override
+  String get typeFee => 'Fee';
+
+  @override
+  String get statusCompleted => 'Completed';
+
+  @override
+  String get statusFailed => 'Failed';
+
+  @override
+  String get statusCancelled => 'Cancelled';
+
+  @override
+  String get statusCredited => 'Credited';
+
+  @override
+  String get availableAmountEstimateDesc =>
+      'Estimated available amount after transaction fees and exchange rate fluctuations';
+
+  @override
+  String get lockCard => 'Lock Card';
+
+  @override
+  String get cardAuthorization => 'Card Authorization';
+
+  @override
+  String get applyPhysicalCard => 'Apply Physical Card';
+
+  @override
+  String get reportLoss => 'Report Loss';
+
+  @override
+  String get bill => 'Bill';
+
+  @override
+  String get expiryDateLabel => 'Expiry Date: ';
+
+  @override
+  String get cvvLabel => 'CVV: ';
+
+  @override
+  String get transactionDefault => 'Transaction';
+
+  @override
+  String get billDetail => 'Bill Details';
+
+  @override
+  String get orderId => 'Order ID';
+
+  @override
+  String get copySuccess => 'Copied to clipboard';
+
+  @override
+  String get balanceLabel => 'Balance';
+
+  @override
+  String get transactionId => 'Transaction ID';
 }

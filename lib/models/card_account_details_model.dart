@@ -23,6 +23,7 @@ class CardAccountDetailsModel {
   final double transactionFee; // 消费手续费率 (%)
   final double crossBorderFee; // 跨境手续费率 (%)
   final double upgradeAmount; // 升级实体卡费用
+  final String memberName; // 持卡人姓名
 
   CardAccountDetailsModel({
     required this.id,
@@ -47,11 +48,12 @@ class CardAccountDetailsModel {
     required this.transactionFee,
     required this.crossBorderFee,
     required this.upgradeAmount,
+    required this.memberName,
   });
 
   factory CardAccountDetailsModel.fromJson(Map<String, dynamic> json) {
     final data = json['data'] as Map<String, dynamic>? ?? json;
-    
+
     return CardAccountDetailsModel(
       id: data['id'] as int? ?? 0,
       publicToken: data['public_token'] as String? ?? '',
@@ -75,7 +77,7 @@ class CardAccountDetailsModel {
       transactionFee: (data['transaction_fee'] as num?)?.toDouble() ?? 0.0,
       crossBorderFee: (data['cross_border_fee'] as num?)?.toDouble() ?? 0.0,
       upgradeAmount: (data['upgrade_amount'] as num?)?.toDouble() ?? 0.0,
+      memberName: data['member_name'] as String? ?? '',
     );
   }
 }
-

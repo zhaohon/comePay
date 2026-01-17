@@ -154,9 +154,9 @@ class _WithdrawHistoryPageState extends State<WithdrawHistoryPage> {
           icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          '提现记录',
-          style: TextStyle(
+        title: Text(
+          AppLocalizations.of(context)!.withdrawHistory,
+          style: const TextStyle(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.bold,
           ),
@@ -250,16 +250,16 @@ class _WithdrawHistoryPageState extends State<WithdrawHistoryPage> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    '暂无提现记录',
-                    style: TextStyle(
+                    AppLocalizations.of(context)!.noWithdrawHistory,
+                    style: const TextStyle(
                       fontSize: 16,
                       color: AppColors.textSecondary,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    '下拉刷新试试',
-                    style: TextStyle(
+                    AppLocalizations.of(context)!.pullToRefresh,
+                    style: const TextStyle(
                       fontSize: 12,
                       color: AppColors.textPlaceholder,
                     ),
@@ -288,8 +288,8 @@ class _WithdrawHistoryPageState extends State<WithdrawHistoryPage> {
                   CircularProgressIndicator(),
                   const SizedBox(height: 8),
                   Text(
-                    '加载中...',
-                    style: TextStyle(
+                    AppLocalizations.of(context)!.loading,
+                    style: const TextStyle(
                       fontSize: 12,
                       color: AppColors.textSecondary,
                     ),
@@ -328,7 +328,7 @@ class _WithdrawHistoryPageState extends State<WithdrawHistoryPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '提现记录 #${index + 1}',
+                '${AppLocalizations.of(context)!.withdrawRecordPrefix} ${index + 1}',
                 style: const TextStyle(
                   fontSize: 14,
                   color: AppColors.textSecondary,
@@ -340,9 +340,9 @@ class _WithdrawHistoryPageState extends State<WithdrawHistoryPage> {
                   color: AppColors.textPlaceholder.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(4),
                 ),
-                child: const Text(
-                  '暂无数据',
-                  style: TextStyle(
+                child: Text(
+                  AppLocalizations.of(context)!.noData,
+                  style: const TextStyle(
                     fontSize: 12,
                     color: AppColors.textSecondary,
                   ),
@@ -369,16 +369,16 @@ class _WithdrawHistoryPageState extends State<WithdrawHistoryPage> {
       case 'approved':
       case 'completed':
         statusColor = AppColors.success;
-        statusText = '已通过';
+        statusText = AppLocalizations.of(context)!.statusApproved;
         break;
       case 'pending':
         statusColor = Colors.orange;
-        statusText = '待审核';
+        statusText = AppLocalizations.of(context)!.statusPending;
         break;
       case 'rejected':
       case 'failed':
         statusColor = AppColors.error;
-        statusText = '已拒绝';
+        statusText = AppLocalizations.of(context)!.statusRejected;
         break;
       default:
         statusColor = AppColors.textSecondary;
@@ -435,9 +435,9 @@ class _WithdrawHistoryPageState extends State<WithdrawHistoryPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                '金额',
-                style: TextStyle(
+              Text(
+                AppLocalizations.of(context)!.amount,
+                style: const TextStyle(
                   fontSize: 14,
                   color: AppColors.textSecondary,
                 ),
@@ -456,9 +456,9 @@ class _WithdrawHistoryPageState extends State<WithdrawHistoryPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                '地址',
-                style: TextStyle(
+              Text(
+                AppLocalizations.of(context)!.address,
+                style: const TextStyle(
                   fontSize: 14,
                   color: AppColors.textSecondary,
                 ),
