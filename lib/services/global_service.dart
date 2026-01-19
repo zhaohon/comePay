@@ -1743,7 +1743,7 @@ class GlobalService extends BaseService {
       }
 
       final response = await dio.get(
-        '/notifications',
+        '/notifications/',
         queryParameters: {
           'limit': limit,
           'offset': offset,

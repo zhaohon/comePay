@@ -1143,4 +1143,112 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get transactionId => '交易编号';
+
+  @override
+  String get myInvitation => '我的邀请';
+
+  @override
+  String get totalFriends => '邀请好友总人数';
+
+  @override
+  String get level1Friends => '一级好友人数';
+
+  @override
+  String get level2Friends => '二级好友人数';
+
+  @override
+  String get myFriends => '我的好友';
+
+  @override
+  String get totalCardRebate => '开卡总返佣';
+
+  @override
+  String get level1CardRebate => '一级好友开卡返佣';
+
+  @override
+  String get level2CardRebate => '二级好友开卡返佣';
+
+  @override
+  String get cardRebateAction => '开卡返佣';
+
+  @override
+  String get totalTransactionRebate => '消费总返佣';
+
+  @override
+  String get level1TransactionRebate => '一级好友消费返佣';
+
+  @override
+  String get level2TransactionRebate => '二级好友消费返佣';
+
+  @override
+  String get transactionRebateAction => '消费返佣';
+
+  @override
+  String get level1FriendsTab => '一级好友';
+
+  @override
+  String get level2FriendsTab => '二级好友';
+
+  @override
+  String get registrationTimeLabel => '注册时间: ';
+
+  @override
+  String get level1CardTab => '一级开卡';
+
+  @override
+  String get level2CardTab => '二级开卡';
+
+  @override
+  String get level1TransactionTab => '一级消费';
+
+  @override
+  String get level2TransactionTab => '二级消费';
+
+  @override
+  String get payFee => '支付费用';
+
+  @override
+  String get transactionSettlementAmount => '消费结算金额';
+
+  @override
+  String get rebate => '返佣';
+
+  @override
+  String get consumptionRebate => '消费返佣';
+
+  @override
+  String get cardOpening => '开卡';
+
+  @override
+  String get consumption => '消费';
+
+  @override
+  String get cardOpeningTimeLabel => '开卡时间:';
+
+  @override
+  String get transactionSettlementTimeLabel => '消费结算时间:';
+
+  @override
+  String get paymentCompletedKycPrompt => '您已完成开卡费支付，现在可以进行KYC身份验证了。';
+
+  @override
+  String get goToVerify => '前往验证';
+
+  @override
+  String get couponDiscount => '优惠券折扣';
+
+  @override
+  String get failToLoadCardFeeConfig => '加载开卡费配置失败';
+
+  @override
+  String get failToLoadPaymentCurrencies => '加载支付币种失败';
+
+  @override
+  String get noPaymentCurrenciesAvailable => '无可用支付币种';
+
+  @override
+  String get pleaseSelectPaymentCurrency => '请选择支付币种';
+
+  @override
+  String get failToCreatePayment => '创建支付失败';
 }

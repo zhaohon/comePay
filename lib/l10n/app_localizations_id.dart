@@ -1178,4 +1178,113 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get transactionId => 'Transaction ID';
+
+  @override
+  String get myInvitation => 'My Invitation';
+
+  @override
+  String get totalFriends => 'Total Friends';
+
+  @override
+  String get level1Friends => 'Level 1 Friends';
+
+  @override
+  String get level2Friends => 'Level 2 Friends';
+
+  @override
+  String get myFriends => 'My Friends';
+
+  @override
+  String get totalCardRebate => 'Total Card Rebate';
+
+  @override
+  String get level1CardRebate => 'Level 1 Card Rebate';
+
+  @override
+  String get level2CardRebate => 'Level 2 Card Rebate';
+
+  @override
+  String get cardRebateAction => 'Card Rebate';
+
+  @override
+  String get totalTransactionRebate => 'Total Transaction Rebate';
+
+  @override
+  String get level1TransactionRebate => 'Level 1 Transaction Rebate';
+
+  @override
+  String get level2TransactionRebate => 'Level 2 Transaction Rebate';
+
+  @override
+  String get transactionRebateAction => 'Transaction Rebate';
+
+  @override
+  String get level1FriendsTab => 'Level 1 Friends';
+
+  @override
+  String get level2FriendsTab => 'Level 2 Friends';
+
+  @override
+  String get registrationTimeLabel => 'Registration Time: ';
+
+  @override
+  String get level1CardTab => 'Level 1 Card';
+
+  @override
+  String get level2CardTab => 'Level 2 Card';
+
+  @override
+  String get level1TransactionTab => 'Level 1 Transaction';
+
+  @override
+  String get level2TransactionTab => 'Level 2 Transaction';
+
+  @override
+  String get payFee => 'Pay Fee';
+
+  @override
+  String get transactionSettlementAmount => 'Settlement Amount';
+
+  @override
+  String get rebate => 'Rebate';
+
+  @override
+  String get consumptionRebate => 'Consumption Rebate';
+
+  @override
+  String get cardOpening => 'Card Opening';
+
+  @override
+  String get consumption => 'Consumption';
+
+  @override
+  String get cardOpeningTimeLabel => 'Open Time:';
+
+  @override
+  String get transactionSettlementTimeLabel => 'Settlement Time:';
+
+  @override
+  String get paymentCompletedKycPrompt =>
+      'You have completed the card fee payment. You can now proceed with KYC verification.';
+
+  @override
+  String get goToVerify => 'Go to Verify';
+
+  @override
+  String get couponDiscount => 'Coupon Discount';
+
+  @override
+  String get failToLoadCardFeeConfig => 'Failed to load card fee config';
+
+  @override
+  String get failToLoadPaymentCurrencies => 'Failed to load payment currencies';
+
+  @override
+  String get noPaymentCurrenciesAvailable => 'No payment currencies available';
+
+  @override
+  String get pleaseSelectPaymentCurrency => 'Please select a payment currency';
+
+  @override
+  String get failToCreatePayment => 'Failed to create payment';
 }

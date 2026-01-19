@@ -2345,6 +2345,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Transaction ID'**
   String get transactionId;
+
+  /// No description provided for @myInvitation.
+  ///
+  /// In en, this message translates to:
+  /// **'My Invitation'**
+  String get myInvitation;
+
+  /// No description provided for @totalFriends.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Friends'**
+  String get totalFriends;
+
+  /// No description provided for @level1Friends.
+  ///
+  /// In en, this message translates to:
+  /// **'Level 1 Friends'**
+  String get level1Friends;
+
+  /// No description provided for @level2Friends.
+  ///
+  /// In en, this message translates to:
+  /// **'Level 2 Friends'**
+  String get level2Friends;
+
+  /// No description provided for @myFriends.
+  ///
+  /// In en, this message translates to:
+  /// **'My Friends'**
+  String get myFriends;
+
+  /// No description provided for @totalCardRebate.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Card Rebate'**
+  String get totalCardRebate;
+
+  /// No description provided for @level1CardRebate.
+  ///
+  /// In en, this message translates to:
+  /// **'Level 1 Card Rebate'**
+  String get level1CardRebate;
+
+  /// No description provided for @level2CardRebate.
+  ///
+  /// In en, this message translates to:
+  /// **'Level 2 Card Rebate'**
+  String get level2CardRebate;
+
+  /// No description provided for @cardRebateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Rebate'**
+  String get cardRebateAction;
+
+  /// No description provided for @totalTransactionRebate.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Transaction Rebate'**
+  String get totalTransactionRebate;
+
+  /// No description provided for @level1TransactionRebate.
+  ///
+  /// In en, this message translates to:
+  /// **'Level 1 Transaction Rebate'**
+  String get level1TransactionRebate;
+
+  /// No description provided for @level2TransactionRebate.
+  ///
+  /// In en, this message translates to:
+  /// **'Level 2 Transaction Rebate'**
+  String get level2TransactionRebate;
+
+  /// No description provided for @transactionRebateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Rebate'**
+  String get transactionRebateAction;
+
+  /// No description provided for @level1FriendsTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Level 1 Friends'**
+  String get level1FriendsTab;
+
+  /// No description provided for @level2FriendsTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Level 2 Friends'**
+  String get level2FriendsTab;
+
+  /// No description provided for @registrationTimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration Time: '**
+  String get registrationTimeLabel;
+
+  /// No description provided for @level1CardTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Level 1 Card'**
+  String get level1CardTab;
+
+  /// No description provided for @level2CardTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Level 2 Card'**
+  String get level2CardTab;
+
+  /// No description provided for @level1TransactionTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Level 1 Transaction'**
+  String get level1TransactionTab;
+
+  /// No description provided for @level2TransactionTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Level 2 Transaction'**
+  String get level2TransactionTab;
+
+  /// No description provided for @payFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay Fee'**
+  String get payFee;
+
+  /// No description provided for @transactionSettlementAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Settlement Amount'**
+  String get transactionSettlementAmount;
+
+  /// No description provided for @rebate.
+  ///
+  /// In en, this message translates to:
+  /// **'Rebate'**
+  String get rebate;
+
+  /// No description provided for @consumptionRebate.
+  ///
+  /// In en, this message translates to:
+  /// **'Consumption Rebate'**
+  String get consumptionRebate;
+
+  /// No description provided for @cardOpening.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Opening'**
+  String get cardOpening;
+
+  /// No description provided for @consumption.
+  ///
+  /// In en, this message translates to:
+  /// **'Consumption'**
+  String get consumption;
+
+  /// No description provided for @cardOpeningTimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Time:'**
+  String get cardOpeningTimeLabel;
+
+  /// No description provided for @transactionSettlementTimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Settlement Time:'**
+  String get transactionSettlementTimeLabel;
+
+  /// No description provided for @paymentCompletedKycPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'You have completed the card fee payment. You can now proceed with KYC verification.'**
+  String get paymentCompletedKycPrompt;
+
+  /// No description provided for @goToVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Verify'**
+  String get goToVerify;
+
+  /// No description provided for @couponDiscount.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon Discount'**
+  String get couponDiscount;
+
+  /// No description provided for @failToLoadCardFeeConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load card fee config'**
+  String get failToLoadCardFeeConfig;
+
+  /// No description provided for @failToLoadPaymentCurrencies.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load payment currencies'**
+  String get failToLoadPaymentCurrencies;
+
+  /// No description provided for @noPaymentCurrenciesAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No payment currencies available'**
+  String get noPaymentCurrenciesAvailable;
+
+  /// No description provided for @pleaseSelectPaymentCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a payment currency'**
+  String get pleaseSelectPaymentCurrency;
+
+  /// No description provided for @failToCreatePayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create payment'**
+  String get failToCreatePayment;
 }
 
 class _AppLocalizationsDelegate

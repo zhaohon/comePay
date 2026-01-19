@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../viewmodels/my_invitation_viewmodel.dart';
 import 'MyFriendsScreen.dart';
 import 'RebateHistoryScreen.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 class MyInvitationScreen extends StatelessWidget {
   const MyInvitationScreen({Key? key}) : super(key: key);
@@ -20,9 +21,9 @@ class MyInvitationScreen extends StatelessWidget {
             icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
             onPressed: () => Navigator.pop(context),
           ),
-          title: const Text(
-            "我的邀請",
-            style: TextStyle(
+          title: Text(
+            AppLocalizations.of(context)!.myInvitation,
+            style: const TextStyle(
                 color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
           ),
           centerTitle: true,
@@ -33,30 +34,27 @@ class MyInvitationScreen extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
             final stats = viewModel.stats;
+            final l10n = AppLocalizations.of(context)!;
 
             return SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  // AppLocalizations keys might be missing for new features.
-                  // Using fallback strings directly.
                   _buildSummaryCard(
                     context,
-                    title:
-                        "邀請好友總人數", // AppLocalizations.of(context)!.totalFriends
+                    title: l10n.totalFriends,
                     totalValue: "${stats['total_referrals'] ?? 0}",
-                    level1Label: "一級好友人數",
+                    level1Label: l10n.level1Friends,
                     level1Value: "${stats['level1_count'] ?? 0}",
-                    level2Label: "二級好友人數",
+                    level2Label: l10n.level2Friends,
                     level2Value: "${stats['level2_count'] ?? 0}",
-                    actionLabel: "我的好友",
+                    actionLabel: l10n.myFriends,
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => ChangeNotifierProvider.value(
-                            value:
-                                viewModel, // Pass existing VM or create new? prefer new for list state
+                            value: viewModel,
                             child: const MyFriendsScreen(),
                           ),
                         ),
@@ -66,16 +64,16 @@ class MyInvitationScreen extends StatelessWidget {
                   const SizedBox(height: 16),
                   _buildSummaryCard(
                     context,
-                    title: "開卡總返傭",
+                    title: l10n.totalCardRebate,
                     totalValue:
                         "(${((stats['level1_card_opening_commission'] ?? 0) + (stats['level2_card_opening_commission'] ?? 0)).toStringAsFixed(2)})",
-                    level1Label: "一級好友開卡返傭",
+                    level1Label: l10n.level1CardRebate,
                     level1Value:
                         "${stats['level1_card_opening_commission'] ?? 0}",
-                    level2Label: "二級好友開卡返傭",
+                    level2Label: l10n.level2CardRebate,
                     level2Value:
                         "${stats['level2_card_opening_commission'] ?? 0}",
-                    actionLabel: "開卡返傭",
+                    actionLabel: l10n.cardRebateAction,
                     onTap: () {
                       Navigator.push(
                         context,
@@ -91,16 +89,16 @@ class MyInvitationScreen extends StatelessWidget {
                   const SizedBox(height: 16),
                   _buildSummaryCard(
                     context,
-                    title: "消費總返傭",
+                    title: l10n.totalTransactionRebate,
                     totalValue:
                         "(${((stats['level1_transaction_commission'] ?? 0) + (stats['level2_transaction_commission'] ?? 0)).toStringAsFixed(2)})",
-                    level1Label: "一級好友消費返傭",
+                    level1Label: l10n.level1TransactionRebate,
                     level1Value:
                         "${stats['level1_transaction_commission'] ?? 0}",
-                    level2Label: "二級好友消費返傭",
+                    level2Label: l10n.level2TransactionRebate,
                     level2Value:
                         "${stats['level2_transaction_commission'] ?? 0}",
-                    actionLabel: "消費返傭",
+                    actionLabel: l10n.transactionRebateAction,
                     onTap: () {
                       Navigator.push(
                         context,
@@ -146,14 +144,18 @@ class MyInvitationScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "$title $totalValue",
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF0B2735),
+              Expanded(
+                child: Text(
+                  "$title $totalValue",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF0B2735),
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
+              const SizedBox(width: 8),
               GestureDetector(
                 onTap: onTap,
                 child: Container(

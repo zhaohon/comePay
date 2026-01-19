@@ -161,7 +161,7 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
 
                 // 内容
                 Text(
-                  '您已完成开卡费支付，现在可以进行KYC身份验证了。',
+                  AppLocalizations.of(context)!.paymentCompletedKycPrompt,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,
@@ -215,9 +215,9 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child: const Text(
-                            '前往验证',
-                            style: TextStyle(
+                          child: Text(
+                            AppLocalizations.of(context)!.goToVerify,
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
@@ -262,7 +262,8 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
       });
     } catch (e) {
       setState(() {
-        _errorMessage = 'Failed to load card fee config: $e';
+        _errorMessage =
+            '${AppLocalizations.of(context)!.failToLoadCardFeeConfig}: $e';
         _isLoadingConfig = false;
       });
       print('Error loading card fee config: $e');
@@ -284,7 +285,8 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
       });
     } catch (e) {
       setState(() {
-        _errorMessage = 'Failed to load payment currencies: $e';
+        _errorMessage =
+            '${AppLocalizations.of(context)!.failToLoadPaymentCurrencies}: $e';
         _isLoadingCurrencies = false;
       });
       print('Error loading payment currencies: $e');
@@ -353,7 +355,7 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
   /// 显示支付币种选择底部弹窗
   Future<void> _showCurrencySelectionSheet() async {
     if (_paymentCurrencies.isEmpty) {
-      _showMessage('No payment currencies available');
+      _showMessage(AppLocalizations.of(context)!.noPaymentCurrenciesAvailable);
       return;
     }
 
@@ -583,7 +585,7 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
   /// 创建支付订单并显示确认对话框
   Future<void> _handleSubmit() async {
     if (_selectedCurrency == null) {
-      _showMessage('Please select a payment currency');
+      _showMessage(AppLocalizations.of(context)!.pleaseSelectPaymentCurrency);
       return;
     }
 
@@ -591,7 +593,7 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
     final balance = _getCurrencyBalance(_selectedCurrency!.name);
 
     if (balance < actualPayment) {
-      _showMessage('Insufficient balance');
+      _showMessage(AppLocalizations.of(context)!.balanceInsufficient);
       return;
     }
 
@@ -625,7 +627,7 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
       setState(() {
         _isProcessing = false;
       });
-      _showMessage('Failed to create payment: $e');
+      _showMessage('${AppLocalizations.of(context)!.failToCreatePayment}: $e');
       print('Error creating payment: $e');
     }
   }
@@ -672,7 +674,7 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '确认支付',
+                    AppLocalizations.of(context)!.confirmPayment,
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -728,7 +730,7 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Coupon Discount',
+                              AppLocalizations.of(context)!.couponDiscount,
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.grey.shade600,
@@ -754,7 +756,7 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            'Actual Payment',
+                            AppLocalizations.of(context)!.actualPayment,
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
@@ -856,7 +858,7 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
                         ),
                       ),
                       child: Text(
-                        '取消',
+                        AppLocalizations.of(context)!.cancel,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
@@ -890,8 +892,8 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
                           ),
                           elevation: 0,
                         ),
-                        child: const Text(
-                          '确认支付',
+                        child: Text(
+                          AppLocalizations.of(context)!.confirmPayment,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -965,55 +967,20 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
         return;
       }
 
-      // 步骤3: 支付成功，检查KYC资格
-      final eligibility = await _kycService.checkEligibility();
+      // 步骤3: 支付成功
+      // 无论eligibility如何，支付成功后都应该进入KYC流程（或者进入Cardverificationscreen进行状态判断）
+      // 这里的eligibility.eligible通常表示已支付
 
-      if (eligibility.eligible) {
-        // 已有KYC，直接申请卡片
-        if (!mounted) return;
-        _showMessage(AppLocalizations.of(context)!.paymentSuccessful);
+      if (!mounted) return;
+      _showMessage(AppLocalizations.of(context)!.paymentSuccessful);
 
-        try {
-          // 申请虚拟卡
-          final request = CardApplyRequestModel(physical: false);
-          final response = await _cardService.applyCard(request);
-
-          if (!mounted) return;
-
-          // 跳转到开卡进度页面
-          final result = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CardApplyProgressScreen(
-                taskId: response.taskId,
-              ),
-            ),
-          );
-
-          // 如果返回true，表示开卡成功，需要刷新卡片列表
-          if (result == true && mounted) {
-            // 刷新卡片列表缓存
-            final cardViewModel =
-                Provider.of<CardViewModel>(context, listen: false);
-            await cardViewModel.refreshCardList();
-          }
-        } catch (e) {
-          if (!mounted) return;
-          _showMessage('申请卡片失败: $e');
-        }
-      } else {
-        // 没有KYC，跳转到KYC填写页面
-        if (!mounted) return;
-        _showMessage(AppLocalizations.of(context)!.paymentSuccessful);
-
-        // 跳转到KYC页面
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const Cardverificationscreen(),
-          ),
-        );
-      }
+      // 跳转到KYC页面
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Cardverificationscreen(),
+        ),
+      );
     } catch (e) {
       setState(() {
         _isProcessing = false;
@@ -1123,7 +1090,8 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
                       const SizedBox(height: 12),
                       _buildInfoRow(
                         AppLocalizations.of(context)!.cardName,
-                        _cardFeeConfig?.description ?? 'Come Come Pay Card',
+                        AppLocalizations.of(context)!.typeCardFee ??
+                            'Come Come Pay Card',
                         isClickable: false,
                       ),
                       const SizedBox(height: 8),
@@ -1138,8 +1106,7 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
                       _buildSectionTitle(AppLocalizations.of(context)!.cardFee),
                       const SizedBox(height: 12),
                       _buildInfoRow(
-                        // TODO: 添加国际化字符串 'Original Fee'
-                        'Original Fee',
+                        AppLocalizations.of(context)!.originalFee,
                         '${_cardFeeConfig?.feeAmount.toStringAsFixed(2) ?? '0.00'} USD',
                         isClickable: false,
                       ),

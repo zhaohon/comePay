@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../viewmodels/my_invitation_viewmodel.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:comecomepay/utils/app_colors.dart';
 
 class RebateHistoryScreen extends StatefulWidget {
   final String type; // 'card' or 'transaction'
@@ -45,53 +47,41 @@ class _RebateHistoryScreenState extends State<RebateHistoryScreen>
 
   @override
   Widget build(BuildContext context) {
-    final title = widget.type == 'card' ? "開卡返傭" : "消費返傭";
+    final l10n = AppLocalizations.of(context)!;
+    final title = widget.type == 'card'
+        ? l10n.cardRebateAction
+        : l10n.transactionRebateAction;
 
-    final level1Label = widget.type == 'card' ? "一級開卡返傭" : "一級消費返傭";
+    final level1Label = widget.type == 'card'
+        ? l10n.level1CardRebate
+        : l10n.level1TransactionRebate;
+    final level2Label = widget.type == 'card'
+        ? l10n.level2CardRebate
+        : l10n.level2TransactionRebate;
 
-    final level2Label = widget.type == 'card' ? "二級開卡返傭" : "二級消費返傭";
-
-    final tab1Label = widget.type == 'card' ? "一級開卡" : "一級消費";
-    final tab2Label = widget.type == 'card' ? "二級開卡" : "二級消費";
-
-    // Values from stats
-    // We should ideally use stats from VM, but stats keys differ by type.
-    // Let's grab them dynamically.
+    final tab1Label =
+        widget.type == 'card' ? l10n.level1CardTab : l10n.level1TransactionTab;
+    final tab2Label =
+        widget.type == 'card' ? l10n.level2CardTab : l10n.level2TransactionTab;
 
     return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.pageBackground,
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: AppColors.pageBackground,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+            icon:
+                const Icon(Icons.arrow_back_ios, color: AppColors.textPrimary),
             onPressed: () => Navigator.pop(context),
           ),
           title: Text(
             title,
             style: const TextStyle(
-                color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.bold,
+                fontSize: 18),
           ),
           centerTitle: true,
-          actions: [
-            Container(
-              margin: const EdgeInsets.only(right: 16),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  hint: const Text("選擇時間",
-                      style: TextStyle(fontSize: 12, color: Color(0xFF0B2735))),
-                  icon: const Icon(Icons.keyboard_arrow_down, size: 16),
-                  items: ["2025", "2024"].map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value, style: const TextStyle(fontSize: 12)),
-                    );
-                  }).toList(),
-                  onChanged: (_) {},
-                ),
-              ),
-            )
-          ],
         ),
         body: Column(
           children: [
@@ -124,28 +114,39 @@ class _RebateHistoryScreenState extends State<RebateHistoryScreen>
             // Tab Bar
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 16),
+              height: 44,
               decoration: BoxDecoration(
-                color: const Color(0xFFF5F7FA),
-                borderRadius: BorderRadius.circular(8),
+                color: const Color(0xFFEAECF0), // Cleaner grey
+                borderRadius: BorderRadius.circular(22),
               ),
-              child: TabBar(
-                controller: _tabController,
-                indicator: BoxDecoration(
+              child: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: TabBar(
+                  controller: _tabController,
+                  indicator: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(18),
                     boxShadow: [
                       BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2))
-                    ]),
-                labelColor: Colors.black,
-                unselectedLabelColor: Colors.grey,
-                labelStyle: const TextStyle(fontWeight: FontWeight.bold),
-                tabs: [
-                  Tab(text: tab1Label),
-                  Tab(text: tab2Label),
-                ],
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  labelColor: AppColors.primary,
+                  unselectedLabelColor: AppColors.textSecondary,
+                  dividerColor: Colors.transparent, // Remove the bottom line
+                  labelStyle: const TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.bold),
+                  unselectedLabelStyle: const TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.w500),
+                  tabs: [
+                    Tab(text: tab1Label),
+                    Tab(text: tab2Label),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -157,7 +158,7 @@ class _RebateHistoryScreenState extends State<RebateHistoryScreen>
                   }
 
                   if (vm.commissions.isEmpty) {
-                    return const Center(child: Text("暫無數據"));
+                    return Center(child: Text(l10n.noData));
                   }
 
                   return ListView.builder(
@@ -165,7 +166,7 @@ class _RebateHistoryScreenState extends State<RebateHistoryScreen>
                     itemCount: vm.commissions.length,
                     itemBuilder: (context, index) {
                       final item = vm.commissions[index];
-                      return _buildCommissionItem(item, widget.type);
+                      return _buildCommissionItem(item, widget.type, l10n);
                     },
                   );
                 },
@@ -193,25 +194,30 @@ class _RebateHistoryScreenState extends State<RebateHistoryScreen>
     );
   }
 
-  Widget _buildCommissionItem(dynamic item, String type) {
+  Widget _buildCommissionItem(
+      dynamic item, String type, AppLocalizations l10n) {
     // Determine labels based on type
-    final amountLabel = type == 'card' ? "支付費用" : "消費結算金額";
+    final amountLabel =
+        type == 'card' ? l10n.payFee : l10n.transactionSettlementAmount;
     final amountValue =
         "${item['source_amount'] ?? 0} ${item['currency'] ?? ''}";
-    final rebateLabel = type == 'card' ? "返佣" : "消費返佣";
+    final rebateLabel = type == 'card' ? l10n.rebate : l10n.consumptionRebate;
     final rebateValue =
         "${item['commission_amount']} ${item['currency'] ?? ''}";
 
     // Status can be 'pending', 'credited', 'failed'
-    // Mapping simply for now
     String status = item['status'] ?? '';
     if (status == 'credited')
-      status = "成功";
+      status = l10n.success;
     else if (status == 'pending')
-      status = "處理中";
-    else if (status == 'failed') status = "失敗";
+      status = l10n
+          .statusPending; // Assuming statusPending key exists or map similar
+    else if (status == 'failed')
+      status = l10n.failed;
+    else if (status == 'cancelled') status = l10n.statusCancelled;
 
-    final statusText = (type == 'card' ? "開卡" : "消費") + status;
+    final statusText =
+        (type == 'card' ? l10n.cardOpening : l10n.consumption) + status;
 
     final date = item['created_at'] ?? '';
     final email =
@@ -221,7 +227,7 @@ class _RebateHistoryScreenState extends State<RebateHistoryScreen>
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8F9FB),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -235,24 +241,29 @@ class _RebateHistoryScreenState extends State<RebateHistoryScreen>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(statusText,
-                      style: const TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF00C853),
-                          fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 4),
-                  // Hide this if not needed for specific type, but keeping consistent
-                  Text(type == 'card' ? "開卡時間:" : "消費結算時間:",
-                      style: const TextStyle(
-                          fontSize: 10, color: Color(0xFF78909C))),
-                  Text(date,
-                      style: const TextStyle(
-                          fontSize: 10, color: Color(0xFF78909C))),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(statusText,
+                        style: const TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF00C853),
+                            fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 4),
+                    Text(
+                        type == 'card'
+                            ? l10n.cardOpeningTimeLabel
+                            : l10n.transactionSettlementTimeLabel,
+                        style: const TextStyle(
+                            fontSize: 10, color: Color(0xFF78909C))),
+                    Text(date,
+                        style: const TextStyle(
+                            fontSize: 10, color: Color(0xFF78909C))),
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
                 Text(amountLabel,
                     style: const TextStyle(

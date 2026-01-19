@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../viewmodels/my_invitation_viewmodel.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:comecomepay/utils/app_colors.dart';
 
 class MyFriendsScreen extends StatefulWidget {
   const MyFriendsScreen({Key? key}) : super(key: key);
@@ -44,40 +46,24 @@ class _MyFriendsScreenState extends State<MyFriendsScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.pageBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.pageBackground,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          "我的好友",
-          style: TextStyle(
-              color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
+        title: Text(
+          l10n.myFriends,
+          style: const TextStyle(
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.bold,
+              fontSize: 18),
         ),
         centerTitle: true,
-        actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 16),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                hint: const Text("選擇時間",
-                    style: TextStyle(fontSize: 12, color: Color(0xFF0B2735))),
-                icon: const Icon(Icons.keyboard_arrow_down, size: 16),
-                items: ["2025", "2024"].map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value, style: const TextStyle(fontSize: 12)),
-                  );
-                }).toList(),
-                onChanged: (_) {}, // Mock action
-              ),
-            ),
-          )
-        ],
       ),
       body: Column(
         children: [
@@ -88,8 +74,10 @@ class _MyFriendsScreenState extends State<MyFriendsScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _buildStatItem("一級好友人數", "${vm.stats['level1_count'] ?? 0}"),
-                  _buildStatItem("二級好友人數", "${vm.stats['level2_count'] ?? 0}"),
+                  _buildStatItem(
+                      l10n.level1Friends, "${vm.stats['level1_count'] ?? 0}"),
+                  _buildStatItem(
+                      l10n.level2Friends, "${vm.stats['level2_count'] ?? 0}"),
                 ],
               ),
             );
@@ -98,28 +86,39 @@ class _MyFriendsScreenState extends State<MyFriendsScreen>
           // Tab Bar
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 16),
+            height: 44,
             decoration: BoxDecoration(
-              color: const Color(0xFFF5F7FA),
-              borderRadius: BorderRadius.circular(8),
+              color: const Color(0xFFEAECF0),
+              borderRadius: BorderRadius.circular(22),
             ),
-            child: TabBar(
-              controller: _tabController,
-              indicator: BoxDecoration(
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: TabBar(
+                controller: _tabController,
+                indicator: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(18),
                   boxShadow: [
                     BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2))
-                  ]),
-              labelColor: Colors.black,
-              unselectedLabelColor: Colors.grey,
-              labelStyle: const TextStyle(fontWeight: FontWeight.bold),
-              tabs: const [
-                Tab(text: "一級好友"),
-                Tab(text: "二級好友"),
-              ],
+                      color: Colors.black.withOpacity(0.08),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                indicatorSize: TabBarIndicatorSize.tab,
+                labelColor: AppColors.primary,
+                unselectedLabelColor: AppColors.textSecondary,
+                dividerColor: Colors.transparent, // Remove the bottom line
+                labelStyle:
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                unselectedLabelStyle:
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                tabs: [
+                  Tab(text: l10n.level1FriendsTab),
+                  Tab(text: l10n.level2FriendsTab),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -132,7 +131,7 @@ class _MyFriendsScreenState extends State<MyFriendsScreen>
                 }
 
                 if (vm.referrals.isEmpty) {
-                  return const Center(child: Text("暫無數據"));
+                  return Center(child: Text(l10n.noData));
                 }
 
                 return ListView.builder(
@@ -140,7 +139,7 @@ class _MyFriendsScreenState extends State<MyFriendsScreen>
                   itemCount: vm.referrals.length,
                   itemBuilder: (context, index) {
                     final item = vm.referrals[index];
-                    return _buildFriendItem(item);
+                    return _buildFriendItem(item, l10n);
                   },
                 );
               },
@@ -169,12 +168,12 @@ class _MyFriendsScreenState extends State<MyFriendsScreen>
     );
   }
 
-  Widget _buildFriendItem(dynamic item) {
+  Widget _buildFriendItem(dynamic item, AppLocalizations l10n) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8F9FB),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -183,9 +182,7 @@ class _MyFriendsScreenState extends State<MyFriendsScreen>
           Text(item['email'] ?? '',
               style: const TextStyle(fontSize: 14, color: Color(0xFF546E7A))),
           const SizedBox(height: 12),
-          // API doesn't provide card activation status yet.
-          // Removed status rows to avoid confusion.
-          Text("註冊時間: ${item['created_at'] ?? ''}",
+          Text("${l10n.registrationTimeLabel}${item['created_at'] ?? ''}",
               style: const TextStyle(fontSize: 12, color: Color(0xFF78909C))),
         ],
       ),
