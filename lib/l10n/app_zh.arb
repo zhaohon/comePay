@@ -430,5 +430,17 @@
   "failToLoadPaymentCurrencies": "加载支付币种失败",
   "noPaymentCurrenciesAvailable": "无可用支付币种",
   "pleaseSelectPaymentCurrency": "请选择支付币种",
-  "failToCreatePayment": "创建支付失败"
+  "failToCreatePayment": "创建支付失败",
+  "accountNotification": "动账通知",
+  "systemAnnouncement": "系统通知",
+  "markAllAsRead": "全部已读",
+  "notificationSettings": "消息设置",
+  "announcementDetail": "公告详情",
+  "contentDetail": "内容详情",
+  "noNotifications": "暂无通知",
+  "noAnnouncements": "暂无公告",
+  "loadMoreFailed": "加载更多失败",
+  "refreshing": "刷新中...",
+  "invalidDate": "无效日期",
+  "publishTime": "发布时间"
 }

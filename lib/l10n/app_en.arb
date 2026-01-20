@@ -428,5 +428,17 @@
   "failToLoadPaymentCurrencies": "Failed to load payment currencies",
   "noPaymentCurrenciesAvailable": "No payment currencies available",
   "pleaseSelectPaymentCurrency": "Please select a payment currency",
-  "failToCreatePayment": "Failed to create payment"
+  "failToCreatePayment": "Failed to create payment",
+  "accountNotification": "Account Notification",
+  "systemAnnouncement": "System Announcement",
+  "markAllAsRead": "Mark All as Read",
+  "notificationSettings": "Notification Settings",
+  "announcementDetail": "Announcement Detail",
+  "contentDetail": "Content Detail",
+  "noNotifications": "No Notifications",
+  "noAnnouncements": "No Announcements",
+  "loadMoreFailed": "Load More Failed",
+  "refreshing": "Refreshing...",
+  "invalidDate": "Invalid Date",
+  "publishTime": "Publish Time"
 }

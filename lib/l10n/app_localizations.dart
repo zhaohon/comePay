@@ -2561,6 +2561,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to create payment'**
   String get failToCreatePayment;
+
+  /// No description provided for @accountNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Notification'**
+  String get accountNotification;
+
+  /// No description provided for @systemAnnouncement.
+  ///
+  /// In en, this message translates to:
+  /// **'System Announcement'**
+  String get systemAnnouncement;
+
+  /// No description provided for @markAllAsRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark All as Read'**
+  String get markAllAsRead;
+
+  /// No description provided for @notificationSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification Settings'**
+  String get notificationSettings;
+
+  /// No description provided for @announcementDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Announcement Detail'**
+  String get announcementDetail;
+
+  /// No description provided for @contentDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Content Detail'**
+  String get contentDetail;
+
+  /// No description provided for @noNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'No Notifications'**
+  String get noNotifications;
+
+  /// No description provided for @noAnnouncements.
+  ///
+  /// In en, this message translates to:
+  /// **'No Announcements'**
+  String get noAnnouncements;
+
+  /// No description provided for @loadMoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Load More Failed'**
+  String get loadMoreFailed;
+
+  /// No description provided for @refreshing.
+  ///
+  /// In en, this message translates to:
+  /// **'Refreshing...'**
+  String get refreshing;
+
+  /// No description provided for @invalidDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid Date'**
+  String get invalidDate;
+
+  /// No description provided for @publishTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish Time'**
+  String get publishTime;
 }
 
 class _AppLocalizationsDelegate

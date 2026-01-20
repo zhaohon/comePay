@@ -4,7 +4,8 @@ class NotificationModel {
   final String title;
   final String body;
   final String status;
-  final String data;
+  final String? type;
+  final String? data;
   final String? readAt;
   final String createdAt;
   final String updatedAt;
@@ -15,7 +16,8 @@ class NotificationModel {
     required this.title,
     required this.body,
     required this.status,
-    required this.data,
+    this.type,
+    this.data,
     this.readAt,
     required this.createdAt,
     required this.updatedAt,
@@ -23,15 +25,72 @@ class NotificationModel {
 
   factory NotificationModel.fromJson(Map<String, dynamic> json) {
     return NotificationModel(
-      id: json['id'],
-      userId: json['user_id'],
-      title: json['title'],
-      body: json['body'],
-      status: json['status'],
-      data: json['data'],
-      readAt: json['read_at'],
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
+      id: json['id'] as int,
+      userId: json['user_id'] as int?,
+      title: json['title'] as String? ?? '',
+      body: json['body'] as String? ?? '',
+      status: json['status'] as String? ?? 'unread',
+      type: json['type'] as String?,
+      data: json['data'] as String?,
+      readAt: json['read_at'] as String?,
+      createdAt: json['created_at'] as String? ?? '',
+      updatedAt: json['updated_at'] as String? ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'user_id': userId,
+      'title': title,
+      'body': body,
+      'status': status,
+      'type': type,
+      'data': data,
+      'read_at': readAt,
+      'created_at': createdAt,
+      'updated_at': updatedAt,
+    };
+  }
+}
+
+class NotificationListResponse {
+  final String status;
+  final int count;
+  final List<NotificationModel> notifications;
+
+  NotificationListResponse({
+    required this.status,
+    required this.count,
+    required this.notifications,
+  });
+
+  factory NotificationListResponse.fromJson(Map<String, dynamic> json) {
+    return NotificationListResponse(
+      status: json['status'] as String? ?? 'success',
+      count: json['count'] as int? ?? 0,
+      notifications: (json['notifications'] as List<dynamic>?)
+              ?.map((item) =>
+                  NotificationModel.fromJson(item as Map<String, dynamic>))
+              .toList() ??
+          [],
+    );
+  }
+}
+
+class UnreadCountResponse {
+  final String status;
+  final int count;
+
+  UnreadCountResponse({
+    required this.status,
+    required this.count,
+  });
+
+  factory UnreadCountResponse.fromJson(Map<String, dynamic> json) {
+    return UnreadCountResponse(
+      status: json['status'] as String? ?? 'success',
+      count: json['count'] as int? ?? 0,
     );
   }
 }

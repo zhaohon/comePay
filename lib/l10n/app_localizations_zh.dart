@@ -1251,4 +1251,40 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get failToCreatePayment => '创建支付失败';
+
+  @override
+  String get accountNotification => '动账通知';
+
+  @override
+  String get systemAnnouncement => '系统通知';
+
+  @override
+  String get markAllAsRead => '全部已读';
+
+  @override
+  String get notificationSettings => '消息设置';
+
+  @override
+  String get announcementDetail => '公告详情';
+
+  @override
+  String get contentDetail => '内容详情';
+
+  @override
+  String get noNotifications => '暂无通知';
+
+  @override
+  String get noAnnouncements => '暂无公告';
+
+  @override
+  String get loadMoreFailed => '加载更多失败';
+
+  @override
+  String get refreshing => '刷新中...';
+
+  @override
+  String get invalidDate => '无效日期';
+
+  @override
+  String get publishTime => '发布时间';
 }

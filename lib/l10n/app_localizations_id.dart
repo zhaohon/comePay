@@ -1287,4 +1287,40 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get failToCreatePayment => 'Failed to create payment';
+
+  @override
+  String get accountNotification => 'Account Notification';
+
+  @override
+  String get systemAnnouncement => 'System Announcement';
+
+  @override
+  String get markAllAsRead => 'Mark All as Read';
+
+  @override
+  String get notificationSettings => 'Notification Settings';
+
+  @override
+  String get announcementDetail => 'Announcement Detail';
+
+  @override
+  String get contentDetail => 'Content Detail';
+
+  @override
+  String get noNotifications => 'No Notifications';
+
+  @override
+  String get noAnnouncements => 'No Announcements';
+
+  @override
+  String get loadMoreFailed => 'Load More Failed';
+
+  @override
+  String get refreshing => 'Refreshing...';
+
+  @override
+  String get invalidDate => 'Invalid Date';
+
+  @override
+  String get publishTime => 'Publish Time';
 }
