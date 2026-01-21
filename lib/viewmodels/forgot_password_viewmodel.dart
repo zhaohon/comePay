@@ -365,7 +365,8 @@ class ForgotPasswordViewModel extends BaseViewModel {
   // Method untuk send email
   Future<bool> sendEmail(String email, String name, String otp) async {
     try {
-      final result = await _globalService.sendEmail(email, name, otp);
+      final result = await _globalService.sendEmail(email, name, otp,
+          isForgotPassword: true);
       return result;
     } catch (e) {
       Logger.businessLogic('sendEmail', 'Exception - ${e.toString()}');

@@ -2033,9 +2033,15 @@ class GlobalService extends BaseService {
   }
 
   // Method untuk send email
-  Future<bool> sendEmail(String email, String name, String otp) async {
+  Future<bool> sendEmail(String email, String name, String otp,
+      {bool isForgotPassword = false}) async {
     print('🔥 [SEND EMAIL] Starting sendEmail process...');
     print('🔥 [SEND EMAIL] Email: $email, Name: $name, OTP: ***HIDDEN***');
+
+    if (isForgotPassword) {
+      print('🔥 [SEND EMAIL] Skipping email sending for Forgot Password flow.');
+      return true;
+    }
 
     _apiLogger.logMethodEntry('sendEmail', parameters: {
       'email': email,
