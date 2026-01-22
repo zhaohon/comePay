@@ -12,12 +12,18 @@ class NotificationViewModel extends BaseViewModel {
   bool _isRefreshing = false;
 
   int _unreadNotificationCount = 0;
+  int _unreadAnnouncementCount = 0;
 
   List<NotificationModel> get notifications => _notifications;
   String? get errorMessage => _errorMessage;
   bool get isLoading => busy;
   bool get isRefreshing => _isRefreshing;
   int get unreadNotificationCount => _unreadNotificationCount;
+  int get unreadAnnouncementCount => _unreadAnnouncementCount;
+
+  // Total unread count (notifications + announcements)
+  int get totalUnreadCount =>
+      _unreadNotificationCount + _unreadAnnouncementCount;
 
   Future<void> getNotifikasi({int limit = 20, int offset = 0}) async {
     setBusy(true);
@@ -56,5 +62,26 @@ class NotificationViewModel extends BaseViewModel {
       // Rethrow to let HomeScreen know the call failed
       rethrow;
     }
+  }
+
+  Future<void> fetchUnreadAnnouncementCount() async {
+    try {
+      final response = await _globalService.getUnreadAnnouncementCount();
+      _unreadAnnouncementCount = response.count;
+      notifyListeners();
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+      // Rethrow to let calling code know the call failed
+      rethrow;
+    }
+  }
+
+  /// Refresh all unread counts (both notifications and announcements)
+  Future<void> refreshUnreadCounts() async {
+    await Future.wait([
+      fetchUnreadNotificationCount(),
+      fetchUnreadAnnouncementCount(),
+    ]);
   }
 }

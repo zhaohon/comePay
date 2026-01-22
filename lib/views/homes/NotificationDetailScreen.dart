@@ -2,14 +2,16 @@ import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:comecomepay/services/announcement_service.dart';
-import 'package:comecomepay/models/announcement_model.dart';
+import 'package:comecomepay/services/notification_service.dart';
 
 class NotificationDetailScreen extends StatefulWidget {
-  final int announcementId;
+  final int id;
+  final String type; // 'notification' or 'announcement'
 
   const NotificationDetailScreen({
     Key? key,
-    required this.announcementId,
+    required this.id,
+    required this.type,
   }) : super(key: key);
 
   @override
@@ -19,7 +21,11 @@ class NotificationDetailScreen extends StatefulWidget {
 
 class _NotificationDetailScreenState extends State<NotificationDetailScreen> {
   final AnnouncementService _announcementService = AnnouncementService();
-  AnnouncementItem? _announcement;
+  final NotificationService _notificationService = NotificationService();
+
+  String? _title;
+  String? _content;
+  String? _createdAt;
   bool _isLoading = true;
   String? _errorMessage;
   bool _isInitialized = false;
@@ -34,11 +40,11 @@ class _NotificationDetailScreenState extends State<NotificationDetailScreen> {
     super.didChangeDependencies();
     if (!_isInitialized) {
       _isInitialized = true;
-      _loadAnnouncementDetail();
+      _loadDetail();
     }
   }
 
-  Future<void> _loadAnnouncementDetail() async {
+  Future<void> _loadDetail() async {
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -46,15 +52,31 @@ class _NotificationDetailScreenState extends State<NotificationDetailScreen> {
 
     try {
       final locale = Localizations.localeOf(context).languageCode;
-      final response = await _announcementService.getAnnouncementDetail(
-        widget.announcementId,
-        lang: locale,
-      );
 
-      setState(() {
-        _announcement = response.data;
-        _isLoading = false;
-      });
+      if (widget.type == 'announcement') {
+        // 加载公告详情（自动标记已读）
+        final response = await _announcementService.getAnnouncementDetail(
+          widget.id,
+          lang: locale,
+        );
+        setState(() {
+          _title = response.data.title;
+          _content = response.data.content;
+          _createdAt = response.data.createdAt;
+          _isLoading = false;
+        });
+      } else {
+        // 加载通知详情（自动标记已读）
+        final response = await _notificationService.getNotificationDetail(
+          widget.id,
+        );
+        setState(() {
+          _title = response.notification.title;
+          _content = response.notification.body;
+          _createdAt = response.notification.createdAt;
+          _isLoading = false;
+        });
+      }
     } catch (e) {
       setState(() {
         _errorMessage = e.toString();
@@ -82,13 +104,15 @@ class _NotificationDetailScreenState extends State<NotificationDetailScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0.5,
-        shadowColor: Colors.black.withOpacity(0.05),
+        shadowColor: Colors.black.withValues(alpha: 0.05),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          AppLocalizations.of(context)!.announcementDetail,
+          widget.type == 'announcement'
+              ? AppLocalizations.of(context)!.announcementDetail
+              : AppLocalizations.of(context)!.notificationDetail,
           style: const TextStyle(
             color: Colors.black,
             fontSize: 17,
@@ -150,7 +174,7 @@ class _NotificationDetailScreenState extends State<NotificationDetailScreen> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: _loadAnnouncementDetail,
+                onPressed: _loadDetail,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFA855F7),
                   foregroundColor: Colors.white,
@@ -168,7 +192,7 @@ class _NotificationDetailScreenState extends State<NotificationDetailScreen> {
       );
     }
 
-    if (_announcement == null) {
+    if (_title == null || _content == null) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -239,7 +263,7 @@ class _NotificationDetailScreenState extends State<NotificationDetailScreen> {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        _formatDate(_announcement!.createdAt),
+                        _formatDate(_createdAt),
                         style: TextStyle(
                           fontSize: 13,
                           color: Colors.grey[600],
@@ -253,7 +277,7 @@ class _NotificationDetailScreenState extends State<NotificationDetailScreen> {
 
                   // Title
                   Text(
-                    _announcement!.title,
+                    _title!,
                     style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
@@ -274,7 +298,7 @@ class _NotificationDetailScreenState extends State<NotificationDetailScreen> {
                 children: [
                   // Content
                   Text(
-                    _announcement!.content,
+                    _content!,
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey[800],

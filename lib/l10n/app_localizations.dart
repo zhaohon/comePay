@@ -2592,6 +2592,12 @@ abstract class AppLocalizations {
   /// **'Announcement Detail'**
   String get announcementDetail;
 
+  /// No description provided for @notificationDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification Detail'**
+  String get notificationDetail;
+
   /// No description provided for @contentDetail.
   ///
   /// In en, this message translates to:

@@ -1,5 +1,6 @@
 import 'package:comecomepay/core/base_service.dart';
 import 'package:comecomepay/models/announcement_model.dart';
+import 'package:comecomepay/models/notification_model.dart';
 
 class AnnouncementService extends BaseService {
   /// 获取已发布的公告列表
@@ -40,6 +41,20 @@ class AnnouncementService extends BaseService {
 
       final data = handleResponse(response);
       return AnnouncementDetailResponse.fromJson(data);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// 获取未读公告数量
+  Future<UnreadCountResponse> getUnreadCount() async {
+    try {
+      final response = await dio.get(
+        '/announcements/unread-count',
+      );
+
+      final data = handleResponse(response);
+      return UnreadCountResponse.fromJson(data);
     } catch (e) {
       rethrow;
     }

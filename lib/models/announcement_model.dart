@@ -4,6 +4,7 @@ class AnnouncementItem {
   final String content;
   final String status;
   final String createdAt;
+  final bool isRead;
 
   AnnouncementItem({
     required this.id,
@@ -11,6 +12,7 @@ class AnnouncementItem {
     required this.content,
     required this.status,
     required this.createdAt,
+    required this.isRead,
   });
 
   factory AnnouncementItem.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class AnnouncementItem {
       content: json['content'] as String? ?? '',
       status: json['status'] as String? ?? 'published',
       createdAt: json['created_at'] as String? ?? '',
+      isRead: json['is_read'] as bool? ?? false,
     );
   }
 
@@ -30,6 +33,7 @@ class AnnouncementItem {
       'content': content,
       'status': status,
       'created_at': createdAt,
+      'is_read': isRead,
     };
   }
 }

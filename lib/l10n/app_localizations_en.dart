@@ -1303,6 +1303,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get announcementDetail => 'Announcement Detail';
 
   @override
+  String get notificationDetail => 'Notification Detail';
+
+  @override
   String get contentDetail => 'Content Detail';
 
   @override

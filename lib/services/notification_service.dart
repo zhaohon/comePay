@@ -37,27 +37,15 @@ class NotificationService extends BaseService {
     }
   }
 
-  /// 标记通知为已读
-  Future<void> markAsRead(int id) async {
+  /// 获取通知详情（自动标记为已读）
+  Future<NotificationDetailResponse> getNotificationDetail(int id) async {
     try {
-      final response = await dio.put(
-        '/notifications/$id/read',
+      final response = await dio.get(
+        '/notifications/$id',
       );
 
-      handleResponse(response);
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  /// 标记所有通知为已读
-  Future<void> markAllAsRead() async {
-    try {
-      final response = await dio.put(
-        '/notifications/read-all',
-      );
-
-      handleResponse(response);
+      final data = handleResponse(response);
+      return NotificationDetailResponse.fromJson(data);
     } catch (e) {
       rethrow;
     }

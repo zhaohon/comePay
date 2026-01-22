@@ -184,6 +184,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         child: Consumer<LocaleProvider>(
           builder: (context, localeProvider, child) {
             return MaterialApp(
+              debugShowCheckedModeBanner: false,
               title: 'Come Come Pay',
               theme: AppTheme.lightTheme,
               locale: localeProvider.locale,

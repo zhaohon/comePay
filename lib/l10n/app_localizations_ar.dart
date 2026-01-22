@@ -1031,298 +1031,301 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String myWalletAddress(Object address, Object currency) {
-    return 'My $currency wallet address:\n$address';
+    return 'عنوان محفظتي $currency:\n$address';
   }
 
   @override
-  String get walletAddress => 'Wallet Address';
+  String get walletAddress => 'عنوان المحفظة';
 
   @override
   String receiveNetworkWarning(Object currency) {
-    return 'Only support receiving $currency network assets, other network assets cannot be recovered.';
+    return 'يدعم فقط استلام أصول شبكة $currency، لا يمكن استرداد أصول الشبكات الأخرى.';
   }
 
   @override
-  String get shareAddress => 'Share Address';
+  String get shareAddress => 'مشاركة العنوان';
 
   @override
-  String get noReceiveAddress => 'No Receive Address';
+  String get noReceiveAddress => 'لا يوجد عنوان استلام';
 
   @override
-  String get coinNoAddressGenerated => 'No address generated for this coin';
+  String get coinNoAddressGenerated => 'لم يتم إنشاء عنوان لهذه العملة';
 
   @override
-  String get receiveTitle => 'Receive';
+  String get receiveTitle => 'استلام';
 
   @override
   String receiveCoin(Object currency) {
-    return 'Receive $currency';
+    return 'استلام $currency';
   }
 
   @override
-  String get recipientAddress => 'Recipient Address';
+  String get recipientAddress => 'عنوان المستلم';
 
   @override
-  String get enterOrPasteAddress => 'Enter or paste address';
+  String get enterOrPasteAddress => 'أدخل أو الصق العنوان';
 
   @override
-  String get amount => 'Amount';
+  String get amount => 'المبلغ';
 
   @override
   String balanceAvailable(Object balance, Object symbol) {
-    return 'Available: $balance $symbol';
+    return 'متاح: $balance $symbol';
   }
 
   @override
-  String get all => 'All';
+  String get all => 'الكل';
 
   @override
   String withdrawFailedWithError(Object error) {
-    return 'Withdraw failed: $error';
+    return 'فشل السحب: $error';
   }
 
   @override
-  String get withdrawHistory => 'Withdraw History';
+  String get withdrawHistory => 'سجل السحب';
 
   @override
-  String get noWithdrawHistory => 'No withdraw history';
+  String get noWithdrawHistory => 'لا يوجد سجل سحب';
 
   @override
-  String get pullToRefresh => 'Pull to refresh';
+  String get pullToRefresh => 'اسحب للتحديث';
 
   @override
-  String get withdrawRecordPrefix => 'Withdraw Record #';
+  String get withdrawRecordPrefix => 'سجل سحب #';
 
   @override
-  String get noData => 'No Data';
+  String get noData => 'لا توجد بيانات';
 
   @override
-  String get statusApproved => 'Approved';
+  String get statusApproved => 'موافق عليه';
 
   @override
-  String get statusPending => 'Pending';
+  String get statusPending => 'قيد الانتظار';
 
   @override
-  String get statusRejected => 'Rejected';
+  String get statusRejected => 'مرفوض';
 
   @override
-  String get typeDeposit => 'Deposit';
+  String get typeDeposit => 'إيداع';
 
   @override
-  String get typeWithdraw => 'Withdraw';
+  String get typeWithdraw => 'سحب';
 
   @override
-  String get typeSwap => 'Swap';
+  String get typeSwap => 'تبادل';
 
   @override
-  String get typeCardFee => 'Card Fee';
+  String get typeCardFee => 'رسوم البطاقة';
 
   @override
-  String get typeCommission => 'Commission';
+  String get typeCommission => 'عمولة';
 
   @override
-  String get typeTransfer => 'Transfer';
+  String get typeTransfer => 'تحويل';
 
   @override
-  String get typeFee => 'Fee';
+  String get typeFee => 'رسوم';
 
   @override
-  String get statusCompleted => 'Completed';
+  String get statusCompleted => 'مكتمل';
 
   @override
-  String get statusFailed => 'Failed';
+  String get statusFailed => 'فشل';
 
   @override
-  String get statusCancelled => 'Cancelled';
+  String get statusCancelled => 'ملغى';
 
   @override
-  String get statusCredited => 'Credited';
+  String get statusCredited => 'مقيد';
 
   @override
   String get availableAmountEstimateDesc =>
-      'Estimated available amount after transaction fees and exchange rate fluctuations';
+      'المبلغ المقدر المتاح بعد رسوم المعاملة وتقلبات أسعار الصرف';
 
   @override
-  String get lockCard => 'Lock Card';
+  String get lockCard => 'قفل البطاقة';
 
   @override
-  String get cardAuthorization => 'Card Authorization';
+  String get cardAuthorization => 'تفويض البطاقة';
 
   @override
-  String get applyPhysicalCard => 'Apply Physical Card';
+  String get applyPhysicalCard => 'طلب بطاقة فعلية';
 
   @override
-  String get reportLoss => 'Report Loss';
+  String get reportLoss => 'الإبلاغ عن فقدان';
 
   @override
-  String get bill => 'Bill';
+  String get bill => 'فاتورة';
 
   @override
-  String get expiryDateLabel => 'Expiry Date: ';
+  String get expiryDateLabel => 'تاريخ الانتهاء: ';
 
   @override
   String get cvvLabel => 'CVV: ';
 
   @override
-  String get transactionDefault => 'Transaction';
+  String get transactionDefault => 'معاملة';
 
   @override
-  String get billDetail => 'Bill Details';
+  String get billDetail => 'تفاصيل الفاتورة';
 
   @override
-  String get orderId => 'Order ID';
+  String get orderId => 'معرف الطلب';
 
   @override
-  String get copySuccess => 'Copied to clipboard';
+  String get copySuccess => 'تم النسخ إلى الحافظة';
 
   @override
-  String get balanceLabel => 'Balance';
+  String get balanceLabel => 'الرصيد';
 
   @override
-  String get transactionId => 'Transaction ID';
+  String get transactionId => 'معرف المعاملة';
 
   @override
-  String get myInvitation => 'My Invitation';
+  String get myInvitation => 'دعوتي';
 
   @override
-  String get totalFriends => 'Total Friends';
+  String get totalFriends => 'إجمالي الأصدقاء';
 
   @override
-  String get level1Friends => 'Level 1 Friends';
+  String get level1Friends => 'أصدقاء المستوى 1';
 
   @override
-  String get level2Friends => 'Level 2 Friends';
+  String get level2Friends => 'أصدقاء المستوى 2';
 
   @override
-  String get myFriends => 'My Friends';
+  String get myFriends => 'أصدقائي';
 
   @override
-  String get totalCardRebate => 'Total Card Rebate';
+  String get totalCardRebate => 'إجمالي خصم البطاقة';
 
   @override
-  String get level1CardRebate => 'Level 1 Card Rebate';
+  String get level1CardRebate => 'خصم بطاقة المستوى 1';
 
   @override
-  String get level2CardRebate => 'Level 2 Card Rebate';
+  String get level2CardRebate => 'خصم بطاقة المستوى 2';
 
   @override
-  String get cardRebateAction => 'Card Rebate';
+  String get cardRebateAction => 'خصم البطاقة';
 
   @override
-  String get totalTransactionRebate => 'Total Transaction Rebate';
+  String get totalTransactionRebate => 'إجمالي خصم المعاملات';
 
   @override
-  String get level1TransactionRebate => 'Level 1 Transaction Rebate';
+  String get level1TransactionRebate => 'خصم معاملات المستوى 1';
 
   @override
-  String get level2TransactionRebate => 'Level 2 Transaction Rebate';
+  String get level2TransactionRebate => 'خصم معاملات المستوى 2';
 
   @override
-  String get transactionRebateAction => 'Transaction Rebate';
+  String get transactionRebateAction => 'خصم المعاملات';
 
   @override
-  String get level1FriendsTab => 'Level 1 Friends';
+  String get level1FriendsTab => 'أصدقاء المستوى 1';
 
   @override
-  String get level2FriendsTab => 'Level 2 Friends';
+  String get level2FriendsTab => 'أصدقاء المستوى 2';
 
   @override
-  String get registrationTimeLabel => 'Registration Time: ';
+  String get registrationTimeLabel => 'وقت التسجيل: ';
 
   @override
-  String get level1CardTab => 'Level 1 Card';
+  String get level1CardTab => 'بطاقة المستوى 1';
 
   @override
-  String get level2CardTab => 'Level 2 Card';
+  String get level2CardTab => 'بطاقة المستوى 2';
 
   @override
-  String get level1TransactionTab => 'Level 1 Transaction';
+  String get level1TransactionTab => 'معاملة المستوى 1';
 
   @override
-  String get level2TransactionTab => 'Level 2 Transaction';
+  String get level2TransactionTab => 'معاملة المستوى 2';
 
   @override
-  String get payFee => 'Pay Fee';
+  String get payFee => 'دفع الرسوم';
 
   @override
-  String get transactionSettlementAmount => 'Settlement Amount';
+  String get transactionSettlementAmount => 'مبلغ التسوية';
 
   @override
-  String get rebate => 'Rebate';
+  String get rebate => 'خصم';
 
   @override
-  String get consumptionRebate => 'Consumption Rebate';
+  String get consumptionRebate => 'خصم الاستهلاك';
 
   @override
-  String get cardOpening => 'Card Opening';
+  String get cardOpening => 'فتح البطاقة';
 
   @override
-  String get consumption => 'Consumption';
+  String get consumption => 'استهلاك';
 
   @override
-  String get cardOpeningTimeLabel => 'Open Time:';
+  String get cardOpeningTimeLabel => 'وقت الفتح: ';
 
   @override
-  String get transactionSettlementTimeLabel => 'Settlement Time:';
+  String get transactionSettlementTimeLabel => 'وقت التسوية: ';
 
   @override
   String get paymentCompletedKycPrompt =>
-      'You have completed the card fee payment. You can now proceed with KYC verification.';
+      'لقد أكملت دفع رسوم البطاقة. يمكنك الآن المتابعة مع التحقق من الهوية (KYC).';
 
   @override
-  String get goToVerify => 'Go to Verify';
+  String get goToVerify => 'اذهب للتحقق';
 
   @override
-  String get couponDiscount => 'Coupon Discount';
+  String get couponDiscount => 'خصم القسيمة';
 
   @override
-  String get failToLoadCardFeeConfig => 'Failed to load card fee config';
+  String get failToLoadCardFeeConfig => 'فشل تحميل إعدادات رسوم البطاقة';
 
   @override
-  String get failToLoadPaymentCurrencies => 'Failed to load payment currencies';
+  String get failToLoadPaymentCurrencies => 'فشل تحميل عملات الدفع';
 
   @override
-  String get noPaymentCurrenciesAvailable => 'No payment currencies available';
+  String get noPaymentCurrenciesAvailable => 'لا توجد عملات دفع متاحة';
 
   @override
-  String get pleaseSelectPaymentCurrency => 'Please select a payment currency';
+  String get pleaseSelectPaymentCurrency => 'يرجى اختيار عملة الدفع';
 
   @override
-  String get failToCreatePayment => 'Failed to create payment';
+  String get failToCreatePayment => 'فشل إنشاء الدفع';
 
   @override
-  String get accountNotification => 'Account Notification';
+  String get accountNotification => 'إشعارات الحساب';
 
   @override
-  String get systemAnnouncement => 'System Announcement';
+  String get systemAnnouncement => 'إعلانات النظام';
 
   @override
-  String get markAllAsRead => 'Mark All as Read';
+  String get markAllAsRead => 'تحديد الكل كمقروء';
 
   @override
-  String get notificationSettings => 'Notification Settings';
+  String get notificationSettings => 'إعدادات الإشعارات';
 
   @override
-  String get announcementDetail => 'Announcement Detail';
+  String get announcementDetail => 'تفاصيل الإعلان';
 
   @override
-  String get contentDetail => 'Content Detail';
+  String get notificationDetail => 'تفاصيل الإشعار';
 
   @override
-  String get noNotifications => 'No Notifications';
+  String get contentDetail => 'تفاصيل المحتوى';
 
   @override
-  String get noAnnouncements => 'No Announcements';
+  String get noNotifications => 'لا توجد إشعارات';
 
   @override
-  String get loadMoreFailed => 'Load More Failed';
+  String get noAnnouncements => 'لا توجد إعلانات';
 
   @override
-  String get refreshing => 'Refreshing...';
+  String get loadMoreFailed => 'فشل تحميل المزيد';
 
   @override
-  String get invalidDate => 'Invalid Date';
+  String get refreshing => 'جاري التحديث...';
 
   @override
-  String get publishTime => 'Publish Time';
+  String get invalidDate => 'تاريخ غير صالح';
+
+  @override
+  String get publishTime => 'وقت النشر';
 }

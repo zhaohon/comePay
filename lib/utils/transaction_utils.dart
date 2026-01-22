@@ -4,6 +4,7 @@ import 'package:comecomepay/l10n/app_localizations.dart';
 class TransactionUtils {
   static String getLocalizedType(BuildContext context, String type) {
     final l10n = AppLocalizations.of(context)!;
+    print(type);
     switch (type) {
       case 'deposit':
         return l10n.typeDeposit;

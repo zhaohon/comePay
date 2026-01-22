@@ -22,7 +22,7 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   bool _isVisible = true; // Untuk toggle visibilitas Total Assets
   late WalletViewModel _walletViewModel;
   DateTime? _lastPressedAt; // 记录上次按返回键的时间
@@ -30,28 +30,49 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
-    // ⚠️ IMPORTANT: Serialize API calls to prevent concurrent 401 errors
-    // If all three APIs are called simultaneously and all return 401,
-    // they will all try to refresh the token at the same time
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      try {
-        // Call APIs sequentially
-        final notificationViewModel =
-            Provider.of<NotificationViewModel>(context, listen: false);
-        await notificationViewModel.fetchUnreadNotificationCount();
+    // Load data on first display
+    _loadHomeData();
+  }
 
-        _walletViewModel = Provider.of<WalletViewModel>(context, listen: false);
-        await _walletViewModel.fetchWalletData();
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
 
-        final transactionViewModel =
-            Provider.of<UnifiedTransactionViewModel>(context, listen: false);
-        await transactionViewModel.fetchLatestTransactions(limit: 10);
-      } catch (e) {
-        // If any API call fails (e.g., refresh token expired), stop subsequent calls
-        print('❌ HomeScreen API调用失败: $e');
-      }
-    });
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    // Refresh data when app resumes (每次显示时刷新)
+    if (state == AppLifecycleState.resumed) {
+      _loadHomeData();
+    }
+  }
+
+  /// 加载首页数据 - 每次显示时都会调用
+  Future<void> _loadHomeData() async {
+    if (!mounted) return;
+
+    try {
+      // 并发请求未读数（通知 + 公告）
+      final notificationViewModel =
+          Provider.of<NotificationViewModel>(context, listen: false);
+      await Future.wait([
+        notificationViewModel.fetchUnreadNotificationCount(),
+        notificationViewModel.fetchUnreadAnnouncementCount(),
+      ]);
+
+      _walletViewModel = Provider.of<WalletViewModel>(context, listen: false);
+      await _walletViewModel.fetchWalletData();
+
+      final transactionViewModel =
+          Provider.of<UnifiedTransactionViewModel>(context, listen: false);
+      await transactionViewModel.fetchLatestTransactions(limit: 10);
+    } catch (e) {
+      print('❌ HomeScreen 数据加载失败: $e');
+    }
   }
 
   @override
@@ -65,7 +86,8 @@ class _HomeScreenState extends State<HomeScreen> {
         final isSmallScreen = screenWidth < 600;
         final paddingValue = screenWidth * 0.04;
 
-        final notificationCount = notificationViewModel.unreadNotificationCount;
+        // 使用总未读数（通知 + 公告）
+        final notificationCount = notificationViewModel.totalUnreadCount;
 
         return PopScope(
           canPop: false, // 禁止直接返回
@@ -304,9 +326,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ],
                                         ),
                                         // 右上角P图标
-                                        Positioned(
+                                        Positioned.directional(
+                                          textDirection:
+                                              Directionality.of(context),
                                           top: 0,
-                                          right: 0,
+                                          end: 0,
                                           child: Container(
                                             width: 50,
                                             height: 50,

@@ -1268,6 +1268,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get announcementDetail => '公告详情';
 
   @override
+  String get notificationDetail => '通知详情';
+
+  @override
   String get contentDetail => '内容详情';
 
   @override

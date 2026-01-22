@@ -1,11 +1,13 @@
 import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:comecomepay/services/notification_service.dart';
 import 'package:comecomepay/services/announcement_service.dart';
 import 'package:comecomepay/models/notification_model.dart';
 import 'package:comecomepay/models/announcement_model.dart';
 import 'package:comecomepay/utils/app_colors.dart';
+import 'package:comecomepay/viewmodels/notification_viewmodel.dart';
 import 'NotificationDetailScreen.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -137,26 +139,6 @@ class _NotificationScreenState extends State<NotificationScreen>
         _errorMessage = e.toString();
         _isLoadingAnnouncements = false;
       });
-    }
-  }
-
-  Future<void> _markAllAsRead() async {
-    try {
-      await _notificationService.markAllAsRead();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.success),
-          backgroundColor: Colors.green,
-        ),
-      );
-      _loadNotifications(refresh: true);
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${AppLocalizations.of(context)!.errorOccurred}: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
     }
   }
 
@@ -526,7 +508,21 @@ class _NotificationScreenState extends State<NotificationScreen>
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
           onTap: () {
-            // No detail screen for notifications
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => NotificationDetailScreen(
+                  id: notification.id,
+                  type: 'notification',
+                ),
+              ),
+            ).then((_) {
+              // Refresh the list and unread counts
+              _loadNotifications(refresh: true);
+              // Refresh unread counts in ViewModel for home screen
+              Provider.of<NotificationViewModel>(context, listen: false)
+                  .refreshUnreadCounts();
+            });
           },
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -594,6 +590,8 @@ class _NotificationScreenState extends State<NotificationScreen>
   }
 
   Widget _buildAnnouncementCard(AnnouncementItem announcement) {
+    final isUnread = !announcement.isRead; // Show red dot if NOT read
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
@@ -616,10 +614,17 @@ class _NotificationScreenState extends State<NotificationScreen>
               context,
               MaterialPageRoute(
                 builder: (context) => NotificationDetailScreen(
-                  announcementId: announcement.id,
+                  id: announcement.id,
+                  type: 'announcement',
                 ),
               ),
-            );
+            ).then((_) {
+              // Refresh the list and unread counts
+              _loadAnnouncements(refresh: true);
+              // Refresh unread counts in ViewModel for home screen
+              Provider.of<NotificationViewModel>(context, listen: false)
+                  .refreshUnreadCounts();
+            });
           },
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -638,15 +643,31 @@ class _NotificationScreenState extends State<NotificationScreen>
                 ),
                 const SizedBox(height: 8),
 
-                // Title
-                Text(
-                  announcement.title,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black,
-                    height: 1.3,
-                  ),
+                // Title with unread indicator
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        announcement.title,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black,
+                          height: 1.3,
+                        ),
+                      ),
+                    ),
+                    if (isUnread)
+                      Container(
+                        width: 8,
+                        height: 8,
+                        margin: const EdgeInsets.only(left: 8),
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                  ],
                 ),
                 const SizedBox(height: 6),
 

@@ -57,11 +57,13 @@ class NotificationModel {
 class NotificationListResponse {
   final String status;
   final int count;
+  final int total;
   final List<NotificationModel> notifications;
 
   NotificationListResponse({
     required this.status,
     required this.count,
+    required this.total,
     required this.notifications,
   });
 
@@ -69,6 +71,7 @@ class NotificationListResponse {
     return NotificationListResponse(
       status: json['status'] as String? ?? 'success',
       count: json['count'] as int? ?? 0,
+      total: json['total'] as int? ?? 0,
       notifications: (json['notifications'] as List<dynamic>?)
               ?.map((item) =>
                   NotificationModel.fromJson(item as Map<String, dynamic>))
@@ -91,6 +94,24 @@ class UnreadCountResponse {
     return UnreadCountResponse(
       status: json['status'] as String? ?? 'success',
       count: json['count'] as int? ?? 0,
+    );
+  }
+}
+
+class NotificationDetailResponse {
+  final String status;
+  final NotificationModel notification;
+
+  NotificationDetailResponse({
+    required this.status,
+    required this.notification,
+  });
+
+  factory NotificationDetailResponse.fromJson(Map<String, dynamic> json) {
+    return NotificationDetailResponse(
+      status: json['status'] as String? ?? 'success',
+      notification: NotificationModel.fromJson(
+          json['notification'] as Map<String, dynamic>),
     );
   }
 }

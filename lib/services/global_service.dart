@@ -1839,6 +1839,60 @@ class GlobalService extends BaseService {
     }
   }
 
+  /// Get unread announcement count
+  Future<NotificationUnreadCountResponseModel>
+      getUnreadAnnouncementCount() async {
+    _apiLogger.logMethodEntry('getUnreadAnnouncementCount');
+
+    try {
+      final accessToken = HiveStorageService.getAccessToken();
+      if (accessToken == null) {
+        throw UnauthorizedException('No access token available');
+      }
+
+      final response = await dio.get(
+        '/announcements/unread-count',
+        options: Options(
+          headers: {'Authorization': 'Bearer $accessToken'},
+        ),
+      );
+
+      final data = handleResponse(response);
+      if (data['status'] == 'success') {
+        _apiLogger.logSuccess('getUnreadAnnouncementCount',
+            'Unread announcement count retrieved successfully');
+        _apiLogger.logMethodExit('getUnreadAnnouncementCount',
+            result: 'Success');
+        return NotificationUnreadCountResponseModel.fromJson(data);
+      } else {
+        _apiLogger.logFailure(
+            'getUnreadAnnouncementCount', 'Failed to retrieve unread count',
+            error: data['error']);
+        _apiLogger.logMethodExit('getUnreadAnnouncementCount',
+            result: 'Failed');
+        throw Exception(data['error'] ?? 'Failed to retrieve unread count');
+      }
+    } on UnauthorizedException catch (e) {
+      _apiLogger.logFailure('getUnreadAnnouncementCount', 'Unauthorized',
+          error: e.toString());
+      _apiLogger.logMethodExit('getUnreadAnnouncementCount',
+          result: 'Unauthorized');
+      throw e;
+    } on DioException catch (e) {
+      _apiLogger.logFailure('getUnreadAnnouncementCount', 'Dio error',
+          error: e.toString());
+      _apiLogger.logMethodExit('getUnreadAnnouncementCount',
+          result: 'Dio error');
+      throw handleDioError(e);
+    } catch (e) {
+      _apiLogger.logFailure('getUnreadAnnouncementCount', 'Exception occurred',
+          error: e.toString());
+      _apiLogger.logMethodExit('getUnreadAnnouncementCount',
+          result: 'Exception: ${e.toString()}');
+      throw Exception('Failed to retrieve unread count: ${e.toString()}');
+    }
+  }
+
   Future<CarddetailResponseModel> initGetCard(int kyc_id) async {
     try {
       final response = await dio.get(
