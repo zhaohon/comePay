@@ -13,6 +13,7 @@ import 'package:comecomepay/utils/app_colors.dart';
 import 'package:comecomepay/services/card_service.dart';
 import 'package:comecomepay/models/card_list_model.dart';
 import 'package:comecomepay/models/card_account_details_model.dart';
+import 'package:comecomepay/views/homes/CardAuthorizationScreen.dart';
 
 class CardScreen extends StatefulWidget {
   const CardScreen({super.key});
@@ -505,16 +506,63 @@ class _CardScreenState extends State<CardScreen> {
                   physics: const NeverScrollableScrollPhysics(),
                   childAspectRatio: 1.2,
                   children: [
-                    _buildActionCard(Icons.info_outline,
-                        AppLocalizations.of(context)!.cardInformation),
-                    _buildActionCard(Icons.lock_outline,
-                        AppLocalizations.of(context)!.lockCard),
-                    _buildActionCard(Icons.touch_app_outlined,
-                        AppLocalizations.of(context)!.cardAuthorization),
-                    _buildActionCard(Icons.credit_card_outlined,
-                        AppLocalizations.of(context)!.applyPhysicalCard),
-                    _buildActionCard(Icons.link_off_outlined,
-                        AppLocalizations.of(context)!.reportLoss),
+                    _buildActionCard(
+                      Icons.info_outline,
+                      AppLocalizations.of(context)!.cardInformation,
+                      onTap: () => _showCardSecurityInfo(),
+                    ),
+                    _buildActionCard(
+                      Icons.lock_outline,
+                      AppLocalizations.of(context)!.lockCard,
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(AppLocalizations.of(context)!
+                                .featureComingSoon),
+                            duration: const Duration(seconds: 1),
+                          ),
+                        );
+                      },
+                    ),
+                    _buildActionCard(
+                      Icons.touch_app_outlined,
+                      AppLocalizations.of(context)!.cardAuthorization,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const CardAuthorizationScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    _buildActionCard(
+                      Icons.credit_card_outlined,
+                      AppLocalizations.of(context)!.applyPhysicalCard,
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(AppLocalizations.of(context)!
+                                .featureComingSoon),
+                            duration: const Duration(seconds: 1),
+                          ),
+                        );
+                      },
+                    ),
+                    _buildActionCard(
+                      Icons.link_off_outlined,
+                      AppLocalizations.of(context)!.reportLoss,
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(AppLocalizations.of(context)!
+                                .featureComingSoon),
+                            duration: const Duration(seconds: 1),
+                          ),
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -1164,21 +1212,12 @@ class _CardScreenState extends State<CardScreen> {
     );
   }
 
-  Widget _buildActionCard(IconData icon, String label) {
+  Widget _buildActionCard(IconData icon, String label, {VoidCallback? onTap}) {
     return GestureDetector(
-      onTap: () {
-        if (label == '卡信息') {
-          _showCardSecurityInfo();
-        } else if (label == '鎖卡') {
-          // TODO: 实现锁卡功能
-        } else if (label == '卡片授權') {
-          // TODO: 实现卡片授权功能
-        } else if (label == '申領實體卡') {
-          // TODO: 实现申领实体卡功能
-        } else if (label == '掛失') {
-          // TODO: 实现挂失功能
-        }
-      },
+      onTap: onTap ??
+          () {
+            // Default empty tap
+          },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,

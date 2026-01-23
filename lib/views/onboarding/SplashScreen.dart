@@ -100,8 +100,12 @@ class _SplashScreenState extends State<SplashScreen>
       final currentVersion = packageInfo.version;
       final remoteVersion = response.data.version;
 
+      print('🔍 Version Debug: Current=$currentVersion, Remote=$remoteVersion');
+
       final isNewer =
           VersionUtils.isNewerVersion(currentVersion, remoteVersion);
+
+      print('🔍 Version Debug: isNewer=$isNewer');
 
       // 如果有新版本，显示全屏页面
       if (isNewer && mounted) {

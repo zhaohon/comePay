@@ -2639,6 +2639,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Publish Time'**
   String get publishTime;
+
+  /// No description provided for @authorizationList.
+  ///
+  /// In en, this message translates to:
+  /// **'Authorization List'**
+  String get authorizationList;
+
+  /// No description provided for @featureComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Feature under development'**
+  String get featureComingSoon;
 }
 
 class _AppLocalizationsDelegate

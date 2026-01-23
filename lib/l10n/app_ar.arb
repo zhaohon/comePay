@@ -417,5 +417,8 @@
   "loadMoreFailed": "فشل تحميل المزيد",
   "refreshing": "جاري التحديث...",
   "invalidDate": "تاريخ غير صالح",
-  "publishTime": "وقت النشر"
+  "publishTime": "وقت النشر",
+  "authorizationList": "قائمة التفويض",
+  "code": "رمز",
+  "featureComingSoon": "الميزة قيد التطوير"
 }

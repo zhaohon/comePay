@@ -715,7 +715,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get failedToLoadCardFee => '加载卡费失败';
 
   @override
-  String get code => '代码';
+  String get code => '验证码';
 
   @override
   String get insufficient => '余额不足';
@@ -1290,4 +1290,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get publishTime => '发布时间';
+
+  @override
+  String get authorizationList => '授权列表';
+
+  @override
+  String get featureComingSoon => '功能开发中';
 }

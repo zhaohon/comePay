@@ -747,7 +747,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get failedToLoadCardFee => 'Failed to load card fee';
 
   @override
-  String get code => 'Code';
+  String get code => 'رمز';
 
   @override
   String get insufficient => 'Insufficient';
@@ -1328,4 +1328,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get publishTime => 'وقت النشر';
+
+  @override
+  String get authorizationList => 'قائمة التفويض';
+
+  @override
+  String get featureComingSoon => 'الميزة قيد التطوير';
 }

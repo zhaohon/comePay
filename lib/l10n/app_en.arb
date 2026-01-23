@@ -441,5 +441,8 @@
   "loadMoreFailed": "Load More Failed",
   "refreshing": "Refreshing...",
   "invalidDate": "Invalid Date",
-  "publishTime": "Publish Time"
+  "publishTime": "Publish Time",
+  "authorizationList": "Authorization List",
+  "code": "Code",
+  "featureComingSoon": "Feature under development"
 }

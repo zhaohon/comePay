@@ -1326,4 +1326,10 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get publishTime => 'Publish Time';
+
+  @override
+  String get authorizationList => 'Authorization List';
+
+  @override
+  String get featureComingSoon => 'Feature under development';
 }

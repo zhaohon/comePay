@@ -7,6 +7,7 @@ import 'package:comecomepay/main.dart';
 import 'package:comecomepay/utils/constants.dart';
 import 'package:comecomepay/services/api_logger_service.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
+import 'package:hive/hive.dart';
 
 // Custom exception classes for different HTTP status codes
 class UnauthorizedException implements Exception {
@@ -81,6 +82,16 @@ abstract class BaseService {
         final token = HiveStorageService.getAccessToken();
         if (token != null) {
           options.headers['Authorization'] = 'Bearer $token';
+        }
+
+        // 添加语言请求头 Accept-Language
+        try {
+          final settingsBox = Hive.box('settings');
+          final String lang = settingsBox.get('language', defaultValue: 'en');
+          options.headers['Accept-Language'] = lang;
+        } catch (e) {
+          // Fallback to en if box access fails
+          options.headers['Accept-Language'] = 'en';
         }
 
         // 添加 DevTools Network 监控支持
