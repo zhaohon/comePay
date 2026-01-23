@@ -61,7 +61,8 @@ android {
     buildTypes {
         release {
             // Use release signing configuration from key.properties
-            signingConfig = signingConfigs.getByName("release")
+            // signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.getByName("debug")
 
             // Enable code shrinking/obfuscation with custom keep rules.
             isMinifyEnabled = true
