@@ -1334,4 +1334,97 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get featureComingSoon => 'الميزة قيد التطوير';
+
+  @override
+  String get unlockCard => 'Unlock Card';
+
+  @override
+  String get cardLockedSuccessfully => 'Card locked successfully';
+
+  @override
+  String get cardUnlockedSuccessfully => 'Card unlocked successfully';
+
+  @override
+  String get failedToLockCard => 'Failed to lock card';
+
+  @override
+  String get failedToUnlockCard => 'Failed to unlock card';
+
+  @override
+  String get confirmLockTitle => 'Lock Card';
+
+  @override
+  String get confirmLockContent =>
+      'Are you sure you want to lock this card? You will not be able to use it for payments until you unlock it.';
+
+  @override
+  String get confirmUnlockTitle => 'Unlock Card';
+
+  @override
+  String get confirmUnlockContent =>
+      'Are you sure you want to unlock this card?';
+
+  @override
+  String get cardSecurityInfo => 'Card Security Info';
+
+  @override
+  String get cardNumber => 'Card Number';
+
+  @override
+  String get expiryDate => 'Expiry Date';
+
+  @override
+  String get cvvCode => 'CVV Code';
+
+  @override
+  String get pinCode => 'PIN Code';
+
+  @override
+  String insufficientBalanceForCoin(Object coin) {
+    return '$coin Balance Insufficient';
+  }
+
+  @override
+  String get failedToGetPreview => 'Failed to get preview';
+
+  @override
+  String swapFailedWithMessage(Object message) {
+    return 'Swap failed: $message';
+  }
+
+  @override
+  String get swapHistoryTitle => 'Swap History';
+
+  @override
+  String get noSwapHistory => 'No swap history';
+
+  @override
+  String get consumed => 'Consumed';
+
+  @override
+  String get transferToCard => 'Transfer to card';
+
+  @override
+  String get transferFromCard => 'Transfer from card';
+
+  @override
+  String get rechargeToCard => '(Recharge to card)';
+
+  @override
+  String get withdrawFromCard => '(Withdraw from card)';
+
+  @override
+  String get swapAction => 'Swap';
+
+  @override
+  String get getAmount => 'Get';
+
+  @override
+  String get enterAmount => 'Please enter amount';
+
+  @override
+  String get gettingRate => 'Getting rate...';
+
+  @override
+  String get error => 'Error';
 }

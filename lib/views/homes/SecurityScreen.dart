@@ -86,22 +86,22 @@ class _SecurityscreenState extends State<Securityscreen> {
                           },
                         ),
                         _buildDivider(),
-                        _buildCardItem(
-                          context,
-                          icon: Icons.phone,
-                          iconColor: const Color(0xFF4CAF50),
-                          title: localizations.phone,
-                          value:
-                              _profileData?.user.phone ?? localizations.unbound,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => BindPhoneScreen()),
-                            );
-                          },
-                        ),
-                        _buildDivider(),
+                        // _buildCardItem(
+                        //   context,
+                        //   icon: Icons.phone,
+                        //   iconColor: const Color(0xFF4CAF50),
+                        //   title: localizations.phone,
+                        //   value:
+                        //       _profileData?.user.phone ?? localizations.unbound,
+                        //   onTap: () {
+                        //     Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //           builder: (context) => BindPhoneScreen()),
+                        //     );
+                        //   },
+                        // ),
+                        // _buildDivider(),
                         _buildCardItem(
                           context,
                           icon: Icons.lock,

@@ -119,9 +119,9 @@ class _SwapHistoryPageState extends State<SwapHistoryPage> {
         backgroundColor: AppColors.pageBackground,
         elevation: 0,
         centerTitle: true,
-        title: const Text(
-          '兑换记录',
-          style: TextStyle(
+        title: Text(
+          AppLocalizations.of(context)!.swapHistoryTitle,
+          style: const TextStyle(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.bold,
           ),
@@ -144,7 +144,7 @@ class _SwapHistoryPageState extends State<SwapHistoryPage> {
                               size: 64, color: AppColors.textSecondary),
                           const SizedBox(height: 16),
                           Text(
-                            '暂无兑换记录',
+                            AppLocalizations.of(context)!.noSwapHistory,
                             style: TextStyle(
                                 color: AppColors.textSecondary, fontSize: 16),
                           ),
@@ -224,9 +224,9 @@ class _SwapHistoryPageState extends State<SwapHistoryPage> {
           const SizedBox(height: 12),
 
           // "消耗"标签
-          const Text(
-            '消耗',
-            style: TextStyle(
+          Text(
+            AppLocalizations.of(context)!.consumed,
+            style: const TextStyle(
               color: AppColors.textSecondary,
               fontSize: 12,
             ),

@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:comecomepay/core/base_service.dart';
 import 'package:comecomepay/models/card_apply_model.dart';
 import 'package:comecomepay/models/card_apply_progress_model.dart';
@@ -208,6 +207,31 @@ class CardService extends BaseService {
       }
     } catch (e) {
       print('Error getting full card number: $e');
+      rethrow;
+    }
+  }
+
+  /// 修改卡片状态
+  /// [publicToken] 卡片唯一标识
+  /// [statusCode] 状态码：00激活，G1冻结（锁卡）
+  Future<Map<String, dynamic>> modifyCardStatus(
+      String publicToken, String statusCode) async {
+    try {
+      final response = await put(
+        '/card/status',
+        data: {
+          'public_token': publicToken,
+          'card_status_code': statusCode,
+        },
+      );
+
+      if (response['status'] == 'success' && response['data'] != null) {
+        return response['data'] as Map<String, dynamic>;
+      } else {
+        throw Exception(response['message'] ?? 'Failed to modify card status');
+      }
+    } catch (e) {
+      print('Error modifying card status: $e');
       rethrow;
     }
   }

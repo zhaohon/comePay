@@ -752,13 +752,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get pleaseEnterValidAmount => '请输入有效金额';
 
   @override
-  String get pleaseSelectCard => '请选择一张卡片';
+  String get pleaseSelectCard => '请选择卡片';
 
   @override
   String get balanceInsufficient => '余额不足';
 
   @override
-  String get swapSuccess => '兑换成功!';
+  String get swapSuccess => '兑换成功';
 
   @override
   String get swapFailed => '兑换失败';
@@ -782,10 +782,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get swapPreview => '兑换预览';
 
   @override
-  String get swapAmount => '兑换数量';
+  String get swapAmount => '汇出数量';
 
   @override
-  String get netReceived => '净到账';
+  String get netReceived => '实际到账';
 
   @override
   String get exchangeRate => '汇率';
@@ -794,7 +794,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get feeRate => '手续费率';
 
   @override
-  String get feeAmount => '手续费金额';
+  String get feeAmount => '手续费';
 
   @override
   String get cancelButton => '取消';
@@ -1296,4 +1296,95 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get featureComingSoon => '功能开发中';
+
+  @override
+  String get unlockCard => '解锁卡片';
+
+  @override
+  String get cardLockedSuccessfully => '锁卡成功';
+
+  @override
+  String get cardUnlockedSuccessfully => '解锁成功';
+
+  @override
+  String get failedToLockCard => '锁卡失败';
+
+  @override
+  String get failedToUnlockCard => '解锁失败';
+
+  @override
+  String get confirmLockTitle => '确认锁卡';
+
+  @override
+  String get confirmLockContent => '您确定要锁定此卡吗？锁定后将无法进行支付，直到您重新解锁。';
+
+  @override
+  String get confirmUnlockTitle => '确认解锁';
+
+  @override
+  String get confirmUnlockContent => '您确定要解锁此卡吗？';
+
+  @override
+  String get cardSecurityInfo => '卡片安全信息';
+
+  @override
+  String get cardNumber => '卡号';
+
+  @override
+  String get expiryDate => '到期日';
+
+  @override
+  String get cvvCode => 'CVV码';
+
+  @override
+  String get pinCode => 'PIN码';
+
+  @override
+  String insufficientBalanceForCoin(Object coin) {
+    return '$coin 余额不足';
+  }
+
+  @override
+  String get failedToGetPreview => '获取预览失败';
+
+  @override
+  String swapFailedWithMessage(Object message) {
+    return '兑换失败: $message';
+  }
+
+  @override
+  String get swapHistoryTitle => '兑换记录';
+
+  @override
+  String get noSwapHistory => '暂无兑换记录';
+
+  @override
+  String get consumed => '消耗';
+
+  @override
+  String get transferToCard => '转入卡片';
+
+  @override
+  String get transferFromCard => '转出卡片';
+
+  @override
+  String get rechargeToCard => '(充值到卡片)';
+
+  @override
+  String get withdrawFromCard => '(从卡片提现)';
+
+  @override
+  String get swapAction => '兑换';
+
+  @override
+  String get getAmount => '获得';
+
+  @override
+  String get enterAmount => '请输入数量';
+
+  @override
+  String get gettingRate => '获取汇率中...';
+
+  @override
+  String get error => '错误';
 }

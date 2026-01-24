@@ -1599,7 +1599,7 @@ abstract class AppLocalizations {
   /// No description provided for @swapSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Swap successful!'**
+  /// **'Swap successful'**
   String get swapSuccess;
 
   /// No description provided for @swapFailed.
@@ -2651,6 +2651,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Feature under development'**
   String get featureComingSoon;
+
+  /// No description provided for @unlockCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock Card'**
+  String get unlockCard;
+
+  /// No description provided for @cardLockedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Card locked successfully'**
+  String get cardLockedSuccessfully;
+
+  /// No description provided for @cardUnlockedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Card unlocked successfully'**
+  String get cardUnlockedSuccessfully;
+
+  /// No description provided for @failedToLockCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to lock card'**
+  String get failedToLockCard;
+
+  /// No description provided for @failedToUnlockCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to unlock card'**
+  String get failedToUnlockCard;
+
+  /// No description provided for @confirmLockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock Card'**
+  String get confirmLockTitle;
+
+  /// No description provided for @confirmLockContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to lock this card? You will not be able to use it for payments until you unlock it.'**
+  String get confirmLockContent;
+
+  /// No description provided for @confirmUnlockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock Card'**
+  String get confirmUnlockTitle;
+
+  /// No description provided for @confirmUnlockContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to unlock this card?'**
+  String get confirmUnlockContent;
+
+  /// No description provided for @cardSecurityInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Security Info'**
+  String get cardSecurityInfo;
+
+  /// No description provided for @cardNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Number'**
+  String get cardNumber;
+
+  /// No description provided for @expiryDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiry Date'**
+  String get expiryDate;
+
+  /// No description provided for @cvvCode.
+  ///
+  /// In en, this message translates to:
+  /// **'CVV Code'**
+  String get cvvCode;
+
+  /// No description provided for @pinCode.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN Code'**
+  String get pinCode;
+
+  /// No description provided for @insufficientBalanceForCoin.
+  ///
+  /// In en, this message translates to:
+  /// **'{coin} Balance Insufficient'**
+  String insufficientBalanceForCoin(Object coin);
+
+  /// No description provided for @failedToGetPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to get preview'**
+  String get failedToGetPreview;
+
+  /// No description provided for @swapFailedWithMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap failed: {message}'**
+  String swapFailedWithMessage(Object message);
+
+  /// No description provided for @swapHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap History'**
+  String get swapHistoryTitle;
+
+  /// No description provided for @noSwapHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'No swap history'**
+  String get noSwapHistory;
+
+  /// No description provided for @consumed.
+  ///
+  /// In en, this message translates to:
+  /// **'Consumed'**
+  String get consumed;
+
+  /// No description provided for @transferToCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer to card'**
+  String get transferToCard;
+
+  /// No description provided for @transferFromCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer from card'**
+  String get transferFromCard;
+
+  /// No description provided for @rechargeToCard.
+  ///
+  /// In en, this message translates to:
+  /// **'(Recharge to card)'**
+  String get rechargeToCard;
+
+  /// No description provided for @withdrawFromCard.
+  ///
+  /// In en, this message translates to:
+  /// **'(Withdraw from card)'**
+  String get withdrawFromCard;
+
+  /// No description provided for @swapAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap'**
+  String get swapAction;
+
+  /// No description provided for @getAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Get'**
+  String get getAmount;
+
+  /// No description provided for @enterAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter amount'**
+  String get enterAmount;
+
+  /// No description provided for @gettingRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Getting rate...'**
+  String get gettingRate;
+
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
 }
 
 class _AppLocalizationsDelegate

@@ -905,7 +905,7 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        '加載中...',
+                        AppLocalizations.of(context)!.loading,
                         style: TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 14,
@@ -1005,7 +1005,11 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                bottomCoin == 'HKD' ? '轉入卡片' : '轉出卡片',
+                                bottomCoin == 'HKD'
+                                    ? AppLocalizations.of(context)!
+                                        .transferToCard
+                                    : AppLocalizations.of(context)!
+                                        .transferFromCard,
                                 style: TextStyle(
                                   fontSize: 13,
                                   color: bottomCoin == 'HKD'
@@ -1016,7 +1020,11 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                bottomCoin == 'HKD' ? '(充值到卡片)' : '(從卡片提現)',
+                                bottomCoin == 'HKD'
+                                    ? AppLocalizations.of(context)!
+                                        .rechargeToCard
+                                    : AppLocalizations.of(context)!
+                                        .withdrawFromCard,
                                 style: TextStyle(
                                   fontSize: 11,
                                   color: AppColors.textSecondary,
@@ -1081,7 +1089,8 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
                                         Text(
                                           _selectedCard != null
                                               ? _selectedCard!.cardNo
-                                              : '选择卡片',
+                                              : AppLocalizations.of(context)!
+                                                  .selectCard,
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             color: _selectedCard != null
@@ -1134,16 +1143,16 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
                                 ),
                               ),
                               const SizedBox(width: 8),
-                              const Text(
-                                "获取汇率中...",
-                                style:
-                                    TextStyle(color: AppColors.textSecondary),
+                              Text(
+                                AppLocalizations.of(context)!.gettingRate,
+                                style: const TextStyle(
+                                    color: AppColors.textSecondary),
                               ),
                             ],
                           )
                         else if (swapViewModel.errorMessage != null)
                           Text(
-                            "错误: ${swapViewModel.errorMessage}",
+                            "${AppLocalizations.of(context)!.error}: ${swapViewModel.errorMessage}",
                             style: const TextStyle(
                                 color: AppColors.error, fontSize: 12),
                           )
@@ -1211,9 +1220,9 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
                                       strokeWidth: 2,
                                     ),
                                   )
-                                : const Text(
-                                    "兑換",
-                                    style: TextStyle(
+                                : Text(
+                                    AppLocalizations.of(context)!.swapAction,
+                                    style: const TextStyle(
                                       fontSize: 16,
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
@@ -1290,7 +1299,9 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
           Padding(
             padding: const EdgeInsets.only(top: 5, bottom: 5),
             child: Text(
-              isTop ? '匯出數量' : '獲得',
+              isTop
+                  ? AppLocalizations.of(context)!.swapAmount
+                  : AppLocalizations.of(context)!.getAmount,
               style: TextStyle(
                 fontSize: 12,
                 color: AppColors.textSecondary,
@@ -1309,7 +1320,9 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
                       const TextInputType.numberWithOptions(decimal: true),
                   decoration: InputDecoration(
                     border: InputBorder.none,
-                    hintText: readOnly ? "0" : "請輸入數量",
+                    hintText: readOnly
+                        ? "0"
+                        : AppLocalizations.of(context)!.enterAmount,
                     hintStyle: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
@@ -1334,9 +1347,9 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
                                   color: AppColors.primaryLight,
                                   borderRadius: BorderRadius.circular(6),
                                 ),
-                                child: const Text(
-                                  '全部',
-                                  style: TextStyle(
+                                child: Text(
+                                  AppLocalizations.of(context)!.all,
+                                  style: const TextStyle(
                                     color: AppColors.primary,
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
@@ -1365,7 +1378,7 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
             Align(
               alignment: Alignment.centerRight,
               child: Text(
-                '可用: $availableBalance $symbol',
+                '${AppLocalizations.of(context)!.available}: $availableBalance $symbol',
                 style: const TextStyle(
                   color: AppColors.primary,
                   fontSize: 12,

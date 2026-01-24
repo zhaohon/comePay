@@ -285,6 +285,98 @@ class _CardScreenState extends State<CardScreen> {
     _loadTransactions();
   }
 
+  /// 修改卡片状态 (锁卡/解锁)
+  Future<void> _modifyCardStatus(String statusCode) async {
+    if (_cardList == null ||
+        !_cardList!.hasCards ||
+        _currentCardIndex >= _cardList!.cards.length) return;
+
+    final currentToken = _cardList!.cards[_currentCardIndex].publicToken;
+
+    // Show loading
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => const Center(child: CircularProgressIndicator()),
+    );
+
+    try {
+      await _cardService.modifyCardStatus(currentToken, statusCode);
+
+      // Close loading
+      if (mounted) Navigator.of(context).pop();
+
+      // Show success
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(statusCode == 'G1'
+                ? AppLocalizations.of(context)!.cardLockedSuccessfully
+                : AppLocalizations.of(context)!.cardUnlockedSuccessfully),
+            backgroundColor: AppColors.success,
+          ),
+        );
+      }
+
+      // Refresh card details to reflect new status
+      _loadCurrentCardDetails();
+    } catch (e) {
+      // Close loading
+      if (mounted) Navigator.of(context).pop();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(statusCode == 'G1'
+                ? AppLocalizations.of(context)!.failedToLockCard
+                : AppLocalizations.of(context)!.failedToUnlockCard),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+      print('Error modifying card status: $e');
+    }
+  }
+
+  /// 显示确认弹窗
+  Future<void> _showConfirmationDialog({
+    required String title,
+    required String content,
+    required VoidCallback onConfirm,
+  }) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                AppLocalizations.of(context)!.cancel,
+                style: const TextStyle(color: AppColors.textSecondary),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(
+                AppLocalizations.of(context)!.confirm,
+                style: const TextStyle(color: AppColors.primary),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                onConfirm();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // 初始加载中
@@ -512,16 +604,42 @@ class _CardScreenState extends State<CardScreen> {
                       onTap: () => _showCardSecurityInfo(),
                     ),
                     _buildActionCard(
-                      Icons.lock_outline,
-                      AppLocalizations.of(context)!.lockCard,
+                      (_currentCardDetails?.status == 'frozen')
+                          ? Icons.lock_open_outlined
+                          : Icons.lock_outline,
+                      (_currentCardDetails?.status == 'frozen')
+                          ? AppLocalizations.of(context)!.unlockCard
+                          : AppLocalizations.of(context)!.lockCard,
                       onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(AppLocalizations.of(context)!
-                                .featureComingSoon),
-                            duration: const Duration(seconds: 1),
-                          ),
-                        );
+                        if (_currentCardDetails == null) return;
+                        // 'normal' -> Lock (G1)
+                        // 'frozen' -> Unlock (00)
+                        if (_currentCardDetails!.status == 'normal') {
+                          _showConfirmationDialog(
+                            title:
+                                AppLocalizations.of(context)!.confirmLockTitle,
+                            content: AppLocalizations.of(context)!
+                                .confirmLockContent,
+                            onConfirm: () => _modifyCardStatus('G1'),
+                          );
+                        } else if (_currentCardDetails!.status == 'frozen') {
+                          _showConfirmationDialog(
+                            title: AppLocalizations.of(context)!
+                                .confirmUnlockTitle,
+                            content: AppLocalizations.of(context)!
+                                .confirmUnlockContent,
+                            onConfirm: () => _modifyCardStatus('00'),
+                          );
+                        } else {
+                          // cancelled or others
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(AppLocalizations.of(context)!
+                                  .featureComingSoon),
+                              duration: const Duration(seconds: 1),
+                            ),
+                          );
+                        }
                       },
                     ),
                     _buildActionCard(
@@ -938,7 +1056,7 @@ class _CardScreenState extends State<CardScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '卡片安全信息',
+                    AppLocalizations.of(context)!.cardSecurityInfo,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -959,14 +1077,18 @@ class _CardScreenState extends State<CardScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   children: [
-                    _buildSecurityInfoItem('卡號', cardNumber),
+                    _buildSecurityInfoItem(
+                        AppLocalizations.of(context)!.cardNumber, cardNumber),
                     const SizedBox(height: 20),
                     _buildSecurityInfoItem(
-                        '到期日', _currentCardDetails?.expiryDate ?? '***'),
+                        AppLocalizations.of(context)!.expiryDate,
+                        _currentCardDetails?.expiryDate ?? '***'),
                     const SizedBox(height: 20),
-                    _buildSecurityInfoItem('CVV碼', cvv),
+                    _buildSecurityInfoItem(
+                        AppLocalizations.of(context)!.cvvCode, cvv),
                     const SizedBox(height: 20),
-                    _buildSecurityInfoItem('PIN碼', pin),
+                    _buildSecurityInfoItem(
+                        AppLocalizations.of(context)!.pinCode, pin),
                     const SizedBox(height: 20),
                   ],
                 ),
@@ -1000,9 +1122,9 @@ class _CardScreenState extends State<CardScreen> {
                       ),
                       elevation: 0,
                     ),
-                    child: const Text(
-                      '確認',
-                      style: TextStyle(
+                    child: Text(
+                      AppLocalizations.of(context)!.confirm,
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
