@@ -1,7 +1,7 @@
-import 'package:dio/dio.dart';
 import 'package:comecomepay/core/base_service.dart';
-import 'package:comecomepay/models/kyc_model.dart';
 import 'package:comecomepay/models/kyc_eligibility_model.dart';
+import 'package:comecomepay/models/kyc_model.dart';
+import 'package:comecomepay/models/responses/kyc_status_response_model.dart';
 
 class KycService extends BaseService {
   KycService() {
@@ -10,9 +10,12 @@ class KycService extends BaseService {
   }
 
   Future<Map<String, dynamic>> getUserKyc(String email) async {
-    print('Starting KYC request for email: $email');
+    // User requested to disable this API call for now
+    print('Starting KYC request for email: $email (DISABLED)');
+    return {'total': 0, 'list': <KycModel>[]};
 
-    final endpoint = '/kyc';
+    /* 
+    final endpoint = '/v1/kyc';
     final queryParams = {
       'page': 1,
       'limit': 10,
@@ -39,6 +42,24 @@ class KycService extends BaseService {
     } else {
       print('Error: Failed to fetch KYC data: ${response.statusCode}');
       throw Exception('Failed to fetch KYC data: ${response.statusCode}');
+    }
+    */
+  }
+
+  /// 获取用户KYC状态（包括最新的KYC记录和失败原因）
+  Future<KycStatusResponseModel> getKycStatus() async {
+    print('Fetching user KYC status...');
+    final endpoint = '/v1/didit/status';
+
+    // Using BaseService get method which handles tokens and error logging if configured
+    final response = await get(endpoint);
+
+    if (response['status'] == 'success' ||
+        response['user_kyc_status'] != null) {
+      return KycStatusResponseModel.fromJson(response);
+    } else {
+      print('Error: Failed to fetch KYC status');
+      throw Exception('Failed to fetch KYC status');
     }
   }
 
