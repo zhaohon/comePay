@@ -53,6 +53,10 @@ class _CreateAccountOtpConfirmScreenState
     final email = arguments?['email'] as String?;
     final referralCode = arguments?['referral_code'] as String?;
 
+    print('[CreateAccountOtpConfirmScreen] Received arguments: $arguments');
+    print(
+        '[CreateAccountOtpConfirmScreen] Extracted referralCode: $referralCode');
+
     if (email == null || email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -87,12 +91,19 @@ class _CreateAccountOtpConfirmScreenState
         // OTP verification successful
         if (response.nextStep == 'set_password') {
           // Navigate to password screen
+          print(
+              '[CreateAccountOtpConfirmScreen] Navigating to set_password with: '
+              'response.referralCode=${response.referralCode}, '
+              'originalArg=$referralCode');
+
           Navigator.pushNamed(
             context,
             '/create_account_password',
             arguments: {
               'email': email,
-              'referral_code': response.referralCode,
+              'referral_code': (response.referralCode.isNotEmpty)
+                  ? response.referralCode
+                  : referralCode,
             },
           );
         } else {

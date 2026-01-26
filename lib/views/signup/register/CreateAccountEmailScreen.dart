@@ -56,8 +56,14 @@ class _CreateAccountEmailScreenState extends State<CreateAccountEmailScreen> {
             'email': _emailController.text,
             'message': result.message,
             'otp': _signupViewModel.emailValidationResponse?.otp,
+            'referral_code': _referralCodeController.text.trim().isEmpty
+                ? null
+                : _referralCodeController.text.trim(),
           },
-        );
+        ).then((_) {
+          print(
+              '[CreateAccountEmailScreen] Navigated with referral_code: ${_referralCodeController.text}');
+        });
       } else {
         _showErrorAlert(
             result.message ?? AppLocalizations.of(context)!.errorOccurred);

@@ -128,6 +128,11 @@ class _CreateAccountConfrimEmailScreenState
                         final email = arguments?['email'] as String?;
                         final message = arguments?['message'] as String?;
                         final otp = arguments?['otp'] as String?;
+                        final referralCode =
+                            arguments?['referral_code'] as String?;
+
+                        print(
+                            '[CreateAccountConfirmEmailScreen] Passing referralCode: $referralCode');
 
                         Navigator.pushNamed(
                           context,
@@ -136,6 +141,7 @@ class _CreateAccountConfrimEmailScreenState
                             'email': email,
                             'message': message,
                             'otp': otp,
+                            'referral_code': referralCode,
                           },
                         );
                       },

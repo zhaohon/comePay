@@ -51,6 +51,10 @@ class _CreateAccountPasswordScreenState
     final email = arguments?['email'] as String?;
     final referralCode = arguments?['referral_code'] as String?;
 
+    print('[CreateAccountPasswordScreen] Received arguments: $arguments');
+    print(
+        '[CreateAccountPasswordScreen] Extracted referralCode: $referralCode');
+
     if (email == null || email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
