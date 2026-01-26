@@ -33,15 +33,26 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.comecomepay.app"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        val flutterVersionCode = project.findProperty("flutter.versionCode")?.toString()?.toIntOrNull()
+
+        // Load local.properties to get flutter version info
+        val localProperties = Properties()
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            localProperties.load(FileInputStream(localPropertiesFile))
+        }
+
+        val flutterVersionCode = localProperties.getProperty("flutter.versionCode")?.toIntOrNull()
+            ?: project.findProperty("flutter.versionCode")?.toString()?.toIntOrNull()
             ?: 1
-        val flutterVersionName = project.findProperty("flutter.versionName")?.toString() ?: "1.0.0"
+
+        val flutterVersionName = localProperties.getProperty("flutter.versionName")
+            ?: project.findProperty("flutter.versionName")?.toString()
+            ?: "1.0.0"
+        
+        println("DEBUG_GRADLE: flutter.versionName resolved to = $flutterVersionName")
 
         versionCode = flutterVersionCode
         versionName = flutterVersionName
