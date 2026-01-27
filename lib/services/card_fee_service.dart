@@ -3,6 +3,7 @@ import 'package:comecomepay/core/base_service.dart';
 import 'package:comecomepay/models/card_fee_config_model.dart';
 import 'package:comecomepay/models/payment_currency_model.dart';
 import 'package:comecomepay/models/card_fee_payment_model.dart';
+import 'package:comecomepay/models/responses/card_fee_status_response_model.dart';
 
 class CardFeeService extends BaseService {
   CardFeeService() {
@@ -106,17 +107,15 @@ class CardFeeService extends BaseService {
     }
   }
 
-  /// 查询当前用户的支付状态
-  Future<CardFeePaymentModel?> getPaymentStatus() async {
+  /// 查询当前用户的支付状态 (New Interface)
+  Future<CardFeeStatusResponseModel> getPaymentStatus() async {
     try {
+      // Endpoint from ccp (6).md
+      // Note: BaseUrl is likely .../api/v1
       final response = await get('/CardFee/GetPaymentStatus');
 
       if (response['status'] == 'success') {
-        final hasPayment = response['has_payment'] ?? false;
-        if (hasPayment && response['payment'] != null) {
-          return CardFeePaymentModel.fromJson(response['payment']);
-        }
-        return null;
+        return CardFeeStatusResponseModel.fromJson(response);
       } else {
         throw Exception('Failed to get payment status');
       }
