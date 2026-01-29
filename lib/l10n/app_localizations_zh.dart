@@ -1387,4 +1387,69 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get error => '错误';
+
+  @override
+  String get reviewing => '审核中';
+
+  @override
+  String get underReview => '审核中';
+
+  @override
+  String get kycReviewDesc => '您的KYC验证正在审核中。通常需要几分钟。';
+
+  @override
+  String get verifyFailed => '验证失败';
+
+  @override
+  String get verificationFailedTitle => '验证失败';
+
+  @override
+  String verificationFailedReason(Object reason) {
+    return '原因: $reason';
+  }
+
+  @override
+  String get verificationFailedDesc => '您的验证失败。请重试。';
+
+  @override
+  String get retryVerification => '重试验证';
+
+  @override
+  String get verificationPassed => '验证通过';
+
+  @override
+  String get receiveCardEligibilityDesc => '恭喜！您有资格领卡。';
+
+  @override
+  String get receiveCardNow => '立即领卡';
+
+  @override
+  String get verificationRequiredTitle => '需要验证';
+
+  @override
+  String get kycRequiredDesc => '您需要完成KYC验证才能发卡。';
+
+  @override
+  String get transactionRef => '交易参考号';
+
+  @override
+  String get paymentVerificationTimedOut => '支付验证超时。请重试。';
+
+  @override
+  String paymentNotCompleted(Object status) {
+    return '支付未完成: $status';
+  }
+
+  @override
+  String paymentFailed(Object error) {
+    return '支付失败: $error';
+  }
+
+  @override
+  String failedToReceiveCard(Object error) {
+    return '领卡失败: $error';
+  }
+
+  @override
+  String get minFee => '最低费用';
 }

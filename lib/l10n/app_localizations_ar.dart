@@ -389,7 +389,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noRelevantDataYet => 'لا توجد بيانات ذات صلة بعد';
 
   @override
-  String get comeComePayCard => 'بطاقة كوم كوم باي';
+  String get comeComePayCard => 'بطاقة Come Come Pay';
 
   @override
   String get noMonthlyFee => 'لا رسوم شهرية';
@@ -671,50 +671,50 @@ class AppLocalizationsAr extends AppLocalizations {
   String get fee => 'الرسوم';
 
   @override
-  String get submit => 'إرسال';
+  String get submit => 'Submit';
 
   @override
   String get pleaseSelect => 'الرجاء الاختيار';
 
   @override
-  String get yourGateway => 'Your Gateway';
+  String get yourGateway => 'بوابتك';
 
   @override
-  String get toCrypto => 'to Crypto';
+  String get toCrypto => 'إلى العملات المشفرة';
 
   @override
-  String get simpleSecureSmooth => 'Simple, Secure, Smooth';
+  String get simpleSecureSmooth => 'بسيط، آمن، سلس';
 
   @override
-  String get manageYour => 'Manage Your ';
+  String get manageYour => 'أدر ';
 
   @override
-  String get cryptoAsset => 'Crypto Asset';
+  String get cryptoAsset => 'أصولك المشفرة';
 
   @override
-  String get andPaymentsWithComePay => 'And Payments with Come Pay';
+  String get andPaymentsWithComePay => 'ومدفوعاتك مع Come Pay';
 
   @override
-  String get createAPassword => 'Create a Password';
+  String get createAPassword => 'إنشاء كلمة مرور';
 
   @override
-  String get confirmPasswordLabel => 'Confirm password';
+  String get confirmPasswordLabel => 'تأكيد كلمة المرور';
 
   @override
-  String get byRegisteringYouAccept => 'By registering you accept our';
+  String get byRegisteringYouAccept => 'بالتسجيل فإنك تقبل';
 
   @override
-  String get andPrivacyPolicy => 'and';
+  String get andPrivacyPolicy => 'و';
 
   @override
   String get yourDataWillBeSecure =>
-      'Your data will be security encrypted with TLS.';
+      'سيتم تشفير بياناتك بشكل آمن باستخدام TLS.';
 
   @override
-  String get originalFee => 'Original Fee';
+  String get originalFee => 'الرسوم الأصلية';
 
   @override
-  String get actualPayment => 'Actual Payment';
+  String get actualPayment => 'الدفع الفعلي';
 
   @override
   String get paymentRequired => 'الدفع مطلوب';
@@ -726,31 +726,31 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cancel => 'إلغاء';
 
   @override
-  String get paymentSuccessful => 'Payment successful!';
+  String get paymentSuccessful => 'تم الدفع بنجاح!';
 
   @override
-  String get confirmPayment => 'Confirm Payment';
+  String get confirmPayment => 'تأكيد الدفع';
 
   @override
-  String get amountToPay => 'Amount to Pay';
+  String get amountToPay => 'المبلغ للدفع';
 
   @override
-  String get selectCoupon => 'Select Coupon';
+  String get selectCoupon => 'اختر قسيمة';
 
   @override
-  String get noCoupon => 'No coupon';
+  String get noCoupon => 'لا توجد قسيمة';
 
   @override
-  String get applyCard => 'Apply Card';
+  String get applyCard => 'طلب بطاقة';
 
   @override
-  String get failedToLoadCardFee => 'Failed to load card fee';
+  String get failedToLoadCardFee => 'فشل تحميل رسوم البطاقة';
 
   @override
   String get code => 'رمز';
 
   @override
-  String get insufficient => 'Insufficient';
+  String get insufficient => 'غير كاف';
 
   @override
   String get skipButton => 'تخطي';
@@ -791,7 +791,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get balanceInsufficient => 'الرصيد غير كافٍ';
 
   @override
-  String get swapSuccess => 'تمت المبادلة بنجاح!';
+  String get swapSuccess => 'تمت المبادلة بنجاح';
 
   @override
   String get swapFailed => 'فشلت المبادلة';
@@ -880,7 +880,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'فشل تقديم طلب البطاقة، يرجى المحاولة مرة أخرى لاحقًا';
 
   @override
-  String get loading => 'جاري التحميل...';
+  String get loading => 'جار التحميل...';
 
   @override
   String get waitingToProcess => 'في انتظار المعالجة';
@@ -1336,95 +1336,164 @@ class AppLocalizationsAr extends AppLocalizations {
   String get featureComingSoon => 'الميزة قيد التطوير';
 
   @override
-  String get unlockCard => 'Unlock Card';
+  String get unlockCard => 'فتح البطاقة';
 
   @override
-  String get cardLockedSuccessfully => 'Card locked successfully';
+  String get cardLockedSuccessfully => 'تم قفل البطاقة بنجاح';
 
   @override
-  String get cardUnlockedSuccessfully => 'Card unlocked successfully';
+  String get cardUnlockedSuccessfully => 'تم فتح البطاقة بنجاح';
 
   @override
-  String get failedToLockCard => 'Failed to lock card';
+  String get failedToLockCard => 'فشل قفل البطاقة';
 
   @override
-  String get failedToUnlockCard => 'Failed to unlock card';
+  String get failedToUnlockCard => 'فشل فتح البطاقة';
 
   @override
-  String get confirmLockTitle => 'Lock Card';
+  String get confirmLockTitle => 'تأكيد القفل';
 
   @override
   String get confirmLockContent =>
-      'Are you sure you want to lock this card? You will not be able to use it for payments until you unlock it.';
+      'هل أنت متأكد من أنك تريد قفل هذه البطاقة؟ لن تتمكن من استخدامها للمدفوعات حتى تقوم بفتحها.';
 
   @override
-  String get confirmUnlockTitle => 'Unlock Card';
+  String get confirmUnlockTitle => 'تأكيد الفتح';
 
   @override
   String get confirmUnlockContent =>
-      'Are you sure you want to unlock this card?';
+      'هل أنت متأكد من أنك تريد فتح هذه البطاقة؟';
 
   @override
-  String get cardSecurityInfo => 'Card Security Info';
+  String get cardSecurityInfo => 'معلومات أمان البطاقة';
 
   @override
-  String get cardNumber => 'Card Number';
+  String get cardNumber => 'رقم البطاقة';
 
   @override
-  String get expiryDate => 'Expiry Date';
+  String get expiryDate => 'تاريخ الانتهاء';
 
   @override
-  String get cvvCode => 'CVV Code';
+  String get cvvCode => 'رمز CVV';
 
   @override
-  String get pinCode => 'PIN Code';
+  String get pinCode => 'الرقم السري';
 
   @override
   String insufficientBalanceForCoin(Object coin) {
-    return '$coin Balance Insufficient';
+    return 'رصيد $coin غير كافٍ';
   }
 
   @override
-  String get failedToGetPreview => 'Failed to get preview';
+  String get failedToGetPreview => 'فشل الحصول على المعاينة';
 
   @override
   String swapFailedWithMessage(Object message) {
-    return 'Swap failed: $message';
+    return 'فشل المبادلة: $message';
   }
 
   @override
-  String get swapHistoryTitle => 'Swap History';
+  String get swapHistoryTitle => 'سجل المبادلة';
 
   @override
-  String get noSwapHistory => 'No swap history';
+  String get noSwapHistory => 'لا يوجد سجل مبادلة';
 
   @override
-  String get consumed => 'Consumed';
+  String get consumed => 'المستهلكة';
 
   @override
-  String get transferToCard => 'Transfer to card';
+  String get transferToCard => 'تحويل إلى البطاقة';
 
   @override
-  String get transferFromCard => 'Transfer from card';
+  String get transferFromCard => 'تحويل من البطاقة';
 
   @override
-  String get rechargeToCard => '(Recharge to card)';
+  String get rechargeToCard => '(شحن إلى البطاقة)';
 
   @override
-  String get withdrawFromCard => '(Withdraw from card)';
+  String get withdrawFromCard => '(سحب من البطاقة)';
 
   @override
-  String get swapAction => 'Swap';
+  String get swapAction => 'مبادلة';
 
   @override
-  String get getAmount => 'Get';
+  String get getAmount => 'احصل على';
 
   @override
-  String get enterAmount => 'Please enter amount';
+  String get enterAmount => 'يرجى إدخال المبلغ';
 
   @override
-  String get gettingRate => 'Getting rate...';
+  String get gettingRate => 'جار الحصول على السعر...';
 
   @override
-  String get error => 'Error';
+  String get error => 'خطأ';
+
+  @override
+  String get reviewing => 'مراجعة';
+
+  @override
+  String get underReview => 'قيد المراجعة';
+
+  @override
+  String get kycReviewDesc =>
+      'جاري مراجعة التحقق من هويتك. يستغرق هذا عادةً بضع دقائق.';
+
+  @override
+  String get verifyFailed => 'فشل التحقق';
+
+  @override
+  String get verificationFailedTitle => 'فشل التحقق';
+
+  @override
+  String verificationFailedReason(Object reason) {
+    return 'السبب: $reason';
+  }
+
+  @override
+  String get verificationFailedDesc =>
+      'فشل التحقق الخاص بك. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get retryVerification => 'أعد محاولة التحقق';
+
+  @override
+  String get verificationPassed => 'تم التحقق بنجاح';
+
+  @override
+  String get receiveCardEligibilityDesc => 'تهانينا! أنت مؤهل لاستلام بطاقتك.';
+
+  @override
+  String get receiveCardNow => 'استلم البطاقة الآن';
+
+  @override
+  String get verificationRequiredTitle => 'التحقق مطلوب';
+
+  @override
+  String get kycRequiredDesc =>
+      'تحتاج إلى إكمال التحقق من الهوية (KYC) قبل إصدار البطاقة.';
+
+  @override
+  String get transactionRef => 'مرجع المعاملة';
+
+  @override
+  String get paymentVerificationTimedOut =>
+      'نفدت مهلة التحقق من الدفع. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String paymentNotCompleted(Object status) {
+    return 'لم يكتمل الدفع: $status';
+  }
+
+  @override
+  String paymentFailed(Object error) {
+    return 'فشل الدفع: $error';
+  }
+
+  @override
+  String failedToReceiveCard(Object error) {
+    return 'فشل استلام البطاقة: $error';
+  }
+
+  @override
+  String get minFee => 'الحد الأدنى للرسوم';
 }

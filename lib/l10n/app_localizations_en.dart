@@ -1424,4 +1424,74 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error => 'Error';
+
+  @override
+  String get reviewing => 'Reviewing';
+
+  @override
+  String get underReview => 'Under Review';
+
+  @override
+  String get kycReviewDesc =>
+      'Your KYC verification is currently under review. This usually takes a few minutes.';
+
+  @override
+  String get verifyFailed => 'Verify Failed';
+
+  @override
+  String get verificationFailedTitle => 'Verification Failed';
+
+  @override
+  String verificationFailedReason(Object reason) {
+    return 'Reason: $reason';
+  }
+
+  @override
+  String get verificationFailedDesc =>
+      'Your verification failed. Please try again.';
+
+  @override
+  String get retryVerification => 'Retry Verification';
+
+  @override
+  String get verificationPassed => 'Verification Passed';
+
+  @override
+  String get receiveCardEligibilityDesc =>
+      'Congratulations! You are eligible to receive your card.';
+
+  @override
+  String get receiveCardNow => 'Receive Card Now';
+
+  @override
+  String get verificationRequiredTitle => 'Verification Required';
+
+  @override
+  String get kycRequiredDesc =>
+      'You need to complete KYC verification before issuing a card.';
+
+  @override
+  String get transactionRef => 'Transaction Ref';
+
+  @override
+  String get paymentVerificationTimedOut =>
+      'Payment verification timed out. Please try again.';
+
+  @override
+  String paymentNotCompleted(Object status) {
+    return 'Payment not completed: $status';
+  }
+
+  @override
+  String paymentFailed(Object error) {
+    return 'Payment Failed: $error';
+  }
+
+  @override
+  String failedToReceiveCard(Object error) {
+    return 'Failed to receive card: $error';
+  }
+
+  @override
+  String get minFee => 'Min Fee';
 }

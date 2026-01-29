@@ -2825,6 +2825,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error'**
   String get error;
+
+  /// No description provided for @reviewing.
+  ///
+  /// In en, this message translates to:
+  /// **'Reviewing'**
+  String get reviewing;
+
+  /// No description provided for @underReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Under Review'**
+  String get underReview;
+
+  /// No description provided for @kycReviewDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Your KYC verification is currently under review. This usually takes a few minutes.'**
+  String get kycReviewDesc;
+
+  /// No description provided for @verifyFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify Failed'**
+  String get verifyFailed;
+
+  /// No description provided for @verificationFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification Failed'**
+  String get verificationFailedTitle;
+
+  /// No description provided for @verificationFailedReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason: {reason}'**
+  String verificationFailedReason(Object reason);
+
+  /// No description provided for @verificationFailedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Your verification failed. Please try again.'**
+  String get verificationFailedDesc;
+
+  /// No description provided for @retryVerification.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry Verification'**
+  String get retryVerification;
+
+  /// No description provided for @verificationPassed.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification Passed'**
+  String get verificationPassed;
+
+  /// No description provided for @receiveCardEligibilityDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Congratulations! You are eligible to receive your card.'**
+  String get receiveCardEligibilityDesc;
+
+  /// No description provided for @receiveCardNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive Card Now'**
+  String get receiveCardNow;
+
+  /// No description provided for @verificationRequiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification Required'**
+  String get verificationRequiredTitle;
+
+  /// No description provided for @kycRequiredDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'You need to complete KYC verification before issuing a card.'**
+  String get kycRequiredDesc;
+
+  /// No description provided for @transactionRef.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Ref'**
+  String get transactionRef;
+
+  /// No description provided for @paymentVerificationTimedOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment verification timed out. Please try again.'**
+  String get paymentVerificationTimedOut;
+
+  /// No description provided for @paymentNotCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment not completed: {status}'**
+  String paymentNotCompleted(Object status);
+
+  /// No description provided for @paymentFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Failed: {error}'**
+  String paymentFailed(Object error);
+
+  /// No description provided for @failedToReceiveCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to receive card: {error}'**
+  String failedToReceiveCard(Object error);
+
+  /// No description provided for @minFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Min Fee'**
+  String get minFee;
 }
 
 class _AppLocalizationsDelegate

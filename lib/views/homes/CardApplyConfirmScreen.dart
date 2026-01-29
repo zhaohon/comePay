@@ -90,15 +90,14 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
     });
 
     try {
-      // 1. Check Card Fee Payment Status FIRST (New Logic)
-      final paymentStatusRes = await _cardFeeService.getPaymentStatus();
+      // 1. Check Card Fee Stats FIRST (New Logic with /CardFee/GetStats)
+      final statsRes = await _cardFeeService.getCardStats();
       print(
-          'CardApplyConfirmScreen: Payment Status: ${paymentStatusRes.paymentStatus}, HasPayment: ${paymentStatusRes.hasPayment}');
+          'CardApplyConfirmScreen: Needs Payment: ${statsRes.needsPaymentForNextCard}');
 
-      // Relaxed check: trust hasPayment if strictly true, unless status is failed/cancelled
-      final bool hasPaid = paymentStatusRes.hasPayment &&
-          !['failed', 'cancelled', 'expired']
-              .contains(paymentStatusRes.paymentStatus.toLowerCase());
+      // Logic: If needs payment is TRUE, then NOT paid.
+      // If needs payment is FALSE, then Has Paid.
+      final bool hasPaid = !statsRes.needsPaymentForNextCard;
 
       // Logic: If NOT paid, show payment.
       if (!hasPaid) {
@@ -110,60 +109,12 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
         return; // Stop here if not paid
       }
 
-      // 2. If Eligible (Paid), THEN Check KYC Status
-      final kycRes = await _kycService.getKycStatus();
-      // _kycStatusData = kycRes;
-
-      final String userKycStatus = kycRes.userKycStatus;
-      final latestKyc = kycRes.latestKyc;
-      final String latestStatus = latestKyc?.status ?? 'none';
-      _kycFailReason = latestKyc?.failReason ?? '';
-
-      // Check Blocking Statuses
-      if (userKycStatus == 'pending' ||
-          ['pending', 'processing', 'audit', 'pending_manual_review']
-              .contains(latestStatus)) {
-        setState(() {
-          _currentState = CardApplyState.kycReviewing;
-        });
-        return;
-      }
-
-      if (userKycStatus == 'rejected' ||
-          [
-            'rejected',
-            'failed',
-            'information_mismatch',
-            'id_number_duplicated',
-            'audit_failed'
-          ].contains(latestStatus)) {
-        setState(() {
-          _currentState = CardApplyState.kycFailed;
-        });
-        return;
-      }
-
-      // If success simply via user status
-      if (userKycStatus == 'verified' || latestStatus == 'approved') {
-        setState(() {
-          _currentState = CardApplyState.kycSuccess;
-        });
-        return;
-      }
-
-      // If none of the above, means Paid but KYC not started/submitted
-      if (latestStatus == 'pending_submit' ||
-          latestStatus == 'none' ||
-          userKycStatus == 'none') {
-        setState(() {
-          _currentState = CardApplyState.kycPendingSubmit;
-        });
-      } else {
-        // Fallback
-        setState(() {
-          _currentState = CardApplyState.kycPendingSubmit;
-        });
-      }
+      // 2. If Eligible (Paid), directly show Receive Card (Skip KYC check as per user request)
+      // User indicated that /didit/status should not be called and if paid, show receive card.
+      setState(() {
+        _currentState = CardApplyState.kycSuccess;
+      });
+      return;
     } catch (e) {
       print('Error in card apply logic: $e');
       // If error, fallback to payment view or error view?
@@ -232,7 +183,8 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text('Failed to receive card: $e'),
+            content: Text(AppLocalizations.of(context)!
+                .failedToReceiveCard(e.toString())),
             backgroundColor: Colors.red),
       );
     }
@@ -428,7 +380,7 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Original Fee',
+                            AppLocalizations.of(context)!.originalFee,
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.grey.shade600,
@@ -535,7 +487,7 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Transaction Ref',
+                              AppLocalizations.of(context)!.transactionRef,
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.grey.shade600,
@@ -649,12 +601,14 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
         await _startPaymentPolling();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('Payment not completed: ${successPayment.status}')));
+            content: Text(AppLocalizations.of(context)!
+                .paymentNotCompleted(successPayment.status))));
         setState(() => _isProcessing = false);
       }
     } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Payment Failed: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content:
+              Text(AppLocalizations.of(context)!.paymentFailed(e.toString()))));
       setState(() => _isProcessing = false);
     }
   }
@@ -667,8 +621,9 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
       if (!mounted) return;
 
       try {
-        final statusRes = await _cardFeeService.getPaymentStatus();
-        if (statusRes.hasPayment && statusRes.paymentStatus == 'completed') {
+        final statsRes = await _cardFeeService.getCardStats();
+        // If needsPaymentForNextCard is false, it means payment is done/not needed
+        if (!statsRes.needsPaymentForNextCard) {
           // Payment Success, Refresh Logic
           _initLogic();
           return;
@@ -681,8 +636,9 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
 
     if (mounted) {
       setState(() => _isProcessing = false);
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Payment verification timed out. Please try again.')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content:
+              Text(AppLocalizations.of(context)!.paymentVerificationTimedOut)));
     }
   }
 
@@ -913,11 +869,11 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
       case CardApplyState.payment:
         return AppLocalizations.of(context)!.confirmPayment;
       case CardApplyState.kycReviewing:
-        return 'Reviewing';
+        return AppLocalizations.of(context)!.reviewing;
       case CardApplyState.kycFailed:
-        return 'Verify Failed';
+        return AppLocalizations.of(context)!.verificationFailedTitle;
       case CardApplyState.kycSuccess:
-        return 'Success';
+        return AppLocalizations.of(context)!.success;
       default:
         return '';
     }
@@ -946,52 +902,51 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
       case CardApplyState.kycReviewing:
         icon = Icons.access_time_filled;
         color = Colors.orange;
-        title = 'Under Review';
-        message =
-            'Your KYC verification is currently under review. This usually takes a few minutes.';
+        title = AppLocalizations.of(context)!.underReview;
+        message = AppLocalizations.of(context)!.kycReviewDesc;
         break;
       case CardApplyState.kycFailed:
         icon = Icons.cancel;
         color = Colors.red;
-        title = 'Verification Failed';
+        title = AppLocalizations.of(context)!.verificationFailedTitle;
         message = _kycFailReason.isNotEmpty
-            ? 'Reason: $_kycFailReason'
-            : 'Your verification failed. Please try again.';
+            ? AppLocalizations.of(context)!
+                .verificationFailedReason(_kycFailReason)
+            : AppLocalizations.of(context)!.verificationFailedDesc;
         actions.add(
           ElevatedButton(
             onPressed: _goToKyc,
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-            child: const Text('Retry Verification',
-                style: TextStyle(color: Colors.white)),
+            child: Text(AppLocalizations.of(context)!.retryVerification,
+                style: const TextStyle(color: Colors.white)),
           ),
         );
         break;
       case CardApplyState.kycSuccess:
         icon = Icons.check_circle;
         color = Colors.green;
-        title = 'Verification Passed';
-        message = 'Congratulations! You are eligible to receive your card.';
+        title = AppLocalizations.of(context)!.verificationPassed;
+        message = AppLocalizations.of(context)!.receiveCardEligibilityDesc;
         actions.add(
           ElevatedButton(
             onPressed: _handleReceiveCard,
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-            child: const Text('Receive Card Now',
-                style: TextStyle(color: Colors.white)),
+            child: Text(AppLocalizations.of(context)!.receiveCardNow,
+                style: const TextStyle(color: Colors.white)),
           ),
         );
         break;
       case CardApplyState.kycPendingSubmit:
         icon = Icons.verified_user;
         color = Colors.blue;
-        title = 'Verification Required';
-        message =
-            'You need to complete KYC verification before issuing a card.';
+        title = AppLocalizations.of(context)!.verificationRequiredTitle;
+        message = AppLocalizations.of(context)!.kycRequiredDesc;
         actions.add(
           ElevatedButton(
             onPressed: _goToKyc,
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-            child: const Text('Go to Verify',
-                style: TextStyle(color: Colors.white)),
+            child: Text(AppLocalizations.of(context)!.goToVerify,
+                style: const TextStyle(color: Colors.white)),
           ),
         );
         break;
@@ -1242,9 +1197,9 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              'Coupon',
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(context)!.coupon,
+              style: const TextStyle(
                 fontSize: 14,
                 color: Colors.black87,
               ),
@@ -1253,7 +1208,7 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
               children: [
                 Text(
                   _localSelectedCoupon == null
-                      ? 'Select Coupon'
+                      ? AppLocalizations.of(context)!.selectCoupon
                       : _localSelectedCoupon!.name,
                   style: TextStyle(
                     fontSize: 14,
@@ -1321,9 +1276,9 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Select Coupon',
-                          style: TextStyle(
+                        Text(
+                          AppLocalizations.of(context)!.selectCoupon,
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -1355,9 +1310,9 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
                                     Icon(Icons.cancel_outlined,
                                         color: Colors.grey.shade600),
                                     const SizedBox(width: 12),
-                                    const Text(
-                                      'No Coupon',
-                                      style: TextStyle(
+                                    Text(
+                                      AppLocalizations.of(context)!.noCoupon,
+                                      style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -1427,7 +1382,7 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
                                           color: Colors.grey.shade600),
                                       const SizedBox(width: 6),
                                       Text(
-                                        'Code: ${coupon.code}',
+                                        '${AppLocalizations.of(context)!.code}: ${coupon.code}',
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: Colors.grey.shade600,
@@ -1443,7 +1398,7 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
                                           color: Colors.grey.shade600),
                                       const SizedBox(width: 6),
                                       Text(
-                                        'Min Fee: \$${coupon.minFee.toStringAsFixed(2)}',
+                                        '${AppLocalizations.of(context)!.minFee}: \$${coupon.minFee.toStringAsFixed(2)}',
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: Colors.grey.shade600,

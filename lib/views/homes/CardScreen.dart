@@ -412,6 +412,10 @@ class _CardScreenState extends State<CardScreen> {
       // ),
       body: RefreshIndicator(
         onRefresh: () async {
+          // 1. Refresh global cache via ViewModel
+          await Provider.of<CardViewModel>(context, listen: false)
+              .refreshCardList();
+          // 2. Reload local state
           await _loadCardList();
         },
         child: SingleChildScrollView(

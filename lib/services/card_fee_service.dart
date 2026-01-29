@@ -1,9 +1,9 @@
-import 'package:dio/dio.dart';
 import 'package:comecomepay/core/base_service.dart';
 import 'package:comecomepay/models/card_fee_config_model.dart';
 import 'package:comecomepay/models/payment_currency_model.dart';
 import 'package:comecomepay/models/card_fee_payment_model.dart';
 import 'package:comecomepay/models/responses/card_fee_status_response_model.dart';
+import 'package:comecomepay/models/responses/card_fee_stats_response_model.dart';
 
 class CardFeeService extends BaseService {
   CardFeeService() {
@@ -121,6 +121,22 @@ class CardFeeService extends BaseService {
       }
     } catch (e) {
       print('Error getting payment status: $e');
+      rethrow;
+    }
+  }
+
+  /// 获取更详细的开卡统计信息 (New API 2026-01-28)
+  Future<CardFeeStatsResponseModel> getCardStats() async {
+    try {
+      final response = await get('/CardFee/GetStats');
+
+      if (response['status'] == 'success') {
+        return CardFeeStatsResponseModel.fromJson(response);
+      } else {
+        throw Exception('Failed to get card stats');
+      }
+    } catch (e) {
+      print('Error getting card stats: $e');
       rethrow;
     }
   }
