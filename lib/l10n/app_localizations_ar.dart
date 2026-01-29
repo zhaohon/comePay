@@ -1496,4 +1496,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get minFee => 'الحد الأدنى للرسوم';
+
+  @override
+  String get unverified => 'Unverified';
 }

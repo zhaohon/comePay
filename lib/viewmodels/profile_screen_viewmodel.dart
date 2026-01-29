@@ -6,6 +6,8 @@ import 'package:comecomepay/models/requests/didit_initialize_token_request_model
 import 'package:comecomepay/models/responses/didit_initialize_token_response_model.dart';
 import 'package:comecomepay/models/responses/didit_initialize_token_error_model.dart';
 import 'package:comecomepay/models/kyc_model.dart';
+import 'package:comecomepay/models/responses/kyc_status_response_model.dart';
+import 'package:comecomepay/services/kyc_service.dart';
 import 'package:comecomepay/services/global_service.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
 import 'package:comecomepay/utils/service_locator.dart';
@@ -13,14 +15,40 @@ import 'package:intl/intl.dart';
 
 import '../models/carddetail_response_model.dart' show CarddetailResponseModel;
 
+// Add print to constructor
 class ProfileScreenViewModel extends BaseViewModel {
+  ProfileScreenViewModel() {
+    print('DEBUG: ProfileScreenViewModel initialized');
+  }
   final GlobalService _globalService = getIt<GlobalService>();
+  // Instantiate KycService directly as it is not in GetIt
+  final KycService _kycService = KycService();
 
   GetProfileResponseModel? _profileResponse;
+  KycStatusResponseModel? _kycStatusResponse;
   String? _errorMessage;
 
   GetProfileResponseModel? get profileResponse => _profileResponse;
+  KycStatusResponseModel? get kycStatusResponse => _kycStatusResponse;
   String? get errorMessage => _errorMessage;
+
+  Future<void> fetchKycStatus() async {
+    print('DEBUG: fetchKycStatus called');
+    // Note: setBusy(true) is not called here to avoid full screen loading indicator
+    // if this is called in parallel with other requests or background.
+    try {
+      print('DEBUG: Calling _kycService.getKycStatus()');
+      final response = await _kycService.getKycStatus();
+      print(
+          'DEBUG: _kycService.getKycStatus() returned: ${response.userKycStatus}');
+      _kycStatusResponse = response;
+      notifyListeners();
+    } catch (e) {
+      print('ProfileViewModel: Failed to fetch KYC status: $e');
+      // We don't set global error message strictly for this background fetch
+      // to avoid blocking the main UI if only the tag fails.
+    }
+  }
 
   Future<bool> getProfile(String accessToken) async {
     setBusy(true);
@@ -111,12 +139,13 @@ class ProfileScreenViewModel extends BaseViewModel {
   }
 
   String generateCustomUuid(String firstName, String lastName) {
-  final now = DateTime.now();
-  final timestamp = DateFormat('yyyyMMddHHmmss').format(now);
-  return '${firstName.toUpperCase()}_${lastName.toUpperCase()}_$timestamp';
-}
+    final now = DateTime.now();
+    final timestamp = DateFormat('yyyyMMddHHmmss').format(now);
+    return '${firstName.toUpperCase()}_${lastName.toUpperCase()}_$timestamp';
+  }
 
-  Future<dynamic> initializeDiditToken([DiditInitializeTokenRequestModel? request]) async {
+  Future<dynamic> initializeDiditToken(
+      [DiditInitializeTokenRequestModel? request]) async {
     setBusy(true);
     _errorMessage = null;
 
@@ -188,20 +217,23 @@ class ProfileScreenViewModel extends BaseViewModel {
       } else {
         return null;
       }
-
     } catch (e) {
       print('ViewModel: Failed to get card data: $e');
       return null;
     }
   }
 
-  Future<bool> createCard(List<KycModel> kycData, GetProfileResponseModel profile) async {
+  Future<bool> createCard(
+      List<KycModel> kycData, GetProfileResponseModel profile) async {
     try {
       // Build card data from kycData and profile
       final cardData = {
         "area_code": profile.user.areaCode ?? "+1",
         "card_product_id": 1,
-        "kyc_ids": kycData.map((kyc) => kyc?.id).where((id) => id != null).toList(), // e.g., [kycData[0].id]
+        "kyc_ids": kycData
+            .map((kyc) => kyc?.id)
+            .where((id) => id != null)
+            .toList(), // e.g., [kycData[0].id]
         "phone": profile.user.phone ?? "",
         "physical": true,
         "postal_address": profile.user.address ?? "",
@@ -209,7 +241,9 @@ class ProfileScreenViewModel extends BaseViewModel {
         "postal_code": profile.user.postCode ?? "",
         "postal_country": profile.user.billCountryCode ?? "",
         "recipient": "${profile.user.firstName} ${profile.user.lastName}",
-        "name_on_card": "${profile.user.firstName?.toUpperCase() ?? ''} ${profile.user.lastName?.toUpperCase() ?? ''}".trim()
+        "name_on_card":
+            "${profile.user.firstName?.toUpperCase() ?? ''} ${profile.user.lastName?.toUpperCase() ?? ''}"
+                .trim()
       };
 
       final userId = profile.user.id.toString();
@@ -225,5 +259,4 @@ class ProfileScreenViewModel extends BaseViewModel {
       return false;
     }
   }
-
 }

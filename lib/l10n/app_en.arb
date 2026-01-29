@@ -511,5 +511,6 @@
   "paymentNotCompleted": "Payment not completed: {status}",
   "paymentFailed": "Payment Failed: {error}",
   "failedToReceiveCard": "Failed to receive card: {error}",
-  "minFee": "Min Fee"
+  "minFee": "Min Fee",
+  "unverified": "Unverified"
 }

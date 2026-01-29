@@ -38,6 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _loadProfile() async {
+    print('DEBUG: ProfilScreen _loadProfile called');
     final viewModel =
         Provider.of<ProfileScreenViewModel>(context, listen: false);
     final accessToken = HiveStorageService.getAccessToken();
@@ -57,13 +58,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
         });
       }
     } else {
-      // Fallback to auth data if no access token
       final user = HiveStorageService.getUser();
       setState(() {
         email = user?.email;
         userId = user?.id.toString();
       });
     }
+
+    // Fetch KYC status every time profile loads
+    viewModel.fetchKycStatus();
   }
 
   @override
@@ -141,28 +144,66 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF4CAF50),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.check, color: Colors.white, size: 16),
-                        const SizedBox(width: 6),
-                        Text(
-                          AppLocalizations.of(context)!.identityVerified,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
+                  // Dynamic KYC Status Tag
+                  Consumer<ProfileScreenViewModel>(
+                    builder: (context, model, child) {
+                      final statusResponse = model.kycStatusResponse;
+                      final kycStatus = statusResponse?.userKycStatus ?? 'none';
+                      // Default to unverified if null
+
+                      Color backgroundColor;
+                      String text;
+                      IconData icon;
+
+                      switch (kycStatus) {
+                        case 'verified':
+                          backgroundColor = AppColors.success;
+                          text = AppLocalizations.of(context)!.identityVerified;
+                          icon = Icons.check;
+                          break;
+                        case 'pending':
+                        case 'processing':
+                        case 'pending_submit':
+                          backgroundColor = AppColors.warning;
+                          text = AppLocalizations.of(context)!.underReview;
+                          icon = Icons.hourglass_empty;
+                          break;
+                        case 'rejected':
+                        case 'failed':
+                          backgroundColor = AppColors.error;
+                          text = AppLocalizations.of(context)!.verifyFailed;
+                          icon = Icons.error_outline;
+                          break;
+                        default:
+                          backgroundColor = Colors.grey;
+                          text = AppLocalizations.of(context)!.unverified;
+                          icon = Icons.info_outline;
+                      }
+
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: backgroundColor,
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      ],
-                    ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(icon, color: Colors.white, size: 16),
+                            const SizedBox(width: 6),
+                            Text(
+                              text,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

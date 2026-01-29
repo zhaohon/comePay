@@ -1452,4 +1452,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get minFee => '最低费用';
+
+  @override
+  String get unverified => '未验证';
 }

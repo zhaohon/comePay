@@ -2939,6 +2939,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Min Fee'**
   String get minFee;
+
+  /// No description provided for @unverified.
+  ///
+  /// In en, this message translates to:
+  /// **'Unverified'**
+  String get unverified;
 }
 
 class _AppLocalizationsDelegate

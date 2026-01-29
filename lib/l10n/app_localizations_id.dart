@@ -1495,4 +1495,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get minFee => 'Min Fee';
+
+  @override
+  String get unverified => 'Unverified';
 }

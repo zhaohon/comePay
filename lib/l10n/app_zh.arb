@@ -511,5 +511,6 @@
   "paymentNotCompleted": "支付未完成: {status}",
   "paymentFailed": "支付失败: {error}",
   "failedToReceiveCard": "领卡失败: {error}",
-  "minFee": "最低费用"
+  "minFee": "最低费用",
+  "unverified": "未验证"
 }
