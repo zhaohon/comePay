@@ -1497,4 +1497,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unverified => 'Unverified';
+
+  @override
+  String get creationTime => 'Creation Time';
+
+  @override
+  String maxCardLimitReached(Object count) {
+    return 'Each account can claim a maximum of $count cards';
+  }
 }

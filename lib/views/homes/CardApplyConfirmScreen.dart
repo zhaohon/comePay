@@ -99,6 +99,32 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
       // If needs payment is FALSE, then Has Paid.
       final bool hasPaid = !statsRes.needsPaymentForNextCard;
 
+      // New Rule: Check if user can apply for a new card (Max limit check)
+      if (!statsRes.canApplyNewCard) {
+        // Show blocking dialog
+        await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(AppLocalizations.of(context)!.hint),
+              content: Text(AppLocalizations.of(context)!
+                  .maxCardLimitReached(statsRes.maxCards.toString())),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close dialog
+                    Navigator.of(context).pop(); // Close screen
+                  },
+                  child: Text(AppLocalizations.of(context)!.confirm),
+                ),
+              ],
+            );
+          },
+        );
+        return; // Stop execution
+      }
+
       // Logic: If NOT paid, show payment.
       if (!hasPaid) {
         // Not paid -> Payment State
@@ -169,13 +195,19 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
       }
 
       // Navigate to success/progress screen
-      Navigator.pushReplacement(
+      // Use push instead of pushReplacement to wait for the result
+      final result = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) =>
               CardApplyProgressScreen(taskId: response.taskId),
         ),
       );
+
+      // If progress screen returns true (success), we pop back to CardScreen with true
+      if (result == true && mounted) {
+        Navigator.pop(context, true);
+      }
     } catch (e) {
       if (!mounted) return;
       setState(() {

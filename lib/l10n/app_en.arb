@@ -512,5 +512,8 @@
   "paymentFailed": "Payment Failed: {error}",
   "failedToReceiveCard": "Failed to receive card: {error}",
   "minFee": "Min Fee",
-  "unverified": "Unverified"
+  "unverified": "Unverified",
+  "creationTime": "Creation Time",
+  "completionTime": "Completion Time",
+  "maxCardLimitReached": "Each account can claim a maximum of {count} cards"
 }

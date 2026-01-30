@@ -512,5 +512,8 @@
   "paymentFailed": "支付失败: {error}",
   "failedToReceiveCard": "领卡失败: {error}",
   "minFee": "最低费用",
-  "unverified": "未验证"
+  "unverified": "未验证",
+  "creationTime": "创建时间",
+  "completionTime": "完成时间",
+  "maxCardLimitReached": "每个账户最多可以领取 {count} 张卡片"
 }

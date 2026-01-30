@@ -994,7 +994,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get transactionTime => 'وقت المعاملة';
 
   @override
-  String get completionTime => 'وقت الإنجاز';
+  String get completionTime => 'وقت الانتهاء';
 
   @override
   String get address => 'العنوان';
@@ -1498,5 +1498,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get minFee => 'الحد الأدنى للرسوم';
 
   @override
-  String get unverified => 'Unverified';
+  String get unverified => 'غير موثق';
+
+  @override
+  String get creationTime => 'وقت الإنشاء';
+
+  @override
+  String maxCardLimitReached(Object count) {
+    return 'يمكن لكل حساب المطالبة بـ $count بطاقات كحد أقصى';
+  }
 }

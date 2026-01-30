@@ -157,25 +157,53 @@ class _CardScreenState extends State<CardScreen> {
   }
 
   /// 加载卡片列表
-  Future<void> _loadCardList() async {
-    setState(() {
-      _isLoadingCards = true;
-      _cardError = null;
-      _isInitialLoading = true;
-    });
+  Future<void> _loadCardList({bool isRefresh = false}) async {
+    if (!isRefresh && _cardList == null) {
+      setState(() {
+        _isLoadingCards = true;
+        _cardError = null;
+        _isInitialLoading = true;
+      });
+    }
 
     try {
       final cardList = await _cardService.getCardList();
 
+      // Update global cache
+      CardViewModel.setCachedCardList(cardList);
+
       setState(() {
+        // Try to preserve current selected card
+        if (isRefresh &&
+            _cardList != null &&
+            _cardList!.hasCards &&
+            cardList.hasCards) {
+          final currentPublicToken =
+              _cardList!.cards[_currentCardIndex].publicToken;
+          final newIndex = cardList.cards
+              .indexWhere((c) => c.publicToken == currentPublicToken);
+          if (newIndex != -1) {
+            _currentCardIndex = newIndex;
+          } else {
+            _currentCardIndex = 0;
+          }
+        } else if (!isRefresh) {
+          _currentCardIndex = 0;
+        }
+
         _cardList = cardList;
         _isLoadingCards = false;
         _isInitialLoading = false;
+
+        // Sync PageController with _currentCardIndex
+        if (_pageController.hasClients) {
+          _pageController.jumpToPage(_currentCardIndex);
+        }
       });
 
-      // 如果有卡片，加载第一张卡片的详情和交易记录
+      // 如果有卡片，加载当前卡片的详情和交易记录
       if (cardList.hasCards) {
-        _currentCardIndex = 0;
+        // Note: _currentCardIndex is already set correctly above
         await _loadCurrentCardDetails();
         await _loadTransactions();
       }
@@ -412,13 +440,10 @@ class _CardScreenState extends State<CardScreen> {
       // ),
       body: RefreshIndicator(
         onRefresh: () async {
-          // 1. Refresh global cache via ViewModel
-          await Provider.of<CardViewModel>(context, listen: false)
-              .refreshCardList();
-          // 2. Reload local state
-          await _loadCardList();
+          await _loadCardList(isRefresh: true);
         },
         child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
           controller: _scrollController,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -522,7 +547,7 @@ class _CardScreenState extends State<CardScreen> {
                                 ),
                               ),
                             ).then((_) {
-                              _loadCardList();
+                              _loadCardList(isRefresh: true);
                             });
                           },
                           child: Container(

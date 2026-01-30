@@ -1455,4 +1455,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get unverified => '未验证';
+
+  @override
+  String get creationTime => '创建时间';
+
+  @override
+  String maxCardLimitReached(Object count) {
+    return '每个账户最多可以领取 $count 张卡片';
+  }
 }

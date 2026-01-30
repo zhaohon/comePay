@@ -2945,6 +2945,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unverified'**
   String get unverified;
+
+  /// No description provided for @creationTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Creation Time'**
+  String get creationTime;
+
+  /// No description provided for @maxCardLimitReached.
+  ///
+  /// In en, this message translates to:
+  /// **'Each account can claim a maximum of {count} cards'**
+  String maxCardLimitReached(Object count);
 }
 
 class _AppLocalizationsDelegate

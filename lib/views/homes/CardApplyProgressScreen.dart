@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:comecomepay/services/card_service.dart';
 import 'package:comecomepay/models/card_apply_progress_model.dart';
 import 'package:comecomepay/utils/app_colors.dart';
@@ -37,6 +38,18 @@ class _CardApplyProgressScreenState extends State<CardApplyProgressScreen> {
   void dispose() {
     _pollTimer?.cancel();
     super.dispose();
+  }
+
+  /// 格式化时间
+  String _formatTime(String? timeStr) {
+    if (timeStr == null || timeStr.isEmpty) return '';
+    try {
+      final date = DateTime.parse(timeStr);
+      return DateFormat('yyyy-MM-dd HH:mm:ss')
+          .format(date.toLocal()); // Converted to local time
+    } catch (e) {
+      return timeStr;
+    }
   }
 
   /// 开始轮询开卡进度
@@ -484,16 +497,17 @@ class _CardApplyProgressScreenState extends State<CardApplyProgressScreen> {
                       // 时间信息
                       if (_progress!.createdAt.isNotEmpty) ...[
                         Text(
-                          '创建时间: ${_progress!.createdAt}',
+                          '${AppLocalizations.of(context)!.creationTime}: ${_formatTime(_progress!.createdAt)}',
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.grey[600],
                           ),
                         ),
-                        if (_progress!.completedAt != null) ...[
+                        if (_progress!.completedAt != null &&
+                            _progress!.completedAt!.isNotEmpty) ...[
                           const SizedBox(height: 4),
                           Text(
-                            '完成时间: ${_progress!.completedAt}',
+                            '${AppLocalizations.of(context)!.completionTime}: ${_formatTime(_progress!.completedAt)}',
                             style: TextStyle(
                               fontSize: 12,
                               color: Colors.grey[600],
@@ -512,7 +526,7 @@ class _CardApplyProgressScreenState extends State<CardApplyProgressScreen> {
                       //       fontWeight: FontWeight.bold,
                       //       color: Colors.grey[800],
                       //     ),
-                      //   ),
+                      //   //   ),
                       //   const SizedBox(height: 16),
                       //   ..._progress!.list.map((item) => _buildCardItem(item)).toList(),
                       // ],
