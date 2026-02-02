@@ -4,6 +4,7 @@ import 'package:comecomepay/views/homes/CardTransactionDetailScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 import '../../l10n/app_localizations.dart';
 import '../../viewmodels/locale_provider.dart';
 import 'package:comecomepay/viewmodels/profile_screen_viewmodel.dart';
@@ -61,6 +62,11 @@ class _CardScreenState extends State<CardScreen> {
   Map<String, String> _cvvCache = {}; // 临时存储CVV，不持久化
   Map<String, String> _pinCache = {}; // 临时存储PIN，不持久化
 
+  // Auto-refresh on visibility - debounce mechanism
+  DateTime? _lastRefreshTime;
+  bool _isRefreshing = false;
+  bool _hasInitialLoaded = false; // Track if initial load is complete
+
   // Scroll controller for pagination
   final ScrollController _scrollController = ScrollController();
 
@@ -89,6 +95,11 @@ class _CardScreenState extends State<CardScreen> {
     }
 
     _setupScrollListener();
+
+    // Mark initial load as complete after frame is rendered
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _hasInitialLoaded = true;
+    });
   }
 
   @override
@@ -115,6 +126,31 @@ class _CardScreenState extends State<CardScreen> {
           _loadTransactions();
         }
       }
+    }
+  }
+
+  /// Auto-refresh when page becomes visible (with debounce)
+  Future<void> _refreshOnVisible() async {
+    // Skip if initial load hasn't completed yet
+    if (!_hasInitialLoaded) return;
+
+    // Prevent concurrent requests
+    if (_isRefreshing) return;
+
+    // Debounce: Don't refresh if refreshed within last 2 seconds
+    final now = DateTime.now();
+    if (_lastRefreshTime != null &&
+        now.difference(_lastRefreshTime!) < const Duration(seconds: 2)) {
+      return;
+    }
+
+    _isRefreshing = true;
+    _lastRefreshTime = now;
+
+    try {
+      await _loadCardList(isRefresh: true);
+    } finally {
+      _isRefreshing = false;
     }
   }
 
@@ -167,11 +203,13 @@ class _CardScreenState extends State<CardScreen> {
     }
 
     try {
+      // 1. First, load card list
       final cardList = await _cardService.getCardList();
 
-      // Update global cache
+      // 2. Update global cache
       CardViewModel.setCachedCardList(cardList);
 
+      // 3. Update state
       setState(() {
         // Try to preserve current selected card
         if (isRefresh &&
@@ -201,15 +239,12 @@ class _CardScreenState extends State<CardScreen> {
         }
       });
 
-      // 如果有卡片，加载当前卡片的详情和交易记录
+      // 4. After list is loaded and state updated, load details and transactions
       if (cardList.hasCards) {
-        // Note: _currentCardIndex is already set correctly above
         await _loadCurrentCardDetails();
         await _loadTransactions();
       }
-      // 如果没有卡片，_cardList已经设置为空列表，build方法会显示申请页面
     } catch (e) {
-      // 如果还有异常（理论上不应该发生，因为CardService已经处理了），创建一个空的卡片列表
       setState(() {
         _cardError = e.toString();
         _isLoadingCards = false;
@@ -407,6 +442,20 @@ class _CardScreenState extends State<CardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return VisibilityDetector(
+      key: const Key('card-screen'),
+      onVisibilityChanged: (info) {
+        // When page becomes visible (visibility > 0.5), trigger refresh
+        if (info.visibleFraction > 0.5) {
+          _refreshOnVisible();
+        }
+      },
+      child: _buildContent(),
+    );
+  }
+
+  /// Build the actual screen content
+  Widget _buildContent() {
     // 初始加载中
     if (_isInitialLoading) {
       return Scaffold(

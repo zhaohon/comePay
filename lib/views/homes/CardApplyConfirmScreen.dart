@@ -135,8 +135,63 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
         return; // Stop here if not paid
       }
 
-      // 2. If Eligible (Paid), directly show Receive Card (Skip KYC check as per user request)
-      // User indicated that /didit/status should not be called and if paid, show receive card.
+      // 2. If Eligible (Paid) - Check KYC Status for FIRST card only
+      if (statsRes.successCards == 0) {
+        // First card scenario - Need to check KYC
+        try {
+          final kycStatus = await _kycService.getKycStatus();
+          final status = kycStatus.userKycStatus;
+          print('=== KYC Debug Info ===');
+          print('User KYC Status: $status');
+          print('Latest KYC Status: ${kycStatus.latestKyc?.status}');
+          print(
+              'Latest KYC PokepayStatus: ${kycStatus.latestKyc?.pokepayStatus}');
+          print('Can Submit KYC: ${kycStatus.canSubmitKyc}');
+          print('Message: ${kycStatus.message}');
+          print('=====================');
+
+          // Check for approved status (could be various values)
+          if (status == 'approved' ||
+              status == 'verified' ||
+              status == 'success' ||
+              kycStatus.latestKyc?.pokepayStatus == 1 ||
+              kycStatus.latestKyc?.pokepayStatus == 2) {
+            // KYC Passed -> Show Receive Card
+            setState(() {
+              _currentState = CardApplyState.kycSuccess;
+            });
+          } else if (status == 'under_review' ||
+              status == 'pending' ||
+              status == 'reviewing') {
+            // KYC Under Review
+            setState(() {
+              _currentState = CardApplyState.kycReviewing;
+            });
+          } else if (status == 'rejected' || status == 'failed') {
+            // KYC Failed
+            setState(() {
+              _currentState = CardApplyState.kycFailed;
+              _kycFailReason =
+                  kycStatus.latestKyc?.failReason ?? kycStatus.message;
+            });
+          } else {
+            // KYC Not Submitted (not_submitted or other)
+            // Always show KYC pending submit screen with button to go to KYC
+            setState(() {
+              _currentState = CardApplyState.kycPendingSubmit;
+            });
+          }
+        } catch (e) {
+          print('Error checking KYC status: $e');
+          // If error checking KYC, show KYC pending submit screen
+          setState(() {
+            _currentState = CardApplyState.kycPendingSubmit;
+          });
+        }
+        return;
+      }
+
+      // Otherwise (successCards > 0), show Receive Card directly
       setState(() {
         _currentState = CardApplyState.kycSuccess;
       });
