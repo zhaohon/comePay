@@ -84,10 +84,11 @@ class _CardScreenState extends State<CardScreen> {
         _isInitialLoading = false;
       });
       // 如果有卡片，加载第一张卡片的详情和交易记录
+      // 如果有卡片，仅重置索引，具体数据等待 VisibilityDetector 触发刷新
       if (cachedList.hasCards) {
         _currentCardIndex = 0;
-        _loadCurrentCardDetails();
-        _loadTransactions();
+        // _loadCurrentCardDetails(); // Removed to avoid double fetch
+        // _loadTransactions(); // Removed to avoid double fetch
       }
     } else {
       // 如果没有缓存，加载卡片列表
@@ -1305,13 +1306,15 @@ class _CardScreenState extends State<CardScreen> {
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: size.height * 0.05),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: Image.asset(
-                          "assets/visa.png",
-                          height: size.height * (isTablet ? 0.3 : 0.25),
-                          width: double.infinity,
-                          fit: BoxFit.cover,
+                      AspectRatio(
+                        aspectRatio: 1.44,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Image.asset(
+                            "assets/visa.png",
+                            width: double.infinity,
+                            fit: BoxFit.cover, // 使用 cover 填满容器，因为容器比例已设为图片比例
+                          ),
                         ),
                       ),
                       SizedBox(height: size.height * 0.05),

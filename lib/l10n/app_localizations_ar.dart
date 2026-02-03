@@ -521,7 +521,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get enterTheEmailAddressYouWantToUseToRegisterWithCCP =>
-      'أدخل عنوان البريد الإلكتروني الذي تريد استخدامه للتسجيل مع CCP';
+      'أدخل عنوان البريد الإلكتروني الذي تريد استخدامه للتسجيل مع ComeComePay';
 
   @override
   String get pleaseEnterAValidEmailAddress =>
@@ -1507,4 +1507,67 @@ class AppLocalizationsAr extends AppLocalizations {
   String maxCardLimitReached(Object count) {
     return 'يمكن لكل حساب المطالبة بـ $count بطاقات كحد أقصى';
   }
+
+  @override
+  String get nameLabel => 'الاسم';
+
+  @override
+  String get surnameLabel => 'اللقب';
+
+  @override
+  String get enterNameHint => 'أدخل الاسم (أحرف إنجليزية كبيرة فقط)';
+
+  @override
+  String get enterSurnameHint => 'أدخل اللقب (أحرف إنجليزية كبيرة فقط)';
+
+  @override
+  String get mobilePhoneLabel => 'رقم الهاتف المحمول';
+
+  @override
+  String get enterMobileNumberHint => 'أدخل رقم الهاتف';
+
+  @override
+  String get countryRegionLabel => 'الدولة / المنطقة';
+
+  @override
+  String get stateProvinceLabel => 'الولاية / المقاطعة';
+
+  @override
+  String get enterStateProvinceHint => 'أدخل الولاية / المقاطعة';
+
+  @override
+  String get cityLabel => 'المدينة';
+
+  @override
+  String get enterCityHint => 'أدخل المدينة';
+
+  @override
+  String get detailedAddressLabel => 'العنوان التفصيلي';
+
+  @override
+  String get enterDetailedAddressHint => 'أدخل العنوان التفصيلي';
+
+  @override
+  String get postCodeLabel => 'الرمز البريدي';
+
+  @override
+  String get enterPostCodeHint => 'أدخل الرمز البريدي';
+
+  @override
+  String get kycSolicitationDisclaimer =>
+      'من خلال المتابعة، فإنك توافق على أنك تصل إلى هذا التطبيق وخدماته طواعية، دون أي ترويج أو طلب نشط من Come Come Pay';
+
+  @override
+  String pleaseEnterField(Object field) {
+    return 'يرجى إدخال $field';
+  }
+
+  @override
+  String onlyUppercaseEnglishAllowed(Object field, Object value) {
+    return 'يجب أن يحتوي $field على أحرف إنجليزية كبيرة فقط (A-Z).\n\nالقيمة الحالية: $value';
+  }
+
+  @override
+  String get kycPaymentRequiredDesc =>
+      'تحتاج إلى إكمال دفع رسوم البطاقة قبل المتابعة في التحقق من الهوية.';
 }

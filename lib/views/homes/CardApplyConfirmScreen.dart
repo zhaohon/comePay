@@ -19,6 +19,7 @@ import 'package:comecomepay/models/responses/coupon_detail_model.dart';
 import 'package:comecomepay/services/global_service.dart';
 import 'package:provider/provider.dart';
 import 'package:comecomepay/viewmodels/card_viewmodel.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 enum CardApplyState {
   loading,
@@ -65,6 +66,8 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
   // Storage for user balances
   Map<String, Map<String, dynamic>> _walletBalances = {};
   bool _isProcessing = false;
+  // Flag to prevent concurrent _initLogic calls (like double trigger from VisibilityDetector)
+  bool _isLoadingData = false;
 
   @override
   void initState() {
@@ -73,21 +76,24 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
     _localSelectedCoupon = widget.selectedCoupon;
 
     if (widget.skipKycCheck) {
-      // If skipping checks (e.g. re-entering), load payment data directly?
-      // User requirements say "First entering... check KYC".
-      // I'll stick to the new logic unless skipKycCheck is explicitly forcing payment.
-      // But typically skipKycCheck might mean "I just paid".
-      // Let's run the main logic because it handles "Paid" state (kycPendingSubmit/Success).
-      _initLogic();
-    } else {
-      _initLogic();
+      // If skipping checks (e.g. re-entering), we rely on VisibilityDetector or specific logic
+      // But typically VisibilityDetector will handle the initial load now.
     }
+    // _initLogic(); // Removed to avoid double loading with VisibilityDetector
   }
 
   Future<void> _initLogic() async {
-    setState(() {
-      _currentState = CardApplyState.loading;
-    });
+    // Debounce: If already loading, skip
+    if (_isLoadingData) return;
+    _isLoadingData = true;
+
+    // 不要强制设为loading，否则会导致 VisibilityDetector 循环触发 (Content -> Loading -> Content -> Visibility Changed -> Loop)
+    // 初始状态已在变量声明时设为 loading，所以首次进入仍会转圈。
+    // 返回刷新时，不仅转圈直接刷新数据即可（静默刷新或使用 overlay loading，此处选择保留当前UI静默刷新）。
+
+    // setState(() {
+    //   _currentState = CardApplyState.loading;
+    // });
 
     try {
       // 1. Check Card Fee Stats FIRST (New Logic with /CardFee/GetStats)
@@ -154,7 +160,6 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
           if (status == 'approved' ||
               status == 'verified' ||
               status == 'success' ||
-              kycStatus.latestKyc?.pokepayStatus == 1 ||
               kycStatus.latestKyc?.pokepayStatus == 2) {
             // KYC Passed -> Show Receive Card
             setState(() {
@@ -202,6 +207,9 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
       // Let's show error snackbar and maybe stay loading or go to payment
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Error: $e')));
+    } finally {
+      // Ensure we reset the flag so retry or subsequent refresh works
+      _isLoadingData = false;
     }
   }
 
@@ -228,7 +236,7 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const Cardverificationscreen()),
-    ).then((_) => _initLogic()); // Refresh on return
+    );
   }
 
   Future<void> _handleReceiveCard() async {
@@ -947,7 +955,15 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
       ),
-      body: _buildBody(),
+      body: VisibilityDetector(
+        key: const Key('card_apply_confirm_screen'),
+        onVisibilityChanged: (info) {
+          if (info.visibleFraction == 1.0) {
+            _initLogic();
+          }
+        },
+        child: _buildBody(),
+      ),
     );
   }
 

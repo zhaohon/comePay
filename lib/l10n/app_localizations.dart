@@ -1077,7 +1077,7 @@ abstract class AppLocalizations {
   /// No description provided for @enterTheEmailAddressYouWantToUseToRegisterWithCCP.
   ///
   /// In en, this message translates to:
-  /// **'Enter the email address you want to use to register with CCP'**
+  /// **'Enter the email address you want to use to register with ComeComePay'**
   String get enterTheEmailAddressYouWantToUseToRegisterWithCCP;
 
   /// No description provided for @pleaseEnterAValidEmailAddress.
@@ -2957,6 +2957,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Each account can claim a maximum of {count} cards'**
   String maxCardLimitReached(Object count);
+
+  /// No description provided for @nameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get nameLabel;
+
+  /// No description provided for @surnameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Surname'**
+  String get surnameLabel;
+
+  /// No description provided for @enterNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Name (uppercase English only)'**
+  String get enterNameHint;
+
+  /// No description provided for @enterSurnameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Surname (uppercase English only)'**
+  String get enterSurnameHint;
+
+  /// No description provided for @mobilePhoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile Phone'**
+  String get mobilePhoneLabel;
+
+  /// No description provided for @enterMobileNumberHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter mobile number'**
+  String get enterMobileNumberHint;
+
+  /// No description provided for @countryRegionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Country / Region'**
+  String get countryRegionLabel;
+
+  /// No description provided for @stateProvinceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'State / Province'**
+  String get stateProvinceLabel;
+
+  /// No description provided for @enterStateProvinceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter State / Province'**
+  String get enterStateProvinceHint;
+
+  /// No description provided for @cityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get cityLabel;
+
+  /// No description provided for @enterCityHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter City'**
+  String get enterCityHint;
+
+  /// No description provided for @detailedAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed Address'**
+  String get detailedAddressLabel;
+
+  /// No description provided for @enterDetailedAddressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Detailed Address'**
+  String get enterDetailedAddressHint;
+
+  /// No description provided for @postCodeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Post Code'**
+  String get postCodeLabel;
+
+  /// No description provided for @enterPostCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Post Code'**
+  String get enterPostCodeHint;
+
+  /// No description provided for @kycSolicitationDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'By continuing you agree that you are accessing this App and its service voluntarily, without any active promotion or solicitation by Come Come Pay'**
+  String get kycSolicitationDisclaimer;
+
+  /// No description provided for @pleaseEnterField.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter {field}'**
+  String pleaseEnterField(Object field);
+
+  /// No description provided for @onlyUppercaseEnglishAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'{field} must contain only uppercase English letters (A-Z).\n\nCurrent value: {value}'**
+  String onlyUppercaseEnglishAllowed(Object field, Object value);
+
+  /// No description provided for @kycPaymentRequiredDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'You need to complete the card fee payment before proceeding with KYC verification.'**
+  String get kycPaymentRequiredDesc;
 }
 
 class _AppLocalizationsDelegate

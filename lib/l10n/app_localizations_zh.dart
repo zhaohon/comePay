@@ -496,7 +496,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get enterTheEmailAddressYouWantToUseToRegisterWithCCP =>
-      '输入您想用来注册CCP的电子邮件地址';
+      '输入您想用来注册ComeComePay的电子邮件地址';
 
   @override
   String get pleaseEnterAValidEmailAddress => '请输入有效的电子邮件地址';
@@ -1463,4 +1463,66 @@ class AppLocalizationsZh extends AppLocalizations {
   String maxCardLimitReached(Object count) {
     return '每个账户最多可以领取 $count 张卡片';
   }
+
+  @override
+  String get nameLabel => '名字';
+
+  @override
+  String get surnameLabel => '姓氏';
+
+  @override
+  String get enterNameHint => '输入名字（仅限大写英文）';
+
+  @override
+  String get enterSurnameHint => '输入姓氏（仅限大写英文）';
+
+  @override
+  String get mobilePhoneLabel => '手机号码';
+
+  @override
+  String get enterMobileNumberHint => '输入手机号码';
+
+  @override
+  String get countryRegionLabel => '国家/地区';
+
+  @override
+  String get stateProvinceLabel => '州/省';
+
+  @override
+  String get enterStateProvinceHint => '输入州/省';
+
+  @override
+  String get cityLabel => '城市';
+
+  @override
+  String get enterCityHint => '输入城市';
+
+  @override
+  String get detailedAddressLabel => '详细地址';
+
+  @override
+  String get enterDetailedAddressHint => '输入详细地址';
+
+  @override
+  String get postCodeLabel => '邮政编码';
+
+  @override
+  String get enterPostCodeHint => '输入邮政编码';
+
+  @override
+  String get kycSolicitationDisclaimer =>
+      '继续即表示您同意自愿访问此应用程序及其服务，无需 Come Come Pay 的任何主动促销或招揽';
+
+  @override
+  String pleaseEnterField(Object field) {
+    return '请输入$field';
+  }
+
+  @override
+  String onlyUppercaseEnglishAllowed(Object field, Object value) {
+    return '$field 必须仅包含大写英文字母 (A-Z)。\n\n当前值：$value';
+  }
+
+  @override
+  String get kycPaymentRequiredDesc => '您需要完成卡费支付才能进行KYC验证。';
 }

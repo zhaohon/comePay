@@ -32,19 +32,25 @@ class _TokenNetworkListSendState extends State<TokenNetworkListSend> {
     super.dispose();
   }
 
-  void _goToSendDetail(BuildContext context, WalletBalance balance) {
+  Future<void> _goToSendDetail(
+      BuildContext context, WalletBalance balance) async {
     // HKD 暂时不支持发送
     if (balance.currency == "HKD") {
       return;
     }
 
-    Navigator.pushNamed(
+    await Navigator.pushNamed(
       context,
       '/SendPdp',
       arguments: {
         'balance': balance,
       },
     );
+
+    // 返回后刷新数据（列表和首页共用ViewModel，都会更新）
+    if (mounted) {
+      Provider.of<WalletViewModel>(context, listen: false).fetchWalletData();
+    }
   }
 
   /// 格式化余额：去掉尾部的0，如果是0则只显示"0"

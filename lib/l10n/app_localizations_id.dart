@@ -519,7 +519,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get enterTheEmailAddressYouWantToUseToRegisterWithCCP =>
-      'Masukkan alamat email yang ingin Anda gunakan untuk mendaftar dengan CCP';
+      'Masukkan alamat email yang ingin Anda gunakan untuk mendaftar dengan ComeComePay';
 
   @override
   String get pleaseEnterAValidEmailAddress =>
@@ -1506,4 +1506,67 @@ class AppLocalizationsId extends AppLocalizations {
   String maxCardLimitReached(Object count) {
     return 'Each account can claim a maximum of $count cards';
   }
+
+  @override
+  String get nameLabel => 'Name';
+
+  @override
+  String get surnameLabel => 'Surname';
+
+  @override
+  String get enterNameHint => 'Enter Name (uppercase English only)';
+
+  @override
+  String get enterSurnameHint => 'Enter Surname (uppercase English only)';
+
+  @override
+  String get mobilePhoneLabel => 'Mobile Phone';
+
+  @override
+  String get enterMobileNumberHint => 'Enter mobile number';
+
+  @override
+  String get countryRegionLabel => 'Country / Region';
+
+  @override
+  String get stateProvinceLabel => 'State / Province';
+
+  @override
+  String get enterStateProvinceHint => 'Enter State / Province';
+
+  @override
+  String get cityLabel => 'City';
+
+  @override
+  String get enterCityHint => 'Enter City';
+
+  @override
+  String get detailedAddressLabel => 'Detailed Address';
+
+  @override
+  String get enterDetailedAddressHint => 'Enter Detailed Address';
+
+  @override
+  String get postCodeLabel => 'Post Code';
+
+  @override
+  String get enterPostCodeHint => 'Enter Post Code';
+
+  @override
+  String get kycSolicitationDisclaimer =>
+      'By continuing you agree that you are accessing this App and its service voluntarily, without any active promotion or solicitation by Come Come Pay';
+
+  @override
+  String pleaseEnterField(Object field) {
+    return 'Please enter $field';
+  }
+
+  @override
+  String onlyUppercaseEnglishAllowed(Object field, Object value) {
+    return '$field must contain only uppercase English letters (A-Z).\n\nCurrent value: $value';
+  }
+
+  @override
+  String get kycPaymentRequiredDesc =>
+      'You need to complete the card fee payment before proceeding with KYC verification.';
 }
