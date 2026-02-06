@@ -165,6 +165,13 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
     return currency;
   }
 
+  /// 过滤出所有 USDT 相关币种
+  List<String> _getUsdtCoins() {
+    return _defaultSendCoins
+        .where((coin) => coin.toUpperCase().contains('USDT'))
+        .toList();
+  }
+
   /// 获取可用的币种列表
   /// 使用展示数组
   List<String> get _availableCoinsForSend {
@@ -389,9 +396,22 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
   }
 
   Future<void> _openDropdown(bool isTop) async {
-    // 发送币种：钱包币种；接收币种：钱包币种 + HKD
-    final List<String> coinList =
-        isTop ? _availableCoinsForSend : _availableCoinsForReceive;
+    // 动态计算可选币种列表
+    List<String> coinList;
+
+    if (isTop) {
+      // 选择发送币种
+      coinList = _availableCoinsForSend;
+    } else {
+      // 选择接收币种
+      // 如果发送币种是 HKD，接收只能是 USDT
+      if (topCoin == 'HKD') {
+        coinList = _getUsdtCoins();
+      } else {
+        coinList = _availableCoinsForReceive;
+      }
+    }
+
     final String current = isTop ? topCoin : bottomCoin;
 
     final selected = await showModalBottomSheet<String>(
@@ -441,10 +461,24 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
       setState(() {
         if (isTop) {
           topCoin = selected;
+
+          // 如果新选择的是 HKD，更新下方可选币种为 USDT
+          if (selected == 'HKD') {
+            _displayReceiveCoins = _getUsdtCoins();
+            // 如果当前 bottomCoin 不是 USDT，切换为第一个 USDT
+            if (!bottomCoin.toUpperCase().contains('USDT') &&
+                _displayReceiveCoins.isNotEmpty) {
+              bottomCoin = _displayReceiveCoins.first;
+            }
+          } else {
+            // 恢复默认接收币种列表
+            _displayReceiveCoins = List.from(_defaultReceiveCoins);
+          }
         } else {
           bottomCoin = selected;
         }
-        // 如果切换后涉及HKD，需要重新选择卡片
+
+        // 如果切换后涉及 HKD，需要重新选择卡片
         if (_needsCardSelection() &&
             _selectedCard == null &&
             _cardList?.hasCards == true) {
@@ -492,15 +526,31 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
 
   void _swapCoins() {
     setState(() {
-      // 交换topCoin和bottomCoin
+      // 交换 topCoin 和 bottomCoin
       final temp = topCoin;
       topCoin = bottomCoin;
       bottomCoin = temp;
 
-      // 交换展示数组
-      final tempDisplay = _displaySendCoins;
-      _displaySendCoins = List.from(_displayReceiveCoins);
-      _displayReceiveCoins = List.from(tempDisplay);
+      // 根据新的 topCoin 决定接收币种列表
+      if (topCoin == 'HKD') {
+        // HKD 在上面：接收币种只能是 USDT
+        _displayReceiveCoins = _getUsdtCoins();
+        _displaySendCoins = List.from(_defaultReceiveCoins); // ['HKD']
+
+        // 如果当前 bottomCoin 不是 USDT，默认设为第一个 USDT
+        if (!bottomCoin.toUpperCase().contains('USDT') &&
+            _displayReceiveCoins.isNotEmpty) {
+          bottomCoin = _displayReceiveCoins.first;
+        }
+      } else if (bottomCoin == 'HKD') {
+        // HKD 在下面：发送币种是钱包币种，接收是 HKD
+        _displaySendCoins = List.from(_defaultSendCoins);
+        _displayReceiveCoins = List.from(_defaultReceiveCoins); // ['HKD']
+      } else {
+        // 都不是 HKD：恢复默认
+        _displaySendCoins = List.from(_defaultSendCoins);
+        _displayReceiveCoins = List.from(_defaultReceiveCoins);
+      }
     });
     _fetchRate();
   }
@@ -874,8 +924,8 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
             backgroundColor: AppColors.pageBackground,
             elevation: 0,
             centerTitle: true,
-            title: const Text(
-              "Swap",
+            title: Text(
+              AppLocalizations.of(context)!.swap,
               style: TextStyle(
                 color: AppColors.textPrimary,
                 fontWeight: FontWeight.bold,
@@ -1271,6 +1321,7 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
             onTap: () => _openDropdown(isTop),
             child: Container(
               width: double.infinity,
+              color: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 0),
               child: Row(
                 children: [
