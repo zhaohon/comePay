@@ -2,6 +2,8 @@ import 'package:comecomepay/views/homes/CardApplyConfirmScreen.dart'
     show CardApplyConfirmScreen;
 import 'package:comecomepay/views/homes/CardTransactionDetailScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:comecomepay/views/homes/SecurityInfoItem.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -187,7 +189,7 @@ class _CardScreenState extends State<CardScreen> {
     if (dateStr == null || dateStr.isEmpty) return '***';
     try {
       final date = DateTime.parse(dateStr);
-      return DateFormat('yyyy-MM-dd').format(date);
+      return DateFormat('MM/yy').format(date);
     } catch (e) {
       return dateStr;
     }
@@ -960,7 +962,7 @@ class _CardScreenState extends State<CardScreen> {
                 ),
                 const SizedBox(width: 16),
                 Text(
-                  '${AppLocalizations.of(context)!.expiryDateLabel}${_formatExpiryDate(cardDetails?.expiryDate)}',
+                  '${AppLocalizations.of(context)!.expiryDateLabel}***',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.9),
                     fontSize: 12,
@@ -1156,19 +1158,22 @@ class _CardScreenState extends State<CardScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   children: [
-                    _buildSecurityInfoItem(
-                        AppLocalizations.of(context)!.cardNumber, cardNumber),
+                    SecurityInfoItem(
+                        label: AppLocalizations.of(context)!.cardNumber,
+                        value: cardNumber),
                     const SizedBox(height: 20),
-                    _buildSecurityInfoItem(
-                        AppLocalizations.of(context)!.expiryDate,
-                        _currentCardDetails?.expiryDate ?? '***'),
+                    SecurityInfoItem(
+                        label: AppLocalizations.of(context)!.expiryDate,
+                        value:
+                            _formatExpiryDate(_currentCardDetails?.expiryDate)),
                     const SizedBox(height: 20),
-                    _buildSecurityInfoItem(
-                        AppLocalizations.of(context)!.cvvCode, cvv),
+                    SecurityInfoItem(
+                        label: AppLocalizations.of(context)!.cvvCode,
+                        value: cvv),
                     const SizedBox(height: 20),
-                    _buildSecurityInfoItem(
-                        AppLocalizations.of(context)!.pinCode, pin),
-                    const SizedBox(height: 20),
+                    // _buildSecurityInfoItem(
+                    //     AppLocalizations.of(context)!.pinCode, pin),
+                    // const SizedBox(height: 20),
                   ],
                 ),
               ),
@@ -1219,56 +1224,9 @@ class _CardScreenState extends State<CardScreen> {
     );
   }
 
-  /// 构建安全信息项
+  /// 构建安全信息项 (向后兼容包装器)
   Widget _buildSecurityInfoItem(String label, String value) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.pageBackground,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.border,
-          width: 1,
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 15,
-              color: AppColors.textSecondary,
-            ),
-          ),
-          Row(
-            children: [
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
-                  letterSpacing: 1,
-                ),
-              ),
-              const SizedBox(width: 8),
-              GestureDetector(
-                onTap: () {
-                  // 复制到剪贴板
-                  // TODO: 实现复制功能
-                },
-                child: Icon(
-                  Icons.copy,
-                  size: 18,
-                  color: AppColors.primary,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+    return SecurityInfoItem(label: label, value: value);
   }
 
   /// 构建申请页面
