@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/core/base_viewmodel.dart';
-import 'package:comecomepay/viewmodels/crypto_viewmodel.dart';
-import 'package:comecomepay/models/responses/crypto_response_model.dart';
+import 'package:Demo/core/base_viewmodel.dart';
+import 'package:Demo/viewmodels/crypto_viewmodel.dart';
+import 'package:Demo/models/responses/crypto_response_model.dart';
 
 class TokenReceiveViewModel extends BaseViewModel {
   final CryptoViewModel _cryptoViewModel = CryptoViewModel();
@@ -48,7 +48,8 @@ class TokenReceiveViewModel extends BaseViewModel {
     void addToken({
       required CryptoResponse? crypto,
       required String displaySymbol,
-      required String walletChain, // 用于匹配后端钱包的 chain 字段 (BTC/ETH/BNB/MATIC/BASE/TRX/SOL)
+      required String
+          walletChain, // 用于匹配后端钱包的 chain 字段 (BTC/ETH/BNB/MATIC/BASE/TRX/SOL)
       required String networkLabel, // 用于界面显示 (ERC20/TRC20...)
       required String iconPath,
       String? tokenAddressKey, // 用于在 tokenAddresses 里取地址 (USDT/USDC)

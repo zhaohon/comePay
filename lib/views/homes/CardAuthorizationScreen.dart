@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:comecomepay/viewmodels/card_authorization_viewmodel.dart';
-import 'package:comecomepay/models/three_ds_record_model.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:Demo/viewmodels/card_authorization_viewmodel.dart';
+import 'package:Demo/models/three_ds_record_model.dart';
+import 'package:Demo/l10n/app_localizations.dart';
 
 class CardAuthorizationScreen extends StatelessWidget {
   const CardAuthorizationScreen({super.key});

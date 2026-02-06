@@ -352,7 +352,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcomeToPokePay => 'Welcome to PokePay';
 
   @override
-  String get welcomeToComeComePay => 'Welcome to Come Come Pay';
+  String get welcomeToDemo => 'Welcome to Demo';
 
   @override
   String get totalAssets => 'Total Assets';
@@ -388,7 +388,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noRelevantDataYet => 'No relevant data yet';
 
   @override
-  String get comeComePayCard => 'Come Come Pay Card';
+  String get demoCards => 'Demo Card';
 
   @override
   String get noMonthlyFee => 'No monthly Fee';
@@ -446,8 +446,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get verify => 'Verify OTP';
 
   @override
-  String get forEveryDreamWithComeComePay =>
-      'For every dream with\nCome Come Pay';
+  String get forEveryDreamWithDemo => 'For every dream with\nDemo';
 
   @override
   String get fasility =>
@@ -521,7 +520,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enterTheEmailAddressYouWantToUseToRegisterWithCCP =>
-      'Enter the email address you want to use to register with ComeComePay';
+      'Enter the email address you want to use to register with Demo';
 
   @override
   String get pleaseEnterAValidEmailAddress =>
@@ -612,7 +611,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get readAt => 'Read At';
 
   @override
-  String get thankYouForUsingComeComePay => 'Thank you for using ComeComePay!';
+  String get thankYouForUsingDemo => 'Thank you for using Demo!';
 
   @override
   String get searchTokenHint => 'Search token...';
@@ -745,6 +744,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get failedToLoadCardFee => 'Failed to load card fee';
 
   @override
+  String get demoCard => 'Demo Card';
+
+  @override
   String get code => 'Code';
 
   @override
@@ -754,14 +756,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get skipButton => 'Skip';
 
   @override
-  String get appUpgradeTitle => 'ComeComePay Upgrade';
+  String get appUpgradeTitle => 'Demo Upgrade';
 
   @override
-  String get upgradeAppButton => 'Upgrade ComeComePay';
+  String get upgradeAppButton => 'Upgrade Demo';
 
   @override
   String get updateDefaultMessage =>
-      'Please update ComeComePay to the latest version. The version you are using is out of date and may stop working soon.';
+      'Please update Demo to the latest version. The version you are using is out of date and may stop working soon.';
 
   @override
   String get pressAgainToExit => 'Press again to exit';
@@ -1553,7 +1555,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get kycSolicitationDisclaimer =>
-      'By continuing you agree that you are accessing this App and its service voluntarily, without any active promotion or solicitation by Come Come Pay';
+      'By continuing you agree that you are accessing this App and its service voluntarily, without any active promotion or solicitation by Demo';
 
   @override
   String pleaseEnterField(Object field) {

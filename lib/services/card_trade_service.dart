@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:comecomepay/core/base_service.dart';
-import 'package:comecomepay/models/card_trade_model.dart';
+import 'package:Demo/core/base_service.dart';
+import 'package:Demo/models/card_trade_model.dart';
 
 class CardTradeService extends BaseService {
   Future<CardTradeResponse> fetchCardTrades({

@@ -1,6 +1,6 @@
-import 'package:comecomepay/core/base_viewmodel.dart';
-import 'package:comecomepay/services/referral_service.dart';
-import 'package:comecomepay/utils/logger.dart';
+import 'package:Demo/core/base_viewmodel.dart';
+import 'package:Demo/services/referral_service.dart';
+import 'package:Demo/utils/logger.dart';
 import 'package:flutter/services.dart';
 
 class InviteFriendViewModel extends BaseViewModel {
@@ -72,7 +72,7 @@ class InviteFriendViewModel extends BaseViewModel {
   String getReferralLink() {
     // Assuming a standard format if not provided by backend.
     // Adjust domain as needed or if config provides it.
-    return "https://comecomepay.com/register?ref=$referralCode";
+    return "https://Demo.com/register?ref=$referralCode";
   }
 
   void copyToClipboard(String text) {

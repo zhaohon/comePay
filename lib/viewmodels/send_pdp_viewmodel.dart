@@ -1,4 +1,4 @@
-import 'package:comecomepay/core/base_viewmodel.dart';
+import 'package:Demo/core/base_viewmodel.dart';
 import 'package:dio/dio.dart';
 
 class SendPdpViewModel extends BaseViewModel {

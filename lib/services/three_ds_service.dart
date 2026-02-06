@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:comecomepay/core/base_service.dart';
-import 'package:comecomepay/models/three_ds_record_model.dart';
+import 'package:Demo/core/base_service.dart';
+import 'package:Demo/models/three_ds_record_model.dart';
 
 class ThreeDSService extends BaseService {
   Future<GetThreeDSRecordsResponse> getMyRecords({

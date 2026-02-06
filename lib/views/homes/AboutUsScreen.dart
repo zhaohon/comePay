@@ -1,6 +1,8 @@
+import 'package:Demo/l10n/app_localizations.dart';
+import 'package:Demo/utils/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
-import 'package:comecomepay/utils/app_colors.dart';
+import 'package:Demo/l10n/app_localizations.dart';
+import 'package:Demo/utils/app_colors.dart';
 import '../../services/content_service.dart';
 
 class AboutUsScreen extends StatefulWidget {
@@ -90,7 +92,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                       ),
                       const SizedBox(width: 8),
                       const Text(
-                        "Come Come Pay",
+                        "Demo",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:Demo/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:comecomepay/viewmodels/coupon_viewmodel.dart';
+import 'package:Demo/viewmodels/coupon_viewmodel.dart';
 
 class CouponCodeScreen extends StatefulWidget {
   const CouponCodeScreen({super.key});

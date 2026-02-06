@@ -114,7 +114,7 @@ class VersionUpdateScreen extends StatelessWidget {
                         // 版本号
                         Expanded(
                           child: Text(
-                            'ComeComePay $version',
+                            'Demo $version',
                             style: const TextStyle(
                               color: Colors.black,
                               fontSize: 20,

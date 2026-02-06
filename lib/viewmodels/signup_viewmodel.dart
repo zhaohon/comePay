@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/core/base_viewmodel.dart';
-import 'package:comecomepay/models/requests/signup_request_model.dart';
-import 'package:comecomepay/models/responses/signup_response_model.dart';
-import 'package:comecomepay/models/responses/signup_error_model.dart';
-import 'package:comecomepay/models/requests/email_validation_request_model.dart';
-import 'package:comecomepay/models/responses/email_validation_response_model.dart';
-import 'package:comecomepay/models/responses/email_validation_error_model.dart';
-import 'package:comecomepay/services/global_service.dart';
-import 'package:comecomepay/utils/service_locator.dart';
+import 'package:Demo/core/base_viewmodel.dart';
+import 'package:Demo/models/requests/signup_request_model.dart';
+import 'package:Demo/models/responses/signup_response_model.dart';
+import 'package:Demo/models/responses/signup_error_model.dart';
+import 'package:Demo/models/requests/email_validation_request_model.dart';
+import 'package:Demo/models/responses/email_validation_response_model.dart';
+import 'package:Demo/models/responses/email_validation_error_model.dart';
+import 'package:Demo/services/global_service.dart';
+import 'package:Demo/utils/service_locator.dart';
 
 // Response types for different scenarios
 class SignupResult {

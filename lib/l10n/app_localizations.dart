@@ -756,11 +756,11 @@ abstract class AppLocalizations {
   /// **'Welcome to PokePay'**
   String get welcomeToPokePay;
 
-  /// No description provided for @welcomeToComeComePay.
+  /// No description provided for @welcomeToDemo.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to Come Come Pay'**
-  String get welcomeToComeComePay;
+  /// **'Welcome to Demo'**
+  String get welcomeToDemo;
 
   /// No description provided for @totalAssets.
   ///
@@ -828,11 +828,11 @@ abstract class AppLocalizations {
   /// **'No relevant data yet'**
   String get noRelevantDataYet;
 
-  /// No description provided for @comeComePayCard.
+  /// No description provided for @demoCards.
   ///
   /// In en, this message translates to:
-  /// **'Come Come Pay Card'**
-  String get comeComePayCard;
+  /// **'Demo Card'**
+  String get demoCards;
 
   /// No description provided for @noMonthlyFee.
   ///
@@ -942,11 +942,11 @@ abstract class AppLocalizations {
   /// **'Verify OTP'**
   String get verify;
 
-  /// No description provided for @forEveryDreamWithComeComePay.
+  /// No description provided for @forEveryDreamWithDemo.
   ///
   /// In en, this message translates to:
-  /// **'For every dream with\nCome Come Pay'**
-  String get forEveryDreamWithComeComePay;
+  /// **'For every dream with\nDemo'**
+  String get forEveryDreamWithDemo;
 
   /// No description provided for @fasility.
   ///
@@ -1077,7 +1077,7 @@ abstract class AppLocalizations {
   /// No description provided for @enterTheEmailAddressYouWantToUseToRegisterWithCCP.
   ///
   /// In en, this message translates to:
-  /// **'Enter the email address you want to use to register with ComeComePay'**
+  /// **'Enter the email address you want to use to register with Demo'**
   String get enterTheEmailAddressYouWantToUseToRegisterWithCCP;
 
   /// No description provided for @pleaseEnterAValidEmailAddress.
@@ -1248,11 +1248,11 @@ abstract class AppLocalizations {
   /// **'Read At'**
   String get readAt;
 
-  /// No description provided for @thankYouForUsingComeComePay.
+  /// No description provided for @thankYouForUsingDemo.
   ///
   /// In en, this message translates to:
-  /// **'Thank you for using ComeComePay!'**
-  String get thankYouForUsingComeComePay;
+  /// **'Thank you for using Demo!'**
+  String get thankYouForUsingDemo;
 
   /// No description provided for @searchTokenHint.
   ///
@@ -1512,6 +1512,12 @@ abstract class AppLocalizations {
   /// **'Failed to load card fee'**
   String get failedToLoadCardFee;
 
+  /// No description provided for @demoCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Demo Card'**
+  String get demoCard;
+
   /// No description provided for @code.
   ///
   /// In en, this message translates to:
@@ -1533,19 +1539,19 @@ abstract class AppLocalizations {
   /// No description provided for @appUpgradeTitle.
   ///
   /// In en, this message translates to:
-  /// **'ComeComePay Upgrade'**
+  /// **'Demo Upgrade'**
   String get appUpgradeTitle;
 
   /// No description provided for @upgradeAppButton.
   ///
   /// In en, this message translates to:
-  /// **'Upgrade ComeComePay'**
+  /// **'Upgrade Demo'**
   String get upgradeAppButton;
 
   /// No description provided for @updateDefaultMessage.
   ///
   /// In en, this message translates to:
-  /// **'Please update ComeComePay to the latest version. The version you are using is out of date and may stop working soon.'**
+  /// **'Please update Demo to the latest version. The version you are using is out of date and may stop working soon.'**
   String get updateDefaultMessage;
 
   /// No description provided for @pressAgainToExit.
@@ -3051,7 +3057,7 @@ abstract class AppLocalizations {
   /// No description provided for @kycSolicitationDisclaimer.
   ///
   /// In en, this message translates to:
-  /// **'By continuing you agree that you are accessing this App and its service voluntarily, without any active promotion or solicitation by Come Come Pay'**
+  /// **'By continuing you agree that you are accessing this App and its service voluntarily, without any active promotion or solicitation by Demo'**
   String get kycSolicitationDisclaimer;
 
   /// No description provided for @pleaseEnterField.

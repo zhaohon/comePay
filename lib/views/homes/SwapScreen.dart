@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
-import 'package:comecomepay/viewmodels/crypto_viewmodel.dart';
+import 'package:Demo/l10n/app_localizations.dart';
+import 'package:Demo/viewmodels/crypto_viewmodel.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart' show NumberFormat;
 import 'package:provider/provider.dart';

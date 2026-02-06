@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
-import 'package:comecomepay/views/homes/my_invitation/MyInvitationScreen.dart';
-import 'package:comecomepay/viewmodels/invite_friend_viewmodel.dart';
+import 'package:Demo/l10n/app_localizations.dart';
+import 'package:Demo/views/homes/my_invitation/MyInvitationScreen.dart';
+import 'package:Demo/viewmodels/invite_friend_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class InviteFriendScreen extends StatefulWidget {

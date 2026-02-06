@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
-import 'package:comecomepay/models/wallet_model.dart';
-import 'package:comecomepay/viewmodels/transaction_history_viewmodel.dart';
+import 'package:Demo/l10n/app_localizations.dart';
+import 'package:Demo/models/wallet_model.dart';
+import 'package:Demo/viewmodels/transaction_history_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class TransactionHistoryHistory extends StatefulWidget {

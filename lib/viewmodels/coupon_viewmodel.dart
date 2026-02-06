@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/core/base_viewmodel.dart';
-import 'package:comecomepay/models/responses/coupon_model.dart';
-import 'package:comecomepay/models/responses/new_coupon_model.dart';
-import 'package:comecomepay/models/responses/pagination_model.dart';
-import 'package:comecomepay/models/responses/claim_coupon_response_model.dart';
-import 'package:comecomepay/services/global_service.dart';
-import 'package:comecomepay/utils/service_locator.dart';
+import 'package:Demo/core/base_viewmodel.dart';
+import 'package:Demo/models/responses/coupon_model.dart';
+import 'package:Demo/models/responses/new_coupon_model.dart';
+import 'package:Demo/models/responses/pagination_model.dart';
+import 'package:Demo/models/responses/claim_coupon_response_model.dart';
+import 'package:Demo/services/global_service.dart';
+import 'package:Demo/utils/service_locator.dart';
 
 class CouponViewModel extends BaseViewModel {
   final GlobalService _globalService = getIt<GlobalService>();

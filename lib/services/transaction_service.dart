@@ -1,7 +1,7 @@
-import 'package:comecomepay/core/base_service.dart';
-import 'package:comecomepay/models/responses/transaction_response_model.dart';
-import 'package:comecomepay/models/requests/transaction_preview_request_model.dart';
-import 'package:comecomepay/models/responses/transaction_preview_response_model.dart';
+import 'package:Demo/core/base_service.dart';
+import 'package:Demo/models/responses/transaction_response_model.dart';
+import 'package:Demo/models/requests/transaction_preview_request_model.dart';
+import 'package:Demo/models/responses/transaction_preview_response_model.dart';
 
 class TransactionService extends BaseService {
   Future<TransactionResponse> fetchTransactionHistory(

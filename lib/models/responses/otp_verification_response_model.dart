@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-import 'package:comecomepay/models/responses/login_response_model.dart';
+import 'package:Demo/models/responses/login_response_model.dart';
 
 part 'otp_verification_response_model.g.dart';
 

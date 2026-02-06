@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:comecomepay/viewmodels/send_pdp_detail_viewmodel.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:Demo/viewmodels/send_pdp_detail_viewmodel.dart';
+import 'package:Demo/l10n/app_localizations.dart';
 
 class SendPdpDetail extends StatefulWidget {
   const SendPdpDetail({super.key});

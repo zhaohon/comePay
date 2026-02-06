@@ -1,8 +1,8 @@
-import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:Demo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:comecomepay/services/announcement_service.dart';
-import 'package:comecomepay/services/notification_service.dart';
+import 'package:Demo/services/announcement_service.dart';
+import 'package:Demo/services/notification_service.dart';
 
 class NotificationDetailScreen extends StatefulWidget {
   final int id;

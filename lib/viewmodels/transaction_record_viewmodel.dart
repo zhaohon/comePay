@@ -1,8 +1,8 @@
-import 'package:comecomepay/core/base_viewmodel.dart';
-import 'package:comecomepay/models/transaction_record_model.dart';
-import 'package:comecomepay/services/transaction_record_service.dart';
+import 'package:Demo/core/base_viewmodel.dart';
+import 'package:Demo/models/transaction_record_model.dart';
+import 'package:Demo/services/transaction_record_service.dart';
 import 'package:flutter/material.dart';
-import 'package:comecomepay/main.dart';
+import 'package:Demo/main.dart';
 
 /// ViewModel responsible for managing transaction record state and business logic.
 /// Follows MVVM pattern and clean code principles with single responsibility.

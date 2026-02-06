@@ -1,20 +1,20 @@
-import 'package:comecomepay/views/homes/CardApplyConfirmScreen.dart'
+import 'package:Demo/views/homes/CardApplyConfirmScreen.dart'
     show CardApplyConfirmScreen;
-import 'package:comecomepay/views/homes/CardTransactionDetailScreen.dart';
+import 'package:Demo/views/homes/CardTransactionDetailScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import '../../l10n/app_localizations.dart';
 import '../../viewmodels/locale_provider.dart';
-import 'package:comecomepay/viewmodels/profile_screen_viewmodel.dart';
-import 'package:comecomepay/viewmodels/card_trade_viewmodel.dart';
-import 'package:comecomepay/viewmodels/card_viewmodel.dart';
-import 'package:comecomepay/utils/app_colors.dart';
-import 'package:comecomepay/services/card_service.dart';
-import 'package:comecomepay/models/card_list_model.dart';
-import 'package:comecomepay/models/card_account_details_model.dart';
-import 'package:comecomepay/views/homes/CardAuthorizationScreen.dart';
+import 'package:Demo/viewmodels/profile_screen_viewmodel.dart';
+import 'package:Demo/viewmodels/card_trade_viewmodel.dart';
+import 'package:Demo/viewmodels/card_viewmodel.dart';
+import 'package:Demo/utils/app_colors.dart';
+import 'package:Demo/services/card_service.dart';
+import 'package:Demo/models/card_list_model.dart';
+import 'package:Demo/models/card_account_details_model.dart';
+import 'package:Demo/views/homes/CardAuthorizationScreen.dart';
 
 class CardScreen extends StatefulWidget {
   const CardScreen({super.key});
@@ -1297,7 +1297,7 @@ class _CardScreenState extends State<CardScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        AppLocalizations.of(context)!.comeComePayCard,
+                        AppLocalizations.of(context)!.demoCard,
                         style: TextStyle(
                           fontSize: titleFont * textScale,
                           fontWeight: FontWeight.bold,

@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:comecomepay/core/base_service.dart';
+import 'package:Demo/core/base_service.dart';
 
 class YudunService extends BaseService {
   /// 获取支持的币种列表（带余额）
@@ -22,4 +22,3 @@ class YudunService extends BaseService {
     }
   }
 }
-

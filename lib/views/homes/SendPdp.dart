@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/utils/app_colors.dart';
-import 'package:comecomepay/models/wallet_model.dart';
-import 'package:comecomepay/services/withdraw_service.dart';
+import 'package:Demo/utils/app_colors.dart';
+import 'package:Demo/models/wallet_model.dart';
+import 'package:Demo/services/withdraw_service.dart';
 
 import '../../l10n/app_localizations.dart';
 

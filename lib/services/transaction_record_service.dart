@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:comecomepay/core/base_service.dart';
-import 'package:comecomepay/models/transaction_record_model.dart';
+import 'package:Demo/core/base_service.dart';
+import 'package:Demo/models/transaction_record_model.dart';
 
 class TransactionRecordService extends BaseService {
   Future<TransactionRecordResponse> fetchTransactionRecords(

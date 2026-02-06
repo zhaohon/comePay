@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/core/base_viewmodel.dart';
-import 'package:comecomepay/services/transaction_service.dart';
-import 'package:comecomepay/models/requests/transaction_preview_request_model.dart';
-import 'package:comecomepay/models/responses/transaction_preview_response_model.dart';
+import 'package:Demo/core/base_viewmodel.dart';
+import 'package:Demo/services/transaction_service.dart';
+import 'package:Demo/models/requests/transaction_preview_request_model.dart';
+import 'package:Demo/models/responses/transaction_preview_response_model.dart';
 
 class SendPdpDetailViewModel extends BaseViewModel {
   final TransactionService _transactionService = TransactionService();

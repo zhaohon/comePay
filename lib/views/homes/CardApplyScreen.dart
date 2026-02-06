@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/services/card_fee_service.dart';
-import 'package:comecomepay/services/global_service.dart';
-import 'package:comecomepay/services/kyc_service.dart';
-import 'package:comecomepay/models/card_fee_config_model.dart';
-import 'package:comecomepay/models/responses/coupon_detail_model.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
-import 'package:comecomepay/views/homes/CardVerificationScreen.dart';
-import 'package:comecomepay/utils/app_colors.dart';
+import 'package:Demo/services/card_fee_service.dart';
+import 'package:Demo/services/global_service.dart';
+import 'package:Demo/services/kyc_service.dart';
+import 'package:Demo/models/card_fee_config_model.dart';
+import 'package:Demo/models/responses/coupon_detail_model.dart';
+import 'package:Demo/l10n/app_localizations.dart';
+import 'package:Demo/views/homes/CardVerificationScreen.dart';
+import 'package:Demo/utils/app_colors.dart';
 
 class CardApplyCardScreen extends StatefulWidget {
   const CardApplyCardScreen({super.key});
@@ -621,7 +621,7 @@ class _CardApplyCardScreenState extends State<CardApplyCardScreen> {
                       _buildReadOnlyInfoRow(
                         AppLocalizations.of(context)!.cardName,
                         _cardFeeConfig?.description ??
-                            AppLocalizations.of(context)!.comeComePayCard,
+                            AppLocalizations.of(context)!.demoCard,
                         Icons.credit_card,
                       ),
                       const SizedBox(height: 12),

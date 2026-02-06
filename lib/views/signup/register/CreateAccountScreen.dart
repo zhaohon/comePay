@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/utils/app_colors.dart';
-import 'package:comecomepay/widgets/gradient_button.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:Demo/utils/app_colors.dart';
+import 'package:Demo/widgets/gradient_button.dart';
+import 'package:Demo/l10n/app_localizations.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
@@ -52,7 +52,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
               // App Name
               const Text(
-                'Come Come Pay',
+                'Demo',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,

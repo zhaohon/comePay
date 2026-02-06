@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/viewmodels/wallet_viewmodel.dart';
-import 'package:comecomepay/models/wallet_model.dart';
-import 'package:comecomepay/utils/app_colors.dart';
+import 'package:Demo/viewmodels/wallet_viewmodel.dart';
+import 'package:Demo/models/wallet_model.dart';
+import 'package:Demo/utils/app_colors.dart';
 import 'package:provider/provider.dart';
 
 /// 发送页面的代币网络列表（使用钱包真实数据）

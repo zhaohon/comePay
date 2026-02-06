@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/models/three_ds_record_model.dart';
-import 'package:comecomepay/services/three_ds_service.dart';
+import 'package:Demo/models/three_ds_record_model.dart';
+import 'package:Demo/services/three_ds_service.dart';
 
 class CardAuthorizationViewModel extends ChangeNotifier {
   final ThreeDSService _service = ThreeDSService();

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/views/homes/VersionUpdateScreen.dart';
+import 'package:Demo/views/homes/VersionUpdateScreen.dart';
 
 /// 版本更新测试页面
 /// 用于测试版本更新 UI
@@ -23,7 +23,7 @@ class VersionUpdateTestScreen extends StatelessWidget {
                   context,
                   version: '1.0.1',
                   releaseNotes:
-                      'Please update ComeComePay to the latest version. The version you are using is out of date and may stop working soon.',
+                      'Please update Demo to the latest version. The version you are using is out of date and may stop working soon.',
                   downloadUrl: 'https://www.baidu.com',
                   forceUpdate: false,
                 );
@@ -38,7 +38,7 @@ class VersionUpdateTestScreen extends StatelessWidget {
                   context,
                   version: '1.0.1',
                   releaseNotes:
-                      'Please update ComeComePay to the latest version. The version you are using is out of date and may stop working soon.',
+                      'Please update Demo to the latest version. The version you are using is out of date and may stop working soon.',
                   downloadUrl: 'https://www.baidu.com',
                   forceUpdate: true,
                 );

@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:comecomepay/main.dart';
-import 'package:comecomepay/utils/constants.dart';
-import 'package:comecomepay/services/api_logger_service.dart';
-import 'package:comecomepay/services/hive_storage_service.dart';
+import 'package:Demo/main.dart';
+import 'package:Demo/utils/constants.dart';
+import 'package:Demo/services/api_logger_service.dart';
+import 'package:Demo/services/hive_storage_service.dart';
 import 'package:hive/hive.dart';
 
 // Custom exception classes for different HTTP status codes

@@ -16,7 +16,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.example.comecomepay"
+    namespace = "com.example.Demo"
     // Override Flutter's default compileSdk to use API 35 so that new
     // predictive back APIs like android.window.BackEvent are available
     // on the compile classpath for R8.
@@ -33,7 +33,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.comecomepay.app"
+        applicationId = "com.Demo.app"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
 

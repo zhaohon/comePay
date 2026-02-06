@@ -1,7 +1,7 @@
-import 'package:comecomepay/core/base_viewmodel.dart';
-import 'package:comecomepay/models/wallet_model.dart';
-import 'package:comecomepay/services/wallet_service.dart';
-import 'package:comecomepay/services/hive_storage_service.dart';
+import 'package:Demo/core/base_viewmodel.dart';
+import 'package:Demo/models/wallet_model.dart';
+import 'package:Demo/services/wallet_service.dart';
+import 'package:Demo/services/hive_storage_service.dart';
 
 class WalletViewModel extends BaseViewModel {
   final WalletService _walletService = WalletService();

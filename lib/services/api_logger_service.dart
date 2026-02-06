@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:comecomepay/utils/logger.dart';
+import 'package:Demo/utils/logger.dart';
 
 class ApiLoggerService {
   static final ApiLoggerService _instance = ApiLoggerService._internal();

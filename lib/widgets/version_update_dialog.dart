@@ -59,7 +59,7 @@ class VersionUpdateDialog extends StatelessWidget {
 
                   // 标题
                   const Text(
-                    'ComeComePay 升级',
+                    'Demo 升级',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 17,
@@ -121,7 +121,7 @@ class VersionUpdateDialog extends StatelessWidget {
 
                   // 版本号
                   Text(
-                    'ComeComePay $version',
+                    'Demo $version',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -178,7 +178,7 @@ class VersionUpdateDialog extends StatelessWidget {
                   padding: EdgeInsets.zero,
                 ),
                 child: const Text(
-                  '升级 ComeComePay',
+                  '升级 Demo',
                   style: TextStyle(
                     color: Color(0xFF3390EC),
                     fontSize: 17,

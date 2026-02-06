@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:comecomepay/services/card_service.dart';
-import 'package:comecomepay/models/card_apply_model.dart';
-import 'package:comecomepay/views/homes/CardApplyProgressScreen.dart';
-import 'package:comecomepay/viewmodels/card_viewmodel.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:Demo/services/card_service.dart';
+import 'package:Demo/models/card_apply_model.dart';
+import 'package:Demo/views/homes/CardApplyProgressScreen.dart';
+import 'package:Demo/viewmodels/card_viewmodel.dart';
+import 'package:Demo/l10n/app_localizations.dart';
 
 class CardOtpScreen extends StatefulWidget {
   const CardOtpScreen({super.key});

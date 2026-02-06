@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/viewmodels/signup_viewmodel.dart';
-import 'package:comecomepay/utils/service_locator.dart';
-import 'package:comecomepay/utils/app_colors.dart';
-import 'package:comecomepay/widgets/gradient_button.dart';
-import 'package:comecomepay/widgets/custom_text_field.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:Demo/viewmodels/signup_viewmodel.dart';
+import 'package:Demo/utils/service_locator.dart';
+import 'package:Demo/utils/app_colors.dart';
+import 'package:Demo/widgets/gradient_button.dart';
+import 'package:Demo/widgets/custom_text_field.dart';
+import 'package:Demo/l10n/app_localizations.dart';
 
 class CreateAccountEmailScreen extends StatefulWidget {
   const CreateAccountEmailScreen({super.key});

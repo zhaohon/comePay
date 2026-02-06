@@ -1,6 +1,6 @@
-import 'package:comecomepay/core/base_viewmodel.dart';
-import 'package:comecomepay/models/card_trade_model.dart';
-import 'package:comecomepay/services/card_trade_service.dart';
+import 'package:Demo/core/base_viewmodel.dart';
+import 'package:Demo/models/card_trade_model.dart';
+import 'package:Demo/services/card_trade_service.dart';
 
 class CardTradeViewModel extends BaseViewModel {
   final CardTradeService _cardTradeService = CardTradeService();
@@ -75,7 +75,8 @@ class CardTradeViewModel extends BaseViewModel {
       final formattedDate = '${date.day}/${date.month}/${date.year}';
 
       final isPositive = trade.tradeTotal >= 0;
-      final amount = '${trade.currencyCode} ${trade.tradeTotal.abs().toStringAsFixed(2)}';
+      final amount =
+          '${trade.currencyCode} ${trade.tradeTotal.abs().toStringAsFixed(2)}';
       final description = trade.merchantName;
       final type = isPositive ? 'Credit' : 'Debit';
 

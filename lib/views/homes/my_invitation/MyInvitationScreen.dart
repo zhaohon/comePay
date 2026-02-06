@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../viewmodels/my_invitation_viewmodel.dart';
 import 'MyFriendsScreen.dart';
 import 'RebateHistoryScreen.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:Demo/l10n/app_localizations.dart';
 
 class MyInvitationScreen extends StatelessWidget {
   const MyInvitationScreen({Key? key}) : super(key: key);

@@ -1,6 +1,6 @@
-import 'package:comecomepay/core/base_viewmodel.dart';
-import 'package:comecomepay/models/responses/crypto_response_model.dart';
-import 'package:comecomepay/services/crypto_service.dart';
+import 'package:Demo/core/base_viewmodel.dart';
+import 'package:Demo/models/responses/crypto_response_model.dart';
+import 'package:Demo/services/crypto_service.dart';
 
 class CryptoViewModel extends BaseViewModel {
   final CryptoService _cryptoService = CryptoService();
@@ -22,7 +22,8 @@ class CryptoViewModel extends BaseViewModel {
         id: 'bitcoin',
         symbol: 'btc',
         name: 'Bitcoin',
-        image: 'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
+        image:
+            'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
         currentPrice: 91168,
         priceChange24h: 4233.69,
         priceChangePercentage24h: 4.86998,
@@ -32,7 +33,8 @@ class CryptoViewModel extends BaseViewModel {
         id: 'ethereum',
         symbol: 'eth',
         name: 'Ethereum',
-        image: 'https://coin-images.coingecko.com/coins/images/279/large/ethereum.png',
+        image:
+            'https://coin-images.coingecko.com/coins/images/279/large/ethereum.png',
         currentPrice: 3041.3,
         priceChange24h: 118.26,
         priceChangePercentage24h: 4.04584,
@@ -42,7 +44,8 @@ class CryptoViewModel extends BaseViewModel {
         id: 'tether',
         symbol: 'usdt',
         name: 'Tether',
-        image: 'https://coin-images.coingecko.com/coins/images/325/large/Tether.png',
+        image:
+            'https://coin-images.coingecko.com/coins/images/325/large/Tether.png',
         currentPrice: 0.999918,
         priceChange24h: 0.0001727,
         priceChangePercentage24h: 0.01727,
@@ -52,7 +55,8 @@ class CryptoViewModel extends BaseViewModel {
         id: 'usd-coin',
         symbol: 'usdc',
         name: 'USDC',
-        image: 'https://coin-images.coingecko.com/coins/images/6319/large/usdc.png',
+        image:
+            'https://coin-images.coingecko.com/coins/images/6319/large/usdc.png',
         currentPrice: 0.999844,
         priceChange24h: 0.00014137,
         priceChangePercentage24h: 0.01414,
@@ -90,5 +94,4 @@ class CryptoViewModel extends BaseViewModel {
     notifyListeners();
     setBusy(false);
   }
-
 }

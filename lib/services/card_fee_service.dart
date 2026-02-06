@@ -1,9 +1,9 @@
-import 'package:comecomepay/core/base_service.dart';
-import 'package:comecomepay/models/card_fee_config_model.dart';
-import 'package:comecomepay/models/payment_currency_model.dart';
-import 'package:comecomepay/models/card_fee_payment_model.dart';
-import 'package:comecomepay/models/responses/card_fee_status_response_model.dart';
-import 'package:comecomepay/models/responses/card_fee_stats_response_model.dart';
+import 'package:Demo/core/base_service.dart';
+import 'package:Demo/models/card_fee_config_model.dart';
+import 'package:Demo/models/payment_currency_model.dart';
+import 'package:Demo/models/card_fee_payment_model.dart';
+import 'package:Demo/models/responses/card_fee_status_response_model.dart';
+import 'package:Demo/models/responses/card_fee_stats_response_model.dart';
 
 class CardFeeService extends BaseService {
   CardFeeService() {

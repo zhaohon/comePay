@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:comecomepay/viewmodels/profile_screen_viewmodel.dart';
-import 'package:comecomepay/models/requests/update_profile_request_model.dart';
-import 'package:comecomepay/services/hive_storage_service.dart';
-import 'package:comecomepay/utils/app_colors.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:Demo/viewmodels/profile_screen_viewmodel.dart';
+import 'package:Demo/models/requests/update_profile_request_model.dart';
+import 'package:Demo/services/hive_storage_service.dart';
+import 'package:Demo/utils/app_colors.dart';
+import 'package:Demo/l10n/app_localizations.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   const UpdateProfileScreen({super.key});

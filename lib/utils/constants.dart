@@ -1,5 +1,5 @@
 class AppConstants {
-  static const String appName = 'ComeComePay';
+  static const String appName = 'Demo';
   static const String appVersion = '1.0.0';
 
   // API endpoints

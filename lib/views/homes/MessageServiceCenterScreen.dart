@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
-import 'package:comecomepay/utils/app_colors.dart';
-import 'package:comecomepay/services/zoho_chat_service.dart';
+import 'package:Demo/l10n/app_localizations.dart';
+import 'package:Demo/utils/app_colors.dart';
+import 'package:Demo/services/zoho_chat_service.dart';
 
 class MessageServiceCenterScreen extends StatefulWidget {
   const MessageServiceCenterScreen({super.key});

@@ -1,5 +1,5 @@
-import 'package:comecomepay/core/base_viewmodel.dart';
-import 'package:comecomepay/services/swap_service.dart';
+import 'package:Demo/core/base_viewmodel.dart';
+import 'package:Demo/services/swap_service.dart';
 import 'dart:async';
 
 class SwapViewModel extends BaseViewModel {

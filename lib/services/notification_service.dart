@@ -1,5 +1,5 @@
-import 'package:comecomepay/core/base_service.dart';
-import 'package:comecomepay/models/notification_model.dart';
+import 'package:Demo/core/base_service.dart';
+import 'package:Demo/models/notification_model.dart';
 
 class NotificationService extends BaseService {
   /// 获取通知列表

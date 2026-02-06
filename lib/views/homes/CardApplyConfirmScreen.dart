@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 
-import 'package:comecomepay/l10n/app_localizations.dart';
-import 'package:comecomepay/utils/app_colors.dart';
+import 'package:Demo/l10n/app_localizations.dart';
+import 'package:Demo/utils/app_colors.dart';
 
-import 'package:comecomepay/models/payment_currency_model.dart';
-import 'package:comecomepay/models/card_fee_payment_model.dart';
-import 'package:comecomepay/views/homes/CardApplyProgressScreen.dart';
+import 'package:Demo/models/payment_currency_model.dart';
+import 'package:Demo/models/card_fee_payment_model.dart';
+import 'package:Demo/views/homes/CardApplyProgressScreen.dart';
 
-import 'package:comecomepay/services/card_fee_service.dart';
-import 'package:comecomepay/services/kyc_service.dart';
-import 'package:comecomepay/services/card_service.dart';
-import 'package:comecomepay/services/hive_storage_service.dart';
-import 'package:comecomepay/views/homes/CardVerificationScreen.dart';
-import 'package:comecomepay/models/card_fee_config_model.dart';
-import 'package:comecomepay/models/card_apply_model.dart';
+import 'package:Demo/services/card_fee_service.dart';
+import 'package:Demo/services/kyc_service.dart';
+import 'package:Demo/services/card_service.dart';
+import 'package:Demo/services/hive_storage_service.dart';
+import 'package:Demo/views/homes/CardVerificationScreen.dart';
+import 'package:Demo/models/card_fee_config_model.dart';
+import 'package:Demo/models/card_apply_model.dart';
 import 'package:dio/dio.dart';
-import 'package:comecomepay/models/responses/coupon_detail_model.dart';
-import 'package:comecomepay/services/global_service.dart';
+import 'package:Demo/models/responses/coupon_detail_model.dart';
+import 'package:Demo/services/global_service.dart';
 import 'package:provider/provider.dart';
-import 'package:comecomepay/viewmodels/card_viewmodel.dart';
+import 'package:Demo/viewmodels/card_viewmodel.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 enum CardApplyState {
@@ -1091,7 +1091,7 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
           const SizedBox(height: 12),
           _buildInfoRow(
             AppLocalizations.of(context)!.cardName,
-            AppLocalizations.of(context)!.typeCardFee ?? 'Come Come Pay Card',
+            AppLocalizations.of(context)!.typeCardFee ?? 'Demo Card',
             isClickable: false,
           ),
           const SizedBox(height: 8),

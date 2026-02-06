@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:comecomepay/viewmodels/kyc_viewmodel.dart';
-import 'package:comecomepay/utils/app_colors.dart';
+import 'package:Demo/viewmodels/kyc_viewmodel.dart';
+import 'package:Demo/utils/app_colors.dart';
 
 class Profilkycscreen extends StatelessWidget {
   const Profilkycscreen({super.key});

@@ -1,5 +1,5 @@
-import 'package:comecomepay/core/base_service.dart';
-import 'package:comecomepay/models/responses/app_version_response_model.dart';
+import 'package:Demo/core/base_service.dart';
+import 'package:Demo/models/responses/app_version_response_model.dart';
 import 'package:dio/dio.dart';
 
 /// 应用版本检查服务

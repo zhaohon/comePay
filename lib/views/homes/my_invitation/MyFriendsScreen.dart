@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../viewmodels/my_invitation_viewmodel.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
-import 'package:comecomepay/utils/app_colors.dart';
+import 'package:Demo/l10n/app_localizations.dart';
+import 'package:Demo/utils/app_colors.dart';
 
 class MyFriendsScreen extends StatefulWidget {
   const MyFriendsScreen({Key? key}) : super(key: key);

@@ -1,8 +1,8 @@
-import 'package:comecomepay/core/base_viewmodel.dart';
-import 'package:comecomepay/models/notification_model.dart';
-import 'package:comecomepay/models/responses/notification_unread_count_response_model.dart';
-import 'package:comecomepay/services/global_service.dart';
-import 'package:comecomepay/utils/service_locator.dart';
+import 'package:Demo/core/base_viewmodel.dart';
+import 'package:Demo/models/notification_model.dart';
+import 'package:Demo/models/responses/notification_unread_count_response_model.dart';
+import 'package:Demo/services/global_service.dart';
+import 'package:Demo/utils/service_locator.dart';
 
 class NotificationViewModel extends BaseViewModel {
   final GlobalService _globalService = getIt<GlobalService>();

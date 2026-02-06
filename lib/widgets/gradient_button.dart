@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/utils/app_colors.dart';
+import 'package:Demo/utils/app_colors.dart';
 
 /// 渐变按钮组件
 class GradientButton extends StatelessWidget {

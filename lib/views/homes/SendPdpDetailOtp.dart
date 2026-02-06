@@ -1,9 +1,8 @@
-import 'package:comecomepay/views/homes/SendPdpDetailDone.dart'
-    show SendPdpDetailDone;
+import 'package:Demo/views/homes/SendPdpDetailDone.dart' show SendPdpDetailDone;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:comecomepay/viewmodels/send_pdp_detail_otp_viewmodel.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:Demo/viewmodels/send_pdp_detail_otp_viewmodel.dart';
+import 'package:Demo/l10n/app_localizations.dart';
 
 class SendPdpDetailOtp extends StatelessWidget {
   const SendPdpDetailOtp({super.key});

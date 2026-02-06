@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/viewmodels/coupon_viewmodel.dart';
-import 'package:comecomepay/utils/service_locator.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
-import 'package:comecomepay/utils/app_colors.dart';
-import 'package:comecomepay/models/responses/new_coupon_model.dart';
+import 'package:Demo/viewmodels/coupon_viewmodel.dart';
+import 'package:Demo/utils/service_locator.dart';
+import 'package:Demo/l10n/app_localizations.dart';
+import 'package:Demo/utils/app_colors.dart';
+import 'package:Demo/models/responses/new_coupon_model.dart';
 import 'package:provider/provider.dart';
 
 class AvailableCouponTab extends StatefulWidget {

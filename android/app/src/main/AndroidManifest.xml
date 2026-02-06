@@ -11,7 +11,7 @@
     <application
         android:requestLegacyExternalStorage="true"
         android:hardwareAccelerated="true"
-        android:label="comecomepay"
+        android:label="Demo"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true"

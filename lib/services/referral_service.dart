@@ -1,5 +1,5 @@
-import 'package:comecomepay/core/base_service.dart';
-import 'package:comecomepay/utils/logger.dart';
+import 'package:Demo/core/base_service.dart';
+import 'package:Demo/utils/logger.dart';
 
 class ReferralService extends BaseService {
   /// Get referral code

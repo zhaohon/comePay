@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:comecomepay/utils/app_colors.dart';
+import 'package:Demo/utils/app_colors.dart';
 
 /// OTP验证码输入框组件 - 改进版
 class OtpInput extends StatefulWidget {

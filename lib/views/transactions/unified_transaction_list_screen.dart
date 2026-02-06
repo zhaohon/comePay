@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:comecomepay/viewmodels/unified_transaction_viewmodel.dart';
-import 'package:comecomepay/widgets/transaction_item_widget.dart';
-import 'package:comecomepay/views/transactions/transaction_detail_screen.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:Demo/viewmodels/unified_transaction_viewmodel.dart';
+import 'package:Demo/widgets/transaction_item_widget.dart';
+import 'package:Demo/views/transactions/transaction_detail_screen.dart';
+import 'package:Demo/l10n/app_localizations.dart';
 
 /// 统一交易记录列表页面 - 优化版
 /// 支持下拉刷新和上拉加载更多

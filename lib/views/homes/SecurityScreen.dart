@@ -1,14 +1,13 @@
-import 'package:comecomepay/views/homes/BindPhoneScreen.dart'
-    show BindPhoneScreen;
-import 'package:comecomepay/views/homes/ModifyEmailScreen.dart';
-import 'package:comecomepay/views/homes/ModifyLoginPasswordScreen.dart'
+import 'package:Demo/views/homes/BindPhoneScreen.dart' show BindPhoneScreen;
+import 'package:Demo/views/homes/ModifyEmailScreen.dart';
+import 'package:Demo/views/homes/ModifyLoginPasswordScreen.dart'
     show ModifyLoginPasswordScreen;
-import 'package:comecomepay/views/homes/SetTransactionPasswordScreen.dart';
+import 'package:Demo/views/homes/SetTransactionPasswordScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
-import 'package:comecomepay/services/hive_storage_service.dart';
-import 'package:comecomepay/models/responses/get_profile_response_model.dart';
-import 'package:comecomepay/utils/app_colors.dart';
+import 'package:Demo/l10n/app_localizations.dart';
+import 'package:Demo/services/hive_storage_service.dart';
+import 'package:Demo/models/responses/get_profile_response_model.dart';
+import 'package:Demo/utils/app_colors.dart';
 
 class Securityscreen extends StatefulWidget {
   const Securityscreen({super.key});

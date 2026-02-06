@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/core/base_viewmodel.dart';
-import 'package:comecomepay/models/requests/change_password_request_model.dart';
-import 'package:comecomepay/models/responses/change_password_response_model.dart';
-import 'package:comecomepay/models/responses/change_password_error_model.dart';
-import 'package:comecomepay/services/global_service.dart';
-import 'package:comecomepay/services/hive_storage_service.dart';
-import 'package:comecomepay/utils/service_locator.dart';
+import 'package:Demo/core/base_viewmodel.dart';
+import 'package:Demo/models/requests/change_password_request_model.dart';
+import 'package:Demo/models/responses/change_password_response_model.dart';
+import 'package:Demo/models/responses/change_password_error_model.dart';
+import 'package:Demo/services/global_service.dart';
+import 'package:Demo/services/hive_storage_service.dart';
+import 'package:Demo/utils/service_locator.dart';
 
 // Result types for change password scenarios
 class ChangePasswordResult {

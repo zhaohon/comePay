@@ -1,5 +1,5 @@
-import 'package:comecomepay/core/base_service.dart';
-import 'package:comecomepay/models/responses/crypto_response_model.dart';
+import 'package:Demo/core/base_service.dart';
+import 'package:Demo/models/responses/crypto_response_model.dart';
 
 class CryptoService extends BaseService {
   Future<List<CryptoResponse>> fetchCryptoData() async {
@@ -8,7 +8,8 @@ class CryptoService extends BaseService {
         'https://api.coingecko.com/api/v3/coins/markets',
         queryParameters: {
           'vs_currency': 'usd',
-          'ids': 'tether,bitcoin,ethereum,binancecoin,matic-network,tron,hongkong-dollar-token',
+          'ids':
+              'tether,bitcoin,ethereum,binancecoin,matic-network,tron,hongkong-dollar-token',
           // 'ids': 'bitcoin,ethereum,tether,usd-coin,hongkong-dollar-token',
           'sparkline': true,
         },

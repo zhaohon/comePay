@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:Demo/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 // ignore: unused_import

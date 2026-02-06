@@ -1,8 +1,7 @@
-import 'package:comecomepay/views/homes/CouponCodeScreen.dart'
-    show CouponCodeScreen;
+import 'package:Demo/views/homes/CouponCodeScreen.dart' show CouponCodeScreen;
 import 'package:flutter/material.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
-import 'package:comecomepay/utils/app_colors.dart';
+import 'package:Demo/l10n/app_localizations.dart';
+import 'package:Demo/utils/app_colors.dart';
 import 'AvailableCouponTab.dart';
 import 'UsedCouponTab.dart';
 import 'ExpiredCouponTab.dart';

@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
-import 'package:comecomepay/models/responses/login_response_model.dart';
-import 'package:comecomepay/models/responses/set_password_response_model.dart';
-import 'package:comecomepay/models/responses/get_profile_response_model.dart';
+import 'package:Demo/models/responses/login_response_model.dart';
+import 'package:Demo/models/responses/set_password_response_model.dart';
+import 'package:Demo/models/responses/get_profile_response_model.dart';
 
 class HiveStorageService {
   static const String _authBoxName = 'auth_box';

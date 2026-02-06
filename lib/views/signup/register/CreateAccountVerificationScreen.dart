@@ -1,7 +1,7 @@
-import 'package:comecomepay/l10n/app_localizations.dart' show AppLocalizations;
+import 'package:Demo/l10n/app_localizations.dart' show AppLocalizations;
 import 'package:flutter/material.dart';
-import 'package:comecomepay/viewmodels/create_account_verification_viewmodel.dart';
-import 'package:comecomepay/utils/service_locator.dart';
+import 'package:Demo/viewmodels/create_account_verification_viewmodel.dart';
+import 'package:Demo/utils/service_locator.dart';
 import 'package:provider/provider.dart';
 
 class CreateAccountVerificationScreen extends StatefulWidget {

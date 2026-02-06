@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:comecomepay/utils/app_colors.dart';
-import 'package:comecomepay/models/wallet_model.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:Demo/utils/app_colors.dart';
+import 'package:Demo/models/wallet_model.dart';
+import 'package:Demo/l10n/app_localizations.dart';
 
 class ReceiveDetailScreen extends StatefulWidget {
   const ReceiveDetailScreen({super.key});
@@ -201,7 +201,7 @@ class _ReceiveDetailScreenState extends State<ReceiveDetailScreen> {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            'Come Come Pay',
+                            'Demo',
                             style: TextStyle(
                               fontSize: 12,
                               color: AppColors.textSecondary,

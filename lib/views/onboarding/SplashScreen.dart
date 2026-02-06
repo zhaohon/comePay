@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:provider/provider.dart';
-import 'package:comecomepay/viewmodels/login_viewmodel.dart';
-import 'package:comecomepay/utils/app_colors.dart';
-import 'package:comecomepay/utils/version_utils.dart';
-import 'package:comecomepay/services/app_version_service.dart';
-import 'package:comecomepay/services/hive_storage_service.dart';
-import 'package:comecomepay/views/homes/VersionUpdateScreen.dart';
+import 'package:Demo/viewmodels/login_viewmodel.dart';
+import 'package:Demo/utils/app_colors.dart';
+import 'package:Demo/utils/version_utils.dart';
+import 'package:Demo/services/app_version_service.dart';
+import 'package:Demo/services/hive_storage_service.dart';
+import 'package:Demo/views/homes/VersionUpdateScreen.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -170,7 +170,7 @@ class _SplashScreenState extends State<SplashScreen>
                         ),
                         const SizedBox(height: 16),
                         const Text(
-                          'Come Come Pay',
+                          'Demo',
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,

@@ -336,7 +336,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get welcomeToPokePay => '欢迎来到 PokePay';
 
   @override
-  String get welcomeToComeComePay => '欢迎来到 Come Come Pay';
+  String get welcomeToDemo => '欢迎来到 Demo';
 
   @override
   String get totalAssets => '总资产';
@@ -372,7 +372,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get noRelevantDataYet => '暂无相关数据';
 
   @override
-  String get comeComePayCard => 'Come Come Pay 卡';
+  String get demoCards => 'Demo 卡';
 
   @override
   String get noMonthlyFee => '无月费';
@@ -429,7 +429,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get verify => '验证 OTP';
 
   @override
-  String get forEveryDreamWithComeComePay => '对于每个梦想，\nCome Come Pay 都能实现';
+  String get forEveryDreamWithDemo => '对于每个梦想，\nDemo 都能实现';
 
   @override
   String get fasility => '一个提供您金融援助的设施，无论您需要什么。';
@@ -496,7 +496,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get enterTheEmailAddressYouWantToUseToRegisterWithCCP =>
-      '输入您想用来注册ComeComePay的电子邮件地址';
+      '输入您想用来注册Demo的电子邮件地址';
 
   @override
   String get pleaseEnterAValidEmailAddress => '请输入有效的电子邮件地址';
@@ -583,7 +583,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get readAt => '已读时间';
 
   @override
-  String get thankYouForUsingComeComePay => '感谢您使用 Come Come Pay！';
+  String get thankYouForUsingDemo => '感谢您使用 Demo！';
 
   @override
   String get searchTokenHint => '搜索代币...';
@@ -715,6 +715,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get failedToLoadCardFee => '加载卡费失败';
 
   @override
+  String get demoCard => 'Demo 卡';
+
+  @override
   String get code => '验证码';
 
   @override
@@ -724,14 +727,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get skipButton => '跳过';
 
   @override
-  String get appUpgradeTitle => 'ComeComePay 升级';
+  String get appUpgradeTitle => 'Demo 升级';
 
   @override
-  String get upgradeAppButton => '升级 ComeComePay';
+  String get upgradeAppButton => '升级 Demo';
 
   @override
-  String get updateDefaultMessage =>
-      '请将 ComeComePay 更新到最新版本。您正在使用的版本已过时,可能很快会停止工作。';
+  String get updateDefaultMessage => '请将 Demo 更新到最新版本。您正在使用的版本已过时,可能很快会停止工作。';
 
   @override
   String get pressAgainToExit => '再按一次退出应用';
@@ -1511,7 +1513,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get kycSolicitationDisclaimer =>
-      '继续即表示您同意自愿访问此应用程序及其服务，无需 Come Come Pay 的任何主动促销或招揽';
+      '继续即表示您同意自愿访问此应用程序及其服务，无需 Demo 的任何主动促销或招揽';
 
   @override
   String pleaseEnterField(Object field) {

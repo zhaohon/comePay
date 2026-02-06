@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/core/base_viewmodel.dart';
-import 'package:comecomepay/services/wallet_service.dart';
-import 'package:comecomepay/models/requests/verify_pin_request.dart';
-import 'package:comecomepay/models/responses/verify_pin_response.dart';
+import 'package:Demo/core/base_viewmodel.dart';
+import 'package:Demo/services/wallet_service.dart';
+import 'package:Demo/models/requests/verify_pin_request.dart';
+import 'package:Demo/models/responses/verify_pin_response.dart';
 
 class SendPdpDetailOtpViewModel extends BaseViewModel {
   final WalletService _walletService = WalletService();

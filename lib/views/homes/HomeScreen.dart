@@ -1,8 +1,7 @@
-import 'package:comecomepay/views/homes/SendScreen.dart' show Sendscreen;
+import 'package:Demo/views/homes/SendScreen.dart' show Sendscreen;
 
-import 'package:comecomepay/views/homes/WalletAccountScreen.dart'
-    show WalletScreen;
-import 'package:comecomepay/views/transactions/unified_transaction_list_screen.dart';
+import 'package:Demo/views/homes/WalletAccountScreen.dart' show WalletScreen;
+import 'package:Demo/views/transactions/unified_transaction_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../l10n/app_localizations.dart';
@@ -13,7 +12,7 @@ import '../../viewmodels/unified_transaction_viewmodel.dart';
 import '../../viewmodels/wallet_viewmodel.dart';
 import '../../utils/app_colors.dart';
 import '../../widgets/transaction_item_widget.dart';
-import 'package:comecomepay/views/transactions/transaction_detail_screen.dart';
+import 'package:Demo/views/transactions/transaction_detail_screen.dart';
 
 import 'ReceiveScreen.dart';
 
@@ -128,8 +127,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                           slivers: [
                             SliverAppBar(
                               title: Text(
-                                AppLocalizations.of(context)!
-                                    .welcomeToComeComePay,
+                                AppLocalizations.of(context)!.welcomeToDemo,
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w600,

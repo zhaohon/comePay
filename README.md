@@ -1,6 +1,6 @@
-# comecomepay
+# Demo
 
-comecomepay
+Demo
 
 ## Getting Started
 

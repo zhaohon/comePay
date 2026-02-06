@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:comecomepay/viewmodels/forgot_password_viewmodel.dart';
-import 'package:comecomepay/utils/service_locator.dart';
-import 'package:comecomepay/utils/app_colors.dart';
-import 'package:comecomepay/widgets/gradient_button.dart';
-import 'package:comecomepay/widgets/custom_text_field.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:Demo/viewmodels/forgot_password_viewmodel.dart';
+import 'package:Demo/utils/service_locator.dart';
+import 'package:Demo/utils/app_colors.dart';
+import 'package:Demo/widgets/gradient_button.dart';
+import 'package:Demo/widgets/custom_text_field.dart';
+import 'package:Demo/l10n/app_localizations.dart';
 
 class ResetPasswordCreatePasswordScreen extends StatelessWidget {
   const ResetPasswordCreatePasswordScreen({super.key});

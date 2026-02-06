@@ -1,8 +1,8 @@
-import 'package:comecomepay/core/base_service.dart';
-import 'package:comecomepay/models/card_apply_model.dart';
-import 'package:comecomepay/models/card_apply_progress_model.dart';
-import 'package:comecomepay/models/card_list_model.dart';
-import 'package:comecomepay/models/card_account_details_model.dart';
+import 'package:Demo/core/base_service.dart';
+import 'package:Demo/models/card_apply_model.dart';
+import 'package:Demo/models/card_apply_progress_model.dart';
+import 'package:Demo/models/card_list_model.dart';
+import 'package:Demo/models/card_account_details_model.dart';
 
 class CardService extends BaseService {
   CardService() {

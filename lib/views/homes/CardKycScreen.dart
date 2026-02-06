@@ -51,7 +51,8 @@ class _CardKycScreenState extends State<CardKycScreen> {
 
               // WhatsApp option
               ListTile(
-                leading: const Icon(FontAwesomeIcons.whatsapp, color: Colors.green),
+                leading:
+                    const Icon(FontAwesomeIcons.whatsapp, color: Colors.green),
                 title: const Text("WhatsApp"),
                 onTap: () {
                   Navigator.pushNamed(context, '/CardOtpScreen');
@@ -77,7 +78,7 @@ class _CardKycScreenState extends State<CardKycScreen> {
   @override
   Widget build(BuildContext context) {
     final country = countries.firstWhere(
-          (c) => c["name"] == selectedCountry,
+      (c) => c["name"] == selectedCountry,
       orElse: () => countries.first,
     );
 
@@ -113,7 +114,7 @@ class _CardKycScreenState extends State<CardKycScreen> {
             const SizedBox(height: 8),
 
             const Text(
-              "Verify your identity to open your Come Come Pay card account and keep it secure and compliant",
+              "Verify your identity to open your Demo card account and keep it secure and compliant",
               style: TextStyle(fontSize: 14, color: Colors.black54),
             ),
             const SizedBox(height: 16),
@@ -231,7 +232,7 @@ class _CardKycScreenState extends State<CardKycScreen> {
 
             // Disclaimer
             const Text(
-              "By continuing you agree that you are accessing this App and its services voluntarily, without any active promotion or solicitation by Come Come Pay",
+              "By continuing you agree that you are accessing this App and its services voluntarily, without any active promotion or solicitation by Demo",
               style: TextStyle(fontSize: 12, color: Colors.black54),
               textAlign: TextAlign.start,
             ),

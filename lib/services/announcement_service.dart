@@ -1,6 +1,6 @@
-import 'package:comecomepay/core/base_service.dart';
-import 'package:comecomepay/models/announcement_model.dart';
-import 'package:comecomepay/models/notification_model.dart';
+import 'package:Demo/core/base_service.dart';
+import 'package:Demo/models/announcement_model.dart';
+import 'package:Demo/models/notification_model.dart';
 
 class AnnouncementService extends BaseService {
   /// 获取已发布的公告列表

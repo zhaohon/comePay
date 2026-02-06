@@ -1,7 +1,7 @@
-import 'package:comecomepay/core/base_service.dart';
-import 'package:comecomepay/models/kyc_eligibility_model.dart';
-import 'package:comecomepay/models/kyc_model.dart';
-import 'package:comecomepay/models/responses/kyc_status_response_model.dart';
+import 'package:Demo/core/base_service.dart';
+import 'package:Demo/models/kyc_eligibility_model.dart';
+import 'package:Demo/models/kyc_model.dart';
+import 'package:Demo/models/responses/kyc_status_response_model.dart';
 
 class KycService extends BaseService {
   KycService() {

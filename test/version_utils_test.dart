@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:comecomepay/utils/version_utils.dart';
+import 'package:Demo/utils/version_utils.dart';
 
 void main() {
   group('VersionUtils Tests', () {

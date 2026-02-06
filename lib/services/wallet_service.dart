@@ -1,7 +1,7 @@
-import 'package:comecomepay/core/base_service.dart';
-import 'package:comecomepay/models/wallet_model.dart';
-import 'package:comecomepay/models/requests/verify_pin_request.dart';
-import 'package:comecomepay/models/responses/verify_pin_response.dart';
+import 'package:Demo/core/base_service.dart';
+import 'package:Demo/models/wallet_model.dart';
+import 'package:Demo/models/requests/verify_pin_request.dart';
+import 'package:Demo/models/responses/verify_pin_response.dart';
 import 'package:dio/dio.dart';
 
 class WalletService extends BaseService {

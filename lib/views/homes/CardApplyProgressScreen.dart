@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:comecomepay/services/card_service.dart';
-import 'package:comecomepay/models/card_apply_progress_model.dart';
-import 'package:comecomepay/utils/app_colors.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:Demo/services/card_service.dart';
+import 'package:Demo/models/card_apply_progress_model.dart';
+import 'package:Demo/utils/app_colors.dart';
+import 'package:Demo/l10n/app_localizations.dart';
 
 class CardApplyProgressScreen extends StatefulWidget {
   final int taskId;

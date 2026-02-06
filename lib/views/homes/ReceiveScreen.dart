@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
-import 'package:comecomepay/utils/app_colors.dart';
-import 'package:comecomepay/views/homes/widgets/token_network_list.dart';
+import 'package:Demo/l10n/app_localizations.dart';
+import 'package:Demo/utils/app_colors.dart';
+import 'package:Demo/views/homes/widgets/token_network_list.dart';
 
 class TokenReceiveScreen extends StatelessWidget {
   const TokenReceiveScreen({super.key});

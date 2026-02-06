@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/utils/app_colors.dart';
-import 'package:comecomepay/widgets/gradient_button.dart';
-import 'package:comecomepay/widgets/otp_input.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
-import 'package:comecomepay/services/global_service.dart';
-import 'package:comecomepay/models/requests/registration_otp_verification_request_model.dart';
-import 'package:comecomepay/models/responses/registration_otp_verification_response_model.dart';
-import 'package:comecomepay/models/responses/registration_otp_verification_error_model.dart';
+import 'package:Demo/utils/app_colors.dart';
+import 'package:Demo/widgets/gradient_button.dart';
+import 'package:Demo/widgets/otp_input.dart';
+import 'package:Demo/l10n/app_localizations.dart';
+import 'package:Demo/services/global_service.dart';
+import 'package:Demo/models/requests/registration_otp_verification_request_model.dart';
+import 'package:Demo/models/responses/registration_otp_verification_response_model.dart';
+import 'package:Demo/models/responses/registration_otp_verification_error_model.dart';
 
 class CreateAccountOtpConfirmScreen extends StatefulWidget {
   const CreateAccountOtpConfirmScreen({super.key});

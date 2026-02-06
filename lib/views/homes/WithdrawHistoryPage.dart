@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/utils/app_colors.dart';
-import 'package:comecomepay/services/withdraw_service.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:Demo/utils/app_colors.dart';
+import 'package:Demo/services/withdraw_service.dart';
+import 'package:Demo/l10n/app_localizations.dart';
 
 class WithdrawHistoryPage extends StatefulWidget {
   const WithdrawHistoryPage({super.key});

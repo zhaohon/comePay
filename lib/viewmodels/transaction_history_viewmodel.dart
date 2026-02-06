@@ -1,9 +1,10 @@
-import 'package:comecomepay/core/base_viewmodel.dart';
-import 'package:comecomepay/models/transaction_record_model.dart';
-import 'package:comecomepay/services/transaction_record_service.dart';
+import 'package:Demo/core/base_viewmodel.dart';
+import 'package:Demo/models/transaction_record_model.dart';
+import 'package:Demo/services/transaction_record_service.dart';
 
 class TransactionHistoryViewModel extends BaseViewModel {
-  final TransactionRecordService _transactionRecordService = TransactionRecordService();
+  final TransactionRecordService _transactionRecordService =
+      TransactionRecordService();
 
   List<TransactionRecord> _transactions = [];
   List<TransactionRecord> get transactions => _transactions;
@@ -68,7 +69,8 @@ class TransactionHistoryViewModel extends BaseViewModel {
       final formattedDate = '${date.day}/${date.month}/${date.year}';
 
       final isPositive = record.tradeTotal >= 0;
-      final amount = '${record.currencyCode} ${record.tradeTotal.abs().toStringAsFixed(2)}';
+      final amount =
+          '${record.currencyCode} ${record.tradeTotal.abs().toStringAsFixed(2)}';
       final description = record.merchantName;
       final type = isPositive ? 'Credit' : 'Debit';
 

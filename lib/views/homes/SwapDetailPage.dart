@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:comecomepay/viewmodels/swap_viewmodel.dart';
-import 'package:comecomepay/viewmodels/wallet_viewmodel.dart';
-import 'package:comecomepay/services/card_service.dart';
-import 'package:comecomepay/models/card_list_model.dart';
-import 'package:comecomepay/models/card_account_details_model.dart';
-import 'package:comecomepay/models/wallet_model.dart';
-import 'package:comecomepay/utils/app_colors.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:Demo/viewmodels/swap_viewmodel.dart';
+import 'package:Demo/viewmodels/wallet_viewmodel.dart';
+import 'package:Demo/services/card_service.dart';
+import 'package:Demo/models/card_list_model.dart';
+import 'package:Demo/models/card_account_details_model.dart';
+import 'package:Demo/models/wallet_model.dart';
+import 'package:Demo/utils/app_colors.dart';
+import 'package:Demo/l10n/app_localizations.dart';
 import 'dart:async';
 
 class SwapDetailPage extends StatefulWidget {

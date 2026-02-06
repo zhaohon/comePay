@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:comecomepay/viewmodels/profile_screen_viewmodel.dart';
-import 'package:comecomepay/views/homes/ProfilKycDiditScreen.dart';
-import 'package:comecomepay/models/requests/didit_initialize_token_request_model.dart';
-import 'package:comecomepay/models/country_model.dart';
-import 'package:comecomepay/services/hive_storage_service.dart';
-import 'package:comecomepay/services/kyc_service.dart';
-import 'package:comecomepay/utils/app_colors.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:Demo/viewmodels/profile_screen_viewmodel.dart';
+import 'package:Demo/views/homes/ProfilKycDiditScreen.dart';
+import 'package:Demo/models/requests/didit_initialize_token_request_model.dart';
+import 'package:Demo/models/country_model.dart';
+import 'package:Demo/services/hive_storage_service.dart';
+import 'package:Demo/services/kyc_service.dart';
+import 'package:Demo/utils/app_colors.dart';
+import 'package:Demo/l10n/app_localizations.dart';
 
 class Cardverificationscreen extends StatefulWidget {
   const Cardverificationscreen({Key? key}) : super(key: key);

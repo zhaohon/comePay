@@ -1,4 +1,4 @@
-package com.example.comecomepay
+package com.example.Demo
 
 import io.flutter.embedding.android.FlutterActivity
 

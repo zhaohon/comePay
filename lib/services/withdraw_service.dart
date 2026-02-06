@@ -1,4 +1,4 @@
-import 'package:comecomepay/core/base_service.dart';
+import 'package:Demo/core/base_service.dart';
 
 /// 提现请求模型
 class WithdrawRequestModel {

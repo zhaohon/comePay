@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:comecomepay/utils/app_colors.dart';
-import 'package:comecomepay/widgets/gradient_button.dart';
-import 'package:comecomepay/widgets/custom_text_field.dart';
-import 'package:comecomepay/l10n/app_localizations.dart';
-import 'package:comecomepay/services/global_service.dart';
-import 'package:comecomepay/models/responses/set_password_response_model.dart';
+import 'package:Demo/utils/app_colors.dart';
+import 'package:Demo/widgets/gradient_button.dart';
+import 'package:Demo/widgets/custom_text_field.dart';
+import 'package:Demo/l10n/app_localizations.dart';
+import 'package:Demo/services/global_service.dart';
+import 'package:Demo/models/responses/set_password_response_model.dart';
 
 class CreateAccountPasswordScreen extends StatefulWidget {
   const CreateAccountPasswordScreen({super.key});
