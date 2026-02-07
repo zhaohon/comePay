@@ -149,48 +149,48 @@ class _CreateAccountConfrimEmailScreenState
                     const SizedBox(height: 40),
 
                     // 5. Subtitle "I didn’t receive my email"
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 20.0,
-                        right: 20.0,
-                        bottom: 40.0,
-                      ),
-                      child: InkWell(
-                        onTap: () {
-                          debugPrint(
-                              "Teks '${AppLocalizations.of(context)!.didnReceive}' diklik");
-                        },
-                        child: RichText(
-                          // GANTI Text DENGAN RichText
-                          textAlign: TextAlign
-                              .center, // Tetap pusatkan seluruh RichText
-                          text: TextSpan(
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: AppColors.textSecondary,
-                              decorationColor: AppColors.textSecondary,
-                            ),
-                            children: <TextSpan>[
-                              TextSpan(
-                                  text:
-                                      'I '), // Bagian pertama dengan style default
-                              TextSpan(
-                                text: AppLocalizations.of(context)!
-                                    .didnReceive, // Bagian yang ingin diubah warnanya
-                                style: const TextStyle(
-                                  color: AppColors.primary, // 使用应用主色
-                                  // Anda bisa menambahkan fontWeight atau properti style lain di sini jika perlu
-                                  // fontSize dan decoration akan diwarisi dari style induk jika tidak di-override
-                                ),
-                              ),
-                              TextSpan(
-                                  text:
-                                      ' ${AppLocalizations.of(context)!.myEmail}'), // Bagian terakhir dengan style default
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(
+                    //     left: 20.0,
+                    //     right: 20.0,
+                    //     bottom: 40.0,
+                    //   ),
+                    //   child: InkWell(
+                    //     onTap: () {
+                    //       debugPrint(
+                    //           "Teks '${AppLocalizations.of(context)!.didnReceive}' diklik");
+                    //     },
+                    //     child: RichText(
+                    //       // GANTI Text DENGAN RichText
+                    //       textAlign: TextAlign
+                    //           .center, // Tetap pusatkan seluruh RichText
+                    //       text: TextSpan(
+                    //         style: const TextStyle(
+                    //           fontSize: 14,
+                    //           color: AppColors.textSecondary,
+                    //           decorationColor: AppColors.textSecondary,
+                    //         ),
+                    //         children: <TextSpan>[
+                    //           TextSpan(
+                    //               text:
+                    //                   'I '), // Bagian pertama dengan style default
+                    //           TextSpan(
+                    //             text: AppLocalizations.of(context)!
+                    //                 .didnReceive, // Bagian yang ingin diubah warnanya
+                    //             style: const TextStyle(
+                    //               color: AppColors.primary, // 使用应用主色
+                    //               // Anda bisa menambahkan fontWeight atau properti style lain di sini jika perlu
+                    //               // fontSize dan decoration akan diwarisi dari style induk jika tidak di-override
+                    //             ),
+                    //           ),
+                    //           TextSpan(
+                    //               text:
+                    //                   ' ${AppLocalizations.of(context)!.myEmail}'), // Bagian terakhir dengan style default
+                    //         ],
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
