@@ -31,6 +31,10 @@ class WalletViewModel extends BaseViewModel {
 
   List<WalletBalance> get balances => _walletResponse?.wallet.balances ?? [];
 
+  // 获取 HKD 和 USDT 总资产
+  double get totalAssetHkd => _walletResponse?.wallet.totalAssetHkd ?? 0.0;
+  double get totalAssetUsdt => _walletResponse?.wallet.totalAssetUsdt ?? 0.0;
+
   Future<void> fetchWalletData() async {
     setBusy(true);
     try {

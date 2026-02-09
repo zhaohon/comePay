@@ -25,6 +25,8 @@ class WalletData {
   final double monthlyLimit;
   final Map<String, double> balancesByCurrency; // 修改为Map类型
   final List<WalletBalance> balances;
+  final double totalAssetHkd; // 新增：HKD 总资产
+  final double totalAssetUsdt; // 新增：USDT 总资产
   final String createdAt;
   final String updatedAt;
 
@@ -37,6 +39,8 @@ class WalletData {
     required this.monthlyLimit,
     required this.balancesByCurrency,
     required this.balances,
+    required this.totalAssetHkd,
+    required this.totalAssetUsdt,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -64,6 +68,12 @@ class WalletData {
               ?.map((balance) => WalletBalance.fromJson(balance))
               .toList() ??
           [],
+      totalAssetHkd: (json['total_asset_hkd'] is num)
+          ? (json['total_asset_hkd'] as num).toDouble()
+          : 0.0,
+      totalAssetUsdt: (json['total_asset_usdt'] is num)
+          ? (json['total_asset_usdt'] as num).toDouble()
+          : 0.0,
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
     );

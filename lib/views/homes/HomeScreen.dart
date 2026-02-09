@@ -24,6 +24,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   bool _isVisible = true; // Untuk toggle visibilitas Total Assets
+  bool _showingUsdt = true; // 默认显示 USDT，false 则显示 HKD
   late WalletViewModel _walletViewModel;
   DateTime? _lastPressedAt; // 记录上次按返回键的时间
 
@@ -232,54 +233,60 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  _isVisible
-                                                      ? walletViewModel
-                                                          .getFormattedBalance()
-                                                      : "****",
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize:
-                                                        isSmallScreen ? 20 : 24,
-                                                    fontWeight: FontWeight.bold,
+                                            // 主要余额显示（可点击切换）
+                                            GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  _showingUsdt = !_showingUsdt;
+                                                });
+                                              },
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    _isVisible
+                                                        ? (_showingUsdt
+                                                            ? walletViewModel
+                                                                .totalAssetUsdt
+                                                                .toStringAsFixed(
+                                                                    2)
+                                                            : walletViewModel
+                                                                .totalAssetHkd
+                                                                .toStringAsFixed(
+                                                                    2))
+                                                        : "****",
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: isSmallScreen
+                                                          ? 20
+                                                          : 24,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
                                                   ),
-                                                ),
-                                                SizedBox(
-                                                    width: screenWidth * 0.02),
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    _showCurrencyBottomSheet(
-                                                        context,
-                                                        walletViewModel);
-                                                  },
-                                                  child: Row(
-                                                    children: [
-                                                      Text(
-                                                        walletViewModel
-                                                            .selectedCurrency,
-                                                        style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize:
-                                                              isSmallScreen
-                                                                  ? 16
-                                                                  : 18,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                      SizedBox(width: 4),
-                                                      Icon(
-                                                        Icons
-                                                            .keyboard_arrow_down,
-                                                        color: Colors.white,
-                                                        size: 20,
-                                                      ),
-                                                    ],
+                                                  SizedBox(
+                                                      width:
+                                                          screenWidth * 0.02),
+                                                  Text(
+                                                    _showingUsdt
+                                                        ? 'USDT'
+                                                        : 'HKD',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: isSmallScreen
+                                                          ? 16
+                                                          : 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
+                                                  SizedBox(width: 4),
+                                                  Icon(
+                                                    Icons.swap_horiz,
+                                                    color: Colors.white70,
+                                                    size: 20,
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                             SizedBox(
                                                 height: screenWidth * 0.015),
@@ -294,21 +301,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                                           ? 14
                                                           : 16),
                                                 ),
-                                                // SizedBox(
-                                                //     width: screenWidth * 0.02),
-                                                // Text(
-                                                //   _isVisible
-                                                //       ? walletViewModel
-                                                //           .totalAssets
-                                                //           .toStringAsFixed(2)
-                                                //       : "****",
-                                                //   style: TextStyle(
-                                                //     color: Colors.white,
-                                                //     fontSize:
-                                                //         isSmallScreen ? 14 : 16,
-                                                //     fontWeight: FontWeight.bold,
-                                                //   ),
-                                                // ),
                                                 IconButton(
                                                   icon: Icon(Icons.visibility,
                                                       color: Colors.white,
@@ -646,104 +638,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           ),
         ),
       ],
-    );
-  }
-
-  void _showCurrencyBottomSheet(
-      BuildContext context, WalletViewModel walletViewModel) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (BuildContext context) {
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-          ),
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * 0.6, // 最大高度为屏幕的60%
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // 顶部关闭按钮
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Icon(Icons.close, color: Colors.grey[600]),
-                    ),
-                  ],
-                ),
-              ),
-              // 可滚动的货币列表
-              Flexible(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ...walletViewModel.balances.map((balance) {
-                        return InkWell(
-                          onTap: () {
-                            walletViewModel.selectCurrency(balance.currency);
-                            Navigator.pop(context);
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 16),
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: Colors.grey[200]!,
-                                  width: 1,
-                                ),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  balance.currency,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight:
-                                        walletViewModel.selectedCurrency ==
-                                                balance.currency
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                    color: walletViewModel.selectedCurrency ==
-                                            balance.currency
-                                        ? const Color(0xFFA855F7)
-                                        : Colors.black87,
-                                  ),
-                                ),
-                                if (walletViewModel.selectedCurrency ==
-                                    balance.currency)
-                                  Icon(
-                                    Icons.check,
-                                    color: const Color(0xFFA855F7),
-                                  ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                      SizedBox(height: 20),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }
