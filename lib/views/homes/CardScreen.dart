@@ -973,6 +973,42 @@ class _CardScreenState extends State<CardScreen> {
           ),
 
           // 卡片右下角：VISA Platinum（已移除）
+
+          // 遮罩层和锁图标（当卡片被锁定时）
+          if (isCurrentCard && cardDetails?.status == 'frozen') ...[
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Center(
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(right: 10.0, bottom: 10.0),
+                        child: Icon(
+                          Icons.lock_outline,
+                          size: 48,
+                          color: Colors.black,
+                        ),
+                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(left: 20.0, top: 20.0),
+                      //   child: Icon(
+                      //     Icons.lock_outline,
+                      //     size: 24,
+                      //     color: Colors.black54,
+                      //   ),
+                      // ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
