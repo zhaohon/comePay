@@ -529,5 +529,17 @@
   "kycSolicitationDisclaimer": "من خلال المتابعة، فإنك توافق على أنك تصل إلى هذا التطبيق وخدماته طواعية، دون أي ترويج أو طلب نشط من Come Come Pay",
   "pleaseEnterField": "يرجى إدخال {field}",
   "onlyUppercaseEnglishAllowed": "يجب أن يحتوي {field} على أحرف إنجليزية كبيرة فقط (A-Z).\n\nالقيمة الحالية: {value}",
-  "kycPaymentRequiredDesc": "تحتاج إلى إكمال دفع رسوم البطاقة قبل المتابعة في التحقق من الهوية."
+  "kycPaymentRequiredDesc": "تحتاج إلى إكمال دفع رسوم البطاقة قبل المتابعة في التحقق من الهوية.",
+  "cardHolderName": "اسم حامل البطاقة",
+  "mailingAddress": "العنوان البريدي",
+  "recipientName": "اسم المستلم",
+  "enterRecipientName": "يرجى إدخال اسم المستلم",
+  "cardFees": "رسوم البطاقة",
+  "shippingFee": "رسوم الشحن",
+  "totalFee": "إجمالي الرسوم",
+  "noCouponAvailable": "لا توجد قسيمة متاحة",
+  "sameAsVirtualCard": "نفس البطاقة الافتراضية",
+  "applicationSubmittedSuccessfully": "تم تقديم الطلب بنجاح!",
+  "checkAndFixInputErrors": "يرجى التحقق وتصحيح أخطاء الإدخال",
+  "pleaseSelectCountry": "يرجى اختيار الدولة/المنطقة"
 }

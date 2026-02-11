@@ -1570,4 +1570,40 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get kycPaymentRequiredDesc =>
       'تحتاج إلى إكمال دفع رسوم البطاقة قبل المتابعة في التحقق من الهوية.';
+
+  @override
+  String get cardHolderName => 'اسم حامل البطاقة';
+
+  @override
+  String get mailingAddress => 'العنوان البريدي';
+
+  @override
+  String get recipientName => 'اسم المستلم';
+
+  @override
+  String get enterRecipientName => 'يرجى إدخال اسم المستلم';
+
+  @override
+  String get cardFees => 'رسوم البطاقة';
+
+  @override
+  String get shippingFee => 'رسوم الشحن';
+
+  @override
+  String get totalFee => 'إجمالي الرسوم';
+
+  @override
+  String get noCouponAvailable => 'لا توجد قسيمة متاحة';
+
+  @override
+  String get sameAsVirtualCard => 'نفس البطاقة الافتراضية';
+
+  @override
+  String get applicationSubmittedSuccessfully => 'تم تقديم الطلب بنجاح!';
+
+  @override
+  String get checkAndFixInputErrors => 'يرجى التحقق وتصحيح أخطاء الإدخال';
+
+  @override
+  String get pleaseSelectCountry => 'يرجى اختيار الدولة/المنطقة';
 }

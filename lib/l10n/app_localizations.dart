@@ -3071,6 +3071,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You need to complete the card fee payment before proceeding with KYC verification.'**
   String get kycPaymentRequiredDesc;
+
+  /// No description provided for @cardHolderName.
+  ///
+  /// In en, this message translates to:
+  /// **'Cardholder Name'**
+  String get cardHolderName;
+
+  /// No description provided for @mailingAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Mailing Address'**
+  String get mailingAddress;
+
+  /// No description provided for @recipientName.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipient Name'**
+  String get recipientName;
+
+  /// No description provided for @enterRecipientName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter recipient name'**
+  String get enterRecipientName;
+
+  /// No description provided for @cardFees.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Fees'**
+  String get cardFees;
+
+  /// No description provided for @shippingFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping Fee'**
+  String get shippingFee;
+
+  /// No description provided for @totalFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Fee'**
+  String get totalFee;
+
+  /// No description provided for @noCouponAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No coupon available'**
+  String get noCouponAvailable;
+
+  /// No description provided for @sameAsVirtualCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Same as virtual card'**
+  String get sameAsVirtualCard;
+
+  /// No description provided for @applicationSubmittedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Application submitted successfully!'**
+  String get applicationSubmittedSuccessfully;
+
+  /// No description provided for @checkAndFixInputErrors.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check and fix input errors'**
+  String get checkAndFixInputErrors;
+
+  /// No description provided for @pleaseSelectCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select Country/Region'**
+  String get pleaseSelectCountry;
 }
 
 class _AppLocalizationsDelegate

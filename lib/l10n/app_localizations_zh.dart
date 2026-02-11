@@ -1525,4 +1525,40 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get kycPaymentRequiredDesc => '您需要完成卡费支付才能进行KYC验证。';
+
+  @override
+  String get cardHolderName => '持卡人姓名';
+
+  @override
+  String get mailingAddress => '邮寄地址';
+
+  @override
+  String get recipientName => '收件人姓名';
+
+  @override
+  String get enterRecipientName => '请输入收件人姓名';
+
+  @override
+  String get cardFees => '卡片费用';
+
+  @override
+  String get shippingFee => '邮费';
+
+  @override
+  String get totalFee => '合计费用';
+
+  @override
+  String get noCouponAvailable => '暂无可用';
+
+  @override
+  String get sameAsVirtualCard => '与虚拟卡一致';
+
+  @override
+  String get applicationSubmittedSuccessfully => '申请提交成功！';
+
+  @override
+  String get checkAndFixInputErrors => '请检查并修正输入错误';
+
+  @override
+  String get pleaseSelectCountry => '请选择国家/地区';
 }

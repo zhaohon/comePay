@@ -17,6 +17,7 @@ import 'package:comecomepay/services/card_service.dart';
 import 'package:comecomepay/models/card_list_model.dart';
 import 'package:comecomepay/models/card_account_details_model.dart';
 import 'package:comecomepay/views/homes/CardAuthorizationScreen.dart';
+import 'package:comecomepay/views/homes/ApplyPhysicalCardScreen.dart';
 
 class CardScreen extends StatefulWidget {
   const CardScreen({super.key});
@@ -57,6 +58,7 @@ class _CardScreenState extends State<CardScreen> {
   bool _hasMoreTransactions = true;
 
   // UI状态
+  bool get _isBusy => _isLoadingCards || _isLoadingCardDetails || _isRefreshing;
   bool _isInitialLoading = true;
   bool _isCardNumberVisible = false;
   bool _isCardLocked = false;
@@ -147,13 +149,19 @@ class _CardScreenState extends State<CardScreen> {
       return;
     }
 
-    _isRefreshing = true;
-    _lastRefreshTime = now;
+    setState(() {
+      _isRefreshing = true;
+      _lastRefreshTime = now;
+    });
 
     try {
       await _loadCardList(isRefresh: true);
     } finally {
-      _isRefreshing = false;
+      if (mounted) {
+        setState(() {
+          _isRefreshing = false;
+        });
+      }
     }
   }
 
@@ -448,12 +456,23 @@ class _CardScreenState extends State<CardScreen> {
     return VisibilityDetector(
       key: const Key('card-screen'),
       onVisibilityChanged: (info) {
-        // When page becomes visible (visibility > 0.5), trigger refresh
-        if (info.visibleFraction > 0.5) {
+        // When page becomes visible (visibility > 0.01), trigger refresh
+        if (info.visibleFraction > 0.01) {
           _refreshOnVisible();
         }
       },
-      child: _buildContent(),
+      child: Stack(
+        children: [
+          _buildContent(),
+          if (_isBusy)
+            Container(
+              color: Colors.black.withOpacity(0.3),
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+        ],
+      ),
     );
   }
 
@@ -682,7 +701,11 @@ class _CardScreenState extends State<CardScreen> {
                     _buildActionCard(
                       Icons.info_outline,
                       AppLocalizations.of(context)!.cardInformation,
-                      onTap: () => _showCardSecurityInfo(),
+                      onTap: () {
+                        if (_isBusy) return;
+                        if (_currentCardDetails == null) return;
+                        _showCardSecurityInfo();
+                      },
                     ),
                     _buildActionCard(
                       (_currentCardDetails?.status == 'frozen')
@@ -692,6 +715,7 @@ class _CardScreenState extends State<CardScreen> {
                           ? AppLocalizations.of(context)!.unlockCard
                           : AppLocalizations.of(context)!.lockCard,
                       onTap: () {
+                        if (_isBusy) return;
                         if (_currentCardDetails == null) return;
                         // 'normal' -> Lock (G1)
                         // 'frozen' -> Unlock (00)
@@ -727,6 +751,8 @@ class _CardScreenState extends State<CardScreen> {
                       Icons.touch_app_outlined,
                       AppLocalizations.of(context)!.cardAuthorization,
                       onTap: () {
+                        if (_isBusy) return;
+                        if (_currentCardDetails == null) return;
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -740,6 +766,8 @@ class _CardScreenState extends State<CardScreen> {
                       Icons.credit_card_outlined,
                       AppLocalizations.of(context)!.applyPhysicalCard,
                       onTap: () {
+                        if (_isBusy) return;
+                        if (_currentCardDetails == null) return;
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(AppLocalizations.of(context)!
@@ -747,12 +775,22 @@ class _CardScreenState extends State<CardScreen> {
                             duration: const Duration(seconds: 1),
                           ),
                         );
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => ApplyPhysicalCardScreen(
+                        //       cardDetails: _currentCardDetails,
+                        //     ),
+                        //   ),
+                        // );
                       },
                     ),
                     _buildActionCard(
                       Icons.link_off_outlined,
                       AppLocalizations.of(context)!.reportLoss,
                       onTap: () {
+                        if (_isBusy) return;
+                        if (_currentCardDetails == null) return;
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(AppLocalizations.of(context)!
@@ -1411,10 +1449,7 @@ class _CardScreenState extends State<CardScreen> {
 
   Widget _buildActionCard(IconData icon, String label, {VoidCallback? onTap}) {
     return GestureDetector(
-      onTap: onTap ??
-          () {
-            // Default empty tap
-          },
+      onTap: onTap,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,

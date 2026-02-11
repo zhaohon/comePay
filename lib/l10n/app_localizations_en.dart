@@ -1568,4 +1568,41 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get kycPaymentRequiredDesc =>
       'You need to complete the card fee payment before proceeding with KYC verification.';
+
+  @override
+  String get cardHolderName => 'Cardholder Name';
+
+  @override
+  String get mailingAddress => 'Mailing Address';
+
+  @override
+  String get recipientName => 'Recipient Name';
+
+  @override
+  String get enterRecipientName => 'Please enter recipient name';
+
+  @override
+  String get cardFees => 'Card Fees';
+
+  @override
+  String get shippingFee => 'Shipping Fee';
+
+  @override
+  String get totalFee => 'Total Fee';
+
+  @override
+  String get noCouponAvailable => 'No coupon available';
+
+  @override
+  String get sameAsVirtualCard => 'Same as virtual card';
+
+  @override
+  String get applicationSubmittedSuccessfully =>
+      'Application submitted successfully!';
+
+  @override
+  String get checkAndFixInputErrors => 'Please check and fix input errors';
+
+  @override
+  String get pleaseSelectCountry => 'Please select Country/Region';
 }

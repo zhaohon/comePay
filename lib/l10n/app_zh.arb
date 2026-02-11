@@ -534,5 +534,17 @@
   "kycSolicitationDisclaimer": "继续即表示您同意自愿访问此应用程序及其服务，无需 Come Come Pay 的任何主动促销或招揽",
   "pleaseEnterField": "请输入{field}",
   "onlyUppercaseEnglishAllowed": "{field} 必须仅包含大写英文字母 (A-Z)。\n\n当前值：{value}",
-  "kycPaymentRequiredDesc": "您需要完成卡费支付才能进行KYC验证。"
+  "kycPaymentRequiredDesc": "您需要完成卡费支付才能进行KYC验证。",
+  "cardHolderName": "持卡人姓名",
+  "mailingAddress": "邮寄地址",
+  "recipientName": "收件人姓名",
+  "enterRecipientName": "请输入收件人姓名",
+  "cardFees": "卡片费用",
+  "shippingFee": "邮费",
+  "totalFee": "合计费用",
+  "noCouponAvailable": "暂无可用",
+  "sameAsVirtualCard": "与虚拟卡一致",
+  "applicationSubmittedSuccessfully": "申请提交成功！",
+  "checkAndFixInputErrors": "请检查并修正输入错误",
+  "pleaseSelectCountry": "请选择国家/地区"
 }

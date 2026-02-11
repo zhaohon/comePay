@@ -534,5 +534,17 @@
   "kycSolicitationDisclaimer": "By continuing you agree that you are accessing this App and its service voluntarily, without any active promotion or solicitation by Come Come Pay",
   "pleaseEnterField": "Please enter {field}",
   "onlyUppercaseEnglishAllowed": "{field} must contain only uppercase English letters (A-Z).\n\nCurrent value: {value}",
-  "kycPaymentRequiredDesc": "You need to complete the card fee payment before proceeding with KYC verification."
+  "kycPaymentRequiredDesc": "You need to complete the card fee payment before proceeding with KYC verification.",
+  "cardHolderName": "Cardholder Name",
+  "mailingAddress": "Mailing Address",
+  "recipientName": "Recipient Name",
+  "enterRecipientName": "Please enter recipient name",
+  "cardFees": "Card Fees",
+  "shippingFee": "Shipping Fee",
+  "totalFee": "Total Fee",
+  "noCouponAvailable": "No coupon available",
+  "sameAsVirtualCard": "Same as virtual card",
+  "applicationSubmittedSuccessfully": "Application submitted successfully!",
+  "checkAndFixInputErrors": "Please check and fix input errors",
+  "pleaseSelectCountry": "Please select Country/Region"
 }
