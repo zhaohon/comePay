@@ -650,17 +650,24 @@ class _CardScreenState extends State<CardScreen> {
               const SizedBox(height: 15),
 
               // ===== 卡片展示区域（全宽） =====
-              SizedBox(
-                height: 200,
-                child: PageView.builder(
-                  controller: _pageController,
-                  itemCount: cardCount,
-                  onPageChanged: _onCardChanged,
-                  itemBuilder: (context, index) {
-                    final card = _cardList!.cards[index];
-                    return _buildCardWidget(card);
-                  },
-                ),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final cardWidth =
+                      constraints.maxWidth - 16; // 水平方向总共有16的margin
+                  final cardHeight = cardWidth * (853 / 1280);
+                  return SizedBox(
+                    height: cardHeight,
+                    child: PageView.builder(
+                      controller: _pageController,
+                      itemCount: cardCount,
+                      onPageChanged: _onCardChanged,
+                      itemBuilder: (context, index) {
+                        final card = _cardList!.cards[index];
+                        return _buildCardWidget(card);
+                      },
+                    ),
+                  );
+                },
               ),
 
               // ===== 卡片指示点 =====
@@ -897,13 +904,12 @@ class _CardScreenState extends State<CardScreen> {
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8.0),
-      height: 200,
       decoration: BoxDecoration(
         image: const DecorationImage(
-          image: AssetImage('assets/card.png'),
+          image: AssetImage('assets/card.jpg'),
           fit: BoxFit.fill,
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.2),
@@ -912,142 +918,179 @@ class _CardScreenState extends State<CardScreen> {
           ),
         ],
       ),
-      child: Stack(
-        children: [
-          // 卡片右上角：费率信息
-          // Positioned(
-          //   right: 16,
-          //   top: 16,
-          //   child: Row(
-          //     children: [
-          //       Text(
-          //         '費率',
-          //         style: TextStyle(
-          //           color: Colors.white.withOpacity(0.9),
-          //           fontSize: 12,
-          //         ),
-          //       ),
-          //       const SizedBox(width: 4),
-          //       Icon(
-          //         Icons.help_outline,
-          //         size: 14,
-          //         color: Colors.white.withOpacity(0.9),
-          //       ),
-          //     ],
-          //   ),
-          // ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final height = constraints.maxHeight;
+          final width = constraints.maxWidth;
 
-          // 卡片左上角：P logo（已移除）
-
-          // 卡片中间：卡号（可点击查看）
-          Positioned(
-            left: 16,
-            top: 100,
-            child: GestureDetector(
-              onTap: isCurrentCard ? () => _showCardSecurityInfo() : null,
-              child: Row(
-                children: [
-                  Text(
-                    card.cardNo,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 2,
+          return Stack(
+            children: [
+              // 底部暗色渐变，增强文字区分度
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                height: height * 0.6,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(16),
+                      bottomRight: Radius.circular(16),
                     ),
-                  ),
-                  if (isCurrentCard) ...[
-                    const SizedBox(width: 8),
-                    Icon(
-                      Icons.visibility_off,
-                      color: Colors.white.withOpacity(0.8),
-                      size: 18,
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ),
-
-          // 卡片左下角：持卡人姓名
-          Positioned(
-            left: 16,
-            bottom: 45,
-            child: Text(
-              _currentCardDetails?.memberName ?? 'CARDHOLDER NAME',
-              style: TextStyle(
-                color: Colors.white.withOpacity(0.9),
-                fontSize: 14,
-              ),
-            ),
-          ),
-
-          // 卡片左下角：CVV和到期日（可点击查看）
-          Positioned(
-            left: 16,
-            bottom: 16,
-            child: Row(
-              children: [
-                GestureDetector(
-                  onTap: isCurrentCard ? () => _showCardSecurityInfo() : null,
-                  child: Text(
-                    '${AppLocalizations.of(context)!.cvvLabel}***',
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.9),
-                      fontSize: 12,
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [
+                        Colors.black.withOpacity(0.6),
+                        Colors.transparent,
+                      ],
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
-                Text(
-                  '${AppLocalizations.of(context)!.expiryDateLabel}***',
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.9),
-                    fontSize: 12,
+              ),
+
+              // 内容统一从左下角定位
+              Positioned(
+                left: width * 0.08,
+                bottom: height * 0.10,
+                right: width * 0.05,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // 卡号
+                    GestureDetector(
+                      onTap:
+                          isCurrentCard ? () => _showCardSecurityInfo() : null,
+                      child: Row(
+                        children: [
+                          Text(
+                            card.cardNo,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 26,
+                              fontWeight: FontWeight.w700,
+                              shadows: [
+                                Shadow(
+                                    offset: Offset(0, 1),
+                                    blurRadius: 2.0,
+                                    color: Colors.black),
+                                Shadow(
+                                    offset: Offset(0, 2),
+                                    blurRadius: 6.0,
+                                    color: Colors.black87),
+                              ],
+                            ),
+                          ),
+                          if (isCurrentCard) ...[
+                            const SizedBox(width: 8),
+                            Icon(
+                              Icons.visibility_off,
+                              color: Colors.white.withOpacity(0.9),
+                              size: 20,
+                              shadows: [
+                                Shadow(
+                                    offset: Offset(0, 1),
+                                    blurRadius: 2.0,
+                                    color: Colors.black),
+                              ],
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(height: height * 0.03), // 卡号和底部信息之间的间距
+
+                    // 底部一行：姓名 + 到期日 (移除硬编码标签)
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        // 姓名部分
+                        Expanded(
+                          flex: 1,
+                          child: Text(
+                            _currentCardDetails?.memberName ??
+                                'CARDHOLDER NAME',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 1,
+                              shadows: [
+                                Shadow(
+                                    offset: Offset(0, 1),
+                                    blurRadius: 2.0,
+                                    color: Colors.black),
+                                Shadow(
+                                    offset: Offset(0, 2),
+                                    blurRadius: 6.0,
+                                    color: Colors.black87),
+                              ],
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+
+                        // 到期日部分
+                        Expanded(
+                          flex: 1,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: GestureDetector(
+                              onTap: isCurrentCard
+                                  ? () => _showCardSecurityInfo()
+                                  : null,
+                              child: const Text(
+                                '**/**',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 1,
+                                  shadows: [
+                                    Shadow(
+                                        offset: Offset(0, 1),
+                                        blurRadius: 2.0,
+                                        color: Colors.black),
+                                    Shadow(
+                                        offset: Offset(0, 2),
+                                        blurRadius: 6.0,
+                                        color: Colors.black87),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+              // 遮罩层和锁图标（当卡片被锁定时）
+              if (isCurrentCard && cardDetails?.status == 'frozen') ...[
+                Positioned.fill(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.lock_outline,
+                        size: 48,
+                        color: Colors.black,
+                      ),
+                    ),
                   ),
                 ),
               ],
-            ),
-          ),
-
-          // 卡片右下角：VISA Platinum（已移除）
-
-          // 遮罩层和锁图标（当卡片被锁定时）
-          if (isCurrentCard && cardDetails?.status == 'frozen') ...[
-            Positioned.fill(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Center(
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(right: 10.0, bottom: 10.0),
-                        child: Icon(
-                          Icons.lock_outline,
-                          size: 48,
-                          color: Colors.black,
-                        ),
-                      ),
-                      // Padding(
-                      //   padding: const EdgeInsets.only(left: 20.0, top: 20.0),
-                      //   child: Icon(
-                      //     Icons.lock_outline,
-                      //     size: 24,
-                      //     color: Colors.black54,
-                      //   ),
-                      // ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ],
+            ],
+          );
+        },
       ),
     );
   }
@@ -1339,13 +1382,13 @@ class _CardScreenState extends State<CardScreen> {
                       ),
                       SizedBox(height: size.height * 0.05),
                       AspectRatio(
-                        aspectRatio: 1.44,
+                        aspectRatio: 1280 / 813, // 保持原图比例
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(16),
                           child: Image.asset(
-                            "assets/visa.png",
+                            "assets/visa.jpg",
                             width: double.infinity,
-                            fit: BoxFit.cover, // 使用 cover 填满容器，因为容器比例已设为图片比例
+                            fit: BoxFit.contain, // 完整显示，不裁剪
                           ),
                         ),
                       ),
