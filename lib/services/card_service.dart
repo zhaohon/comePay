@@ -3,6 +3,7 @@ import 'package:comecomepay/models/card_apply_model.dart';
 import 'package:comecomepay/models/card_apply_progress_model.dart';
 import 'package:comecomepay/models/card_list_model.dart';
 import 'package:comecomepay/models/card_account_details_model.dart';
+import 'package:comecomepay/models/physical_upgrade_fee_info_model.dart';
 
 class CardService extends BaseService {
   CardService() {
@@ -24,6 +25,71 @@ class CardService extends BaseService {
       }
     } catch (e) {
       print('Error applying card: $e');
+      rethrow;
+    }
+  }
+
+  /// 获取实体卡升级费用信息
+  Future<PhysicalUpgradeFeeInfoModel> getPhysicalUpgradeFeeInfo() async {
+    try {
+      final response = await get('/card/physical/upgrade/fee-info');
+
+      if (response['code'] == 200 && response['data'] != null) {
+        return PhysicalUpgradeFeeInfoModel.fromJson(response['data']);
+      } else {
+        throw Exception(
+            response['errstr'] ?? 'Failed to get physical upgrade fee info');
+      }
+    } catch (e) {
+      print('Error getting physical upgrade fee info: $e');
+      rethrow;
+    }
+  }
+
+  /// 发送实体卡升级邮箱验证码
+  Future<void> sendPhysicalUpgradeEmailCode(
+      String publicToken, String email) async {
+    try {
+      final response = await post(
+        '/card/physical/upgrade/email-code/send',
+        data: {
+          'email': email,
+          'public_token': publicToken,
+          'scene': 'physical_upgrade',
+        },
+      );
+
+      if (response['code'] != 200) {
+        throw Exception(
+            response['errstr'] ?? 'Failed to send verification code');
+      }
+    } catch (e) {
+      print('Error sending physical upgrade email code: $e');
+      rethrow;
+    }
+  }
+
+  /// 校验实体卡升级邮箱验证码
+  Future<String> verifyPhysicalUpgradeEmailCode(
+      String publicToken, String code) async {
+    try {
+      final response = await post(
+        '/card/physical/upgrade/email-code/verify',
+        data: {
+          'code': code,
+          'public_token': publicToken,
+          'scene': 'physical_upgrade',
+        },
+      );
+
+      if (response['code'] == 200 && response['data'] != null) {
+        final data = response['data'] as Map<String, dynamic>;
+        return data['verify_token'] as String;
+      } else {
+        throw Exception(response['errstr'] ?? 'Failed to verify email code');
+      }
+    } catch (e) {
+      print('Error verifying physical upgrade email code: $e');
       rethrow;
     }
   }
