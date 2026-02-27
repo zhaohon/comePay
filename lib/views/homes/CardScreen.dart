@@ -18,6 +18,7 @@ import 'package:comecomepay/models/card_list_model.dart';
 import 'package:comecomepay/models/card_account_details_model.dart';
 import 'package:comecomepay/views/homes/CardAuthorizationScreen.dart';
 import 'package:comecomepay/views/homes/ApplyPhysicalCardScreen.dart';
+import 'package:comecomepay/views/homes/ActivatePhysicalCardScreen.dart';
 
 class CardScreen extends StatefulWidget {
   const CardScreen({super.key});
@@ -464,6 +465,13 @@ class _CardScreenState extends State<CardScreen> {
       child: Stack(
         children: [
           _buildContent(),
+          // 悬浮在最右侧居中的邮寄进度按钮
+          if (_cardList != null && _cardList!.hasCards)
+            Positioned(
+              right: 0,
+              top: MediaQuery.of(context).size.height * 0.45,
+              child: _buildMailingProgressTab(context),
+            ),
           if (_isBusy)
             Container(
               color: Colors.black.withOpacity(0.3),
@@ -775,21 +783,21 @@ class _CardScreenState extends State<CardScreen> {
                       onTap: () {
                         if (_isBusy) return;
                         if (_currentCardDetails == null) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(AppLocalizations.of(context)!
-                                .featureComingSoon),
-                            duration: const Duration(seconds: 1),
-                          ),
-                        );
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => ApplyPhysicalCardScreen(
-                        //       cardDetails: _currentCardDetails,
-                        //     ),
+                        // ScaffoldMessenger.of(context).showSnackBar(
+                        //   SnackBar(
+                        //     content: Text(AppLocalizations.of(context)!
+                        //         .featureComingSoon),
+                        //     duration: const Duration(seconds: 1),
                         //   ),
                         // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ApplyPhysicalCardScreen(
+                              cardDetails: _currentCardDetails,
+                            ),
+                          ),
+                        );
                       },
                     ),
                     _buildActionCard(
@@ -1845,6 +1853,423 @@ class _CardScreenState extends State<CardScreen> {
           ),
         );
       },
+    );
+  }
+
+  /// 构建右侧悬浮的“邮寄进度”按钮
+  Widget _buildMailingProgressTab(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        _showMailingProgressBottomSheet(context, isShipped: true);
+      },
+      child: Container(
+        decoration: const BoxDecoration(
+          color: Color(0xFFFDE68A), // 黄色背景
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(8),
+            bottomLeft: Radius.circular(8),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              offset: Offset(-2, 2),
+              blurRadius: 4,
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
+        child: const Text(
+          '邮\n寄\n进\n度',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF0F172A),
+            height: 1.2,
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// 显示邮寄进度底部弹窗
+  void _showMailingProgressBottomSheet(BuildContext context,
+      {bool isShipped = true}) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext ctx) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24),
+              topRight: Radius.circular(24),
+            ),
+          ),
+          padding: EdgeInsets.only(
+            left: 24,
+            right: 24,
+            top: 24,
+            bottom: MediaQuery.of(ctx).padding.bottom + 24,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 标题与关闭按钮
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "邮寄进度",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(ctx),
+                    child: const Icon(Icons.close,
+                        color: AppColors.textPrimary, size: 24),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 32),
+
+              // 进度时间线区域
+              _buildTimeline(isShipped: isShipped),
+              const SizedBox(height: 48),
+
+              // 已收到卡片大按钮
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // 关闭进度底部弹窗
+                    Navigator.pop(ctx);
+                    // 弹出确实收到卡片对话框
+                    _showActivationConfirmDialog(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF0F172A), // 深色按钮
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: const Text(
+                    '已收到卡片',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showActivationConfirmDialog(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext dialogCtx) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24),
+              topRight: Radius.circular(24),
+            ),
+          ),
+          padding: const EdgeInsets.fromLTRB(24, 24, 24, 34), // 底部留些安全距离
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // 标题与关闭按钮
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "温馨提示",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(dialogCtx),
+                    child: const Icon(Icons.close,
+                        color: AppColors.textPrimary, size: 24),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 32),
+
+              // 提示文案
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "请确认您已收到实体卡再进行激活操作！",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textPrimary,
+                    height: 1.5,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 32),
+
+              // 按钮1: 未收到卡片 (粉红)
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(dialogCtx);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFF43F5E), // 粉红色
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: const Text(
+                    '未收到卡片，稍后激活',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // 按钮2: 已收到卡片 (深蓝)
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(dialogCtx); // 关掉确认框
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const ActivatePhysicalCardScreen(),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF0F172A), // 深蓝色
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: const Text(
+                    '已收到卡片，马上激活',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildProgressDetailRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            color: AppColors.textSecondary,
+            fontSize: 13,
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Text(
+            value,
+            textAlign: TextAlign.right,
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 13,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTimeline({required bool isShipped}) {
+    return Column(
+      children: [
+        // 1. 升级卡片申请
+        _buildTimelineStep(
+          title: "升级卡片申请",
+          isActive: true,
+          isNextActive: true, // 默认制卡中肯定是亮的
+          isLast: false,
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 12),
+              _buildProgressDetailRow("申请时间", "2026-02-10 17:10:20"),
+              const SizedBox(height: 16),
+              _buildProgressDetailRow("收卡地址", "河北省石家庄市开发区润都荣园"),
+              const SizedBox(height: 16),
+              _buildProgressDetailRow("收件人", "赵宏 150****8358"),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
+        // 2. 制卡中
+        _buildTimelineStep(
+          title: "制卡中",
+          isActive: true,
+          isNextActive: isShipped, // 这根线只在已经发货时变绿
+          isLast: false,
+          content: const SizedBox(height: 16), // 空隙
+        ),
+        // 3. 卡片已寄出
+        _buildTimelineStep(
+          title: "卡片已寄出",
+          isActive: isShipped,
+          isNextActive: false, // 只有激活了才变绿，默认这步还没激活，线置灰
+          isLast: false,
+          content: isShipped
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 12),
+                    _buildProgressDetailRow("寄出时间", "2026-02-26 16:01:16"),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("快递查询",
+                            style: TextStyle(
+                                color: AppColors.textSecondary, fontSize: 13)),
+                        Row(
+                          children: [
+                            const Text("SF5107905219317",
+                                style: TextStyle(
+                                    color: AppColors.textSecondary,
+                                    fontSize: 13)),
+                            const SizedBox(width: 4),
+                            const Icon(Icons.copy_outlined,
+                                size: 14, color: AppColors.textSecondary),
+                          ],
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                )
+              : const SizedBox(height: 16),
+        ),
+        // 4. 激活卡片
+        _buildTimelineStep(
+          title: "激活卡片",
+          isActive: false, // 永远是灰色，直至用户真的激活
+          isNextActive: false,
+          isLast: true,
+          content: const Padding(
+            padding: EdgeInsets.only(top: 12),
+            child: Text(
+              "收到卡片后请激活后使用！",
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 13,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTimelineStep({
+    required String title,
+    required bool isActive,
+    required bool isNextActive,
+    required bool isLast,
+    Widget? content,
+  }) {
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 左侧轴线与圆点
+          Column(
+            children: [
+              Container(
+                width: 10,
+                height: 10,
+                margin: const EdgeInsets.only(top: 4),
+                decoration: BoxDecoration(
+                  color: isActive
+                      ? const Color(0xFF10B981)
+                      : const Color(0xFFE5E7EB),
+                  shape: BoxShape.circle,
+                ),
+              ),
+              if (!isLast)
+                Expanded(
+                  child: Container(
+                    width: 2,
+                    color: isNextActive
+                        ? const Color(0xFF10B981)
+                        : const Color(0xFFE5E7EB),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(width: 12),
+          // 右侧内容
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: isActive
+                        ? AppColors.textPrimary
+                        : AppColors.textSecondary,
+                    fontWeight: isActive ? FontWeight.w500 : FontWeight.normal,
+                  ),
+                ),
+                if (content != null) content,
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

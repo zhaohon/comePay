@@ -5,6 +5,7 @@ import '../../l10n/app_localizations.dart';
 import 'package:comecomepay/utils/app_colors.dart';
 import 'package:comecomepay/models/card_account_details_model.dart';
 import 'package:comecomepay/models/country_model.dart';
+import 'ApplyPhysicalCardSuccessScreen.dart';
 
 class ApplyPhysicalCardScreen extends StatefulWidget {
   final CardAccountDetailsModel? cardDetails;
@@ -275,13 +276,8 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(l10n.applicationSubmittedSuccessfully),
-                          backgroundColor: AppColors.success,
-                        ),
-                      );
-                      Navigator.pop(context);
+                      // 假设验证通过，先弹出验证码弹窗 (硬编码Mock)
+                      _showVerificationDialog(context);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -626,5 +622,237 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
   String _formatCardScheme(String? scheme) {
     if (scheme == null || scheme.isEmpty) return 'VISA'; // Default fallback
     return scheme.toUpperCase();
+  }
+
+  /// 显示交易安全验证弹窗
+  void _showVerificationDialog(BuildContext context) {
+    // 假设费用
+    final fee = _cardFee + _shippingFee - _couponDiscount;
+    // 假设测试邮箱
+    final maskEmail = "285***@qq.com";
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext ctx) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24),
+              topRight: Radius.circular(24),
+            ),
+          ),
+          padding: EdgeInsets.only(
+            left: 24,
+            right: 24,
+            top: 24,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 标题与关闭按钮
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "交易信息",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(ctx),
+                    child: const Icon(Icons.close,
+                        color: AppColors.textPrimary, size: 24),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // 提示说明文案 (富文本高亮费用)
+              RichText(
+                text: TextSpan(
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textSecondary,
+                    height: 1.5,
+                  ),
+                  children: [
+                    const TextSpan(text: "我们将从您的账户扣除卡片费用"),
+                    TextSpan(
+                      text: "${fee.toStringAsFixed(0)}USD",
+                      style: const TextStyle(color: Color(0xFFE56973)), // 红色高亮
+                    ),
+                    const TextSpan(text: "，为了您的账户安全，我们需要对您进行安全验证。"),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // 邮箱验证码标题
+              const Text(
+                "邮箱验证码",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 8),
+
+              // 验证码输入框与获取按钮
+              Container(
+                height: 52,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.grey.withOpacity(0.2)),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: TextField(
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                          hintText: "请输入邮箱验证码",
+                          hintStyle: TextStyle(
+                            color: Color(0xFF9CA3AF),
+                            fontSize: 14,
+                          ),
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                        ),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        // TODO: Implement send code logic
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: Text(
+                          "获取验证码",
+                          style: TextStyle(
+                            color: Color(0xFF10B981), // 绿色
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8),
+
+              // 底部倒计时提示
+              Text(
+                "6位数字验证码已发送至您的$maskEmail，请在5分钟内输入",
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Color(0xFF9CA3AF),
+                ),
+              ),
+              const SizedBox(height: 32),
+
+              // 确认按钮
+              Container(
+                width: double.infinity,
+                height: 52,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0F172A), // 深色按钮
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    // TODO: Submit Verification Code logic
+                    // 先收起底部弹窗
+                    Navigator.pop(ctx);
+
+                    // 弹出加载中的提示框
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext loadingCtx) {
+                        return Center(
+                          child: Container(
+                            width: 120,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CircularProgressIndicator(
+                                    color: AppColors.primary),
+                                SizedBox(height: 16),
+                                Text(
+                                  "处理中...",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: AppColors.textPrimary,
+                                    decoration: TextDecoration.none,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+
+                    // 假装请求接口耗时1.5秒
+                    await Future.delayed(const Duration(milliseconds: 1500));
+
+                    if (context.mounted) {
+                      // 关掉加载框
+                      Navigator.pop(context);
+                      // 关掉当前的申领页，跳到成功页
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const ApplyPhysicalCardSuccessScreen(),
+                        ),
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    "确认",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }
