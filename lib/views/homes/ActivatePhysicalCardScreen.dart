@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:comecomepay/utils/app_colors.dart';
 import 'package:flutter/services.dart';
+import 'package:comecomepay/views/homes/ActivatePhysicalCardSuccessScreen.dart';
 
 class ActivatePhysicalCardScreen extends StatefulWidget {
-  const ActivatePhysicalCardScreen({super.key});
+  final bool isReset;
+
+  const ActivatePhysicalCardScreen({
+    super.key,
+    this.isReset = false,
+  });
 
   @override
   State<ActivatePhysicalCardScreen> createState() =>
@@ -24,7 +30,7 @@ class _ActivatePhysicalCardScreenState
     super.dispose();
   }
 
-  void _onActivatePressed() async {
+  void _onSubmitPressed() async {
     // 基础校验
     if (_pinController1.text.length != 6 || _pinController2.text.length != 6) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -58,14 +64,14 @@ class _ActivatePhysicalCardScreenState
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
             ),
-            child: const Column(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CircularProgressIndicator(color: AppColors.primary),
-                SizedBox(height: 16),
+                const CircularProgressIndicator(color: AppColors.primary),
+                const SizedBox(height: 16),
                 Text(
-                  "正在激活...",
-                  style: TextStyle(
+                  widget.isReset ? "正在重置..." : "正在激活...",
+                  style: const TextStyle(
                     fontSize: 14,
                     color: AppColors.textPrimary,
                     decoration: TextDecoration.none,
@@ -86,16 +92,24 @@ class _ActivatePhysicalCardScreenState
       // 关掉加载框
       Navigator.pop(context);
 
-      // 激活成功提示
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('实体卡激活成功！'),
-          backgroundColor: AppColors.success,
-        ),
-      );
-
-      // 关掉当前的激活页，退回到卡片主页
-      Navigator.popUntil(context, (route) => route.isFirst);
+      if (widget.isReset) {
+        // 重置场景：成功提示，返回上页
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('PIN码重置成功！'),
+            backgroundColor: AppColors.success,
+          ),
+        );
+        Navigator.pop(context);
+      } else {
+        // 激活场景：跳转到成功详情页
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const ActivatePhysicalCardSuccessScreen(),
+          ),
+        );
+      }
     }
   }
 
@@ -107,9 +121,9 @@ class _ActivatePhysicalCardScreenState
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text(
-          "激活实体卡",
-          style: TextStyle(
+        title: Text(
+          widget.isReset ? "重置PIN码" : "激活实体卡",
+          style: const TextStyle(
             color: AppColors.textPrimary,
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -117,6 +131,7 @@ class _ActivatePhysicalCardScreenState
         ),
         backgroundColor: Colors.white,
         elevation: 0,
+        centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: AppColors.textPrimary),
           onPressed: () => Navigator.pop(context),
@@ -129,9 +144,9 @@ class _ActivatePhysicalCardScreenState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // ===== 1. 设置PIN码区域 =====
-              const Text(
-                "设置PIN码",
-                style: TextStyle(
+              Text(
+                widget.isReset ? "PIN码重置" : "设置PIN码",
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
@@ -139,7 +154,7 @@ class _ActivatePhysicalCardScreenState
               ),
               const SizedBox(height: 8),
               const Text(
-                "· 持卡人在ATM或POS终端使用卡时需输入PIN，请妥善保管",
+                "持卡人在 ATM 或POS终端机使用卡片时需输入PIN，请妥善保管",
                 style: TextStyle(
                   fontSize: 13,
                   color: Color(0xFFEF4444), // 红色警示文字
@@ -170,7 +185,7 @@ class _ActivatePhysicalCardScreenState
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: const InputDecoration(
                     counterText: "",
-                    hintText: "请输入PIN码",
+                    hintText: "请输入6位数字PIN码",
                     hintStyle: TextStyle(color: Color(0xFFD1D5DB)),
                     contentPadding:
                         EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -182,7 +197,7 @@ class _ActivatePhysicalCardScreenState
 
               // PIN输入2
               const Text(
-                "请再次输入6位数字PIN码",
+                "请再次设置新的6位数字PIN码",
                 style: TextStyle(
                   fontSize: 14,
                   color: AppColors.textPrimary,
@@ -203,7 +218,7 @@ class _ActivatePhysicalCardScreenState
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: const InputDecoration(
                     counterText: "",
-                    hintText: "请输入PIN码",
+                    hintText: "请再次输入6位数字PIN码",
                     hintStyle: TextStyle(color: Color(0xFFD1D5DB)),
                     contentPadding:
                         EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -215,7 +230,7 @@ class _ActivatePhysicalCardScreenState
 
               // ===== 2. 安全验证区域 =====
               const Text(
-                "安全验证",
+                "验证方式",
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -249,7 +264,7 @@ class _ActivatePhysicalCardScreenState
                         ],
                         decoration: const InputDecoration(
                           counterText: "",
-                          hintText: "请输入邮箱验证码",
+                          hintText: "请输入验证码",
                           hintStyle: TextStyle(color: Color(0xFFD1D5DB)),
                           contentPadding: EdgeInsets.symmetric(
                               horizontal: 16, vertical: 14),
@@ -278,10 +293,10 @@ class _ActivatePhysicalCardScreenState
               ),
               const SizedBox(height: 8),
               Text(
-                "6位数字验证码已发送至您的$maskEmail，请在5分钟内输入",
+                "请输入发送到邮箱 $maskEmail 的邮箱验证码",
                 style: const TextStyle(
                   fontSize: 12,
-                  color: Color(0xFF9CA3AF),
+                  color: AppColors.textPrimary,
                 ),
               ),
               const SizedBox(height: 48),
@@ -291,7 +306,7 @@ class _ActivatePhysicalCardScreenState
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton(
-                  onPressed: _onActivatePressed,
+                  onPressed: _onSubmitPressed,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF0F172A), // 深色按钮
                     shape: RoundedRectangleBorder(
@@ -299,9 +314,9 @@ class _ActivatePhysicalCardScreenState
                     ),
                     elevation: 0,
                   ),
-                  child: const Text(
-                    '立即激活',
-                    style: TextStyle(
+                  child: Text(
+                    widget.isReset ? '确认' : '立即激活',
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
