@@ -51,6 +51,11 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
   Timer? _countdownTimer;
   int _remainingTime = 0;
 
+  // Email verification state（两步提交）
+  bool _isEmailVerified = false;
+  String? _verifyToken;
+  bool _isSubmitting = false;
+
   // Fees
   double _cardFee = 0.0;
   final double _shippingFee = 0.00;
@@ -389,19 +394,27 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
                   ],
                 ),
                 child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      // 假设验证通过，先弹出验证码弹窗 (硬编码Mock)
-                      _showVerificationDialog(context);
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(l10n.checkAndFixInputErrors),
-                          backgroundColor: AppColors.error,
-                        ),
-                      );
-                    }
-                  },
+                  onPressed: _isSubmitting
+                      ? null
+                      : () async {
+                          if (!_formKey.currentState!.validate()) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(l10n.checkAndFixInputErrors),
+                                backgroundColor: AppColors.error,
+                              ),
+                            );
+                            return;
+                          }
+
+                          if (!_isEmailVerified) {
+                            // 第一步：未验证 → 弹邮件验证弹窗
+                            _showVerificationDialog(context);
+                          } else {
+                            // 第二步：已验证 → 调用最终提交接口
+                            await _submitApplication();
+                          }
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.transparent,
                     shadowColor: Colors.transparent,
@@ -409,14 +422,23 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  child: Text(
-                    l10n.submit,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: _isSubmitting
+                      ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2.5,
+                          ),
+                        )
+                      : Text(
+                          _isEmailVerified ? '确认提交' : l10n.submit,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(height: 40),
@@ -770,12 +792,44 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
     return scheme.toUpperCase();
   }
 
+  /// 最终提交升级申请
+  Future<void> _submitApplication() async {
+    setState(() => _isSubmitting = true);
+    try {
+      // TODO: 调用最终的提交升级申请接口，传入 _verifyToken
+      // 接口就绪后取消注释：
+      // await _cardService.submitPhysicalUpgrade(
+      //   publicToken: widget.cardDetails?.publicToken ?? '',
+      //   verifyToken: _verifyToken ?? '',
+      //   ...
+      // );
+      debugPrint('submit with verifyToken: $_verifyToken'); // 占位引用，接口接入后可删除
+
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const ApplyPhysicalCardSuccessScreen(),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('提交失败: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
+    }
+  }
+
   /// 显示交易安全验证弹窗
   void _showVerificationDialog(BuildContext context) {
-    // 假设费用
+    // 费用
     final fee = _cardFee + _shippingFee; // - _couponDiscount
-    // 硬编码测试邮箱
-    final maskEmail = "2855675294@qq.com";
+    // 从当前登录账号获取邮箱
+    final maskEmail = HiveStorageService.getUser()?.email ?? '';
     final publicToken = widget.cardDetails?.publicToken ?? "test_token"; // 防止为空
 
     showModalBottomSheet(
@@ -783,6 +837,10 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (BuildContext ctx) {
+        // 声明在 StatefulBuilder.builder 外，跨 rebuild 保持状态
+        // setModalState 会触发 builder 重新执行，从而读到更新后的值
+        bool isVerifying = false;
+        String? errorMessage;
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setModalState) {
           return Container(
@@ -910,12 +968,25 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
                                       }
                                       setModalState(() {});
                                     });
+                                    setModalState(() {
+                                      errorMessage = null;
+                                    });
                                   }
                                 } catch (e) {
                                   if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('发送失败: $e')),
-                                    );
+                                    String msg = e
+                                        .toString()
+                                        .replaceFirst('Exception: ', '');
+
+                                    // 如果包含 HTTP 状态码前缀，也去掉它
+                                    if (msg.contains('HTTP ') &&
+                                        msg.contains(': ')) {
+                                      msg = msg.split(': ').last;
+                                    }
+
+                                    setModalState(() {
+                                      errorMessage = '发送失败: $msg';
+                                    });
                                   }
                                 }
                               },
@@ -948,6 +1019,34 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
                     color: Color(0xFF9CA3AF),
                   ),
                 ),
+
+                if (errorMessage != null) ...[
+                  const SizedBox(height: 16),
+                  Container(
+                    width: double.infinity,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.red.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.error_outline,
+                            color: Colors.red, size: 16),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            errorMessage!,
+                            style: const TextStyle(
+                                color: Colors.red, fontSize: 13),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+
                 const SizedBox(height: 32),
 
                 // 确认按钮
@@ -955,89 +1054,69 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
                   width: double.infinity,
                   height: 52,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0F172A), // 深色按钮
+                    color: const Color(0xFF0F172A),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: ElevatedButton(
-                    onPressed: () async {
-                      if (_emailCodeController.text.trim().isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('请输入邮箱验证码')),
-                        );
-                        return;
-                      }
+                    onPressed: isVerifying
+                        ? null
+                        : () async {
+                            if (_emailCodeController.text.trim().isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('请输入邮箱验证码')),
+                              );
+                              return;
+                            }
 
-                      // 弹出加载中的提示框
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext loadingCtx) {
-                          return Center(
-                            child: Container(
-                              width: 120,
-                              height: 120,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: const Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CircularProgressIndicator(
-                                      color: AppColors.primary),
-                                  SizedBox(height: 16),
-                                  Text(
-                                    "处理中...",
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: AppColors.textPrimary,
-                                      decoration: TextDecoration.none,
-                                      fontWeight: FontWeight.normal,
-                                    ),
+                            // 重新点击时先清空错误
+                            setModalState(() {
+                              isVerifying = true;
+                              errorMessage = null;
+                            });
+
+                            try {
+                              // 等待验证接口返回
+                              final token = await _cardService
+                                  .verifyPhysicalUpgradeEmailCode(
+                                publicToken,
+                                _emailCodeController.text.trim(),
+                              );
+
+                              if (context.mounted) {
+                                // 验证成功：保存 token，标记已验证，关闭弹窗
+                                setState(() {
+                                  _verifyToken = token;
+                                  _isEmailVerified = true;
+                                });
+                                Navigator.pop(ctx); // 关闭验证弹窗
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('验证成功，请点击「确认提交」完成申请'),
+                                    backgroundColor: Color(0xFF10B981),
                                   ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      );
+                                );
+                              }
+                            } catch (e) {
+                              if (context.mounted) {
+                                // e.toString() 格式为 "Exception: xxx"，或者 "Exception: HTTP 423: xxx"
+                                // 我们只想要后面的提示文字
+                                String msg = e
+                                    .toString()
+                                    .replaceFirst('Exception: ', '');
 
-                      try {
-                        // 1. 验证邮箱验证码
-                        final verifyToken =
-                            await _cardService.verifyPhysicalUpgradeEmailCode(
-                          publicToken,
-                          _emailCodeController.text.trim(),
-                        );
+                                // 如果包含 HTTP 状态码前缀，也去掉它
+                                if (msg.contains('HTTP ') &&
+                                    msg.contains(': ')) {
+                                  msg = msg.split(': ').last;
+                                }
 
-                        if (context.mounted) {
-                          // 关掉加载框
-                          Navigator.pop(context);
-                          // 先收起底部弹窗
-                          Navigator.pop(ctx);
-
-                          // TODO: 接着调用最终的提交升级申请接口
-                          // 带着这个 verifyToken 去请求
-
-                          // 假装提交成功跳到成功页
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const ApplyPhysicalCardSuccessScreen(),
-                            ),
-                          );
-                        }
-                      } catch (e) {
-                        if (context.mounted) {
-                          // 关掉加载框
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('验证失败: $e')),
-                          );
-                        }
-                      }
-                    },
+                                setModalState(() {
+                                  isVerifying = false;
+                                  errorMessage = msg;
+                                });
+                              }
+                            }
+                          },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.transparent,
                       shadowColor: Colors.transparent,
@@ -1045,14 +1124,23 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text(
-                      "确认",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    child: isVerifying
+                        ? const SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2.5,
+                            ),
+                          )
+                        : const Text(
+                            "确认",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                   ),
                 ),
               ],

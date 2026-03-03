@@ -4,6 +4,7 @@ import 'package:comecomepay/models/card_apply_progress_model.dart';
 import 'package:comecomepay/models/card_list_model.dart';
 import 'package:comecomepay/models/card_account_details_model.dart';
 import 'package:comecomepay/models/physical_upgrade_fee_info_model.dart';
+import 'package:dio/dio.dart';
 
 class CardService extends BaseService {
   CardService() {
@@ -60,9 +61,14 @@ class CardService extends BaseService {
       );
 
       if (response['code'] != 200) {
-        throw Exception(
-            response['errstr'] ?? 'Failed to send verification code');
+        throw Exception(response['message'] ?? response['errstr'] ?? '发送验证码失败');
       }
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      final msg = (data is Map)
+          ? (data['message'] ?? data['errstr'] ?? '发送验证码失败')
+          : '发送验证码失败';
+      throw Exception(msg);
     } catch (e) {
       print('Error sending physical upgrade email code: $e');
       rethrow;
@@ -86,8 +92,16 @@ class CardService extends BaseService {
         final data = response['data'] as Map<String, dynamic>;
         return data['verify_token'] as String;
       } else {
-        throw Exception(response['errstr'] ?? 'Failed to verify email code');
+        throw Exception(response['message'] ?? response['errstr'] ?? '验证码校验失败');
       }
+    } on DioException catch (e) {
+      // 后端通过非 2xx 状态码返回错误时，Dio 会抛出 DioException
+      // 从 response body 里取友好的 message
+      final data = e.response?.data;
+      final msg = (data is Map)
+          ? (data['message'] ?? data['errstr'] ?? '验证码校验失败')
+          : '验证码校验失败';
+      throw Exception(msg);
     } catch (e) {
       print('Error verifying physical upgrade email code: $e');
       rethrow;
