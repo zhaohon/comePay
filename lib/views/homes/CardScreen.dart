@@ -59,7 +59,11 @@ class _CardScreenState extends State<CardScreen> {
   bool _hasMoreTransactions = true;
 
   // UI状态
-  bool get _isBusy => _isLoadingCards || _isLoadingCardDetails || _isRefreshing;
+  bool get _isBusy => _isLoadingCards || _isLoadingCardDetails;
+  bool _isRefreshing = false;
+  DateTime? _lastTransactionFetchTime; // Record last transaction fetch time
+  double?
+      _lastBalance; // Record last known balance for smart transaction refresh
   bool _isInitialLoading = true;
   bool _isCardNumberVisible = false;
   bool _isCardLocked = false;
@@ -69,7 +73,6 @@ class _CardScreenState extends State<CardScreen> {
 
   // Auto-refresh on visibility - debounce mechanism
   DateTime? _lastRefreshTime;
-  bool _isRefreshing = false;
   bool _hasInitialLoaded = false; // Track if initial load is complete
 
   // Scroll controller for pagination
@@ -81,6 +84,15 @@ class _CardScreenState extends State<CardScreen> {
     _viewModel = ProfileScreenViewModel();
     _cardTradeViewModel = CardTradeViewModel();
 
+    // 监听 CardViewModel 变更
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        final cardViewModel =
+            Provider.of<CardViewModel>(context, listen: false);
+        cardViewModel.addListener(_onCardViewModelChanged);
+      }
+    });
+
     // 优先使用缓存的卡片列表
     final cachedList = CardViewModel.cachedCardList;
     if (cachedList != null) {
@@ -88,12 +100,8 @@ class _CardScreenState extends State<CardScreen> {
         _cardList = cachedList;
         _isInitialLoading = false;
       });
-      // 如果有卡片，加载第一张卡片的详情和交易记录
-      // 如果有卡片，仅重置索引，具体数据等待 VisibilityDetector 触发刷新
       if (cachedList.hasCards) {
         _currentCardIndex = 0;
-        // _loadCurrentCardDetails(); // Removed to avoid double fetch
-        // _loadTransactions(); // Removed to avoid double fetch
       }
     } else {
       // 如果没有缓存，加载卡片列表
@@ -106,6 +114,12 @@ class _CardScreenState extends State<CardScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _hasInitialLoaded = true;
     });
+  }
+
+  void _onCardViewModelChanged() {
+    if (!mounted) return;
+    // 当 ViewModel 刷新时，静默同步本地数据
+    _loadCardList(isSilent: true);
   }
 
   @override
@@ -121,16 +135,9 @@ class _CardScreenState extends State<CardScreen> {
   void _checkAndRefreshCardList() {
     final cachedList = CardViewModel.cachedCardList;
     if (cachedList != null && _cardList != null) {
-      // 如果缓存中的卡片数量与当前不同，刷新列表
+      // 如果缓存中的卡片内容与当前不同，静默刷新
       if (cachedList.total != _cardList!.total) {
-        setState(() {
-          _cardList = cachedList;
-        });
-        if (cachedList.hasCards) {
-          _currentCardIndex = 0;
-          _loadCurrentCardDetails();
-          _loadTransactions();
-        }
+        _loadCardList(isSilent: true);
       }
     }
   }
@@ -156,7 +163,8 @@ class _CardScreenState extends State<CardScreen> {
     });
 
     try {
-      await _loadCardList(isRefresh: true);
+      // Auto-refresh is now silent to avoid interrupting user
+      await _loadCardList(isSilent: true);
     } finally {
       if (mounted) {
         setState(() {
@@ -168,6 +176,12 @@ class _CardScreenState extends State<CardScreen> {
 
   @override
   void dispose() {
+    try {
+      final cardViewModel = Provider.of<CardViewModel>(context, listen: false);
+      cardViewModel.removeListener(_onCardViewModelChanged);
+    } catch (e) {
+      // Ignore if provider not found
+    }
     _scrollController.dispose();
     _pageController.dispose();
     super.dispose();
@@ -205,8 +219,9 @@ class _CardScreenState extends State<CardScreen> {
   }
 
   /// 加载卡片列表
-  Future<void> _loadCardList({bool isRefresh = false}) async {
-    if (!isRefresh && _cardList == null) {
+  Future<void> _loadCardList(
+      {bool isRefresh = false, bool isSilent = false}) async {
+    if (!isRefresh && !isSilent && _cardList == null) {
       setState(() {
         _isLoadingCards = true;
         _cardError = null;
@@ -216,32 +231,72 @@ class _CardScreenState extends State<CardScreen> {
 
     try {
       // 1. First, load card list
-      final cardList = await _cardService.getCardList();
+      final newList = await _cardService.getCardList();
 
       // 2. Update global cache
-      CardViewModel.setCachedCardList(cardList);
+      CardViewModel.setCachedCardList(newList);
 
-      // 3. Update state
+      // 3. Update state with incremental logic
       setState(() {
-        // Try to preserve current selected card
-        if (isRefresh &&
-            _cardList != null &&
-            _cardList!.hasCards &&
-            cardList.hasCards) {
-          final currentPublicToken =
-              _cardList!.cards[_currentCardIndex].publicToken;
-          final newIndex = cardList.cards
-              .indexWhere((c) => c.publicToken == currentPublicToken);
-          if (newIndex != -1) {
-            _currentCardIndex = newIndex;
-          } else {
+        final oldList = _cardList;
+
+        if (oldList != null &&
+            oldList.hasCards &&
+            newList.hasCards &&
+            isSilent) {
+          // Silent incremental sync
+          final List<CardListItemModel> mergedCards = List.from(oldList.cards);
+          bool hasChanges = false;
+
+          for (final newCard in newList.cards) {
+            final existingIndex = mergedCards
+                .indexWhere((c) => c.publicToken == newCard.publicToken);
+            if (existingIndex == -1) {
+              // Add new card to the end
+              mergedCards.add(newCard);
+              hasChanges = true;
+            } else {
+              // Update existing card status if changed
+              if (mergedCards[existingIndex].status != newCard.status) {
+                mergedCards[existingIndex] = newCard;
+                hasChanges = true;
+              }
+            }
+          }
+
+          // If count decreased, something was deleted, trigger full refresh
+          if (newList.cards.length < oldList.cards.length) {
+            _cardList = newList;
+            // Reset index if current card is gone
+            if (_currentCardIndex >= newList.cards.length) {
+              _currentCardIndex = 0;
+            }
+          } else if (hasChanges) {
+            _cardList =
+                CardListResponseModel(total: newList.total, cards: mergedCards);
+          }
+        } else {
+          // Full refresh or initial load
+          // Try to preserve current selected card
+          if (isRefresh &&
+              _cardList != null &&
+              _cardList!.hasCards &&
+              newList.hasCards) {
+            final currentPublicToken =
+                _cardList!.cards[_currentCardIndex].publicToken;
+            final newIndex = newList.cards
+                .indexWhere((c) => c.publicToken == currentPublicToken);
+            if (newIndex != -1) {
+              _currentCardIndex = newIndex;
+            } else {
+              _currentCardIndex = 0;
+            }
+          } else if (!isRefresh) {
             _currentCardIndex = 0;
           }
-        } else if (!isRefresh) {
-          _currentCardIndex = 0;
+          _cardList = newList;
         }
 
-        _cardList = cardList;
         _isLoadingCards = false;
         _isInitialLoading = false;
 
@@ -252,31 +307,36 @@ class _CardScreenState extends State<CardScreen> {
       });
 
       // 4. After list is loaded and state updated, load details and transactions
-      if (cardList.hasCards) {
-        await _loadCurrentCardDetails();
-        await _loadTransactions();
+      if (_cardList!.hasCards) {
+        await _loadCurrentCardDetails(isSilent: isSilent);
+        // Smart transaction refresh logic inside _loadTransactions
+        await _loadTransactions(isSilent: isSilent);
       }
     } catch (e) {
-      setState(() {
-        _cardError = e.toString();
-        _isLoadingCards = false;
-        _isInitialLoading = false;
-        _cardList = CardListResponseModel(total: 0, cards: []);
-      });
+      if (!isSilent) {
+        setState(() {
+          _cardError = e.toString();
+          _isLoadingCards = false;
+          _isInitialLoading = false;
+          _cardList = CardListResponseModel(total: 0, cards: []);
+        });
+      }
       print('Error loading card list: $e');
     }
   }
 
   /// 加载当前选中卡片的详情
-  Future<void> _loadCurrentCardDetails() async {
+  Future<void> _loadCurrentCardDetails({bool isSilent = false}) async {
     if (_cardList == null || !_cardList!.hasCards) return;
     if (_currentCardIndex >= _cardList!.cards.length) return;
 
     final currentCard = _cardList!.cards[_currentCardIndex];
 
-    setState(() {
-      _isLoadingCardDetails = true;
-    });
+    if (!isSilent) {
+      setState(() {
+        _isLoadingCardDetails = true;
+      });
+    }
 
     try {
       final details =
@@ -295,11 +355,26 @@ class _CardScreenState extends State<CardScreen> {
   }
 
   /// 加载交易记录
-  Future<void> _loadTransactions({bool isLoadMore = false}) async {
+  Future<void> _loadTransactions(
+      {bool isLoadMore = false, bool isSilent = false}) async {
     if (_cardList == null || !_cardList!.hasCards) return;
     if (_currentCardIndex >= _cardList!.cards.length) return;
 
     final currentCard = _cardList!.cards[_currentCardIndex];
+
+    // Smart Refresh Logic for Transactions
+    if (isSilent && !isLoadMore) {
+      final now = DateTime.now();
+      final bool balanceChanged = _lastBalance != _currentCardDetails?.balance;
+      final bool isTimeout = _lastTransactionFetchTime == null ||
+          now.difference(_lastTransactionFetchTime!) >
+              const Duration(minutes: 5);
+
+      // If neither balance changed nor timeout reached, skip refreshing transactions
+      if (!balanceChanged && !isTimeout) {
+        return;
+      }
+    }
 
     if (!isLoadMore) {
       setState(() {
@@ -312,7 +387,9 @@ class _CardScreenState extends State<CardScreen> {
     if (!_hasMoreTransactions) return;
 
     setState(() {
-      _isLoadingTransactions = true;
+      if (!isSilent) {
+        _isLoadingTransactions = true;
+      }
     });
 
     try {
@@ -333,6 +410,8 @@ class _CardScreenState extends State<CardScreen> {
         } else {
           _transactions =
               transactions.map((t) => t as Map<String, dynamic>).toList();
+          _lastTransactionFetchTime = DateTime.now();
+          _lastBalance = _currentCardDetails?.balance;
         }
         _transactionPage++;
         _hasMoreTransactions = _transactions.length < total;
@@ -356,8 +435,8 @@ class _CardScreenState extends State<CardScreen> {
     });
 
     // 加载新卡片的详情和交易记录
-    _loadCurrentCardDetails();
-    _loadTransactions();
+    _loadCurrentCardDetails(isSilent: false);
+    _loadTransactions(isSilent: false);
   }
 
   /// 修改卡片状态 (锁卡/解锁)
@@ -394,7 +473,7 @@ class _CardScreenState extends State<CardScreen> {
       }
 
       // Refresh card details to reflect new status
-      _loadCurrentCardDetails();
+      _loadCurrentCardDetails(isSilent: true);
     } catch (e) {
       // Close loading
       if (mounted) Navigator.of(context).pop();
@@ -467,18 +546,18 @@ class _CardScreenState extends State<CardScreen> {
           _buildContent(),
           // 悬浮在最右侧居中的邮寄进度按钮
           if (_cardList != null && _cardList!.hasCards)
-            Positioned(
-              right: 0,
-              top: MediaQuery.of(context).size.height * 0.45,
-              child: _buildMailingProgressTab(context),
-            ),
-          if (_isBusy)
-            Container(
-              color: Colors.black.withOpacity(0.3),
-              child: const Center(
-                child: CircularProgressIndicator(),
+            // Positioned(
+            //   right: 0,
+            //   top: MediaQuery.of(context).size.height * 0.45,
+            //   child: _buildMailingProgressTab(context),
+            // ),
+            if (_isBusy)
+              Container(
+                color: Colors.black.withOpacity(0.3),
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
               ),
-            ),
         ],
       ),
     );
@@ -626,7 +705,7 @@ class _CardScreenState extends State<CardScreen> {
                                 ),
                               ),
                             ).then((_) {
-                              _loadCardList(isRefresh: true);
+                              _loadCardList(isSilent: true);
                             });
                           },
                           child: Container(
@@ -1018,8 +1097,7 @@ class _CardScreenState extends State<CardScreen> {
                         Expanded(
                           flex: 1,
                           child: Text(
-                            _currentCardDetails?.memberName ??
-                                'CARDHOLDER NAME',
+                            _currentCardDetails?.memberName ?? 'NAME',
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16,

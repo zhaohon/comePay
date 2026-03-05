@@ -32,6 +32,15 @@ class ProfileScreenViewModel extends BaseViewModel {
   KycStatusResponseModel? get kycStatusResponse => _kycStatusResponse;
   String? get errorMessage => _errorMessage;
 
+  /// 同步/快速加载缓存数据，避免UI闪烁
+  Future<void> loadCachedData() async {
+    final cachedProfile = await HiveStorageService.getProfileData();
+    if (cachedProfile != null) {
+      _profileResponse = cachedProfile;
+      notifyListeners();
+    }
+  }
+
   Future<void> fetchKycStatus() async {
     print('DEBUG: fetchKycStatus called');
     // Note: setBusy(true) is not called here to avoid full screen loading indicator
@@ -50,8 +59,8 @@ class ProfileScreenViewModel extends BaseViewModel {
     }
   }
 
-  Future<bool> getProfile(String accessToken) async {
-    setBusy(true);
+  Future<bool> getProfile(String accessToken, {bool isSilent = false}) async {
+    if (!isSilent) setBusy(true);
     _errorMessage = null;
 
     try {

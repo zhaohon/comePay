@@ -1,5 +1,6 @@
 import 'package:comecomepay/core/base_viewmodel.dart';
-import 'package:comecomepay/models/responses/card_response_model.dart' as card_response;
+import 'package:comecomepay/models/responses/card_response_model.dart'
+    as card_response;
 import 'package:comecomepay/models/responses/transaction_response_model.dart';
 import 'package:comecomepay/services/global_service.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
@@ -98,7 +99,8 @@ class CardViewModel extends BaseViewModel {
         throw Exception('User not found');
       }
 
-      _transactionResponse = await _globalService.getTransactionData(user.id.toString());
+      _transactionResponse =
+          await _globalService.getTransactionData(user.id.toString());
       setBusy(false);
     } catch (e) {
       setBusy(false);
@@ -123,6 +125,7 @@ class CardViewModel extends BaseViewModel {
     try {
       final cardList = await _cardService.getCardList();
       setCachedCardList(cardList);
+      notifyListeners();
     } catch (e) {
       print('Error refreshing card list: $e');
     }

@@ -30,42 +30,57 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? userId;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
+    // 1. 立即从本地缓存读取基本信息，实现“秒开”无闪烁
+    final user = HiveStorageService.getUser();
+    if (user != null) {
+      email = user.email;
+      userId = user.id.toString();
+    }
+
+    // 2. 异步初始化 ViewModel 缓存并触发网络刷新
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadProfile();
+      _initAndRefreshProfile();
     });
   }
 
+  Future<void> _initAndRefreshProfile() async {
+    final viewModel =
+        Provider.of<ProfileScreenViewModel>(context, listen: false);
+
+    // 先尝试加载详细缓存
+    await viewModel.loadCachedData();
+    if (viewModel.profileResponse != null) {
+      setState(() {
+        email = viewModel.profileResponse?.user.email;
+        userId = viewModel.profileResponse?.user.id.toString();
+      });
+    }
+
+    // 然后后台静默刷新最新数据
+    _loadProfile();
+  }
+
   Future<void> _loadProfile() async {
-    print('DEBUG: ProfilScreen _loadProfile called');
+    print('DEBUG: ProfilScreen _loadProfile (Silent Refresh) called');
     final viewModel =
         Provider.of<ProfileScreenViewModel>(context, listen: false);
     final accessToken = HiveStorageService.getAccessToken();
     if (accessToken != null) {
-      final success = await viewModel.getProfile(accessToken);
-      if (success) {
+      // getProfile 内部有 setBusy(true)，我们需要确保它不阻塞主UI显示
+      // 我们通过传递 isSilent: true 来实现
+      await viewModel.getProfile(accessToken, isSilent: true);
+
+      if (mounted && viewModel.profileResponse != null) {
         setState(() {
           email = viewModel.profileResponse?.user.email;
           userId = viewModel.profileResponse?.user.id.toString();
         });
-      } else {
-        // Fallback to auth data if profile fetch fails
-        final user = HiveStorageService.getUser();
-        setState(() {
-          email = user?.email;
-          userId = user?.id.toString();
-        });
       }
-    } else {
-      final user = HiveStorageService.getUser();
-      setState(() {
-        email = user?.email;
-        userId = user?.id.toString();
-      });
     }
 
-    // Fetch KYC status every time profile loads
+    // 无论如何，后台同步一下 KYC 状态
     viewModel.fetchKycStatus();
   }
 
