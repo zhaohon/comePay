@@ -5,6 +5,7 @@ import 'package:comecomepay/views/homes/WalletAccountScreen.dart'
 import 'package:comecomepay/views/transactions/unified_transaction_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../l10n/app_localizations.dart';
 import '../../viewmodels/locale_provider.dart';
 import '../../viewmodels/notification_viewmodel.dart';
@@ -57,20 +58,19 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     if (!mounted) return;
 
     try {
-      // 并发请求未读数（通知 + 公告）
       final notificationViewModel =
           Provider.of<NotificationViewModel>(context, listen: false);
+      _walletViewModel = Provider.of<WalletViewModel>(context, listen: false);
+      final transactionViewModel =
+          Provider.of<UnifiedTransactionViewModel>(context, listen: false);
+
+      // 并发请求所有数据，不互相阻塞
       await Future.wait([
         notificationViewModel.fetchUnreadNotificationCount(),
         notificationViewModel.fetchUnreadAnnouncementCount(),
+        _walletViewModel.fetchWalletData(),
+        transactionViewModel.fetchLatestTransactions(limit: 10),
       ]);
-
-      _walletViewModel = Provider.of<WalletViewModel>(context, listen: false);
-      await _walletViewModel.fetchWalletData();
-
-      final transactionViewModel =
-          Provider.of<UnifiedTransactionViewModel>(context, listen: false);
-      await transactionViewModel.fetchLatestTransactions(limit: 10);
     } catch (e) {
       print('❌ HomeScreen 数据加载失败: $e');
     }
@@ -236,33 +236,47 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                             // 主要余额显示（可点击切换）
                                             GestureDetector(
                                               onTap: () {
+                                                if (walletViewModel.busy && walletViewModel.walletResponse == null) return;
                                                 setState(() {
                                                   _showingUsdt = !_showingUsdt;
                                                 });
                                               },
                                               child: Row(
                                                 children: [
-                                                  Text(
-                                                    _isVisible
-                                                        ? (_showingUsdt
-                                                            ? walletViewModel
-                                                                .totalAssetUsdt
-                                                                .toStringAsFixed(
-                                                                    2)
-                                                            : walletViewModel
-                                                                .totalAssetHkd
-                                                                .toStringAsFixed(
-                                                                    2))
-                                                        : "****",
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: isSmallScreen
-                                                          ? 20
-                                                          : 24,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
+                                                  (walletViewModel.busy && walletViewModel.walletResponse == null)
+                                                      ? Shimmer.fromColors(
+                                                          baseColor: Colors.white.withOpacity(0.4),
+                                                          highlightColor: Colors.white.withOpacity(0.8),
+                                                          child: Container(
+                                                            width: 120,
+                                                            height: isSmallScreen ? 24 : 28,
+                                                            decoration: BoxDecoration(
+                                                              color: Colors.white,
+                                                              borderRadius: BorderRadius.circular(4),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : Text(
+                                                          _isVisible
+                                                              ? (_showingUsdt
+                                                                  ? walletViewModel
+                                                                      .totalAssetUsdt
+                                                                      .toStringAsFixed(
+                                                                          2)
+                                                                  : walletViewModel
+                                                                      .totalAssetHkd
+                                                                      .toStringAsFixed(
+                                                                          2))
+                                                              : "****",
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: isSmallScreen
+                                                                ? 20
+                                                                : 24,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
                                                   SizedBox(
                                                       width:
                                                           screenWidth * 0.02),
@@ -438,25 +452,56 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                               ),
                             ),
                             // 最新交易记录列表 - 优化版
-                            transactionViewModel.isLoading
+                            (transactionViewModel.busy && transactionViewModel.latestTransactions.isEmpty)
                                 ? SliverToBoxAdapter(
                                     child: Container(
                                       margin: EdgeInsets.symmetric(
                                         horizontal: screenWidth * 0.04,
                                         vertical: screenWidth * 0.02,
                                       ),
-                                      padding:
-                                          EdgeInsets.all(screenWidth * 0.08),
+                                      padding: const EdgeInsets.all(16),
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.circular(16),
                                       ),
-                                      child: const Center(
-                                        child: CircularProgressIndicator(
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                            Color(0xFFA855F7),
-                                          ),
+                                      child: Shimmer.fromColors(
+                                        baseColor: Colors.grey[300]!,
+                                        highlightColor: Colors.grey[100]!,
+                                        child: Column(
+                                          children: List.generate(3, (index) => Padding(
+                                            padding: const EdgeInsets.only(bottom: 20),
+                                            child: Row(
+                                              children: [
+                                                Container(
+                                                  width: 48,
+                                                  height: 48,
+                                                  decoration: const BoxDecoration(
+                                                    color: Colors.white,
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 16),
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Container(
+                                                        width: double.infinity,
+                                                        height: 14,
+                                                        color: Colors.white,
+                                                      ),
+                                                      const SizedBox(height: 8),
+                                                      Container(
+                                                        width: 80,
+                                                        height: 12,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )),
                                         ),
                                       ),
                                     ),

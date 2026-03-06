@@ -48,6 +48,10 @@ class _CardScreenState extends State<CardScreen> {
   int _currentCardIndex = 0;
   final PageController _pageController = PageController();
 
+  // 数据缓存，用于多卡片切换时实现秒切
+  final Map<String, CardAccountDetailsModel> _detailsCache = {};
+  final Map<String, List<Map<String, dynamic>>> _transactionsCache = {};
+
   // 当前卡片详情
   CardAccountDetailsModel? _currentCardDetails;
   bool _isLoadingCardDetails = false;
@@ -308,7 +312,7 @@ class _CardScreenState extends State<CardScreen> {
 
       // 4. After list is loaded and state updated, load details and transactions
       if (_cardList!.hasCards) {
-        await _loadCurrentCardDetails(isSilent: isSilent);
+        await _loadCurrentCardDetails(isSilent: isSilent || isRefresh);
         // Smart transaction refresh logic inside _loadTransactions
         await _loadTransactions(isSilent: isSilent);
       }
@@ -330,9 +334,10 @@ class _CardScreenState extends State<CardScreen> {
     if (_cardList == null || !_cardList!.hasCards) return;
     if (_currentCardIndex >= _cardList!.cards.length) return;
 
-    final currentCard = _cardList!.cards[_currentCardIndex];
+    final targetToken = _cardList!.cards[_currentCardIndex].publicToken;
 
-    if (!isSilent) {
+    // 如果没有要求静默，且没有缓存，才显示加载圈
+    if (!isSilent && !_detailsCache.containsKey(targetToken)) {
       setState(() {
         _isLoadingCardDetails = true;
       });
@@ -340,16 +345,24 @@ class _CardScreenState extends State<CardScreen> {
 
     try {
       final details =
-          await _cardService.getCardAccountDetails(currentCard.publicToken);
+          await _cardService.getCardAccountDetails(targetToken);
 
-      setState(() {
-        _currentCardDetails = details;
-        _isLoadingCardDetails = false;
-      });
+      // 更新缓存
+      _detailsCache[targetToken] = details;
+
+      // 如果当前仍在展示这张卡，则更新 UI
+      if (mounted && _cardList != null && _cardList!.hasCards && _cardList!.cards[_currentCardIndex].publicToken == targetToken) {
+        setState(() {
+          _currentCardDetails = details;
+          _isLoadingCardDetails = false;
+        });
+      }
     } catch (e) {
-      setState(() {
-        _isLoadingCardDetails = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoadingCardDetails = false;
+        });
+      }
       print('Error loading card details: $e');
     }
   }
@@ -360,7 +373,7 @@ class _CardScreenState extends State<CardScreen> {
     if (_cardList == null || !_cardList!.hasCards) return;
     if (_currentCardIndex >= _cardList!.cards.length) return;
 
-    final currentCard = _cardList!.cards[_currentCardIndex];
+    final targetToken = _cardList!.cards[_currentCardIndex].publicToken;
 
     // Smart Refresh Logic for Transactions
     if (isSilent && !isLoadMore) {
@@ -376,51 +389,63 @@ class _CardScreenState extends State<CardScreen> {
       }
     }
 
-    if (!isLoadMore) {
+    if (!isLoadMore && !isSilent) {
       setState(() {
-        _transactions = [];
+        _transactions = _transactionsCache[targetToken] ?? [];
         _transactionPage = 1;
         _hasMoreTransactions = true;
       });
+    } else if (!isLoadMore) {
+      _transactionPage = 1;
+      _hasMoreTransactions = true;
     }
 
     if (!_hasMoreTransactions) return;
 
-    setState(() {
-      if (!isSilent) {
+    // 如果没有要求静默，且当前缓存为空，才显示交易记录加载圈
+    if (!isSilent && !_transactionsCache.containsKey(targetToken)) {
+      setState(() {
         _isLoadingTransactions = true;
-      }
-    });
+      });
+    }
 
     try {
       final result = await _cardService.getTransactionHistory(
-        publicToken: currentCard.publicToken,
+        publicToken: targetToken,
         page: _transactionPage,
         limit: 20,
       );
 
-      final transactions = result['transactions'] as List<dynamic>? ?? [];
+      final newTransactions = result['transactions'] as List<dynamic>? ?? [];
       final total = result['total'] as int? ?? 0;
+      
+      final mappedTransactions = newTransactions.map((t) => t as Map<String, dynamic>).toList();
 
-      setState(() {
-        if (isLoadMore) {
-          _transactions.addAll(
-            transactions.map((t) => t as Map<String, dynamic>).toList(),
-          );
-        } else {
-          _transactions =
-              transactions.map((t) => t as Map<String, dynamic>).toList();
-          _lastTransactionFetchTime = DateTime.now();
-          _lastBalance = _currentCardDetails?.balance;
-        }
-        _transactionPage++;
-        _hasMoreTransactions = _transactions.length < total;
-        _isLoadingTransactions = false;
-      });
+      if (!isLoadMore) {
+        _transactionsCache[targetToken] = mappedTransactions;
+      }
+
+      // Check if we are still on the same card before updating UI
+      if (mounted && _cardList != null && _cardList!.hasCards && _cardList!.cards[_currentCardIndex].publicToken == targetToken) {
+        setState(() {
+          if (isLoadMore) {
+            _transactions.addAll(mappedTransactions);
+          } else {
+            _transactions = mappedTransactions;
+            _lastTransactionFetchTime = DateTime.now();
+            _lastBalance = _currentCardDetails?.balance;
+          }
+          _transactionPage++;
+          _hasMoreTransactions = _transactions.length < total;
+          _isLoadingTransactions = false;
+        });
+      }
     } catch (e) {
-      setState(() {
-        _isLoadingTransactions = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoadingTransactions = false;
+        });
+      }
       print('Error loading transactions: $e');
     }
   }
@@ -428,15 +453,32 @@ class _CardScreenState extends State<CardScreen> {
   /// 切换卡片
   void _onCardChanged(int index) {
     if (index == _currentCardIndex) return;
+    if (_cardList == null || !_cardList!.hasCards) return;
+
+    final newToken = _cardList!.cards[index].publicToken;
 
     setState(() {
       _currentCardIndex = index;
       _isCardNumberVisible = false; // 切换卡片时隐藏卡号
+      
+      // 尝试从缓存中读取数据实现秒切
+      _currentCardDetails = _detailsCache[newToken];
+      _transactions = _transactionsCache[newToken] ?? [];
+      
+      // 如果没有缓存，重置分页并显示加载状态
+      if (!_transactionsCache.containsKey(newToken)) {
+          _transactionPage = 1;
+          _hasMoreTransactions = true;
+      }
     });
 
-    // 加载新卡片的详情和交易记录
-    _loadCurrentCardDetails(isSilent: false);
-    _loadTransactions(isSilent: false);
+    // 检查缓存状态决定是否显示 Loading 圈
+    bool hasDetailsCache = _detailsCache.containsKey(newToken);
+    bool hasTransCache = _transactionsCache.containsKey(newToken);
+
+    // 加载新卡片的详情和交易记录，如果有缓存则在后台静默刷新
+    _loadCurrentCardDetails(isSilent: hasDetailsCache);
+    _loadTransactions(isSilent: hasTransCache);
   }
 
   /// 修改卡片状态 (锁卡/解锁)
