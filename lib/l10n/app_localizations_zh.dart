@@ -1561,4 +1561,48 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get pleaseSelectCountry => '请选择国家/地区';
+
+  @override
+  String get paymentCurrencyLabel => '支付币种';
+
+  @override
+  String get confirmSubmit => '确认提交';
+
+  @override
+  String get transactionInfo => '交易信息';
+
+  @override
+  String securityVerificationMessage(Object amount) {
+    return '我们将从您的账户扣除卡片费用$amount，为了您的账户安全，我们需要对您进行安全验证。';
+  }
+
+  @override
+  String get pleaseEnterEmailVerificationCode => '请输入邮箱验证码';
+
+  @override
+  String resendAfterSeconds(Object seconds) {
+    return '$seconds 秒后重发';
+  }
+
+  @override
+  String emailCodeSentToHint(Object email) {
+    return '6位数字验证码已发送至您的$email，请在5分钟内输入';
+  }
+
+  @override
+  String get sendCodeFailed => '发送失败';
+
+  @override
+  String get verificationSuccessClickConfirm => '验证成功，请点击「确认提交」完成申请';
+
+  @override
+  String get submitFailed => '提交失败';
+
+  @override
+  String get verificationCodeSent => '验证码已发送';
+
+  @override
+  String balanceColonFormat(Object balance) {
+    return '余额: $balance';
+  }
 }

@@ -1606,4 +1606,50 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get pleaseSelectCountry => 'Please select Country/Region';
+
+  @override
+  String get paymentCurrencyLabel => 'Payment Currency';
+
+  @override
+  String get confirmSubmit => 'Confirm Submit';
+
+  @override
+  String get transactionInfo => 'Transaction Info';
+
+  @override
+  String securityVerificationMessage(Object amount) {
+    return 'We will deduct the card fee $amount from your account. For your security, we need to verify your identity.';
+  }
+
+  @override
+  String get pleaseEnterEmailVerificationCode =>
+      'Please enter email verification code';
+
+  @override
+  String resendAfterSeconds(Object seconds) {
+    return 'Resend in ${seconds}s';
+  }
+
+  @override
+  String emailCodeSentToHint(Object email) {
+    return 'A 6-digit code has been sent to $email. Please enter within 5 minutes.';
+  }
+
+  @override
+  String get sendCodeFailed => 'Send failed';
+
+  @override
+  String get verificationSuccessClickConfirm =>
+      'Verified. Please tap \"Confirm Submit\" to complete.';
+
+  @override
+  String get submitFailed => 'Submit failed';
+
+  @override
+  String get verificationCodeSent => 'Verification code sent';
+
+  @override
+  String balanceColonFormat(Object balance) {
+    return 'Balance: $balance';
+  }
 }

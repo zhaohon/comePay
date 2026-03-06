@@ -541,5 +541,17 @@
   "sameAsVirtualCard": "نفس البطاقة الافتراضية",
   "applicationSubmittedSuccessfully": "تم تقديم الطلب بنجاح!",
   "checkAndFixInputErrors": "يرجى التحقق وتصحيح أخطاء الإدخال",
-  "pleaseSelectCountry": "يرجى اختيار الدولة/المنطقة"
+  "pleaseSelectCountry": "يرجى اختيار الدولة/المنطقة",
+  "paymentCurrencyLabel": "عملة الدفع",
+  "confirmSubmit": "تأكيد الإرسال",
+  "transactionInfo": "معلومات المعاملة",
+  "securityVerificationMessage": "سنخصم رسوم البطاقة {amount} من حسابك. لأمانك، نحتاج للتحقق من هويتك.",
+  "pleaseEnterEmailVerificationCode": "يرجى إدخال رمز التحقق من البريد",
+  "resendAfterSeconds": "إعادة الإرسال خلال {seconds} ثانية",
+  "emailCodeSentToHint": "تم إرسال رمز مكون من 6 أرقام إلى {email}. يرجى الإدخال خلال 5 دقائق.",
+  "sendCodeFailed": "فشل الإرسال",
+  "verificationSuccessClickConfirm": "تم التحقق. يرجى النقر على \"تأكيد الإرسال\" للإكمال.",
+  "submitFailed": "فشل الإرسال",
+  "verificationCodeSent": "تم إرسال رمز التحقق",
+  "balanceColonFormat": "الرصيد: {balance}"
 }

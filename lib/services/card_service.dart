@@ -108,6 +108,63 @@ class CardService extends BaseService {
     }
   }
 
+  /// 提交虚拟卡升级实体卡申请（PUT /card/convertToPhysical）
+  /// 需先完成邮箱验证获取 verify_token，请求头携带 Idempotency-Key 防重复提交
+  Future<Map<String, dynamic>> submitPhysicalUpgrade({
+    required String publicToken,
+    required String verifyToken,
+    required String recipient,
+    required String nameOnCard,
+    required String areaCode,
+    required String phone,
+    required String postalCountry,
+    required String postalState,
+    required String postalCity,
+    required String postalAddress,
+    required String postalCode,
+    required String paymentCurrency,
+  }) async {
+    try {
+      final idempotencyKey =
+          'phy_${DateTime.now().millisecondsSinceEpoch}_${publicToken.length > 20 ? publicToken.substring(0, 20) : publicToken}';
+      final body = {
+        'public_token': publicToken,
+        'verify_token': verifyToken,
+        'recipient': recipient,
+        'name_on_card': nameOnCard,
+        'area_code': areaCode,
+        'phone': phone,
+        'postal_country': postalCountry,
+        'postal_state': postalState,
+        'postal_city': postalCity,
+        'postal_address': postalAddress,
+        'postal_code': postalCode,
+        'payment_currency': paymentCurrency,
+      };
+      final response = await dio.put(
+        '/card/convertToPhysical',
+        data: body,
+        options: Options(
+          headers: {'Idempotency-Key': idempotencyKey},
+        ),
+      );
+      final data = response.data is Map ? response.data as Map<String, dynamic> : <String, dynamic>{};
+      if (data['code'] == 200 && data['data'] != null) {
+        return data['data'] as Map<String, dynamic>;
+      }
+      throw Exception(data['errstr'] ?? data['message'] ?? '提交失败');
+    } on DioException catch (e) {
+      final resData = e.response?.data;
+      final msg = (resData is Map)
+          ? (resData['errstr'] ?? resData['message'] ?? '提交失败')
+          : '提交失败';
+      throw Exception(msg);
+    } catch (e) {
+      print('Error submitting physical upgrade: $e');
+      rethrow;
+    }
+  }
+
   /// 查询开卡进度
   /// [taskId] 任务ID（从申请卡片接口返回）
   Future<CardApplyProgressModel> getApplyProgress(int taskId) async {

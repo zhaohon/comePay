@@ -546,5 +546,17 @@
   "sameAsVirtualCard": "与虚拟卡一致",
   "applicationSubmittedSuccessfully": "申请提交成功！",
   "checkAndFixInputErrors": "请检查并修正输入错误",
-  "pleaseSelectCountry": "请选择国家/地区"
+  "pleaseSelectCountry": "请选择国家/地区",
+  "paymentCurrencyLabel": "支付币种",
+  "confirmSubmit": "确认提交",
+  "transactionInfo": "交易信息",
+  "securityVerificationMessage": "我们将从您的账户扣除卡片费用{amount}，为了您的账户安全，我们需要对您进行安全验证。",
+  "pleaseEnterEmailVerificationCode": "请输入邮箱验证码",
+  "resendAfterSeconds": "{seconds} 秒后重发",
+  "emailCodeSentToHint": "6位数字验证码已发送至您的{email}，请在5分钟内输入",
+  "sendCodeFailed": "发送失败",
+  "verificationSuccessClickConfirm": "验证成功，请点击「确认提交」完成申请",
+  "submitFailed": "提交失败",
+  "verificationCodeSent": "验证码已发送",
+  "balanceColonFormat": "余额: {balance}"
 }

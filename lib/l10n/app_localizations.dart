@@ -3143,6 +3143,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please select Country/Region'**
   String get pleaseSelectCountry;
+
+  /// No description provided for @paymentCurrencyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Currency'**
+  String get paymentCurrencyLabel;
+
+  /// No description provided for @confirmSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Submit'**
+  String get confirmSubmit;
+
+  /// No description provided for @transactionInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Info'**
+  String get transactionInfo;
+
+  /// No description provided for @securityVerificationMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'We will deduct the card fee {amount} from your account. For your security, we need to verify your identity.'**
+  String securityVerificationMessage(Object amount);
+
+  /// No description provided for @pleaseEnterEmailVerificationCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter email verification code'**
+  String get pleaseEnterEmailVerificationCode;
+
+  /// No description provided for @resendAfterSeconds.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend in {seconds}s'**
+  String resendAfterSeconds(Object seconds);
+
+  /// No description provided for @emailCodeSentToHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A 6-digit code has been sent to {email}. Please enter within 5 minutes.'**
+  String emailCodeSentToHint(Object email);
+
+  /// No description provided for @sendCodeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Send failed'**
+  String get sendCodeFailed;
+
+  /// No description provided for @verificationSuccessClickConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified. Please tap \"Confirm Submit\" to complete.'**
+  String get verificationSuccessClickConfirm;
+
+  /// No description provided for @submitFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit failed'**
+  String get submitFailed;
+
+  /// No description provided for @verificationCodeSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification code sent'**
+  String get verificationCodeSent;
+
+  /// No description provided for @balanceColonFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance: {balance}'**
+  String balanceColonFormat(Object balance);
 }
 
 class _AppLocalizationsDelegate

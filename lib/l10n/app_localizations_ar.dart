@@ -1606,4 +1606,50 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get pleaseSelectCountry => 'يرجى اختيار الدولة/المنطقة';
+
+  @override
+  String get paymentCurrencyLabel => 'عملة الدفع';
+
+  @override
+  String get confirmSubmit => 'تأكيد الإرسال';
+
+  @override
+  String get transactionInfo => 'معلومات المعاملة';
+
+  @override
+  String securityVerificationMessage(Object amount) {
+    return 'سنخصم رسوم البطاقة $amount من حسابك. لأمانك، نحتاج للتحقق من هويتك.';
+  }
+
+  @override
+  String get pleaseEnterEmailVerificationCode =>
+      'يرجى إدخال رمز التحقق من البريد';
+
+  @override
+  String resendAfterSeconds(Object seconds) {
+    return 'إعادة الإرسال خلال $seconds ثانية';
+  }
+
+  @override
+  String emailCodeSentToHint(Object email) {
+    return 'تم إرسال رمز مكون من 6 أرقام إلى $email. يرجى الإدخال خلال 5 دقائق.';
+  }
+
+  @override
+  String get sendCodeFailed => 'فشل الإرسال';
+
+  @override
+  String get verificationSuccessClickConfirm =>
+      'تم التحقق. يرجى النقر على \"تأكيد الإرسال\" للإكمال.';
+
+  @override
+  String get submitFailed => 'فشل الإرسال';
+
+  @override
+  String get verificationCodeSent => 'تم إرسال رمز التحقق';
+
+  @override
+  String balanceColonFormat(Object balance) {
+    return 'الرصيد: $balance';
+  }
 }

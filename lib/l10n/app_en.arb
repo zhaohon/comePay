@@ -546,5 +546,17 @@
   "sameAsVirtualCard": "Same as virtual card",
   "applicationSubmittedSuccessfully": "Application submitted successfully!",
   "checkAndFixInputErrors": "Please check and fix input errors",
-  "pleaseSelectCountry": "Please select Country/Region"
+  "pleaseSelectCountry": "Please select Country/Region",
+  "paymentCurrencyLabel": "Payment Currency",
+  "confirmSubmit": "Confirm Submit",
+  "transactionInfo": "Transaction Info",
+  "securityVerificationMessage": "We will deduct the card fee {amount} from your account. For your security, we need to verify your identity.",
+  "pleaseEnterEmailVerificationCode": "Please enter email verification code",
+  "resendAfterSeconds": "Resend in {seconds}s",
+  "emailCodeSentToHint": "A 6-digit code has been sent to {email}. Please enter within 5 minutes.",
+  "sendCodeFailed": "Send failed",
+  "verificationSuccessClickConfirm": "Verified. Please tap \"Confirm Submit\" to complete.",
+  "submitFailed": "Submit failed",
+  "verificationCodeSent": "Verification code sent",
+  "balanceColonFormat": "Balance: {balance}"
 }

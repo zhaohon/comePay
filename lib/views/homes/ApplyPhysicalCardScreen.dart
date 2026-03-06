@@ -350,8 +350,8 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('支付币种',
-                        style: TextStyle(
+                    Text(l10n.paymentCurrencyLabel,
+                        style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                             color: AppColors.textPrimary)),
@@ -406,6 +406,24 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
                             );
                             return;
                           }
+                          if (_selectedCountry == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(l10n.pleaseSelectCountry),
+                                backgroundColor: AppColors.error,
+                              ),
+                            );
+                            return;
+                          }
+                          if (_selectedCurrency == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(l10n.pleaseSelectPaymentCurrency),
+                                backgroundColor: AppColors.error,
+                              ),
+                            );
+                            return;
+                          }
 
                           if (!_isEmailVerified) {
                             // 第一步：未验证 → 弹邮件验证弹窗
@@ -432,7 +450,7 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
                           ),
                         )
                       : Text(
-                          _isEmailVerified ? '确认提交' : l10n.submit,
+                          _isEmailVerified ? l10n.confirmSubmit : l10n.submit,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 18,
@@ -605,8 +623,8 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
               )
             : DropdownButton<PaymentCurrencyModel>(
                 value: _selectedCurrency,
-                hint: const Text('请选择支付币种',
-                    style: TextStyle(color: Color(0xFF9CA3AF), fontSize: 14)),
+                hint: Text(l10n.pleaseSelectPaymentCurrency,
+                    style: const TextStyle(color: Color(0xFF9CA3AF), fontSize: 14)),
                 isExpanded: true,
                 icon: const Icon(Icons.keyboard_arrow_down,
                     size: 20, color: Color(0xFF9CA3AF)),
@@ -642,7 +660,7 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
                           ],
                         ),
                         Text(
-                          '余额: \$${bal.toStringAsFixed(2)}',
+                          l10n.balanceColonFormat('\$${bal.toStringAsFixed(2)}'),
                           style: TextStyle(
                             fontSize: 12,
                             color: bal >=
@@ -792,19 +810,33 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
     return scheme.toUpperCase();
   }
 
-  /// 最终提交升级申请
+  /// 最终提交升级申请（对接 PUT /card/convertToPhysical）
   Future<void> _submitApplication() async {
+    final l10n = AppLocalizations.of(context)!;
+    final publicToken = widget.cardDetails?.publicToken ?? '';
+    final verifyToken = _verifyToken ?? '';
+    if (publicToken.isEmpty || verifyToken.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.submitFailed), backgroundColor: AppColors.error),
+      );
+      return;
+    }
     setState(() => _isSubmitting = true);
     try {
-      // TODO: 调用最终的提交升级申请接口，传入 _verifyToken
-      // 接口就绪后取消注释：
-      // await _cardService.submitPhysicalUpgrade(
-      //   publicToken: widget.cardDetails?.publicToken ?? '',
-      //   verifyToken: _verifyToken ?? '',
-      //   ...
-      // );
-      debugPrint('submit with verifyToken: $_verifyToken'); // 占位引用，接口接入后可删除
-
+      await _cardService.submitPhysicalUpgrade(
+        publicToken: publicToken,
+        verifyToken: verifyToken,
+        recipient: _nameController.text.trim(),
+        nameOnCard: widget.cardDetails?.memberName ?? _nameController.text.trim(),
+        areaCode: _selectedCountry?.dialCode ?? '+86',
+        phone: _phoneController.text.trim(),
+        postalCountry: _selectedCountry?.code ?? 'CN',
+        postalState: _stateController.text.trim(),
+        postalCity: _cityController.text.trim(),
+        postalAddress: _addressController.text.trim(),
+        postalCode: _zipController.text.trim(),
+        paymentCurrency: _selectedCurrency?.name ?? 'USDT-TRC20',
+      );
       if (mounted) {
         Navigator.pushReplacement(
           context,
@@ -815,8 +847,12 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
       }
     } catch (e) {
       if (mounted) {
+        final msg = e.toString().replaceFirst('Exception: ', '');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('提交失败: $e')),
+          SnackBar(
+            content: Text('${l10n.submitFailed}: $msg'),
+            backgroundColor: AppColors.error,
+          ),
         );
       }
     } finally {
@@ -826,21 +862,21 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
 
   /// 显示交易安全验证弹窗
   void _showVerificationDialog(BuildContext context) {
-    // 费用
-    final fee = _cardFee + _shippingFee; // - _couponDiscount
-    // 从当前登录账号获取邮箱
+    final l10n = AppLocalizations.of(context)!;
+    final fee = _cardFee + _shippingFee;
     final maskEmail = HiveStorageService.getUser()?.email ?? '';
-    final publicToken = widget.cardDetails?.publicToken ?? "test_token"; // 防止为空
+    final publicToken = widget.cardDetails?.publicToken ?? '';
+
+    // 在 StatefulBuilder 外声明，保证 setModalState 后状态不丢失
+    bool isVerifying = false;
+    String? errorMessage;
+    bool isSendingCode = false;
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (BuildContext ctx) {
-        // 声明在 StatefulBuilder.builder 外，跨 rebuild 保持状态
-        // setModalState 会触发 builder 重新执行，从而读到更新后的值
-        bool isVerifying = false;
-        String? errorMessage;
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setModalState) {
           return Container(
@@ -861,13 +897,12 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 标题与关闭按钮
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      "交易信息",
-                      style: TextStyle(
+                    Text(
+                      l10n.transactionInfo,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: AppColors.textPrimary,
@@ -881,40 +916,25 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
                   ],
                 ),
                 const SizedBox(height: 16),
-
-                // 提示说明文案 (富文本高亮费用)
-                RichText(
-                  text: TextSpan(
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: AppColors.textSecondary,
-                      height: 1.5,
-                    ),
-                    children: [
-                      const TextSpan(text: "我们将从您的账户扣除卡片费用"),
-                      TextSpan(
-                        text: "${fee.toStringAsFixed(0)}USD",
-                        style:
-                            const TextStyle(color: Color(0xFFE56973)), // 红色高亮
-                      ),
-                      const TextSpan(text: "，为了您的账户安全，我们需要对您进行安全验证。"),
-                    ],
+                Text(
+                  l10n.securityVerificationMessage(
+                      '${fee.toStringAsFixed(0)}USD'),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textSecondary,
+                    height: 1.5,
                   ),
                 ),
                 const SizedBox(height: 24),
-
-                // 邮箱验证码标题
-                const Text(
-                  "邮箱验证码",
-                  style: TextStyle(
+                Text(
+                  l10n.emailVerificationCode,
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: AppColors.textSecondary,
                   ),
                 ),
                 const SizedBox(height: 8),
-
-                // 验证码输入框与获取按钮
                 Container(
                   height: 52,
                   decoration: BoxDecoration(
@@ -929,9 +949,9 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
                         child: TextField(
                           controller: _emailCodeController,
                           keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            hintText: "请输入邮箱验证码",
-                            hintStyle: TextStyle(
+                          decoration: InputDecoration(
+                            hintText: l10n.pleaseEnterEmailVerificationCode,
+                            hintStyle: const TextStyle(
                               color: Color(0xFF9CA3AF),
                               fontSize: 14,
                             ),
@@ -946,80 +966,88 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: _remainingTime > 0
+                        onTap: (_remainingTime > 0 || isSendingCode)
                             ? null
                             : () async {
+                                setModalState(() {
+                                  isSendingCode = true;
+                                  errorMessage = null;
+                                });
                                 try {
                                   await _cardService
                                       .sendPhysicalUpgradeEmailCode(
                                           publicToken, maskEmail);
-                                  if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('验证码已发送')),
-                                    );
-                                    // 启动倒计时，并同步更新 Modal 内部的 state
+                                  if (ctx.mounted) {
                                     _startCountdown();
-                                    setModalState(() {});
-                                    // 监听 timer 变化更新 modal
-                                    Timer.periodic(const Duration(seconds: 1),
-                                        (timer) {
+                                    setModalState(() {
+                                      isSendingCode = false;
+                                    });
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              l10n.verificationCodeSent)),
+                                    );
+                                    Timer.periodic(
+                                        const Duration(seconds: 1), (timer) {
                                       if (!mounted || _remainingTime == 0) {
                                         timer.cancel();
                                       }
                                       setModalState(() {});
                                     });
-                                    setModalState(() {
-                                      errorMessage = null;
-                                    });
                                   }
                                 } catch (e) {
-                                  if (context.mounted) {
+                                  if (ctx.mounted) {
                                     String msg = e
                                         .toString()
                                         .replaceFirst('Exception: ', '');
-
-                                    // 如果包含 HTTP 状态码前缀，也去掉它
                                     if (msg.contains('HTTP ') &&
                                         msg.contains(': ')) {
                                       msg = msg.split(': ').last;
                                     }
-
                                     setModalState(() {
-                                      errorMessage = '发送失败: $msg';
+                                      isSendingCode = false;
+                                      errorMessage =
+                                          '${l10n.sendCodeFailed}: $msg';
                                     });
                                   }
                                 }
                               },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Text(
-                            _remainingTime > 0
-                                ? "$_remainingTime 秒后重发"
-                                : "获取验证码",
-                            style: TextStyle(
-                              color: _remainingTime > 0
-                                  ? const Color(0xFF9CA3AF)
-                                  : const Color(0xFF10B981), // 绿色
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
+                          child: isSendingCode
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Color(0xFF10B981),
+                                  ),
+                                )
+                              : Text(
+                                  _remainingTime > 0
+                                      ? l10n.resendAfterSeconds(_remainingTime)
+                                      : l10n.getCode,
+                                  style: TextStyle(
+                                    color: _remainingTime > 0
+                                        ? const Color(0xFF9CA3AF)
+                                        : const Color(0xFF10B981),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
                         ),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 8),
-
-                // 底部倒计时提示
                 Text(
-                  "6位数字验证码已发送至您的$maskEmail，请在5分钟内输入",
+                  l10n.emailCodeSentToHint(maskEmail),
                   style: const TextStyle(
                     fontSize: 12,
                     color: Color(0xFF9CA3AF),
                   ),
                 ),
-
                 if (errorMessage != null) ...[
                   const SizedBox(height: 16),
                   Container(
@@ -1046,10 +1074,7 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
                     ),
                   ),
                 ],
-
                 const SizedBox(height: 32),
-
-                // 确认按钮
                 Container(
                   width: double.infinity,
                   height: 52,
@@ -1063,53 +1088,45 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
                         : () async {
                             if (_emailCodeController.text.trim().isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('请输入邮箱验证码')),
+                                SnackBar(
+                                    content: Text(l10n
+                                        .pleaseEnterEmailVerificationCode)),
                               );
                               return;
                             }
-
-                            // 重新点击时先清空错误
                             setModalState(() {
                               isVerifying = true;
                               errorMessage = null;
                             });
-
                             try {
-                              // 等待验证接口返回
                               final token = await _cardService
                                   .verifyPhysicalUpgradeEmailCode(
                                 publicToken,
                                 _emailCodeController.text.trim(),
                               );
-
-                              if (context.mounted) {
-                                // 验证成功：保存 token，标记已验证，关闭弹窗
+                              if (ctx.mounted) {
                                 setState(() {
                                   _verifyToken = token;
                                   _isEmailVerified = true;
                                 });
-                                Navigator.pop(ctx); // 关闭验证弹窗
+                                Navigator.pop(ctx);
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('验证成功，请点击「确认提交」完成申请'),
-                                    backgroundColor: Color(0xFF10B981),
+                                  SnackBar(
+                                    content: Text(
+                                        l10n.verificationSuccessClickConfirm),
+                                    backgroundColor: const Color(0xFF10B981),
                                   ),
                                 );
                               }
                             } catch (e) {
-                              if (context.mounted) {
-                                // e.toString() 格式为 "Exception: xxx"，或者 "Exception: HTTP 423: xxx"
-                                // 我们只想要后面的提示文字
+                              if (ctx.mounted) {
                                 String msg = e
                                     .toString()
                                     .replaceFirst('Exception: ', '');
-
-                                // 如果包含 HTTP 状态码前缀，也去掉它
                                 if (msg.contains('HTTP ') &&
                                     msg.contains(': ')) {
                                   msg = msg.split(': ').last;
                                 }
-
                                 setModalState(() {
                                   isVerifying = false;
                                   errorMessage = msg;
@@ -1133,9 +1150,9 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
                               strokeWidth: 2.5,
                             ),
                           )
-                        : const Text(
-                            "确认",
-                            style: TextStyle(
+                        : Text(
+                            l10n.confirm,
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
