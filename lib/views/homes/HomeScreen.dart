@@ -34,8 +34,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    // Load data on first display
-    _loadHomeData();
+    // Load data on first display, after the first frame is rendered
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadHomeData();
+    });
   }
 
   @override
@@ -236,23 +238,41 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                             // 主要余额显示（可点击切换）
                                             GestureDetector(
                                               onTap: () {
-                                                if (walletViewModel.busy && walletViewModel.walletResponse == null) return;
+                                                if (walletViewModel.busy &&
+                                                    walletViewModel
+                                                            .walletResponse ==
+                                                        null) return;
                                                 setState(() {
                                                   _showingUsdt = !_showingUsdt;
                                                 });
                                               },
                                               child: Row(
                                                 children: [
-                                                  (walletViewModel.busy && walletViewModel.walletResponse == null)
+                                                  (walletViewModel.busy &&
+                                                          walletViewModel
+                                                                  .walletResponse ==
+                                                              null)
                                                       ? Shimmer.fromColors(
-                                                          baseColor: Colors.white.withOpacity(0.4),
-                                                          highlightColor: Colors.white.withOpacity(0.8),
+                                                          baseColor: Colors
+                                                              .white
+                                                              .withOpacity(0.4),
+                                                          highlightColor: Colors
+                                                              .white
+                                                              .withOpacity(0.8),
                                                           child: Container(
                                                             width: 120,
-                                                            height: isSmallScreen ? 24 : 28,
-                                                            decoration: BoxDecoration(
-                                                              color: Colors.white,
-                                                              borderRadius: BorderRadius.circular(4),
+                                                            height:
+                                                                isSmallScreen
+                                                                    ? 24
+                                                                    : 28,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color:
+                                                                  Colors.white,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          4),
                                                             ),
                                                           ),
                                                         )
@@ -270,9 +290,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                                               : "****",
                                                           style: TextStyle(
                                                             color: Colors.white,
-                                                            fontSize: isSmallScreen
-                                                                ? 20
-                                                                : 24,
+                                                            fontSize:
+                                                                isSmallScreen
+                                                                    ? 20
+                                                                    : 24,
                                                             fontWeight:
                                                                 FontWeight.bold,
                                                           ),
@@ -452,7 +473,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                               ),
                             ),
                             // 最新交易记录列表 - 优化版
-                            (transactionViewModel.busy && transactionViewModel.latestTransactions.isEmpty)
+                            (transactionViewModel.busy &&
+                                    transactionViewModel
+                                        .latestTransactions.isEmpty)
                                 ? SliverToBoxAdapter(
                                     child: Container(
                                       margin: EdgeInsets.symmetric(
@@ -468,40 +491,53 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                         baseColor: Colors.grey[300]!,
                                         highlightColor: Colors.grey[100]!,
                                         child: Column(
-                                          children: List.generate(3, (index) => Padding(
-                                            padding: const EdgeInsets.only(bottom: 20),
-                                            child: Row(
-                                              children: [
-                                                Container(
-                                                  width: 48,
-                                                  height: 48,
-                                                  decoration: const BoxDecoration(
-                                                    color: Colors.white,
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                ),
-                                                const SizedBox(width: 16),
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Container(
-                                                        width: double.infinity,
-                                                        height: 14,
-                                                        color: Colors.white,
-                                                      ),
-                                                      const SizedBox(height: 8),
-                                                      Container(
-                                                        width: 80,
-                                                        height: 12,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )),
+                                          children: List.generate(
+                                              3,
+                                              (index) => Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            bottom: 20),
+                                                    child: Row(
+                                                      children: [
+                                                        Container(
+                                                          width: 48,
+                                                          height: 48,
+                                                          decoration:
+                                                              const BoxDecoration(
+                                                            color: Colors.white,
+                                                            shape:
+                                                                BoxShape.circle,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            width: 16),
+                                                        Expanded(
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Container(
+                                                                width: double
+                                                                    .infinity,
+                                                                height: 14,
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                              const SizedBox(
+                                                                  height: 8),
+                                                              Container(
+                                                                width: 80,
+                                                                height: 12,
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  )),
                                         ),
                                       ),
                                     ),

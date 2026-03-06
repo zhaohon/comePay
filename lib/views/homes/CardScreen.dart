@@ -344,14 +344,16 @@ class _CardScreenState extends State<CardScreen> {
     }
 
     try {
-      final details =
-          await _cardService.getCardAccountDetails(targetToken);
+      final details = await _cardService.getCardAccountDetails(targetToken);
 
       // 更新缓存
       _detailsCache[targetToken] = details;
 
       // 如果当前仍在展示这张卡，则更新 UI
-      if (mounted && _cardList != null && _cardList!.hasCards && _cardList!.cards[_currentCardIndex].publicToken == targetToken) {
+      if (mounted &&
+          _cardList != null &&
+          _cardList!.hasCards &&
+          _cardList!.cards[_currentCardIndex].publicToken == targetToken) {
         setState(() {
           _currentCardDetails = details;
           _isLoadingCardDetails = false;
@@ -418,15 +420,19 @@ class _CardScreenState extends State<CardScreen> {
 
       final newTransactions = result['transactions'] as List<dynamic>? ?? [];
       final total = result['total'] as int? ?? 0;
-      
-      final mappedTransactions = newTransactions.map((t) => t as Map<String, dynamic>).toList();
+
+      final mappedTransactions =
+          newTransactions.map((t) => t as Map<String, dynamic>).toList();
 
       if (!isLoadMore) {
         _transactionsCache[targetToken] = mappedTransactions;
       }
 
       // Check if we are still on the same card before updating UI
-      if (mounted && _cardList != null && _cardList!.hasCards && _cardList!.cards[_currentCardIndex].publicToken == targetToken) {
+      if (mounted &&
+          _cardList != null &&
+          _cardList!.hasCards &&
+          _cardList!.cards[_currentCardIndex].publicToken == targetToken) {
         setState(() {
           if (isLoadMore) {
             _transactions.addAll(mappedTransactions);
@@ -460,15 +466,15 @@ class _CardScreenState extends State<CardScreen> {
     setState(() {
       _currentCardIndex = index;
       _isCardNumberVisible = false; // 切换卡片时隐藏卡号
-      
+
       // 尝试从缓存中读取数据实现秒切
       _currentCardDetails = _detailsCache[newToken];
       _transactions = _transactionsCache[newToken] ?? [];
-      
+
       // 如果没有缓存，重置分页并显示加载状态
       if (!_transactionsCache.containsKey(newToken)) {
-          _transactionPage = 1;
-          _hasMoreTransactions = true;
+        _transactionPage = 1;
+        _hasMoreTransactions = true;
       }
     });
 
@@ -1055,28 +1061,28 @@ class _CardScreenState extends State<CardScreen> {
           return Stack(
             children: [
               // 底部暗色渐变，增强文字区分度
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                height: height * 0.6,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(16),
-                      bottomRight: Radius.circular(16),
-                    ),
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                      colors: [
-                        Colors.black.withOpacity(0.6),
-                        Colors.transparent,
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+              // Positioned(
+              //   left: 0,
+              //   right: 0,
+              //   bottom: 0,
+              //   height: height * 0.6,
+              //   child: Container(
+              //     decoration: BoxDecoration(
+              //       borderRadius: const BorderRadius.only(
+              //         bottomLeft: Radius.circular(16),
+              //         bottomRight: Radius.circular(16),
+              //       ),
+              //       gradient: LinearGradient(
+              //         begin: Alignment.bottomCenter,
+              //         end: Alignment.topCenter,
+              //         colors: [
+              //           Colors.black.withOpacity(0.6),
+              //           Colors.transparent,
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              // ),
 
               // 内容统一从左下角定位
               Positioned(
