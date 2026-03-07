@@ -273,6 +273,12 @@
   "pleaseEnterRecipientAddress": "Please enter recipient address",
   "withdrawalFailed": "Withdrawal failed",
   "scanQRCodeInDevelopment": "Scan QR code feature in development",
+  "scanQRCodeTitle": "Scan QR Code",
+  "scanQRCodeError": "Unable to open camera",
+  "scanQRCodeHint": "Align the recipient address QR code within the frame",
+  "scanQRCodeCameraRequired": "Camera permission is required to scan QR code",
+  "scanQRCodePermissionDeniedMessage": "Camera access is needed to scan QR codes. Please tap \"Allow\" in the prompt above, or enable it in Settings.",
+  "goToSettings": "Open Settings",
   "addressCopied": "Address copied",
   "pleaseEnter6DigitCode": "Please enter 6-digit code",
   "applicationFailed": "Application failed",
@@ -558,5 +564,7 @@
   "verificationSuccessClickConfirm": "Verified. Please tap \"Confirm Submit\" to complete.",
   "submitFailed": "Submit failed",
   "verificationCodeSent": "Verification code sent",
-  "balanceColonFormat": "Balance: {balance}"
+  "balanceColonFormat": "Balance: {balance}",
+  "physicalCard": "Physical Card",
+  "physicalCardAlreadyApplied": "Physical card already applied"
 }

@@ -276,6 +276,12 @@
   "pleaseEnterRecipientAddress": "请输入接收地址",
   "withdrawalFailed": "提现失败",
   "scanQRCodeInDevelopment": "扫描二维码功能开发中",
+  "scanQRCodeTitle": "扫描二维码",
+  "scanQRCodeError": "无法打开相机",
+  "scanQRCodeHint": "将收款地址二维码放入框内扫描",
+  "scanQRCodeCameraRequired": "需要相机权限才能扫描二维码",
+  "scanQRCodePermissionDeniedMessage": "需要相机权限才能扫描二维码。请在上方弹窗中选择「允许」，或到设置中开启相机权限。",
+  "goToSettings": "去设置",
   "addressCopied": "地址已复制",
   "pleaseEnter6DigitCode": "请输入6位验证码",
   "applicationFailed": "申请失败",
@@ -558,5 +564,7 @@
   "verificationSuccessClickConfirm": "验证成功，请点击「确认提交」完成申请",
   "submitFailed": "提交失败",
   "verificationCodeSent": "验证码已发送",
-  "balanceColonFormat": "余额: {balance}"
+  "balanceColonFormat": "余额: {balance}",
+  "physicalCard": "实体卡",
+  "physicalCardAlreadyApplied": "已申领实体卡"
 }

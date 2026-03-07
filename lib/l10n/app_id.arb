@@ -319,5 +319,7 @@
   "noMoreData": "Tidak ada data lagi",
   "referralCode": "Kode Referral",
   "referralCodeOptional": "Kode Referral (Opsional)",
-  "enterReferralCode": "Masukkan kode referral jika Anda memilikinya"
+  "enterReferralCode": "Masukkan kode referral jika Anda memilikinya",
+  "physicalCard": "Kartu Fisik",
+  "physicalCardAlreadyApplied": "Kartu fisik sudah diajukan"
 }

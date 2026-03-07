@@ -275,6 +275,12 @@
   "pleaseEnterRecipientAddress": "يرجى إدخال عنوان المستلم",
   "withdrawalFailed": "فشل السحب",
   "scanQRCodeInDevelopment": "ميزة مسح رمز الاستجابة السريعة قيد التطوير",
+  "scanQRCodeTitle": "مسح رمز QR",
+  "scanQRCodeError": "تعذر فتح الكاميرا",
+  "scanQRCodeHint": "محاذاة رمز QR لعنوان المستلم داخل الإطار",
+  "scanQRCodeCameraRequired": "إذن الكاميرا مطلوب لمسح رمز QR",
+  "scanQRCodePermissionDeniedMessage": "يُحتاج إلى الكاميرا لمسح رمز QR. يرجى النقر على \"السماح\" في النافذة، أو تفعيلها في الإعدادات.",
+  "goToSettings": "فتح الإعدادات",
   "addressCopied": "تم نسخ العنوان",
   "pleaseEnter6DigitCode": "يرجى إدخال رمز مكون من 6 أرقام",
   "applicationFailed": "فشل التطبيق",
@@ -553,5 +559,7 @@
   "verificationSuccessClickConfirm": "تم التحقق. يرجى النقر على \"تأكيد الإرسال\" للإكمال.",
   "submitFailed": "فشل الإرسال",
   "verificationCodeSent": "تم إرسال رمز التحقق",
-  "balanceColonFormat": "الرصيد: {balance}"
+  "balanceColonFormat": "الرصيد: {balance}",
+  "physicalCard": "بطاقة فعلية",
+  "physicalCardAlreadyApplied": "تم طلب البطاقة الفعلية بالفعل"
 }
