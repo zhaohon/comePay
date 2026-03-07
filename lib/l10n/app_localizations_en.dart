@@ -843,6 +843,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scanQRCodeInDevelopment => 'Scan QR code feature in development';
 
   @override
+  String get scanQRCodeTitle => 'Scan QR Code';
+
+  @override
+  String get scanQRCodeError => 'Unable to open camera';
+
+  @override
+  String get scanQRCodeHint =>
+      'Align the recipient address QR code within the frame';
+
+  @override
+  String get scanQRCodeCameraRequired =>
+      'Camera permission is required to scan QR code';
+
+  @override
+  String get scanQRCodePermissionDeniedMessage =>
+      'Camera access is needed to scan QR codes. Please tap \"Allow\" in the prompt above, or enable it in Settings.';
+
+  @override
+  String get goToSettings => 'Open Settings';
+
+  @override
   String get addressCopied => 'Address copied';
 
   @override
@@ -1651,4 +1672,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String balanceColonFormat(Object balance) {
     return 'Balance: $balance';
   }
+
+  @override
+  String get physicalCard => 'Physical Card';
+
+  @override
+  String get physicalCardAlreadyApplied => 'Physical card already applied';
 }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:comecomepay/utils/app_colors.dart';
 import 'package:comecomepay/models/wallet_model.dart';
 import 'package:comecomepay/services/withdraw_service.dart';
 
 import '../../l10n/app_localizations.dart';
+import 'ScanAddressQrScreen.dart';
 
 class SendPdp extends StatefulWidget {
   const SendPdp({super.key});
@@ -41,6 +43,47 @@ class _SendPdpState extends State<SendPdp> {
   void _setMaxAmount() {
     if (balance != null) {
       _amountController.text = balance!.balance.toString();
+    }
+  }
+
+  Future<void> _openScanQr() async {
+    final l10n = AppLocalizations.of(context)!;
+    // 先请求权限：首次会弹出系统「允许/不允许」对话框，不会直接跳设置
+    final status = await Permission.camera.request();
+    if (!mounted) return;
+    if (status.isGranted) {
+      final result = await Navigator.push<String>(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const ScanAddressQrScreen(),
+        ),
+      );
+      if (result != null && result.isNotEmpty && mounted) {
+        _addressController.text = result;
+      }
+    } else {
+      // 未授权：弹窗说明，由用户主动选择「去设置」，不自动跳转
+      if (!mounted) return;
+      showDialog<void>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(l10n.scanQRCodeCameraRequired),
+          content: Text(l10n.scanQRCodePermissionDeniedMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(l10n.cancel),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+                openAppSettings();
+              },
+              child: Text(l10n.goToSettings),
+            ),
+          ],
+        ),
+      );
     }
   }
 
@@ -313,16 +356,7 @@ class _SendPdpState extends State<SendPdp> {
                     color: AppColors.primary,
                     size: 20,
                   ),
-                  onPressed: _isLoading
-                      ? null
-                      : () {
-                          // TODO: Implement QR scanner
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                                content: Text(AppLocalizations.of(context)!
-                                    .scanQRCodeInDevelopment)),
-                          );
-                        },
+                  onPressed: _isLoading ? null : _openScanQr,
                 ),
               ),
             ),

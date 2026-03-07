@@ -1704,6 +1704,42 @@ abstract class AppLocalizations {
   /// **'Scan QR code feature in development'**
   String get scanQRCodeInDevelopment;
 
+  /// No description provided for @scanQRCodeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR Code'**
+  String get scanQRCodeTitle;
+
+  /// No description provided for @scanQRCodeError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to open camera'**
+  String get scanQRCodeError;
+
+  /// No description provided for @scanQRCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Align the recipient address QR code within the frame'**
+  String get scanQRCodeHint;
+
+  /// No description provided for @scanQRCodeCameraRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera permission is required to scan QR code'**
+  String get scanQRCodeCameraRequired;
+
+  /// No description provided for @scanQRCodePermissionDeniedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera access is needed to scan QR codes. Please tap \"Allow\" in the prompt above, or enable it in Settings.'**
+  String get scanQRCodePermissionDeniedMessage;
+
+  /// No description provided for @goToSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings'**
+  String get goToSettings;
+
   /// No description provided for @addressCopied.
   ///
   /// In en, this message translates to:
@@ -3215,6 +3251,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Balance: {balance}'**
   String balanceColonFormat(Object balance);
+
+  /// No description provided for @physicalCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Physical Card'**
+  String get physicalCard;
+
+  /// No description provided for @physicalCardAlreadyApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Physical card already applied'**
+  String get physicalCardAlreadyApplied;
 }
 
 class _AppLocalizationsDelegate

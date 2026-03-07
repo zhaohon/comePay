@@ -19,6 +19,7 @@ import 'package:comecomepay/models/card_account_details_model.dart';
 import 'package:comecomepay/views/homes/CardAuthorizationScreen.dart';
 import 'package:comecomepay/views/homes/ApplyPhysicalCardScreen.dart';
 import 'package:comecomepay/views/homes/ActivatePhysicalCardScreen.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CardScreen extends StatefulWidget {
   const CardScreen({super.key});
@@ -906,17 +907,27 @@ class _CardScreenState extends State<CardScreen> {
                     ),
                     _buildActionCard(
                       Icons.credit_card_outlined,
-                      AppLocalizations.of(context)!.applyPhysicalCard,
+                      (_currentCardDetails?.updatePhysical == true)
+                          ? AppLocalizations.of(context)!
+                              .physicalCard // You'll need to define this or use a hardcoded string fallback if it doesn't exist
+                          : AppLocalizations.of(context)!.applyPhysicalCard,
                       onTap: () {
                         if (_isBusy) return;
                         if (_currentCardDetails == null) return;
-                        // ScaffoldMessenger.of(context).showSnackBar(
-                        //   SnackBar(
-                        //     content: Text(AppLocalizations.of(context)!
-                        //         .featureComingSoon),
-                        //     duration: const Duration(seconds: 1),
-                        //   ),
-                        // );
+
+                        // If already applied for physical card, do nothing (or show a message)
+                        if (_currentCardDetails!.updatePhysical) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(AppLocalizations.of(context)!
+                                      .physicalCardAlreadyApplied ??
+                                  'Physical card already applied'),
+                              duration: const Duration(seconds: 2),
+                            ),
+                          );
+                          return;
+                        }
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -1031,11 +1042,41 @@ class _CardScreenState extends State<CardScreen> {
     );
   }
 
+  /// 卡片文字凸起/浮雕效果：终极银黑实体挤压感
+  /// （通过0-blur硬阴影的密集堆叠，打造文字自带“黑色侧边厚度”的真实视觉）
+  List<Shadow> get _cardEmbossedShadows => [
+        // 1. 顶部坚硬高光：模拟冲压反光（没有模糊，边缘极锐利）
+        const Shadow(
+            offset: Offset(-1.0, -1.0), blurRadius: 0.0, color: Colors.white),
+
+        // 2. 侧边挤压厚度：通过多层位移极其紧密的绝对纯黑色“硬”阴影，
+        // 将字母凭空“顶”起来，形成清晰的黑色塑料截面（完美匹配“银黑色”描述）
+        const Shadow(
+            offset: Offset(0.5, 0.5), blurRadius: 0.0, color: Colors.black),
+        const Shadow(
+            offset: Offset(1.0, 1.0), blurRadius: 0.0, color: Colors.black),
+        const Shadow(
+            offset: Offset(1.5, 1.5), blurRadius: 0.0, color: Colors.black),
+        const Shadow(
+            offset: Offset(2.0, 2.0), blurRadius: 0.0, color: Colors.black),
+
+        // 3. 根部衔接缝：略微带一点点模糊，表现底部粘合或阴影的过渡
+        const Shadow(
+            offset: Offset(2.5, 2.5), blurRadius: 1.0, color: Colors.black87),
+
+        // 4. 卡片表面真实物理投影（散开的环境光）
+        const Shadow(
+            offset: Offset(3.0, 4.0), blurRadius: 3.0, color: Colors.black54),
+        const Shadow(
+            offset: Offset(4.0, 6.0), blurRadius: 6.0, color: Colors.black26),
+      ];
+
   /// 构建单张卡片Widget
   Widget _buildCardWidget(CardListItemModel card) {
     final isCurrentCard =
         card.publicToken == _cardList!.cards[_currentCardIndex].publicToken;
     final cardDetails = isCurrentCard ? _currentCardDetails : null;
+    final embossed = _cardEmbossedShadows;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -1101,34 +1142,21 @@ class _CardScreenState extends State<CardScreen> {
                         children: [
                           Text(
                             card.cardNo,
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: const Color(0xFFE0E2E5), // 金属银色
                               fontSize: 26,
                               fontWeight: FontWeight.w700,
-                              shadows: [
-                                Shadow(
-                                    offset: Offset(0, 1),
-                                    blurRadius: 2.0,
-                                    color: Colors.black),
-                                Shadow(
-                                    offset: Offset(0, 2),
-                                    blurRadius: 6.0,
-                                    color: Colors.black87),
-                              ],
+                              letterSpacing: 2.0, // 增加字间距更逼真
+                              shadows: embossed,
                             ),
                           ),
                           if (isCurrentCard) ...[
                             const SizedBox(width: 8),
                             Icon(
                               Icons.visibility_off,
-                              color: Colors.white.withOpacity(0.9),
+                              color: const Color(0xFFE0E2E5),
                               size: 20,
-                              shadows: [
-                                Shadow(
-                                    offset: Offset(0, 1),
-                                    blurRadius: 2.0,
-                                    color: Colors.black),
-                              ],
+                              shadows: embossed,
                             ),
                           ],
                         ],
@@ -1141,30 +1169,35 @@ class _CardScreenState extends State<CardScreen> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        // 姓名部分
+                        // 姓名部分（加载中显示骨架屏，避免先展示 NAME 再闪变）
                         Expanded(
                           flex: 1,
-                          child: Text(
-                            _currentCardDetails?.memberName ?? 'NAME',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 1,
-                              shadows: [
-                                Shadow(
-                                    offset: Offset(0, 1),
-                                    blurRadius: 2.0,
-                                    color: Colors.black),
-                                Shadow(
-                                    offset: Offset(0, 2),
-                                    blurRadius: 6.0,
-                                    color: Colors.black87),
-                              ],
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                          child: (isCurrentCard && _currentCardDetails == null)
+                              ? Shimmer.fromColors(
+                                  baseColor: Colors.white.withOpacity(0.25),
+                                  highlightColor:
+                                      Colors.white.withOpacity(0.45),
+                                  child: Container(
+                                    height: 18,
+                                    width: 100,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                  ),
+                                )
+                              : Text(
+                                  _currentCardDetails?.memberName ?? 'NAME',
+                                  style: TextStyle(
+                                    color: const Color(0xFFE0E2E5), // 金属银色
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold, // 加粗一点让浮雕效果更好
+                                    letterSpacing: 1.5,
+                                    shadows: embossed,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                         ),
 
                         // 到期日部分
@@ -1176,23 +1209,14 @@ class _CardScreenState extends State<CardScreen> {
                               onTap: isCurrentCard
                                   ? () => _showCardSecurityInfo()
                                   : null,
-                              child: const Text(
+                              child: Text(
                                 '**/**',
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: const Color(0xFFE0E2E5), // 金属银色
                                   fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 1,
-                                  shadows: [
-                                    Shadow(
-                                        offset: Offset(0, 1),
-                                        blurRadius: 2.0,
-                                        color: Colors.black),
-                                    Shadow(
-                                        offset: Offset(0, 2),
-                                        blurRadius: 6.0,
-                                        color: Colors.black87),
-                                  ],
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 2.0,
+                                  shadows: embossed,
                                 ),
                               ),
                             ),

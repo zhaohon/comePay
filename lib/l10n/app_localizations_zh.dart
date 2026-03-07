@@ -812,6 +812,25 @@ class AppLocalizationsZh extends AppLocalizations {
   String get scanQRCodeInDevelopment => '扫描二维码功能开发中';
 
   @override
+  String get scanQRCodeTitle => '扫描二维码';
+
+  @override
+  String get scanQRCodeError => '无法打开相机';
+
+  @override
+  String get scanQRCodeHint => '将收款地址二维码放入框内扫描';
+
+  @override
+  String get scanQRCodeCameraRequired => '需要相机权限才能扫描二维码';
+
+  @override
+  String get scanQRCodePermissionDeniedMessage =>
+      '需要相机权限才能扫描二维码。请在上方弹窗中选择「允许」，或到设置中开启相机权限。';
+
+  @override
+  String get goToSettings => '去设置';
+
+  @override
   String get addressCopied => '地址已复制';
 
   @override
@@ -1605,4 +1624,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String balanceColonFormat(Object balance) {
     return '余额: $balance';
   }
+
+  @override
+  String get physicalCard => '实体卡';
+
+  @override
+  String get physicalCardAlreadyApplied => '已申领实体卡';
 }

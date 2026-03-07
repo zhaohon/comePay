@@ -17,6 +17,7 @@ import 'package:comecomepay/viewmodels/profile_screen_viewmodel.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/utils/app_colors.dart';
 import 'package:comecomepay/views/debug/token_refresh_test_page.dart';
+import 'package:shimmer/shimmer.dart';
 
 import 'ProfilKycScreen.dart';
 
@@ -159,12 +160,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  // Dynamic KYC Status Tag
+                  // Dynamic KYC Status Tag（加载中显示骨架屏，避免先展示初始化状态再闪变）
                   Consumer<ProfileScreenViewModel>(
                     builder: (context, model, child) {
+                      if (model.isKycStatusLoading) {
+                        return Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.grey.shade100,
+                          child: Container(
+                            width: 120,
+                            height: 28,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        );
+                      }
                       final statusResponse = model.kycStatusResponse;
                       final kycStatus = statusResponse?.userKycStatus ?? 'none';
-                      // Default to unverified if null
 
                       Color backgroundColor;
                       String text;

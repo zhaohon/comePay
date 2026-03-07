@@ -27,10 +27,13 @@ class ProfileScreenViewModel extends BaseViewModel {
   GetProfileResponseModel? _profileResponse;
   KycStatusResponseModel? _kycStatusResponse;
   String? _errorMessage;
+  /// KYC 状态请求前也视为加载中，避免首帧先显示「未验证」再闪变
+  bool _kycStatusLoading = true;
 
   GetProfileResponseModel? get profileResponse => _profileResponse;
   KycStatusResponseModel? get kycStatusResponse => _kycStatusResponse;
   String? get errorMessage => _errorMessage;
+  bool get isKycStatusLoading => _kycStatusLoading;
 
   /// 同步/快速加载缓存数据，避免UI闪烁
   Future<void> loadCachedData() async {
@@ -43,8 +46,8 @@ class ProfileScreenViewModel extends BaseViewModel {
 
   Future<void> fetchKycStatus() async {
     print('DEBUG: fetchKycStatus called');
-    // Note: setBusy(true) is not called here to avoid full screen loading indicator
-    // if this is called in parallel with other requests or background.
+    _kycStatusLoading = true;
+    notifyListeners();
     try {
       print('DEBUG: Calling _kycService.getKycStatus()');
       final response = await _kycService.getKycStatus();
@@ -54,8 +57,9 @@ class ProfileScreenViewModel extends BaseViewModel {
       notifyListeners();
     } catch (e) {
       print('ProfileViewModel: Failed to fetch KYC status: $e');
-      // We don't set global error message strictly for this background fetch
-      // to avoid blocking the main UI if only the tag fails.
+    } finally {
+      _kycStatusLoading = false;
+      notifyListeners();
     }
   }
 

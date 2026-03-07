@@ -846,6 +846,25 @@ class AppLocalizationsAr extends AppLocalizations {
       'ميزة مسح رمز الاستجابة السريعة قيد التطوير';
 
   @override
+  String get scanQRCodeTitle => 'مسح رمز QR';
+
+  @override
+  String get scanQRCodeError => 'تعذر فتح الكاميرا';
+
+  @override
+  String get scanQRCodeHint => 'محاذاة رمز QR لعنوان المستلم داخل الإطار';
+
+  @override
+  String get scanQRCodeCameraRequired => 'إذن الكاميرا مطلوب لمسح رمز QR';
+
+  @override
+  String get scanQRCodePermissionDeniedMessage =>
+      'يُحتاج إلى الكاميرا لمسح رمز QR. يرجى النقر على \"السماح\" في النافذة، أو تفعيلها في الإعدادات.';
+
+  @override
+  String get goToSettings => 'فتح الإعدادات';
+
+  @override
   String get addressCopied => 'تم نسخ العنوان';
 
   @override
@@ -1652,4 +1671,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String balanceColonFormat(Object balance) {
     return 'الرصيد: $balance';
   }
+
+  @override
+  String get physicalCard => 'بطاقة فعلية';
+
+  @override
+  String get physicalCardAlreadyApplied => 'تم طلب البطاقة الفعلية بالفعل';
 }

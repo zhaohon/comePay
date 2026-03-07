@@ -843,6 +843,27 @@ class AppLocalizationsId extends AppLocalizations {
       'Fitur pindai kode QR sedang dalam pengembangan';
 
   @override
+  String get scanQRCodeTitle => 'Scan QR Code';
+
+  @override
+  String get scanQRCodeError => 'Unable to open camera';
+
+  @override
+  String get scanQRCodeHint =>
+      'Align the recipient address QR code within the frame';
+
+  @override
+  String get scanQRCodeCameraRequired =>
+      'Camera permission is required to scan QR code';
+
+  @override
+  String get scanQRCodePermissionDeniedMessage =>
+      'Camera access is needed to scan QR codes. Please tap \"Allow\" in the prompt above, or enable it in Settings.';
+
+  @override
+  String get goToSettings => 'Open Settings';
+
+  @override
   String get addressCopied => 'Alamat disalin';
 
   @override
@@ -1652,4 +1673,10 @@ class AppLocalizationsId extends AppLocalizations {
   String balanceColonFormat(Object balance) {
     return 'Balance: $balance';
   }
+
+  @override
+  String get physicalCard => 'Kartu Fisik';
+
+  @override
+  String get physicalCardAlreadyApplied => 'Kartu fisik sudah diajukan';
 }

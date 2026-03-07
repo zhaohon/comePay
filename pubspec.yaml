@@ -41,6 +41,7 @@ dependencies:
   cached_network_image: ^3.3.0
   font_awesome_flutter: 10.4.0
   camera: 0.10.5+9
+  mobile_scanner: 4.0.1
   permission_handler: ^11.3.1
   hive: ^2.2.3
   hive_flutter: ^1.1.0
