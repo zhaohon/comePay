@@ -47,43 +47,14 @@ class _SendPdpState extends State<SendPdp> {
   }
 
   Future<void> _openScanQr() async {
-    final l10n = AppLocalizations.of(context)!;
-    // 先请求权限：首次会弹出系统「允许/不允许」对话框，不会直接跳设置
-    final status = await Permission.camera.request();
-    if (!mounted) return;
-    if (status.isGranted) {
-      final result = await Navigator.push<String>(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const ScanAddressQrScreen(),
-        ),
-      );
-      if (result != null && result.isNotEmpty && mounted) {
-        _addressController.text = result;
-      }
-    } else {
-      // 未授权：弹窗说明，由用户主动选择「去设置」，不自动跳转
-      if (!mounted) return;
-      showDialog<void>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text(l10n.scanQRCodeCameraRequired),
-          content: Text(l10n.scanQRCodePermissionDeniedMessage),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text(l10n.cancel),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(ctx);
-                openAppSettings();
-              },
-              child: Text(l10n.goToSettings),
-            ),
-          ],
-        ),
-      );
+    final result = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const ScanAddressQrScreen(),
+      ),
+    );
+    if (result != null && result.isNotEmpty && mounted) {
+      _addressController.text = result;
     }
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:comecomepay/utils/app_colors.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -18,6 +19,76 @@ class _ScanAddressQrScreenState extends State<ScanAddressQrScreen> {
     torchEnabled: false,
   );
   bool _hasScanned = false;
+  bool _isPermissionGranted = false;
+  bool _isCheckingPermission = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkPermission();
+  }
+
+  Future<void> _checkPermission() async {
+    final status = await Permission.camera.status;
+    if (status.isGranted) {
+      if (mounted) {
+        setState(() {
+          _isPermissionGranted = true;
+          _isCheckingPermission = false;
+        });
+      }
+    } else {
+      _requestPermission();
+    }
+  }
+
+  Future<void> _requestPermission() async {
+    final status = await Permission.camera.request();
+    if (mounted) {
+      setState(() {
+        _isPermissionGranted = status.isGranted;
+        _isCheckingPermission = false;
+      });
+
+      if (!status.isGranted) {
+        _showPermissionDialog(status.isPermanentlyDenied);
+      }
+    }
+  }
+
+  void _showPermissionDialog(bool permanentlyDenied) {
+    final l10n = AppLocalizations.of(context)!;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.scanQRCodeCameraRequired),
+        content: Text(permanentlyDenied
+            ? l10n.scanQRCodePermissionDeniedMessage
+            : l10n.scanQRCodeCameraRequired),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Close dialog
+              Navigator.pop(context); // Exit scan screen
+            },
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              if (permanentlyDenied) {
+                await openAppSettings();
+              } else {
+                _requestPermission();
+              }
+            },
+            child: Text(permanentlyDenied ? l10n.goToSettings : l10n.retry),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   void dispose() {
@@ -40,6 +111,14 @@ class _ScanAddressQrScreenState extends State<ScanAddressQrScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+
+    if (_isCheckingPermission) {
+      return const Scaffold(
+        backgroundColor: Colors.black,
+        body: Center(child: CircularProgressIndicator(color: Colors.white)),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -62,28 +141,35 @@ class _ScanAddressQrScreenState extends State<ScanAddressQrScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          MobileScanner(
-            controller: _controller,
-            onDetect: _onDetect,
-            errorBuilder: (context, error, child) {
-              final message = error.errorDetails?.message ?? l10n.scanQRCodeError;
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.error_outline,
-                        size: 48, color: Colors.white70),
-                    const SizedBox(height: 16),
-                    Text(
-                      message,
-                      style: const TextStyle(color: Colors.white70),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
+          if (_isPermissionGranted)
+            MobileScanner(
+              controller: _controller,
+              onDetect: _onDetect,
+              errorBuilder: (context, error, child) {
+                final message =
+                    error.errorDetails?.message ?? l10n.scanQRCodeError;
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.error_outline,
+                          size: 48, color: Colors.white70),
+                      const SizedBox(height: 16),
+                      Text(
+                        message,
+                        style: const TextStyle(color: Colors.white70),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                );
+              },
+            )
+          else
+            const Center(
+              child: Icon(Icons.camera_alt_outlined,
+                  size: 64, color: Colors.white24),
+            ),
           Center(
             child: Container(
               width: 260,
