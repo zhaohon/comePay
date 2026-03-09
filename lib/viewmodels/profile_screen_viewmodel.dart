@@ -27,6 +27,7 @@ class ProfileScreenViewModel extends BaseViewModel {
   GetProfileResponseModel? _profileResponse;
   KycStatusResponseModel? _kycStatusResponse;
   String? _errorMessage;
+
   /// KYC 状态请求前也视为加载中，避免首帧先显示「未验证」再闪变
   bool _kycStatusLoading = true;
 
@@ -46,8 +47,10 @@ class ProfileScreenViewModel extends BaseViewModel {
 
   Future<void> fetchKycStatus() async {
     print('DEBUG: fetchKycStatus called');
-    _kycStatusLoading = true;
-    notifyListeners();
+    if (_kycStatusResponse == null) {
+      _kycStatusLoading = true;
+      notifyListeners();
+    }
     try {
       print('DEBUG: Calling _kycService.getKycStatus()');
       final response = await _kycService.getKycStatus();
