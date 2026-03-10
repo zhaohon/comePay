@@ -42,25 +42,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     // 2. 异步初始化 ViewModel 缓存并触发网络刷新
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _initAndRefreshProfile();
+      _loadCachedProfile();
     });
   }
 
-  Future<void> _initAndRefreshProfile() async {
-    final viewModel =
-        Provider.of<ProfileScreenViewModel>(context, listen: false);
+  Future<void> _loadCachedProfile() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      final viewModel =
+          Provider.of<ProfileScreenViewModel>(context, listen: false);
 
-    // 先尝试加载详细缓存
-    await viewModel.loadCachedData();
-    if (viewModel.profileResponse != null) {
-      setState(() {
-        email = viewModel.profileResponse?.user.email;
-        userId = viewModel.profileResponse?.user.id.toString();
-      });
-    }
+      // 先尝试加载详细缓存
+      await viewModel.loadCachedData();
+      if (viewModel.profileResponse != null) {
+        if (mounted) {
+          setState(() {
+            email = viewModel.profileResponse?.user.email;
+            userId = viewModel.profileResponse?.user.id.toString();
+          });
+        }
+      }
 
-    // 然后后台静默刷新最新数据
-    _loadProfile();
+      // 然后后台静默刷新最新数据
+      _loadProfile();
+    });
   }
 
   Future<void> _loadProfile() async {

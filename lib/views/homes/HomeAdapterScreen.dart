@@ -54,8 +54,11 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: Stack(
         children: [
-          // 主内容
-          _widgetOptions.elementAt(_selectedIndex),
+          // 主内容 (使用 IndexedStack 保持页面状态)
+          IndexedStack(
+            index: _selectedIndex,
+            children: _widgetOptions,
+          ),
 
           // 悬浮TabBar
           Positioned(

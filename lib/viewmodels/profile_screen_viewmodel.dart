@@ -77,24 +77,27 @@ class ProfileScreenViewModel extends BaseViewModel {
         _profileResponse = GetProfileResponseModel.fromJson(response);
         // Save to Hive in table "getprofil"
         await HiveStorageService.saveProfileData(_profileResponse!);
-        setBusy(false);
-        notifyListeners();
+
+        if (!isSilent) {
+          setBusy(false);
+        }
+        notifyListeners(); // Still need to notify to update UI if data changed silently
         return true;
       } else if (response is Map<String, dynamic> &&
           response['error'] != null) {
         _errorMessage = response['error'];
-        setBusy(false);
+        if (!isSilent) setBusy(false);
         notifyListeners();
         return false;
       } else {
         _errorMessage = 'Failed to get profile';
-        setBusy(false);
+        if (!isSilent) setBusy(false);
         notifyListeners();
         return false;
       }
     } catch (e) {
       _errorMessage = 'Exception: ${e.toString()}';
-      setBusy(false);
+      if (!isSilent) setBusy(false);
       notifyListeners();
       return false;
     }

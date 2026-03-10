@@ -362,7 +362,34 @@ class _CardScreenState extends State<CardScreen> {
       }
     } catch (e) {
       if (mounted) {
+        // Fallback: assign an empty/safe detail model so UI doesn't break
         setState(() {
+          _currentCardDetails = CardAccountDetailsModel(
+            id: 0,
+            publicToken: targetToken,
+            cardNo: '---- ---- ---- ----',
+            cardScheme: 'VISA',
+            currencyCode: 'USD',
+            balance: 0.00,
+            status: 'Offline',
+            expiryDate: '**/**',
+            activateTime: 0,
+            physical: false,
+            rechargeMin: 0.00,
+            rechargeMax: 0.00,
+            rechargeFee: 0.00,
+            withdrawMin: 0.00,
+            withdrawMax: 0.00,
+            withdrawFee: 0.00,
+            singleQuota: 0.00,
+            dayQuota: 0.00,
+            monthQuota: 0.00,
+            transactionFee: 0.00,
+            crossBorderFee: 0.00,
+            upgradeAmount: 0.00,
+            memberName: 'NAME',
+            updatePhysical: false,
+          );
           _isLoadingCardDetails = false;
         });
       }
@@ -862,6 +889,16 @@ class _CardScreenState extends State<CardScreen> {
                         if (_currentCardDetails == null) return;
                         // 'normal' -> Lock (G1)
                         // 'frozen' -> Unlock (00)
+                        if (_currentCardDetails!.id == 0) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Failed to load card details'),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                          return;
+                        }
+
                         if (_currentCardDetails!.status == 'normal') {
                           _showConfirmationDialog(
                             title:
@@ -881,10 +918,10 @@ class _CardScreenState extends State<CardScreen> {
                         } else {
                           // cancelled or others
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(AppLocalizations.of(context)!
-                                  .featureComingSoon),
-                              duration: const Duration(seconds: 1),
+                            const SnackBar(
+                              content: Text(
+                                  'Failed to load card details. Please pull down to refresh.'),
+                              duration: Duration(seconds: 1),
                             ),
                           );
                         }
@@ -896,6 +933,15 @@ class _CardScreenState extends State<CardScreen> {
                       onTap: () {
                         if (_isBusy) return;
                         if (_currentCardDetails == null) return;
+                        if (_currentCardDetails!.id == 0) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Failed to load card details'),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                          return;
+                        }
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -914,6 +960,15 @@ class _CardScreenState extends State<CardScreen> {
                       onTap: () {
                         if (_isBusy) return;
                         if (_currentCardDetails == null) return;
+                        if (_currentCardDetails!.id == 0) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Failed to load card details'),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                          return;
+                        }
 
                         // If already applied for physical card, do nothing (or show a message)
                         if (_currentCardDetails!.updatePhysical) {
@@ -1085,7 +1140,7 @@ class _CardScreenState extends State<CardScreen> {
           image: AssetImage('assets/card.jpg'),
           fit: BoxFit.fill,
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.2),
