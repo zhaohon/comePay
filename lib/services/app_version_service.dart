@@ -12,7 +12,7 @@ class AppVersionService extends BaseService {
   /// 返回:
   /// - AppVersionResponseModel: 包含版本信息的响应模型
   Future<AppVersionResponseModel> getLatestVersion({
-    String platform = 'android',
+    required String platform,
   }) async {
     try {
       final response = await dio.get(

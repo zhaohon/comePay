@@ -8,6 +8,7 @@ import 'package:comecomepay/services/app_version_service.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
 import 'package:comecomepay/views/homes/VersionUpdateScreen.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'dart:io';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -90,10 +91,13 @@ class _SplashScreenState extends State<SplashScreen>
         return;
       }
 
+      // 获取当前运行平台
+      final currentPlatform = Platform.isIOS ? 'ios' : 'android';
+
       // 调用 API 获取最新版本
       final versionService = AppVersionService();
       final response =
-          await versionService.getLatestVersion(platform: 'android');
+          await versionService.getLatestVersion(platform: currentPlatform);
 
       // 从 pubspec.yaml 获取当前版本
       final packageInfo = await PackageInfo.fromPlatform();
