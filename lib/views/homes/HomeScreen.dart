@@ -139,11 +139,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                   fontSize: isSmallScreen ? 16 : 18,
                                 ),
                               ),
-                              backgroundColor: AppColors.pageBackground,
+                              backgroundColor: Colors.transparent,
+                              surfaceTintColor: Colors.transparent,
                               floating: true,
                               snap: true,
                               pinned: false,
                               elevation: 0,
+                              scrolledUnderElevation: 0,
                               centerTitle: false, // 左对齐
                               titleSpacing: 0,
                               actions: [
