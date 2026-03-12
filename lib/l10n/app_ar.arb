@@ -561,5 +561,17 @@
   "verificationCodeSent": "تم إرسال رمز التحقق",
   "balanceColonFormat": "الرصيد: {balance}",
   "physicalCard": "بطاقة فعلية",
-  "physicalCardAlreadyApplied": "تم طلب البطاقة الفعلية بالفعل"
+  "physicalCardAlreadyApplied": "تم طلب البطاقة الفعلية بالفعل",
+  "enterRecipientUid": "Please enter recipient UID",
+  "internalTransferFailed": "Internal transfer failed: {error}",
+  "securityTip": "Security Tip",
+  "transactionPasswordNotSetMessage": "You haven't set a transaction password yet. For your security, please set it first.",
+  "goToSet": "Go to Set",
+  "confirmTransaction": "Confirm Transaction",
+  "enter6DigitTransactionPasswordToVerify": "Please enter your 6-digit transaction password to verify identity",
+  "recipientUid": "Recipient UID",
+  "enterRecipientUidHint": "Enter recipient UID (numbers only)",
+  "internalTransferTip": "💡 Free of charge for internal transfers, instant arrival",
+  "tokenWithdrawal": "Token Withdrawal",
+  "internalTransfer": "Internal Transfer"
 }

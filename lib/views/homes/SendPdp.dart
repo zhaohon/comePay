@@ -18,21 +18,22 @@ class SendPdp extends StatefulWidget {
 
 class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
   WalletBalance? balance;
-  
+
   // External Transfer Controllers
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
-  
+
   // Internal Transfer Controllers
   final TextEditingController _uidController = TextEditingController();
-  final TextEditingController _internalAmountController = TextEditingController();
+  final TextEditingController _internalAmountController =
+      TextEditingController();
 
   final WithdrawService _withdrawService = WithdrawService();
   bool _isLoading = false;
-  
+
   // 模拟参数：假装交易密码还没设置 (Set to false to test the flow)
-  bool _isTransactionPasswordSet = false;
-  
+  bool _isTransactionPasswordSet = true;
+
   late TabController _tabController;
 
   @override
@@ -177,7 +178,8 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
   Future<void> _submitInternalTransfer() async {
     if (_uidController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('请输入收款人 UID')),
+        SnackBar(
+            content: Text(AppLocalizations.of(context)!.enterRecipientUid)),
       );
       return;
     }
@@ -243,7 +245,8 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('内部转账失败: ${e.toString().replaceAll("Exception: ", "")}'),
+          content: Text(AppLocalizations.of(context)!.internalTransferFailed(
+              e.toString().replaceAll("Exception: ", ""))),
           backgroundColor: AppColors.error,
         ),
       );
@@ -261,23 +264,28 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('安全提示', style: TextStyle(fontWeight: FontWeight.bold)),
-        content: const Text('由于您还未设置交易密码，为了您的资产安全，请先前往设置。'),
+        title: Text(AppLocalizations.of(context)!.securityTip,
+            style: const TextStyle(fontWeight: FontWeight.bold)),
+        content: Text(
+            AppLocalizations.of(context)!.transactionPasswordNotSetMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('取消', style: TextStyle(color: Colors.grey[600])),
+            child: Text(AppLocalizations.of(context)!.cancel,
+                style: TextStyle(color: Colors.grey[600])),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
             ),
             onPressed: () {
               Navigator.pop(context);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const SetTransactionPasswordScreen()),
+                MaterialPageRoute(
+                    builder: (context) => const SetTransactionPasswordScreen()),
               ).then((value) {
                 // 如果设置成功，更新状态（模拟成功后下次可以转账）
                 if (value == true) {
@@ -287,7 +295,8 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
                 }
               });
             },
-            child: const Text('去设置', style: TextStyle(color: Colors.white)),
+            child: Text(AppLocalizations.of(context)!.goToSet,
+                style: const TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -327,9 +336,9 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
                 ),
               ),
               const SizedBox(height: 32),
-              const Text(
-                '确认交易',
-                style: TextStyle(
+              Text(
+                AppLocalizations.of(context)!.confirmTransaction,
+                style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w700,
                     letterSpacing: -0.5,
@@ -339,7 +348,8 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  '请输入您的6位交易密码以验证身份',
+                  AppLocalizations.of(context)!
+                      .enter6DigitTransactionPasswordToVerify,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 14,
@@ -483,8 +493,8 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
             ),
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide:
-                  BorderSide(color: AppColors.border.withOpacity(0.5), width: 1),
+              borderSide: BorderSide(
+                  color: AppColors.border.withOpacity(0.5), width: 1),
             ),
             suffixIcon: IconButton(
               icon: const Icon(
@@ -509,8 +519,8 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
               ),
             ),
             Text(
-              AppLocalizations.of(context)!
-                  .balanceAvailable(balance!.balance.toString(), balance!.symbol),
+              AppLocalizations.of(context)!.balanceAvailable(
+                  balance!.balance.toString(), balance!.symbol),
               style: const TextStyle(
                 fontSize: 12,
                 color: AppColors.textSecondary,
@@ -602,9 +612,9 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          '收款人 UID',
-          style: TextStyle(
+        Text(
+          AppLocalizations.of(context)!.recipientUid,
+          style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
             color: AppColors.textPrimary,
@@ -620,7 +630,7 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
             color: AppColors.textPrimary,
           ),
           decoration: InputDecoration(
-            hintText: '请输入对方 UID (纯数字)',
+            hintText: AppLocalizations.of(context)!.enterRecipientUidHint,
             hintStyle: const TextStyle(
               fontSize: 14,
               color: AppColors.textPlaceholder,
@@ -643,8 +653,8 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
             ),
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide:
-                  BorderSide(color: AppColors.border.withOpacity(0.5), width: 1),
+              borderSide: BorderSide(
+                  color: AppColors.border.withOpacity(0.5), width: 1),
             ),
           ),
         ),
@@ -661,8 +671,8 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
               ),
             ),
             Text(
-              AppLocalizations.of(context)!
-                  .balanceAvailable(balance!.balance.toString(), balance!.symbol),
+              AppLocalizations.of(context)!.balanceAvailable(
+                  balance!.balance.toString(), balance!.symbol),
               style: const TextStyle(
                 fontSize: 12,
                 color: AppColors.textSecondary,
@@ -747,9 +757,9 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
           ),
         ),
         const SizedBox(height: 8),
-        const Text(
-          '💡 内部转账免手续费，实时到账',
-          style: TextStyle(
+        Text(
+          AppLocalizations.of(context)!.internalTransferTip,
+          style: const TextStyle(
             fontSize: 12,
             color: Colors.orange,
             fontWeight: FontWeight.w500,
@@ -818,7 +828,9 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
                 AnimatedAlign(
                   duration: const Duration(milliseconds: 250),
                   curve: Curves.easeInOut,
-                  alignment: _tabController.index == 0 ? Alignment.centerLeft : Alignment.centerRight,
+                  alignment: _tabController.index == 0
+                      ? Alignment.centerLeft
+                      : Alignment.centerRight,
                   child: FractionallySizedBox(
                     widthFactor: 0.5,
                     child: Container(
@@ -850,11 +862,15 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
                         behavior: HitTestBehavior.opaque,
                         child: Center(
                           child: Text(
-                            "代币提现",
+                            AppLocalizations.of(context)!.tokenWithdrawal,
                             style: TextStyle(
                               fontSize: 14,
-                              fontWeight: _tabController.index == 0 ? FontWeight.w600 : FontWeight.w500,
-                              color: _tabController.index == 0 ? AppColors.textPrimary : AppColors.textSecondary,
+                              fontWeight: _tabController.index == 0
+                                  ? FontWeight.w600
+                                  : FontWeight.w500,
+                              color: _tabController.index == 0
+                                  ? AppColors.textPrimary
+                                  : AppColors.textSecondary,
                             ),
                           ),
                         ),
@@ -870,11 +886,15 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
                         behavior: HitTestBehavior.opaque,
                         child: Center(
                           child: Text(
-                            "内部转账",
+                            AppLocalizations.of(context)!.internalTransfer,
                             style: TextStyle(
                               fontSize: 14,
-                              fontWeight: _tabController.index == 1 ? FontWeight.w600 : FontWeight.w500,
-                              color: _tabController.index == 1 ? AppColors.textPrimary : AppColors.textSecondary,
+                              fontWeight: _tabController.index == 1
+                                  ? FontWeight.w600
+                                  : FontWeight.w500,
+                              color: _tabController.index == 1
+                                  ? AppColors.textPrimary
+                                  : AppColors.textSecondary,
                             ),
                           ),
                         ),
@@ -892,11 +912,14 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                   _buildTokenInfoCard(),
-                   const SizedBox(height: 20),
-                  
+                  _buildTokenInfoCard(),
+                  const SizedBox(height: 20),
+
                   // Conditional form rendering
-                  if (_tabController.index == 0) _buildExternalTab() else _buildInternalTab(),
+                  if (_tabController.index == 0)
+                    _buildExternalTab()
+                  else
+                    _buildInternalTab(),
 
                   const SizedBox(height: 40),
 

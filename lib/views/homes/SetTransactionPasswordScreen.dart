@@ -5,20 +5,33 @@ import 'package:comecomepay/utils/service_locator.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/utils/app_colors.dart';
 
-class SetTransactionPasswordScreen extends StatelessWidget {
+class SetTransactionPasswordScreen extends StatefulWidget {
   const SetTransactionPasswordScreen({super.key});
 
   @override
+  State<SetTransactionPasswordScreen> createState() =>
+      _SetTransactionPasswordScreenState();
+}
+
+class _SetTransactionPasswordScreenState
+    extends State<SetTransactionPasswordScreen> {
+  final TextEditingController _transactionPasswordController =
+      TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  final TextEditingController _verificationCodeController =
+      TextEditingController();
+
+  @override
+  void dispose() {
+    _transactionPasswordController.dispose();
+    _confirmPasswordController.dispose();
+    _verificationCodeController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<SetTransactionPasswordViewModel>(context);
-
-    final TextEditingController _transactionPasswordController =
-        TextEditingController();
-    final TextEditingController _confirmPasswordController =
-        TextEditingController();
-    final TextEditingController _verificationCodeController =
-        TextEditingController();
-
     return Scaffold(
       backgroundColor: AppColors.pageBackground,
       appBar: AppBar(
@@ -35,13 +48,15 @@ class SetTransactionPasswordScreen extends StatelessWidget {
 
           if (viewModel.errorMessage != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(viewModel.errorMessage!),
-                  backgroundColor: Colors.red,
-                ),
-              );
-              viewModel.clearError();
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(viewModel.errorMessage!),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+                viewModel.clearError();
+              }
             });
           }
 
@@ -53,10 +68,9 @@ class SetTransactionPasswordScreen extends StatelessWidget {
                 children: [
                   Text(
                     AppLocalizations.of(context)!.setTransactionPasswordWarning,
-                    style: TextStyle(color: Colors.red, fontSize: 13),
+                    style: const TextStyle(color: Colors.red, fontSize: 13),
                   ),
                   const SizedBox(height: 20),
-
                   _buildTextField(
                     title: AppLocalizations.of(context)!.transactionPassword,
                     hint: AppLocalizations.of(context)!
@@ -66,7 +80,6 @@ class SetTransactionPasswordScreen extends StatelessWidget {
                     readOnly: viewModel.isOtpRequested,
                   ),
                   const SizedBox(height: 16),
-
                   _buildTextField(
                     title: AppLocalizations.of(context)!
                         .confirmTransactionPassword,
@@ -77,92 +90,110 @@ class SetTransactionPasswordScreen extends StatelessWidget {
                     readOnly: viewModel.isOtpRequested,
                   ),
                   const SizedBox(height: 16),
-
                   _buildTextField(
                     title: AppLocalizations.of(context)!.verificationMethod,
                     hint: AppLocalizations.of(context)!.emailVerification,
+                    value: AppLocalizations.of(context)!.emailVerification,
                     readOnly: true,
                   ),
                   const SizedBox(height: 16),
-
                   _buildTextField(
                     title: AppLocalizations.of(context)!.verificationCode,
                     hint: AppLocalizations.of(context)!
                         .pleaseEnterVerificationCode,
                     controller: _verificationCodeController,
                     suffix: TextButton(
-                      onPressed: () async {
-                        final result =
-                            await viewModel.requestTransactionPassword(
-                          password: _transactionPasswordController.text,
-                          confirmPassword: _confirmPasswordController.text,
-                        );
-                        if (result.success) {
-                          // OTP sent, user can now enter code
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(AppLocalizations.of(context)!
-                                  .otpSentToYourEmail),
-                              backgroundColor: Colors.green,
-                            ),
-                          );
-                          // Clear password fields on success
-                          _transactionPasswordController.clear();
-                          _confirmPasswordController.clear();
-                        }
-                        // Error handled by Consumer
-                      },
-                      child: Text(AppLocalizations.of(context)!.getCode),
+                      onPressed: viewModel.isOtpRequested
+                          ? null
+                          : () async {
+                              final result =
+                                  await viewModel.requestTransactionPassword(
+                                password: _transactionPasswordController.text,
+                                confirmPassword:
+                                    _confirmPasswordController.text,
+                              );
+                              if (result.success && mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(AppLocalizations.of(context)!
+                                        .otpSentToYourEmail),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                              }
+                            },
+                      child: Text(
+                        viewModel.isOtpRequested
+                            ? 'OTP Sent'
+                            : AppLocalizations.of(context)!.getCode,
+                        style: TextStyle(
+                          color: viewModel.isOtpRequested
+                              ? Colors.grey
+                              : AppColors.primary,
+                        ),
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 80), // biar tidak ketutup tombol bawah
+                  const SizedBox(height: 80),
                 ],
               ),
             ),
           );
         },
       ),
-
-      // Confirm button di paling bawah
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () async {
-              final result = await viewModel.completeTransactionPassword(
-                otpCode: _verificationCodeController.text,
-              );
-              if (result.success) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(result.message ??
-                        AppLocalizations.of(context)!
-                            .transactionPasswordSetSuccessfully),
-                    backgroundColor: Colors.green,
-                  ),
-                );
-                Navigator.of(context).pop();
-              }
-            },
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              height: 52,
-              decoration: BoxDecoration(
-                gradient: AppColors.primaryGradient,
+        child: Consumer<SetTransactionPasswordViewModel>(
+          builder: (context, viewModel, child) {
+            return Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: !viewModel.isOtpRequested
+                    ? null
+                    : () async {
+                        final result =
+                            await viewModel.completeTransactionPassword(
+                          otpCode: _verificationCodeController.text,
+                        );
+                        if (result.success && mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(result.message ??
+                                  AppLocalizations.of(context)!
+                                      .transactionPasswordSetSuccessfully),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                          Navigator.of(context).pop();
+                        }
+                      },
                 borderRadius: BorderRadius.circular(12),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                AppLocalizations.of(context)!.confirm,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
+                child: Container(
+                  height: 52,
+                  decoration: BoxDecoration(
+                    gradient: viewModel.isOtpRequested
+                        ? AppColors.primaryGradient
+                        : LinearGradient(
+                            colors: [
+                              Colors.grey.shade400,
+                              Colors.grey.shade400
+                            ],
+                          ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    AppLocalizations.of(context)!.confirm,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );
@@ -175,6 +206,7 @@ class SetTransactionPasswordScreen extends StatelessWidget {
     bool obscure = false,
     Widget? suffix,
     bool readOnly = false,
+    String? value,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,9 +217,14 @@ class SetTransactionPasswordScreen extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         TextField(
-          controller: controller,
+          controller:
+              value != null ? TextEditingController(text: value) : controller,
           obscureText: obscure,
           readOnly: readOnly,
+          style: TextStyle(
+            color: readOnly && value != null ? Colors.black : null,
+            fontWeight: readOnly && value != null ? FontWeight.w400 : null,
+          ),
           decoration: InputDecoration(
             hintText: hint,
             border: OutlineInputBorder(

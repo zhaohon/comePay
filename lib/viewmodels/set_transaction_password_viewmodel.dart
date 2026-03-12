@@ -66,6 +66,13 @@ class SetTransactionPasswordViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  void reset() {
+    _errorMessage = null;
+    _tempHash = null;
+    _isOtpRequested = false;
+    notifyListeners();
+  }
+
   // Business logic methods
   Future<TransactionPasswordResult> requestTransactionPassword({
     required String password,

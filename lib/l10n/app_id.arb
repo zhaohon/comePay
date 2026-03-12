@@ -321,5 +321,17 @@
   "referralCodeOptional": "Kode Referral (Opsional)",
   "enterReferralCode": "Masukkan kode referral jika Anda memilikinya",
   "physicalCard": "Kartu Fisik",
-  "physicalCardAlreadyApplied": "Kartu fisik sudah diajukan"
+  "physicalCardAlreadyApplied": "Kartu fisik sudah diajukan",
+  "enterRecipientUid": "Masukkan UID penerima",
+  "internalTransferFailed": "Transfer internal gagal: {error}",
+  "securityTip": "Tip Keamanan",
+  "transactionPasswordNotSetMessage": "Anda belum mengatur kata sandi transaksi. Untuk keamanan Anda, silakan atur terlebih dahulu.",
+  "goToSet": "Atur Sekarang",
+  "confirmTransaction": "Konfirmasi Transaksi",
+  "enter6DigitTransactionPasswordToVerify": "Silakan masukkan 6 digit kata sandi transaksi untuk memverifikasi identitas",
+  "recipientUid": "UID Penerima",
+  "enterRecipientUidHint": "Masukkan UID penerima (hanya angka)",
+  "internalTransferTip": "💡 Bebas biaya untuk transfer internal, sampai seketika",
+  "tokenWithdrawal": "Withdrawal Token",
+  "internalTransfer": "Transfer Internal"
 }

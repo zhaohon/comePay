@@ -84,7 +84,8 @@ class _OtpInputState extends State<OtpInput> {
       children: List.generate(widget.length, (index) {
         return Expanded(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: index == 0 || index == widget.length - 1 ? 0 : 4),
+            padding: EdgeInsets.symmetric(
+                horizontal: index == 0 || index == widget.length - 1 ? 0 : 4),
             child: AspectRatio(
               aspectRatio: 1,
               child: RawKeyboardListener(
@@ -97,7 +98,7 @@ class _OtpInputState extends State<OtpInput> {
                       // 当前框为空，删除前一个框的内容并聚焦
                       _controllers[index - 1].clear();
                       _focusNodes[index - 1].requestFocus();
-    
+
                       // 通知变化
                       final code = _controllers.map((c) => c.text).join();
                       widget.onChanged?.call(code);
@@ -123,18 +124,21 @@ class _OtpInputState extends State<OtpInput> {
                   decoration: InputDecoration(
                     counterText: '',
                     filled: true,
-                    fillColor: Colors.grey.withValues(alpha: 0.05),
+                    fillColor: AppColors.pageBackground,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
+                      borderSide:
+                          const BorderSide(color: AppColors.border, width: 1),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
+                      borderSide:
+                          const BorderSide(color: AppColors.border, width: 1),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+                      borderSide: const BorderSide(
+                          color: AppColors.primary, width: 1.5),
                     ),
                     contentPadding: EdgeInsets.zero,
                   ),
@@ -142,7 +146,8 @@ class _OtpInputState extends State<OtpInput> {
                     if (value.length > 1) {
                       // 防止粘贴多个字符
                       _controllers[index].text = value[0];
-                      _controllers[index].selection = TextSelection.fromPosition(
+                      _controllers[index].selection =
+                          TextSelection.fromPosition(
                         TextPosition(offset: 1),
                       );
                     }

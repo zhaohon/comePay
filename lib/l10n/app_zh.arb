@@ -566,5 +566,17 @@
   "verificationCodeSent": "验证码已发送",
   "balanceColonFormat": "余额: {balance}",
   "physicalCard": "实体卡",
-  "physicalCardAlreadyApplied": "已申领实体卡"
+  "physicalCardAlreadyApplied": "已申领实体卡",
+  "enterRecipientUid": "请输入收款人 UID",
+  "internalTransferFailed": "内部转账失败: {error}",
+  "securityTip": "安全提示",
+  "transactionPasswordNotSetMessage": "由于您还未设置交易密码，为了您的资产安全，请先前往设置。",
+  "goToSet": "去设置",
+  "confirmTransaction": "确认交易",
+  "enter6DigitTransactionPasswordToVerify": "请输入您的6位交易密码以验证身份",
+  "recipientUid": "收款人 UID",
+  "enterRecipientUidHint": "请输入对方 UID (纯数字)",
+  "internalTransferTip": "💡 内部转账免手续费，实时到账",
+  "tokenWithdrawal": "代币提现",
+  "internalTransfer": "内部转账"
 }

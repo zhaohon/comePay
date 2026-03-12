@@ -1630,4 +1630,42 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get physicalCardAlreadyApplied => '已申领实体卡';
+
+  @override
+  String get enterRecipientUid => '请输入收款人 UID';
+
+  @override
+  String internalTransferFailed(Object error) {
+    return '内部转账失败: $error';
+  }
+
+  @override
+  String get securityTip => '安全提示';
+
+  @override
+  String get transactionPasswordNotSetMessage => '由于您还未设置交易密码，为了您的资产安全，请先前往设置。';
+
+  @override
+  String get goToSet => '去设置';
+
+  @override
+  String get confirmTransaction => '确认交易';
+
+  @override
+  String get enter6DigitTransactionPasswordToVerify => '请输入您的6位交易密码以验证身份';
+
+  @override
+  String get recipientUid => '收款人 UID';
+
+  @override
+  String get enterRecipientUidHint => '请输入对方 UID (纯数字)';
+
+  @override
+  String get internalTransferTip => '💡 内部转账免手续费，实时到账';
+
+  @override
+  String get tokenWithdrawal => '代币提现';
+
+  @override
+  String get internalTransfer => '内部转账';
 }

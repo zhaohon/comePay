@@ -1678,4 +1678,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get physicalCardAlreadyApplied => 'Physical card already applied';
+
+  @override
+  String get enterRecipientUid => 'Please enter recipient UID';
+
+  @override
+  String internalTransferFailed(Object error) {
+    return 'Internal transfer failed: $error';
+  }
+
+  @override
+  String get securityTip => 'Security Tip';
+
+  @override
+  String get transactionPasswordNotSetMessage =>
+      'You haven\'t set a transaction password yet. For your security, please set it first.';
+
+  @override
+  String get goToSet => 'Go to Set';
+
+  @override
+  String get confirmTransaction => 'Confirm Transaction';
+
+  @override
+  String get enter6DigitTransactionPasswordToVerify =>
+      'Please enter your 6-digit transaction password to verify identity';
+
+  @override
+  String get recipientUid => 'Recipient UID';
+
+  @override
+  String get enterRecipientUidHint => 'Enter recipient UID (numbers only)';
+
+  @override
+  String get internalTransferTip =>
+      '💡 Free of charge for internal transfers, instant arrival';
+
+  @override
+  String get tokenWithdrawal => 'Token Withdrawal';
+
+  @override
+  String get internalTransfer => 'Internal Transfer';
 }

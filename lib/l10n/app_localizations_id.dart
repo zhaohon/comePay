@@ -1679,4 +1679,45 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get physicalCardAlreadyApplied => 'Kartu fisik sudah diajukan';
+
+  @override
+  String get enterRecipientUid => 'Masukkan UID penerima';
+
+  @override
+  String internalTransferFailed(Object error) {
+    return 'Transfer internal gagal: $error';
+  }
+
+  @override
+  String get securityTip => 'Tip Keamanan';
+
+  @override
+  String get transactionPasswordNotSetMessage =>
+      'Anda belum mengatur kata sandi transaksi. Untuk keamanan Anda, silakan atur terlebih dahulu.';
+
+  @override
+  String get goToSet => 'Atur Sekarang';
+
+  @override
+  String get confirmTransaction => 'Konfirmasi Transaksi';
+
+  @override
+  String get enter6DigitTransactionPasswordToVerify =>
+      'Silakan masukkan 6 digit kata sandi transaksi untuk memverifikasi identitas';
+
+  @override
+  String get recipientUid => 'UID Penerima';
+
+  @override
+  String get enterRecipientUidHint => 'Masukkan UID penerima (hanya angka)';
+
+  @override
+  String get internalTransferTip =>
+      '💡 Bebas biaya untuk transfer internal, sampai seketika';
+
+  @override
+  String get tokenWithdrawal => 'Withdrawal Token';
+
+  @override
+  String get internalTransfer => 'Transfer Internal';
 }

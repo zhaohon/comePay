@@ -3263,6 +3263,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Physical card already applied'**
   String get physicalCardAlreadyApplied;
+
+  /// No description provided for @enterRecipientUid.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter recipient UID'**
+  String get enterRecipientUid;
+
+  /// No description provided for @internalTransferFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Internal transfer failed: {error}'**
+  String internalTransferFailed(Object error);
+
+  /// No description provided for @securityTip.
+  ///
+  /// In en, this message translates to:
+  /// **'Security Tip'**
+  String get securityTip;
+
+  /// No description provided for @transactionPasswordNotSetMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t set a transaction password yet. For your security, please set it first.'**
+  String get transactionPasswordNotSetMessage;
+
+  /// No description provided for @goToSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Set'**
+  String get goToSet;
+
+  /// No description provided for @confirmTransaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Transaction'**
+  String get confirmTransaction;
+
+  /// No description provided for @enter6DigitTransactionPasswordToVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your 6-digit transaction password to verify identity'**
+  String get enter6DigitTransactionPasswordToVerify;
+
+  /// No description provided for @recipientUid.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipient UID'**
+  String get recipientUid;
+
+  /// No description provided for @enterRecipientUidHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter recipient UID (numbers only)'**
+  String get enterRecipientUidHint;
+
+  /// No description provided for @internalTransferTip.
+  ///
+  /// In en, this message translates to:
+  /// **'💡 Free of charge for internal transfers, instant arrival'**
+  String get internalTransferTip;
+
+  /// No description provided for @tokenWithdrawal.
+  ///
+  /// In en, this message translates to:
+  /// **'Token Withdrawal'**
+  String get tokenWithdrawal;
+
+  /// No description provided for @internalTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Internal Transfer'**
+  String get internalTransfer;
 }
 
 class _AppLocalizationsDelegate
