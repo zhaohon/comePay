@@ -25,7 +25,7 @@ class ActivatePhysicalCardSuccessScreen extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(16),
                 child: Image.asset(
-                  'assets/card.jpg',
+                  'assets/card.png',
                   width: double.infinity,
                   height: 220,
                   fit: BoxFit.cover,

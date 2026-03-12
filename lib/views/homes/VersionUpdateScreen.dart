@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:io' show Platform;
 import '../../l10n/app_localizations.dart';
 
 /// 版本更新全屏页面 - 严格按照 Telegram 设计
@@ -188,8 +189,18 @@ class VersionUpdateScreen extends StatelessWidget {
   Future<void> _launchUrl(String url) async {
     try {
       final Uri uri = Uri.parse(url);
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      
+      // 对于 iOS，明确指明跳转类型或检查是否是 AppStore 链接
+      if (Platform.isIOS && (url.contains('itunes.apple.com') || url.contains('apps.apple.com'))) {
+        if (await canLaunchUrl(uri)) {
+          // 在 iOS 上，有些版本使用 externalApplication 会强制开 Safari，使用 platformDefault 可直接唤起 AppStore
+          await launchUrl(uri, mode: LaunchMode.platformDefault);
+        }
+      } else {
+        // Android 端或一般的远端外链
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        }
       }
     } catch (e) {
       debugPrint('Failed to launch URL: $e');

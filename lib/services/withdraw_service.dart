@@ -1,4 +1,6 @@
 import 'package:comecomepay/core/base_service.dart';
+import 'package:comecomepay/models/requests/internal_transfer_request_model.dart';
+import 'package:comecomepay/models/responses/internal_transfer_response_model.dart';
 
 /// 提现请求模型
 class WithdrawRequestModel {
@@ -99,6 +101,25 @@ class WithdrawService extends BaseService {
       return WithdrawHistoryResponseModel.fromJson(response);
     } catch (e) {
       print('Error fetching withdrawal history: $e');
+      rethrow;
+    }
+  }
+
+  /// 提交内部转账请求 (UID互转)
+  /// [request] 内部转账请求模型
+  Future<InternalTransferResponseModel> transferByUid(
+      InternalTransferRequestModel request) async {
+    try {
+      final response =
+          await post('/wallet/transfer-by-uid', data: request.toJson());
+
+      if (response['status'] == 'success') {
+        return InternalTransferResponseModel.fromJson(response);
+      } else {
+        throw Exception(response['message'] ?? 'Transfer failed');
+      }
+    } catch (e) {
+      print('Error submitting internal transfer: $e');
       rethrow;
     }
   }

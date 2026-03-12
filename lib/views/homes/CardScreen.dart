@@ -1137,7 +1137,7 @@ class _CardScreenState extends State<CardScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 8.0),
       decoration: BoxDecoration(
         image: const DecorationImage(
-          image: AssetImage('assets/card.jpg'),
+          image: AssetImage('assets/card.png'),
           fit: BoxFit.fill,
         ),
         borderRadius: BorderRadius.circular(20),
@@ -1599,7 +1599,7 @@ class _CardScreenState extends State<CardScreen> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(16),
                           child: Image.asset(
-                            "assets/visa.jpg",
+                            "assets/visa.png",
                             width: double.infinity,
                             fit: BoxFit.contain, // 完整显示，不裁剪
                           ),
