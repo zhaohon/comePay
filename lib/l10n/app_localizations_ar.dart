@@ -1762,4 +1762,46 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get activateNow => 'تفعيل الآن';
+
+  @override
+  String get cardTradeDeposit => 'إيداع';
+
+  @override
+  String get cardTradeWithdraw => 'سحب';
+
+  @override
+  String get cardTradeSwap => 'مبادلة';
+
+  @override
+  String get cardTradeOpenCard => 'فتح بطاقة';
+
+  @override
+  String get cardTradeUpgrade => 'ترقية بطاقة';
+
+  @override
+  String get cardTradeTransferToCard => 'تحويل إلى البطاقة';
+
+  @override
+  String get cardTradeRefund => 'استرداد';
+
+  @override
+  String get cardTradeKyc => 'التحقق من KYC';
+
+  @override
+  String get cardTradeOpenCardRefund => 'استرداد فتح البطاقة';
+
+  @override
+  String get cardTradeTransferFee => 'رسوم التحويل';
+
+  @override
+  String get cardTradeManualDeposit => 'إيداع يدوي';
+
+  @override
+  String get cardTradeConsume => 'شراء';
+
+  @override
+  String get cardTradeUnknown => 'معاملة';
+
+  @override
+  String get merchantNameLabel => 'التاجر';
 }

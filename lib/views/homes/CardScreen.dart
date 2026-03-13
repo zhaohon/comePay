@@ -1,6 +1,7 @@
 import 'package:comecomepay/views/homes/CardApplyConfirmScreen.dart'
     show CardApplyConfirmScreen;
 import 'package:comecomepay/views/homes/CardTransactionDetailScreen.dart';
+import 'package:comecomepay/utils/transaction_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:comecomepay/views/homes/SecurityInfoItem.dart';
@@ -1310,56 +1311,209 @@ class _CardScreenState extends State<CardScreen> {
 
   /// 构建交易记录项
   Widget _buildTransactionItem(Map<String, dynamic> transaction) {
-    final amount = transaction['amount'] ?? 0.0;
+    final amount = (transaction['amount'] is num)
+        ? (transaction['amount'] as num).toDouble()
+        : 0.0;
     final isPositive = amount > 0;
-    final description = transaction['description'] ??
-        transaction['merchant'] ??
-        AppLocalizations.of(context)!.transactionDefault;
-    final date = transaction['date'] ?? transaction['created_at'] ?? '';
+    final currency = transaction['currency'] ?? '';
+    final tradeType = transaction['trade_type'] ?? '';
     final status = transaction['status'] ?? '';
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8.0),
-      child: ListTile(
-        leading: Icon(
-          isPositive ? Icons.arrow_upward : Icons.arrow_downward,
-          color: isPositive ? AppColors.success : AppColors.error,
-        ),
-        title: Text(description),
-        subtitle: Text(date),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              '${isPositive ? '+' : ''}${amount.toStringAsFixed(2)}',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: isPositive ? AppColors.success : AppColors.error,
-              ),
-            ),
-            if (status.isNotEmpty)
-              Text(
-                status,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.textSecondary,
+    // 标题：优先用 merchant_name，其次 description，最后回退到 trade_type 标签
+    final merchantName = transaction['merchant_name'] as String? ?? '';
+    final description = transaction['description'] as String? ?? '';
+    final title = merchantName.isNotEmpty
+        ? merchantName
+        : description.isNotEmpty
+            ? description
+            : TransactionUtils.getCardTradeTypeLabel(context, tradeType);
+
+    // 副标题：时间（多个字段兼容）
+    final tradeTime = transaction['trade_time'] as String? ?? '';
+    final fallbackDate = transaction['date'] as String? ?? '';
+    final fallbackCreatedAt = transaction['created_at'] as String? ?? '';
+    final createdTime = transaction['created_time'];
+
+    String formattedTime = '';
+    if (tradeTime.isNotEmpty) {
+      try {
+        final dt = DateTime.parse(tradeTime);
+        formattedTime =
+            '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+      } catch (_) {
+        formattedTime = tradeTime;
+      }
+    } else if (fallbackDate.isNotEmpty) {
+      formattedTime = fallbackDate;
+    } else if (fallbackCreatedAt.isNotEmpty) {
+      formattedTime = fallbackCreatedAt;
+    } else if (createdTime is int && createdTime > 0) {
+      final dt = DateTime.fromMillisecondsSinceEpoch(createdTime * 1000);
+      formattedTime =
+          '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+    }
+
+    // 颜色和图标
+    final typeColor = TransactionUtils.getCardTradeTypeColor(tradeType);
+    final typeIcon = TransactionUtils.getCardTradeTypeIcon(tradeType);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(14),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(14),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CardTransactionDetailScreen(
+                  transaction: transaction,
                 ),
               ),
-          ],
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CardTransactionDetailScreen(
-                transaction: transaction,
-              ),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Row(
+              children: [
+                // 左侧图标
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: typeColor.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    typeIcon,
+                    color: typeColor,
+                    size: 22,
+                  ),
+                ),
+                const SizedBox(width: 12),
+
+                // 中间：标题 + 时间
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF1F2937),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        formattedTime,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFF9CA3AF),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+
+                // 右侧：金额 + 状态
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      '${isPositive ? '+' : ''}${amount.toStringAsFixed(2)} $currency',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: isPositive
+                            ? const Color(0xFF10B981)
+                            : const Color(0xFFEF4444),
+                      ),
+                    ),
+                    if (status.isNotEmpty) ...[
+                      const SizedBox(height: 4),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: _getStatusBgColor(status),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          TransactionUtils.getLocalizedStatus(context, status),
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                            color: _getStatusTextColor(status),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ],
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
+  }
+
+  /// 状态标签背景色
+  Color _getStatusBgColor(String status) {
+    switch (status) {
+      case 'completed':
+        return const Color(0xFFD1FAE5);
+      case 'pending':
+        return const Color(0xFFFEF3C7);
+      case 'failed':
+      case 'rejected':
+        return const Color(0xFFFEE2E2);
+      case 'approved':
+      case 'credited':
+        return const Color(0xFFDBEAFE);
+      case 'cancelled':
+        return const Color(0xFFF3F4F6);
+      default:
+        return const Color(0xFFF3F4F6);
+    }
+  }
+
+  /// 状态标签文字色
+  Color _getStatusTextColor(String status) {
+    switch (status) {
+      case 'completed':
+        return const Color(0xFF065F46);
+      case 'pending':
+        return const Color(0xFF92400E);
+      case 'failed':
+      case 'rejected':
+        return const Color(0xFF991B1B);
+      case 'approved':
+      case 'credited':
+        return const Color(0xFF1E40AF);
+      case 'cancelled':
+        return const Color(0xFF6B7280);
+      default:
+        return const Color(0xFF6B7280);
+    }
   }
 
   /// 显示余额提示

@@ -1763,4 +1763,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get activateNow => 'Activate Now';
+
+  @override
+  String get cardTradeDeposit => 'Deposit';
+
+  @override
+  String get cardTradeWithdraw => 'Withdraw';
+
+  @override
+  String get cardTradeSwap => 'Swap';
+
+  @override
+  String get cardTradeOpenCard => 'Card Opening';
+
+  @override
+  String get cardTradeUpgrade => 'Card Upgrade';
+
+  @override
+  String get cardTradeTransferToCard => 'Transfer to Card';
+
+  @override
+  String get cardTradeRefund => 'Refund';
+
+  @override
+  String get cardTradeKyc => 'KYC Verification';
+
+  @override
+  String get cardTradeOpenCardRefund => 'Card Opening Refund';
+
+  @override
+  String get cardTradeTransferFee => 'Transfer Fee';
+
+  @override
+  String get cardTradeManualDeposit => 'Manual Deposit';
+
+  @override
+  String get cardTradeConsume => 'Purchase';
+
+  @override
+  String get cardTradeUnknown => 'Transaction';
+
+  @override
+  String get merchantNameLabel => 'Merchant';
 }

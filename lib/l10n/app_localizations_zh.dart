@@ -1710,4 +1710,46 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get activateNow => '立即激活';
+
+  @override
+  String get cardTradeDeposit => '充值';
+
+  @override
+  String get cardTradeWithdraw => '提现';
+
+  @override
+  String get cardTradeSwap => '兑换';
+
+  @override
+  String get cardTradeOpenCard => '开卡';
+
+  @override
+  String get cardTradeUpgrade => '卡升级';
+
+  @override
+  String get cardTradeTransferToCard => '转入到卡';
+
+  @override
+  String get cardTradeRefund => '金额退回';
+
+  @override
+  String get cardTradeKyc => 'KYC验证';
+
+  @override
+  String get cardTradeOpenCardRefund => '开卡退款';
+
+  @override
+  String get cardTradeTransferFee => '转入手续费';
+
+  @override
+  String get cardTradeManualDeposit => '后台充值';
+
+  @override
+  String get cardTradeConsume => '消费';
+
+  @override
+  String get cardTradeUnknown => '交易';
+
+  @override
+  String get merchantNameLabel => '商户名称';
 }

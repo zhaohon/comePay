@@ -3419,6 +3419,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Activate Now'**
   String get activateNow;
+
+  /// No description provided for @cardTradeDeposit.
+  ///
+  /// In en, this message translates to:
+  /// **'Deposit'**
+  String get cardTradeDeposit;
+
+  /// No description provided for @cardTradeWithdraw.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw'**
+  String get cardTradeWithdraw;
+
+  /// No description provided for @cardTradeSwap.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap'**
+  String get cardTradeSwap;
+
+  /// No description provided for @cardTradeOpenCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Opening'**
+  String get cardTradeOpenCard;
+
+  /// No description provided for @cardTradeUpgrade.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Upgrade'**
+  String get cardTradeUpgrade;
+
+  /// No description provided for @cardTradeTransferToCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer to Card'**
+  String get cardTradeTransferToCard;
+
+  /// No description provided for @cardTradeRefund.
+  ///
+  /// In en, this message translates to:
+  /// **'Refund'**
+  String get cardTradeRefund;
+
+  /// No description provided for @cardTradeKyc.
+  ///
+  /// In en, this message translates to:
+  /// **'KYC Verification'**
+  String get cardTradeKyc;
+
+  /// No description provided for @cardTradeOpenCardRefund.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Opening Refund'**
+  String get cardTradeOpenCardRefund;
+
+  /// No description provided for @cardTradeTransferFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer Fee'**
+  String get cardTradeTransferFee;
+
+  /// No description provided for @cardTradeManualDeposit.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual Deposit'**
+  String get cardTradeManualDeposit;
+
+  /// No description provided for @cardTradeConsume.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase'**
+  String get cardTradeConsume;
+
+  /// No description provided for @cardTradeUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction'**
+  String get cardTradeUnknown;
+
+  /// No description provided for @merchantNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Merchant'**
+  String get merchantNameLabel;
 }
 
 class _AppLocalizationsDelegate

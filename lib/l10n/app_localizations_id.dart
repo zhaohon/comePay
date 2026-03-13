@@ -1767,4 +1767,46 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get activateNow => 'Aktifkan Sekarang';
+
+  @override
+  String get cardTradeDeposit => 'Deposit';
+
+  @override
+  String get cardTradeWithdraw => 'Penarikan';
+
+  @override
+  String get cardTradeSwap => 'Swap';
+
+  @override
+  String get cardTradeOpenCard => 'Pembukaan Kartu';
+
+  @override
+  String get cardTradeUpgrade => 'Upgrade Kartu';
+
+  @override
+  String get cardTradeTransferToCard => 'Transfer ke Kartu';
+
+  @override
+  String get cardTradeRefund => 'Pengembalian Dana';
+
+  @override
+  String get cardTradeKyc => 'Verifikasi KYC';
+
+  @override
+  String get cardTradeOpenCardRefund => 'Refund Pembukaan Kartu';
+
+  @override
+  String get cardTradeTransferFee => 'Biaya Transfer';
+
+  @override
+  String get cardTradeManualDeposit => 'Deposit Manual';
+
+  @override
+  String get cardTradeConsume => 'Pembelian';
+
+  @override
+  String get cardTradeUnknown => 'Transaksi';
+
+  @override
+  String get merchantNameLabel => 'Merchant';
 }

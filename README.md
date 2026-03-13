@@ -21,3 +21,5 @@ TJYxFjQpEyaeFSsgwMUEPF2dZsWCZC2GBJ
 trc
 0x3957bd2316a24fa15d24d4c5be98655759d7e6ea
 erc
+
+flutter clean && flutter pub get && flutter build ios --no-codesign

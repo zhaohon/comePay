@@ -552,5 +552,19 @@
   "pleaseEnter6DigitPinHint": "Silakan masukkan 6 digit PIN",
   "pleaseConfirmNew6DigitPin": "Silakan atur ulang 6 digit PIN baru",
   "pleaseConfirm6DigitPinHint": "Silakan masukkan ulang 6 digit PIN",
-  "activateNow": "Aktifkan Sekarang"
+  "activateNow": "Aktifkan Sekarang",
+  "cardTradeDeposit": "Deposit",
+  "cardTradeWithdraw": "Penarikan",
+  "cardTradeSwap": "Swap",
+  "cardTradeOpenCard": "Pembukaan Kartu",
+  "cardTradeUpgrade": "Upgrade Kartu",
+  "cardTradeTransferToCard": "Transfer ke Kartu",
+  "cardTradeRefund": "Pengembalian Dana",
+  "cardTradeKyc": "Verifikasi KYC",
+  "cardTradeOpenCardRefund": "Refund Pembukaan Kartu",
+  "cardTradeTransferFee": "Biaya Transfer",
+  "cardTradeManualDeposit": "Deposit Manual",
+  "cardTradeConsume": "Pembelian",
+  "cardTradeUnknown": "Transaksi",
+  "merchantNameLabel": "Merchant"
 }

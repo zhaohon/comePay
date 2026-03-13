@@ -552,5 +552,19 @@
   "pleaseEnter6DigitPinHint": "请输入6位数字PIN码",
   "pleaseConfirmNew6DigitPin": "请再次设置新的6位数字PIN码",
   "pleaseConfirm6DigitPinHint": "请再次输入6位数字PIN码",
-  "activateNow": "立即激活"
+  "activateNow": "立即激活",
+  "cardTradeDeposit": "充值",
+  "cardTradeWithdraw": "提现",
+  "cardTradeSwap": "兑换",
+  "cardTradeOpenCard": "开卡",
+  "cardTradeUpgrade": "卡升级",
+  "cardTradeTransferToCard": "转入到卡",
+  "cardTradeRefund": "金额退回",
+  "cardTradeKyc": "KYC验证",
+  "cardTradeOpenCardRefund": "开卡退款",
+  "cardTradeTransferFee": "转入手续费",
+  "cardTradeManualDeposit": "后台充值",
+  "cardTradeConsume": "消费",
+  "cardTradeUnknown": "交易",
+  "merchantNameLabel": "商户名称"
 }

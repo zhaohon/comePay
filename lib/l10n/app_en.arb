@@ -552,5 +552,19 @@
   "pleaseEnter6DigitPinHint": "Please enter the 6-digit PIN",
   "pleaseConfirmNew6DigitPin": "Please set the new 6-digit PIN again",
   "pleaseConfirm6DigitPinHint": "Please enter the 6-digit PIN again",
-  "activateNow": "Activate Now"
+  "activateNow": "Activate Now",
+  "cardTradeDeposit": "Deposit",
+  "cardTradeWithdraw": "Withdraw",
+  "cardTradeSwap": "Swap",
+  "cardTradeOpenCard": "Card Opening",
+  "cardTradeUpgrade": "Card Upgrade",
+  "cardTradeTransferToCard": "Transfer to Card",
+  "cardTradeRefund": "Refund",
+  "cardTradeKyc": "KYC Verification",
+  "cardTradeOpenCardRefund": "Card Opening Refund",
+  "cardTradeTransferFee": "Transfer Fee",
+  "cardTradeManualDeposit": "Manual Deposit",
+  "cardTradeConsume": "Purchase",
+  "cardTradeUnknown": "Transaction",
+  "merchantNameLabel": "Merchant"
 }

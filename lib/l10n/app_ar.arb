@@ -552,5 +552,19 @@
   "pleaseEnter6DigitPinHint": "يرجى إدخال رمز PIN المكون من 6 أرقام",
   "pleaseConfirmNew6DigitPin": "يرجى تعيين رمز PIN الجديد مرة أخرى",
   "pleaseConfirm6DigitPinHint": "يرجى إدخال رمز PIN المكون من 6 أرقام مرة أخرى",
-  "activateNow": "تفعيل الآن"
+  "activateNow": "تفعيل الآن",
+  "cardTradeDeposit": "إيداع",
+  "cardTradeWithdraw": "سحب",
+  "cardTradeSwap": "مبادلة",
+  "cardTradeOpenCard": "فتح بطاقة",
+  "cardTradeUpgrade": "ترقية بطاقة",
+  "cardTradeTransferToCard": "تحويل إلى البطاقة",
+  "cardTradeRefund": "استرداد",
+  "cardTradeKyc": "التحقق من KYC",
+  "cardTradeOpenCardRefund": "استرداد فتح البطاقة",
+  "cardTradeTransferFee": "رسوم التحويل",
+  "cardTradeManualDeposit": "إيداع يدوي",
+  "cardTradeConsume": "شراء",
+  "cardTradeUnknown": "معاملة",
+  "merchantNameLabel": "التاجر"
 }
