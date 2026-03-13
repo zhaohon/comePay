@@ -674,44 +674,44 @@ class AppLocalizationsId extends AppLocalizations {
   String get pleaseSelect => 'Silakan pilih';
 
   @override
-  String get yourGateway => 'Your Gateway';
+  String get yourGateway => 'Pintu Gerbang Anda';
 
   @override
-  String get toCrypto => 'to Crypto';
+  String get toCrypto => 'ke Kripto';
 
   @override
-  String get simpleSecureSmooth => 'Simple, Secure, Smooth';
+  String get simpleSecureSmooth => 'Sederhana, Aman, Lancar';
 
   @override
-  String get manageYour => 'Manage Your ';
+  String get manageYour => 'Kelola ';
 
   @override
-  String get cryptoAsset => 'Crypto Asset';
+  String get cryptoAsset => 'Aset Kripto';
 
   @override
-  String get andPaymentsWithComePay => 'And Payments with Come Pay';
+  String get andPaymentsWithComePay => 'dan Pembayaran dengan Come Pay';
 
   @override
-  String get createAPassword => 'Create a Password';
+  String get createAPassword => 'Buat Kata Sandi';
 
   @override
-  String get confirmPasswordLabel => 'Confirm password';
+  String get confirmPasswordLabel => 'Konfirmasi kata sandi';
 
   @override
-  String get byRegisteringYouAccept => 'By registering you accept our';
+  String get byRegisteringYouAccept => 'Dengan mendaftar Anda menerima';
 
   @override
-  String get andPrivacyPolicy => 'and';
+  String get andPrivacyPolicy => 'dan';
 
   @override
   String get yourDataWillBeSecure =>
-      'Your data will be security encrypted with TLS.';
+      'Data Anda akan dienkripsi dengan aman menggunakan TLS.';
 
   @override
-  String get originalFee => 'Original Fee';
+  String get originalFee => 'Biaya Asli';
 
   @override
-  String get actualPayment => 'Actual Payment';
+  String get actualPayment => 'Pembayaran Aktual';
 
   @override
   String get paymentRequired => 'Pembayaran Diperlukan';
@@ -723,31 +723,31 @@ class AppLocalizationsId extends AppLocalizations {
   String get cancel => 'Batal';
 
   @override
-  String get paymentSuccessful => 'Payment successful!';
+  String get paymentSuccessful => 'Pembayaran berhasil!';
 
   @override
-  String get confirmPayment => 'Confirm Payment';
+  String get confirmPayment => 'Konfirmasi Pembayaran';
 
   @override
-  String get amountToPay => 'Amount to Pay';
+  String get amountToPay => 'Jumlah yang Dibayar';
 
   @override
-  String get selectCoupon => 'Select Coupon';
+  String get selectCoupon => 'Pilih Kupon';
 
   @override
-  String get noCoupon => 'No coupon';
+  String get noCoupon => 'Tidak ada kupon';
 
   @override
-  String get applyCard => 'Apply Card';
+  String get applyCard => 'Ajukan Kartu';
 
   @override
-  String get failedToLoadCardFee => 'Failed to load card fee';
+  String get failedToLoadCardFee => 'Gagal memuat biaya kartu';
 
   @override
-  String get code => 'Code';
+  String get code => 'Kode';
 
   @override
-  String get insufficient => 'Insufficient';
+  String get insufficient => 'Tidak mencukupi';
 
   @override
   String get skipButton => 'Lewati';
@@ -843,25 +843,25 @@ class AppLocalizationsId extends AppLocalizations {
       'Fitur pindai kode QR sedang dalam pengembangan';
 
   @override
-  String get scanQRCodeTitle => 'Scan QR Code';
+  String get scanQRCodeTitle => 'Pindai Kode QR';
 
   @override
-  String get scanQRCodeError => 'Unable to open camera';
+  String get scanQRCodeError => 'Tidak dapat membuka kamera';
 
   @override
   String get scanQRCodeHint =>
-      'Align the recipient address QR code within the frame';
+      'Posisikan kode QR alamat penerima dalam bingkai';
 
   @override
   String get scanQRCodeCameraRequired =>
-      'Camera permission is required to scan QR code';
+      'Izin kamera diperlukan untuk memindai kode QR';
 
   @override
   String get scanQRCodePermissionDeniedMessage =>
-      'Camera access is needed to scan QR codes. Please tap \"Allow\" in the prompt above, or enable it in Settings.';
+      'Akses kamera diperlukan untuk memindai kode QR. Silakan ketuk \"Izinkan\" pada prompt di atas, atau aktifkan di Pengaturan.';
 
   @override
-  String get goToSettings => 'Open Settings';
+  String get goToSettings => 'Buka Pengaturan';
 
   @override
   String get addressCopied => 'Alamat disalin';
@@ -1050,628 +1050,632 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String myWalletAddress(Object address, Object currency) {
-    return 'My $currency wallet address:\n$address';
+    return 'Alamat dompet $currency saya:\n$address';
   }
 
   @override
-  String get walletAddress => 'Wallet Address';
+  String get walletAddress => 'Alamat Dompet';
 
   @override
   String receiveNetworkWarning(Object currency) {
-    return 'Only support receiving $currency network assets, other network assets cannot be recovered.';
+    return 'Hanya mendukung penerimaan aset jaringan $currency, aset jaringan lain tidak dapat dipulihkan.';
   }
 
   @override
-  String get shareAddress => 'Share Address';
+  String get shareAddress => 'Bagikan Alamat';
 
   @override
-  String get noReceiveAddress => 'No Receive Address';
+  String get noReceiveAddress => 'Tidak Ada Alamat Terima';
 
   @override
-  String get coinNoAddressGenerated => 'No address generated for this coin';
+  String get coinNoAddressGenerated =>
+      'Belum ada alamat yang dibuat untuk koin ini';
 
   @override
-  String get receiveTitle => 'Receive';
+  String get receiveTitle => 'Terima';
 
   @override
   String receiveCoin(Object currency) {
-    return 'Receive $currency';
+    return 'Terima $currency';
   }
 
   @override
-  String get recipientAddress => 'Recipient Address';
+  String get recipientAddress => 'Alamat Penerima';
 
   @override
-  String get enterOrPasteAddress => 'Enter or paste address';
+  String get enterOrPasteAddress => 'Masukkan atau tempel alamat';
 
   @override
-  String get amount => 'Amount';
+  String get amount => 'Jumlah';
 
   @override
   String balanceAvailable(Object balance, Object symbol) {
-    return 'Available: $balance $symbol';
+    return 'Tersedia: $balance $symbol';
   }
 
   @override
-  String get all => 'All';
+  String get all => 'Semua';
 
   @override
   String withdrawFailedWithError(Object error) {
-    return 'Withdraw failed: $error';
+    return 'Penarikan gagal: $error';
   }
 
   @override
-  String get withdrawHistory => 'Withdraw History';
+  String get withdrawHistory => 'Riwayat Penarikan';
 
   @override
-  String get noWithdrawHistory => 'No withdraw history';
+  String get noWithdrawHistory => 'Tidak ada riwayat penarikan';
 
   @override
-  String get pullToRefresh => 'Pull to refresh';
+  String get pullToRefresh => 'Tarik untuk menyegarkan';
 
   @override
-  String get withdrawRecordPrefix => 'Withdraw Record #';
+  String get withdrawRecordPrefix => 'Catatan Penarikan #';
 
   @override
-  String get noData => 'No Data';
+  String get noData => 'Tidak ada data';
 
   @override
-  String get statusApproved => 'Approved';
+  String get statusApproved => 'Disetujui';
 
   @override
-  String get statusPending => 'Pending';
+  String get statusPending => 'Menunggu';
 
   @override
-  String get statusRejected => 'Rejected';
+  String get statusRejected => 'Ditolak';
 
   @override
   String get typeDeposit => 'Deposit';
 
   @override
-  String get typeWithdraw => 'Withdraw';
+  String get typeWithdraw => 'Penarikan';
 
   @override
   String get typeSwap => 'Swap';
 
   @override
-  String get typeCardFee => 'Card Fee';
+  String get typeCardFee => 'Biaya Kartu';
 
   @override
-  String get typeCommission => 'Commission';
+  String get typeCommission => 'Komisi';
 
   @override
   String get typeTransfer => 'Transfer';
 
   @override
-  String get typeFee => 'Fee';
+  String get typeFee => 'Biaya';
 
   @override
-  String get statusCompleted => 'Completed';
+  String get statusCompleted => 'Selesai';
 
   @override
-  String get statusFailed => 'Failed';
+  String get statusFailed => 'Gagal';
 
   @override
-  String get statusCancelled => 'Cancelled';
+  String get statusCancelled => 'Dibatalkan';
 
   @override
-  String get statusCredited => 'Credited';
+  String get statusCredited => 'Dikreditkan';
 
   @override
   String get availableAmountEstimateDesc =>
-      'Estimated available amount after transaction fees and exchange rate fluctuations';
+      'Perkiraan jumlah tersedia setelah biaya transaksi dan fluktuasi nilai tukar';
 
   @override
-  String get lockCard => 'Lock Card';
+  String get lockCard => 'Kunci Kartu';
 
   @override
-  String get cardAuthorization => 'Card Authorization';
+  String get cardAuthorization => 'Otorisasi Kartu';
 
   @override
-  String get applyPhysicalCard => 'Apply Physical Card';
+  String get applyPhysicalCard => 'Ajukan Kartu Fisik';
 
   @override
-  String get reportLoss => 'Report Loss';
+  String get reportLoss => 'Laporkan Kehilangan';
 
   @override
-  String get bill => 'Bill';
+  String get bill => 'Tagihan';
 
   @override
-  String get expiryDateLabel => 'Expiry Date: ';
+  String get expiryDateLabel => 'Tanggal Kadaluarsa: ';
 
   @override
   String get cvvLabel => 'CVV: ';
 
   @override
-  String get transactionDefault => 'Transaction';
+  String get transactionDefault => 'Transaksi';
 
   @override
-  String get billDetail => 'Bill Details';
+  String get billDetail => 'Detail Tagihan';
 
   @override
-  String get orderId => 'Order ID';
+  String get orderId => 'ID Pesanan';
 
   @override
-  String get copySuccess => 'Copied to clipboard';
+  String get copySuccess => 'Disalin ke clipboard';
 
   @override
-  String get balanceLabel => 'Balance';
+  String get balanceLabel => 'Saldo';
 
   @override
-  String get transactionId => 'Transaction ID';
+  String get transactionId => 'ID Transaksi';
 
   @override
-  String get myInvitation => 'My Invitation';
+  String get myInvitation => 'Undangan Saya';
 
   @override
-  String get totalFriends => 'Total Friends';
+  String get totalFriends => 'Total Teman';
 
   @override
-  String get level1Friends => 'Level 1 Friends';
+  String get level1Friends => 'Teman Level 1';
 
   @override
-  String get level2Friends => 'Level 2 Friends';
+  String get level2Friends => 'Teman Level 2';
 
   @override
-  String get myFriends => 'My Friends';
+  String get myFriends => 'Teman Saya';
 
   @override
-  String get totalCardRebate => 'Total Card Rebate';
+  String get totalCardRebate => 'Total Rebate Kartu';
 
   @override
-  String get level1CardRebate => 'Level 1 Card Rebate';
+  String get level1CardRebate => 'Rebate Kartu Level 1';
 
   @override
-  String get level2CardRebate => 'Level 2 Card Rebate';
+  String get level2CardRebate => 'Rebate Kartu Level 2';
 
   @override
-  String get cardRebateAction => 'Card Rebate';
+  String get cardRebateAction => 'Rebate Kartu';
 
   @override
-  String get totalTransactionRebate => 'Total Transaction Rebate';
+  String get totalTransactionRebate => 'Total Rebate Transaksi';
 
   @override
-  String get level1TransactionRebate => 'Level 1 Transaction Rebate';
+  String get level1TransactionRebate => 'Rebate Transaksi Level 1';
 
   @override
-  String get level2TransactionRebate => 'Level 2 Transaction Rebate';
+  String get level2TransactionRebate => 'Rebate Transaksi Level 2';
 
   @override
-  String get transactionRebateAction => 'Transaction Rebate';
+  String get transactionRebateAction => 'Rebate Transaksi';
 
   @override
-  String get level1FriendsTab => 'Level 1 Friends';
+  String get level1FriendsTab => 'Teman Level 1';
 
   @override
-  String get level2FriendsTab => 'Level 2 Friends';
+  String get level2FriendsTab => 'Teman Level 2';
 
   @override
-  String get registrationTimeLabel => 'Registration Time: ';
+  String get registrationTimeLabel => 'Waktu Pendaftaran: ';
 
   @override
-  String get level1CardTab => 'Level 1 Card';
+  String get level1CardTab => 'Kartu Level 1';
 
   @override
-  String get level2CardTab => 'Level 2 Card';
+  String get level2CardTab => 'Kartu Level 2';
 
   @override
-  String get level1TransactionTab => 'Level 1 Transaction';
+  String get level1TransactionTab => 'Transaksi Level 1';
 
   @override
-  String get level2TransactionTab => 'Level 2 Transaction';
+  String get level2TransactionTab => 'Transaksi Level 2';
 
   @override
-  String get payFee => 'Pay Fee';
+  String get payFee => 'Bayar Biaya';
 
   @override
-  String get transactionSettlementAmount => 'Settlement Amount';
+  String get transactionSettlementAmount => 'Jumlah Penyelesaian';
 
   @override
   String get rebate => 'Rebate';
 
   @override
-  String get consumptionRebate => 'Consumption Rebate';
+  String get consumptionRebate => 'Rebate Konsumsi';
 
   @override
-  String get cardOpening => 'Card Opening';
+  String get cardOpening => 'Pembukaan Kartu';
 
   @override
-  String get consumption => 'Consumption';
+  String get consumption => 'Konsumsi';
 
   @override
-  String get cardOpeningTimeLabel => 'Open Time:';
+  String get cardOpeningTimeLabel => 'Waktu Pembukaan:';
 
   @override
-  String get transactionSettlementTimeLabel => 'Settlement Time:';
+  String get transactionSettlementTimeLabel => 'Waktu Penyelesaian:';
 
   @override
   String get paymentCompletedKycPrompt =>
-      'You have completed the card fee payment. You can now proceed with KYC verification.';
+      'Anda telah menyelesaikan pembayaran biaya kartu. Anda sekarang dapat melanjutkan dengan verifikasi KYC.';
 
   @override
-  String get goToVerify => 'Go to Verify';
+  String get goToVerify => 'Pergi Verifikasi';
 
   @override
-  String get couponDiscount => 'Coupon Discount';
+  String get couponDiscount => 'Diskon Kupon';
 
   @override
-  String get failToLoadCardFeeConfig => 'Failed to load card fee config';
+  String get failToLoadCardFeeConfig => 'Gagal memuat konfigurasi biaya kartu';
 
   @override
-  String get failToLoadPaymentCurrencies => 'Failed to load payment currencies';
+  String get failToLoadPaymentCurrencies => 'Gagal memuat mata uang pembayaran';
 
   @override
-  String get noPaymentCurrenciesAvailable => 'No payment currencies available';
+  String get noPaymentCurrenciesAvailable =>
+      'Tidak ada mata uang pembayaran tersedia';
 
   @override
-  String get pleaseSelectPaymentCurrency => 'Please select a payment currency';
+  String get pleaseSelectPaymentCurrency =>
+      'Silakan pilih mata uang pembayaran';
 
   @override
-  String get failToCreatePayment => 'Failed to create payment';
+  String get failToCreatePayment => 'Gagal membuat pembayaran';
 
   @override
-  String get accountNotification => 'Account Notification';
+  String get accountNotification => 'Notifikasi Akun';
 
   @override
-  String get systemAnnouncement => 'System Announcement';
+  String get systemAnnouncement => 'Pengumuman Sistem';
 
   @override
-  String get markAllAsRead => 'Mark All as Read';
+  String get markAllAsRead => 'Tandai Semua Dibaca';
 
   @override
-  String get notificationSettings => 'Notification Settings';
+  String get notificationSettings => 'Pengaturan Notifikasi';
 
   @override
-  String get announcementDetail => 'Announcement Detail';
+  String get announcementDetail => 'Detail Pengumuman';
 
   @override
-  String get notificationDetail => 'Notification Detail';
+  String get notificationDetail => 'Detail Notifikasi';
 
   @override
-  String get contentDetail => 'Content Detail';
+  String get contentDetail => 'Detail Konten';
 
   @override
-  String get noNotifications => 'No Notifications';
+  String get noNotifications => 'Tidak Ada Notifikasi';
 
   @override
-  String get noAnnouncements => 'No Announcements';
+  String get noAnnouncements => 'Tidak Ada Pengumuman';
 
   @override
-  String get loadMoreFailed => 'Load More Failed';
+  String get loadMoreFailed => 'Gagal Memuat Lebih Banyak';
 
   @override
-  String get refreshing => 'Refreshing...';
+  String get refreshing => 'Menyegarkan...';
 
   @override
-  String get invalidDate => 'Invalid Date';
+  String get invalidDate => 'Tanggal Tidak Valid';
 
   @override
-  String get publishTime => 'Publish Time';
+  String get publishTime => 'Waktu Terbit';
 
   @override
-  String get authorizationList => 'Authorization List';
+  String get authorizationList => 'Daftar Otorisasi';
 
   @override
-  String get featureComingSoon => 'Feature under development';
+  String get featureComingSoon => 'Fitur sedang dalam pengembangan';
 
   @override
-  String get unlockCard => 'Unlock Card';
+  String get unlockCard => 'Buka Kunci Kartu';
 
   @override
-  String get cardLockedSuccessfully => 'Card locked successfully';
+  String get cardLockedSuccessfully => 'Kartu berhasil dikunci';
 
   @override
-  String get cardUnlockedSuccessfully => 'Card unlocked successfully';
+  String get cardUnlockedSuccessfully => 'Kartu berhasil dibuka';
 
   @override
-  String get failedToLockCard => 'Failed to lock card';
+  String get failedToLockCard => 'Gagal mengunci kartu';
 
   @override
-  String get failedToUnlockCard => 'Failed to unlock card';
+  String get failedToUnlockCard => 'Gagal membuka kunci kartu';
 
   @override
-  String get confirmLockTitle => 'Lock Card';
+  String get confirmLockTitle => 'Kunci Kartu';
 
   @override
   String get confirmLockContent =>
-      'Are you sure you want to lock this card? You will not be able to use it for payments until you unlock it.';
+      'Apakah Anda yakin ingin mengunci kartu ini? Anda tidak akan dapat menggunakannya untuk pembayaran sampai Anda membukanya.';
 
   @override
-  String get confirmUnlockTitle => 'Unlock Card';
+  String get confirmUnlockTitle => 'Buka Kunci Kartu';
 
   @override
   String get confirmUnlockContent =>
-      'Are you sure you want to unlock this card?';
+      'Apakah Anda yakin ingin membuka kunci kartu ini?';
 
   @override
-  String get cardSecurityInfo => 'Card Security Info';
+  String get cardSecurityInfo => 'Info Keamanan Kartu';
 
   @override
-  String get cardNumber => 'Card Number';
+  String get cardNumber => 'Nomor Kartu';
 
   @override
-  String get expiryDate => 'Expiry Date';
+  String get expiryDate => 'Tanggal Kadaluarsa';
 
   @override
-  String get cvvCode => 'CVV Code';
+  String get cvvCode => 'Kode CVV';
 
   @override
-  String get pinCode => 'PIN Code';
+  String get pinCode => 'Kode PIN';
 
   @override
   String insufficientBalanceForCoin(Object coin) {
-    return '$coin Balance Insufficient';
+    return 'Saldo $coin Tidak Mencukupi';
   }
 
   @override
-  String get failedToGetPreview => 'Failed to get preview';
+  String get failedToGetPreview => 'Gagal mendapatkan pratinjau';
 
   @override
   String swapFailedWithMessage(Object message) {
-    return 'Swap failed: $message';
+    return 'Swap gagal: $message';
   }
 
   @override
-  String get swapHistoryTitle => 'Swap History';
+  String get swapHistoryTitle => 'Riwayat Swap';
 
   @override
-  String get noSwapHistory => 'No swap history';
+  String get noSwapHistory => 'Tidak ada riwayat swap';
 
   @override
-  String get consumed => 'Consumed';
+  String get consumed => 'Dikonsumsi';
 
   @override
-  String get transferToCard => 'Transfer to card';
+  String get transferToCard => 'Transfer ke kartu';
 
   @override
-  String get transferFromCard => 'Transfer from card';
+  String get transferFromCard => 'Transfer dari kartu';
 
   @override
-  String get rechargeToCard => '(Recharge to card)';
+  String get rechargeToCard => '(Isi ulang ke kartu)';
 
   @override
-  String get withdrawFromCard => '(Withdraw from card)';
+  String get withdrawFromCard => '(Penarikan dari kartu)';
 
   @override
   String get swapAction => 'Swap';
 
   @override
-  String get getAmount => 'Get';
+  String get getAmount => 'Dapatkan';
 
   @override
-  String get enterAmount => 'Please enter amount';
+  String get enterAmount => 'Silakan masukkan jumlah';
 
   @override
-  String get gettingRate => 'Getting rate...';
+  String get gettingRate => 'Mendapatkan kurs...';
 
   @override
   String get error => 'Error';
 
   @override
-  String get reviewing => 'Reviewing';
+  String get reviewing => 'Meninjau';
 
   @override
-  String get underReview => 'Under Review';
+  String get underReview => 'Sedang Ditinjau';
 
   @override
   String get kycReviewDesc =>
-      'Your KYC verification is currently under review. This usually takes a few minutes.';
+      'Verifikasi KYC Anda sedang ditinjau. Biasanya memerlukan beberapa menit.';
 
   @override
-  String get verifyFailed => 'Verify Failed';
+  String get verifyFailed => 'Verifikasi Gagal';
 
   @override
-  String get verificationFailedTitle => 'Verification Failed';
+  String get verificationFailedTitle => 'Verifikasi Gagal';
 
   @override
   String verificationFailedReason(Object reason) {
-    return 'Reason: $reason';
+    return 'Alasan: $reason';
   }
 
   @override
   String get verificationFailedDesc =>
-      'Your verification failed. Please try again.';
+      'Verifikasi Anda gagal. Silakan coba lagi.';
 
   @override
-  String get retryVerification => 'Retry Verification';
+  String get retryVerification => 'Coba Lagi Verifikasi';
 
   @override
-  String get verificationPassed => 'Verification Passed';
+  String get verificationPassed => 'Verifikasi Berhasil';
 
   @override
   String get receiveCardEligibilityDesc =>
-      'Congratulations! You are eligible to receive your card.';
+      'Selamat! Anda berhak menerima kartu Anda.';
 
   @override
-  String get receiveCardNow => 'Receive Card Now';
+  String get receiveCardNow => 'Terima Kartu Sekarang';
 
   @override
-  String get verificationRequiredTitle => 'Verification Required';
+  String get verificationRequiredTitle => 'Verifikasi Diperlukan';
 
   @override
   String get kycRequiredDesc =>
-      'You need to complete KYC verification before issuing a card.';
+      'Anda perlu menyelesaikan verifikasi KYC sebelum menerbitkan kartu.';
 
   @override
-  String get transactionRef => 'Transaction Ref';
+  String get transactionRef => 'Referensi Transaksi';
 
   @override
   String get paymentVerificationTimedOut =>
-      'Payment verification timed out. Please try again.';
+      'Verifikasi pembayaran habis waktu. Silakan coba lagi.';
 
   @override
   String paymentNotCompleted(Object status) {
-    return 'Payment not completed: $status';
+    return 'Pembayaran belum selesai: $status';
   }
 
   @override
   String paymentFailed(Object error) {
-    return 'Payment Failed: $error';
+    return 'Pembayaran Gagal: $error';
   }
 
   @override
   String failedToReceiveCard(Object error) {
-    return 'Failed to receive card: $error';
+    return 'Gagal menerima kartu: $error';
   }
 
   @override
-  String get minFee => 'Min Fee';
+  String get minFee => 'Biaya Minimum';
 
   @override
-  String get unverified => 'Unverified';
+  String get unverified => 'Belum Diverifikasi';
 
   @override
-  String get creationTime => 'Creation Time';
+  String get creationTime => 'Waktu Pembuatan';
 
   @override
   String maxCardLimitReached(Object count) {
-    return 'Each account can claim a maximum of $count cards';
+    return 'Setiap akun dapat mengklaim maksimal $count kartu';
   }
 
   @override
-  String get nameLabel => 'Name';
+  String get nameLabel => 'Nama';
 
   @override
-  String get surnameLabel => 'Surname';
+  String get surnameLabel => 'Nama Belakang';
 
   @override
-  String get enterNameHint => 'Enter Name (uppercase English only)';
+  String get enterNameHint => 'Masukkan Nama (hanya huruf kapital Inggris)';
 
   @override
-  String get enterSurnameHint => 'Enter Surname (uppercase English only)';
+  String get enterSurnameHint =>
+      'Masukkan Nama Belakang (hanya huruf kapital Inggris)';
 
   @override
-  String get mobilePhoneLabel => 'Mobile Phone';
+  String get mobilePhoneLabel => 'Telepon Seluler';
 
   @override
-  String get enterMobileNumberHint => 'Enter mobile number';
+  String get enterMobileNumberHint => 'Masukkan nomor telepon';
 
   @override
-  String get countryRegionLabel => 'Country / Region';
+  String get countryRegionLabel => 'Negara / Wilayah';
 
   @override
-  String get stateProvinceLabel => 'State / Province';
+  String get stateProvinceLabel => 'Provinsi / Negara Bagian';
 
   @override
-  String get enterStateProvinceHint => 'Enter State / Province';
+  String get enterStateProvinceHint => 'Masukkan Provinsi / Negara Bagian';
 
   @override
-  String get cityLabel => 'City';
+  String get cityLabel => 'Kota';
 
   @override
-  String get enterCityHint => 'Enter City';
+  String get enterCityHint => 'Masukkan Kota';
 
   @override
-  String get detailedAddressLabel => 'Detailed Address';
+  String get detailedAddressLabel => 'Alamat Lengkap';
 
   @override
-  String get enterDetailedAddressHint => 'Enter Detailed Address';
+  String get enterDetailedAddressHint => 'Masukkan Alamat Lengkap';
 
   @override
-  String get postCodeLabel => 'Post Code';
+  String get postCodeLabel => 'Kode Pos';
 
   @override
-  String get enterPostCodeHint => 'Enter Post Code';
+  String get enterPostCodeHint => 'Masukkan Kode Pos';
 
   @override
   String get kycSolicitationDisclaimer =>
-      'By continuing you agree that you are accessing this App and its service voluntarily, without any active promotion or solicitation by Come Come Pay';
+      'Dengan melanjutkan Anda setuju bahwa Anda mengakses Aplikasi ini dan layanannya secara sukarela, tanpa promosi atau permintaan aktif dari Come Come Pay';
 
   @override
   String pleaseEnterField(Object field) {
-    return 'Please enter $field';
+    return 'Silakan masukkan $field';
   }
 
   @override
   String onlyUppercaseEnglishAllowed(Object field, Object value) {
-    return '$field must contain only uppercase English letters (A-Z).\n\nCurrent value: $value';
+    return '$field harus hanya berisi huruf kapital Inggris (A-Z).\n\nNilai saat ini: $value';
   }
 
   @override
   String get kycPaymentRequiredDesc =>
-      'You need to complete the card fee payment before proceeding with KYC verification.';
+      'Anda perlu menyelesaikan pembayaran biaya kartu sebelum melanjutkan dengan verifikasi KYC.';
 
   @override
-  String get cardHolderName => 'Cardholder Name';
+  String get cardHolderName => 'Nama Pemegang Kartu';
 
   @override
-  String get mailingAddress => 'Mailing Address';
+  String get mailingAddress => 'Alamat Pengiriman';
 
   @override
-  String get recipientName => 'Recipient Name';
+  String get recipientName => 'Nama Penerima';
 
   @override
-  String get enterRecipientName => 'Please enter recipient name';
+  String get enterRecipientName => 'Silakan masukkan nama penerima';
 
   @override
-  String get cardFees => 'Card Fees';
+  String get cardFees => 'Biaya Kartu';
 
   @override
-  String get shippingFee => 'Shipping Fee';
+  String get shippingFee => 'Biaya Pengiriman';
 
   @override
-  String get totalFee => 'Total Fee';
+  String get totalFee => 'Total Biaya';
 
   @override
-  String get noCouponAvailable => 'No coupon available';
+  String get noCouponAvailable => 'Tidak ada kupon tersedia';
 
   @override
-  String get sameAsVirtualCard => 'Same as virtual card';
+  String get sameAsVirtualCard => 'Sama dengan kartu virtual';
 
   @override
-  String get applicationSubmittedSuccessfully =>
-      'Application submitted successfully!';
+  String get applicationSubmittedSuccessfully => 'Aplikasi berhasil dikirim!';
 
   @override
-  String get checkAndFixInputErrors => 'Please check and fix input errors';
+  String get checkAndFixInputErrors =>
+      'Silakan periksa dan perbaiki kesalahan input';
 
   @override
-  String get pleaseSelectCountry => 'Please select Country/Region';
+  String get pleaseSelectCountry => 'Silakan pilih Negara/Wilayah';
 
   @override
-  String get paymentCurrencyLabel => 'Payment Currency';
+  String get paymentCurrencyLabel => 'Mata Uang Pembayaran';
 
   @override
-  String get confirmSubmit => 'Confirm Submit';
+  String get confirmSubmit => 'Konfirmasi Kirim';
 
   @override
-  String get transactionInfo => 'Transaction Info';
+  String get transactionInfo => 'Info Transaksi';
 
   @override
   String securityVerificationMessage(Object amount) {
-    return 'We will deduct the card fee $amount from your account. For your security, we need to verify your identity.';
+    return 'Kami akan memotong biaya kartu $amount dari akun Anda. Untuk keamanan Anda, kami perlu memverifikasi identitas Anda.';
   }
 
   @override
   String get pleaseEnterEmailVerificationCode =>
-      'Please enter email verification code';
+      'Silakan masukkan kode verifikasi email';
 
   @override
   String resendAfterSeconds(Object seconds) {
-    return 'Resend in ${seconds}s';
+    return 'Kirim ulang dalam $seconds detik';
   }
 
   @override
   String emailCodeSentToHint(Object email) {
-    return 'A 6-digit code has been sent to $email. Please enter within 5 minutes.';
+    return 'Kode 6 digit telah dikirim ke $email. Silakan masukkan dalam 5 menit.';
   }
 
   @override
-  String get sendCodeFailed => 'Send failed';
+  String get sendCodeFailed => 'Gagal mengirim';
 
   @override
   String get verificationSuccessClickConfirm =>
-      'Verified. Please tap \"Confirm Submit\" to complete.';
+      'Terverifikasi. Silakan ketuk \"Konfirmasi Kirim\" untuk menyelesaikan.';
 
   @override
-  String get submitFailed => 'Submit failed';
+  String get submitFailed => 'Gagal mengirim';
 
   @override
-  String get verificationCodeSent => 'Verification code sent';
+  String get verificationCodeSent => 'Kode verifikasi terkirim';
 
   @override
   String balanceColonFormat(Object balance) {
-    return 'Balance: $balance';
+    return 'Saldo: $balance';
   }
 
   @override
@@ -1720,4 +1724,47 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get internalTransfer => 'Transfer Internal';
+
+  @override
+  String get pleaseEnter6DigitPin => 'Silakan masukkan 6 digit PIN lengkap';
+
+  @override
+  String get pinCodesDoNotMatch => 'Kode PIN tidak cocok';
+
+  @override
+  String get resetting => 'Mereset...';
+
+  @override
+  String get activating => 'Mengaktifkan...';
+
+  @override
+  String get pinResetSuccess => 'Kode PIN berhasil direset!';
+
+  @override
+  String get resetPinCode => 'Reset Kode PIN';
+
+  @override
+  String get activatePhysicalCard => 'Aktifkan Kartu Fisik';
+
+  @override
+  String get setPinCode => 'Atur Kode PIN';
+
+  @override
+  String get pinCodeUsageWarning =>
+      'Pemegang kartu perlu memasukkan PIN saat menggunakan kartu di ATM atau terminal POS, harap simpan dengan aman';
+
+  @override
+  String get pleaseSetNew6DigitPin => 'Silakan atur 6 digit PIN baru';
+
+  @override
+  String get pleaseEnter6DigitPinHint => 'Silakan masukkan 6 digit PIN';
+
+  @override
+  String get pleaseConfirmNew6DigitPin => 'Silakan atur ulang 6 digit PIN baru';
+
+  @override
+  String get pleaseConfirm6DigitPinHint => 'Silakan masukkan ulang 6 digit PIN';
+
+  @override
+  String get activateNow => 'Aktifkan Sekarang';
 }

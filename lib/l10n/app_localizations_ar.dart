@@ -671,7 +671,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get fee => 'الرسوم';
 
   @override
-  String get submit => 'Submit';
+  String get submit => 'إرسال';
 
   @override
   String get pleaseSelect => 'الرجاء الاختيار';
@@ -1679,43 +1679,87 @@ class AppLocalizationsAr extends AppLocalizations {
   String get physicalCardAlreadyApplied => 'تم طلب البطاقة الفعلية بالفعل';
 
   @override
-  String get enterRecipientUid => 'Please enter recipient UID';
+  String get enterRecipientUid => 'يرجى إدخال UID المستلم';
 
   @override
   String internalTransferFailed(Object error) {
-    return 'Internal transfer failed: $error';
+    return 'فشل التحويل الداخلي: $error';
   }
 
   @override
-  String get securityTip => 'Security Tip';
+  String get securityTip => 'نصيحة أمنية';
 
   @override
   String get transactionPasswordNotSetMessage =>
-      'You haven\'t set a transaction password yet. For your security, please set it first.';
+      'لم تقم بتعيين كلمة مرور المعاملة بعد. لأمانك، يرجى تعيينها أولاً.';
 
   @override
-  String get goToSet => 'Go to Set';
+  String get goToSet => 'الذهاب للتعيين';
 
   @override
-  String get confirmTransaction => 'Confirm Transaction';
+  String get confirmTransaction => 'تأكيد المعاملة';
 
   @override
   String get enter6DigitTransactionPasswordToVerify =>
-      'Please enter your 6-digit transaction password to verify identity';
+      'يرجى إدخال كلمة مرور المعاملة المكونة من 6 أرقام للتحقق من الهوية';
 
   @override
-  String get recipientUid => 'Recipient UID';
+  String get recipientUid => 'UID المستلم';
 
   @override
-  String get enterRecipientUidHint => 'Enter recipient UID (numbers only)';
+  String get enterRecipientUidHint => 'أدخل UID المستلم (أرقام فقط)';
 
   @override
-  String get internalTransferTip =>
-      '💡 Free of charge for internal transfers, instant arrival';
+  String get internalTransferTip => '💡 مجاني للتحويلات الداخلية، وصول فوري';
 
   @override
-  String get tokenWithdrawal => 'Token Withdrawal';
+  String get tokenWithdrawal => 'سحب الرمز';
 
   @override
-  String get internalTransfer => 'Internal Transfer';
+  String get internalTransfer => 'تحويل داخلي';
+
+  @override
+  String get pleaseEnter6DigitPin =>
+      'يرجى إدخال رمز PIN المكون من 6 أرقام كاملاً';
+
+  @override
+  String get pinCodesDoNotMatch => 'رموز PIN غير متطابقة';
+
+  @override
+  String get resetting => 'إعادة التعيين...';
+
+  @override
+  String get activating => 'جاري التفعيل...';
+
+  @override
+  String get pinResetSuccess => 'تم إعادة تعيين رمز PIN بنجاح!';
+
+  @override
+  String get resetPinCode => 'إعادة تعيين رمز PIN';
+
+  @override
+  String get activatePhysicalCard => 'تفعيل البطاقة الفعلية';
+
+  @override
+  String get setPinCode => 'تعيين رمز PIN';
+
+  @override
+  String get pinCodeUsageWarning =>
+      'يجب على حامل البطاقة إدخال رمز PIN عند استخدام البطاقة في أجهزة الصراف الآلي أو محطة POS، يرجى الحفاظ عليه آمناً';
+
+  @override
+  String get pleaseSetNew6DigitPin => 'يرجى تعيين رمز PIN جديد مكون من 6 أرقام';
+
+  @override
+  String get pleaseEnter6DigitPinHint => 'يرجى إدخال رمز PIN المكون من 6 أرقام';
+
+  @override
+  String get pleaseConfirmNew6DigitPin => 'يرجى تعيين رمز PIN الجديد مرة أخرى';
+
+  @override
+  String get pleaseConfirm6DigitPinHint =>
+      'يرجى إدخال رمز PIN المكون من 6 أرقام مرة أخرى';
+
+  @override
+  String get activateNow => 'تفعيل الآن';
 }

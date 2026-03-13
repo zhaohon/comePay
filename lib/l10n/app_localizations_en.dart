@@ -1719,4 +1719,48 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get internalTransfer => 'Internal Transfer';
+
+  @override
+  String get pleaseEnter6DigitPin => 'Please enter the complete 6-digit PIN';
+
+  @override
+  String get pinCodesDoNotMatch => 'PIN codes do not match';
+
+  @override
+  String get resetting => 'Resetting...';
+
+  @override
+  String get activating => 'Activating...';
+
+  @override
+  String get pinResetSuccess => 'PIN code reset successfully!';
+
+  @override
+  String get resetPinCode => 'Reset PIN Code';
+
+  @override
+  String get activatePhysicalCard => 'Activate Physical Card';
+
+  @override
+  String get setPinCode => 'Set PIN Code';
+
+  @override
+  String get pinCodeUsageWarning =>
+      'The cardholder needs to enter the PIN when using the card at an ATM or POS terminal, please keep it safe';
+
+  @override
+  String get pleaseSetNew6DigitPin => 'Please set a new 6-digit PIN';
+
+  @override
+  String get pleaseEnter6DigitPinHint => 'Please enter the 6-digit PIN';
+
+  @override
+  String get pleaseConfirmNew6DigitPin =>
+      'Please set the new 6-digit PIN again';
+
+  @override
+  String get pleaseConfirm6DigitPinHint => 'Please enter the 6-digit PIN again';
+
+  @override
+  String get activateNow => 'Activate Now';
 }

@@ -3335,6 +3335,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Internal Transfer'**
   String get internalTransfer;
+
+  /// No description provided for @pleaseEnter6DigitPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the complete 6-digit PIN'**
+  String get pleaseEnter6DigitPin;
+
+  /// No description provided for @pinCodesDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN codes do not match'**
+  String get pinCodesDoNotMatch;
+
+  /// No description provided for @resetting.
+  ///
+  /// In en, this message translates to:
+  /// **'Resetting...'**
+  String get resetting;
+
+  /// No description provided for @activating.
+  ///
+  /// In en, this message translates to:
+  /// **'Activating...'**
+  String get activating;
+
+  /// No description provided for @pinResetSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN code reset successfully!'**
+  String get pinResetSuccess;
+
+  /// No description provided for @resetPinCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset PIN Code'**
+  String get resetPinCode;
+
+  /// No description provided for @activatePhysicalCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate Physical Card'**
+  String get activatePhysicalCard;
+
+  /// No description provided for @setPinCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Set PIN Code'**
+  String get setPinCode;
+
+  /// No description provided for @pinCodeUsageWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'The cardholder needs to enter the PIN when using the card at an ATM or POS terminal, please keep it safe'**
+  String get pinCodeUsageWarning;
+
+  /// No description provided for @pleaseSetNew6DigitPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Please set a new 6-digit PIN'**
+  String get pleaseSetNew6DigitPin;
+
+  /// No description provided for @pleaseEnter6DigitPinHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the 6-digit PIN'**
+  String get pleaseEnter6DigitPinHint;
+
+  /// No description provided for @pleaseConfirmNew6DigitPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Please set the new 6-digit PIN again'**
+  String get pleaseConfirmNew6DigitPin;
+
+  /// No description provided for @pleaseConfirm6DigitPinHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the 6-digit PIN again'**
+  String get pleaseConfirm6DigitPinHint;
+
+  /// No description provided for @activateNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate Now'**
+  String get activateNow;
 }
 
 class _AppLocalizationsDelegate

@@ -4,10 +4,10 @@ import 'package:comecomepay/models/wallet_model.dart';
 import 'package:comecomepay/services/withdraw_service.dart';
 import 'package:comecomepay/models/requests/internal_transfer_request_model.dart';
 import 'package:comecomepay/widgets/otp_input.dart';
+import 'package:comecomepay/utils/transaction_password_guard.dart';
 
 import '../../l10n/app_localizations.dart';
 import 'ScanAddressQrScreen.dart';
-import 'SetTransactionPasswordScreen.dart';
 
 class SendPdp extends StatefulWidget {
   const SendPdp({super.key});
@@ -30,9 +30,6 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
 
   final WithdrawService _withdrawService = WithdrawService();
   bool _isLoading = false;
-
-  // 模拟参数：假装交易密码还没设置 (Set to false to test the flow)
-  bool _isTransactionPasswordSet = true;
 
   late TabController _tabController;
 
@@ -202,11 +199,9 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
       return;
     }
 
-    // 模拟检测交易密码是否设置
-    if (!_isTransactionPasswordSet) {
-      _showSetPasswordPrompt();
-      return;
-    }
+    // 通过接口检查交易密码是否已设置
+    final isPasswordSet = await TransactionPasswordGuard.check(context);
+    if (!isPasswordSet) return; // 未设置，已弹窗提示
 
     // Show Password Bottom Sheet
     final password = await _showTransactionPasswordBottomSheet();
@@ -259,49 +254,7 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
     }
   }
 
-  void _showSetPasswordPrompt() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text(AppLocalizations.of(context)!.securityTip,
-            style: const TextStyle(fontWeight: FontWeight.bold)),
-        content: Text(
-            AppLocalizations.of(context)!.transactionPasswordNotSetMessage),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(AppLocalizations.of(context)!.cancel,
-                style: TextStyle(color: Colors.grey[600])),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const SetTransactionPasswordScreen()),
-              ).then((value) {
-                // 如果设置成功，更新状态（模拟成功后下次可以转账）
-                if (value == true) {
-                  setState(() {
-                    _isTransactionPasswordSet = true;
-                  });
-                }
-              });
-            },
-            child: Text(AppLocalizations.of(context)!.goToSet,
-                style: const TextStyle(color: Colors.white)),
-          ),
-        ],
-      ),
-    );
-  }
+
 
   Future<String?> _showTransactionPasswordBottomSheet() {
     return showModalBottomSheet<String>(
