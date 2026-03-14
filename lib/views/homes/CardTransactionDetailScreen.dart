@@ -45,6 +45,9 @@ class CardTransactionDetailScreen extends StatelessWidget {
     // 描述
     final description = transaction['description'] as String? ?? '';
 
+    // 地址（充值/提现/转账时有值）
+    final address = transaction['address'] as String? ?? '';
+
     // 时间
     final tradeTime = transaction['trade_time'] as String? ?? '';
 
@@ -115,6 +118,7 @@ class CardTransactionDetailScreen extends StatelessWidget {
               merchantName: merchantName,
               description: description,
               status: status,
+              address: address,
             ),
 
             const SizedBox(height: 16),
@@ -218,6 +222,7 @@ class CardTransactionDetailScreen extends StatelessWidget {
     required String merchantName,
     required String description,
     required String status,
+    required String address,
   }) {
     // 决定显示哪个时间
     final displayTime =
@@ -238,6 +243,12 @@ class CardTransactionDetailScreen extends StatelessWidget {
         if (merchantName.isNotEmpty) ...[
           _buildDivider(),
           _buildInfoRow(l10n.merchantNameLabel, merchantName),
+        ],
+
+        // 地址（充值/提现/转账时显示）
+        if (address.isNotEmpty) ...[
+          _buildDivider(),
+          _buildInfoRowWithCopy(context, l10n.address, address),
         ],
 
         // 描述
