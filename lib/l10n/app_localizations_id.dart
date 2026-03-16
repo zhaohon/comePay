@@ -689,7 +689,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get cryptoAsset => 'Aset Kripto';
 
   @override
-  String get andPaymentsWithComePay => 'dan Pembayaran dengan Come Pay';
+  String get andPaymentsWithComePay => 'dan Pembayaran dengan Come Come Pay';
 
   @override
   String get createAPassword => 'Buat Kata Sandi';

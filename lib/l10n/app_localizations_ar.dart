@@ -692,7 +692,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cryptoAsset => 'أصولك المشفرة';
 
   @override
-  String get andPaymentsWithComePay => 'ومدفوعاتك مع Come Pay';
+  String get andPaymentsWithComePay => 'ومدفوعاتك مع Come Come Pay';
 
   @override
   String get createAPassword => 'إنشاء كلمة مرور';

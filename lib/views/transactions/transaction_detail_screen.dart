@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/models/unified_transaction_model.dart';
 import 'package:comecomepay/utils/transaction_utils.dart';
@@ -140,6 +141,16 @@ class TransactionDetailScreen extends StatelessWidget {
                 canCopy: true),
           ],
 
+          // 如果有收款人 UID，显示收款人 UID
+          if (transaction.counterpartyUserId != null &&
+              transaction.counterpartyUserId!.isNotEmpty &&
+              transaction.counterpartyUserId != '0') ...[
+            _buildDivider(),
+            _buildInfoRow(
+                localizations.recipientUid, transaction.counterpartyUserId!,
+                canCopy: true),
+          ],
+
           // 如果有交易哈希，显示交易哈希
           if (transaction.txHash != null && transaction.txHash!.isNotEmpty) ...[
             _buildDivider(),
@@ -188,35 +199,56 @@ class TransactionDetailScreen extends StatelessWidget {
   /// 信息行
   Widget _buildInfoRow(String label, String value,
       {Color? valueColor, bool canCopy = false}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 15,
-              color: Color(0xFF6B7280),
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Text(
-              value,
-              textAlign: TextAlign.right,
-              style: TextStyle(
+    return Builder(builder: (context) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
                 fontSize: 15,
-                color: valueColor ?? const Color(0xFF1F2937),
-                fontWeight: FontWeight.w500,
+                color: Color(0xFF6B7280),
+                fontWeight: FontWeight.w400,
               ),
             ),
-          ),
-        ],
-      ),
-    );
+            const SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                value,
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                  fontSize: 15,
+                  color: valueColor ?? const Color(0xFF1F2937),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            if (canCopy) ...[
+              const SizedBox(width: 8),
+              GestureDetector(
+                onTap: () {
+                  Clipboard.setData(ClipboardData(text: value));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(AppLocalizations.of(context)!.copySuccess),
+                      duration: const Duration(seconds: 1),
+                    ),
+                  );
+                },
+                child: const Icon(
+                  Icons.copy_rounded,
+                  size: 16,
+                  color: Color(0xFF9CA3AF),
+                ),
+              ),
+            ],
+          ],
+        ),
+      );
+    });
   }
 
   /// 分隔线

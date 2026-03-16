@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/utils/app_colors.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../../services/content_service.dart';
 
 class AboutUsScreen extends StatefulWidget {
@@ -15,11 +16,26 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
   Map<String, dynamic> _siteContent = {};
   bool _isLoading = true;
   String _errorMessage = '';
+  String _version = '';
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _loadContent();
+    _loadVersion();
+  }
+
+  Future<void> _loadVersion() async {
+    try {
+      final packageInfo = await PackageInfo.fromPlatform();
+      if (mounted) {
+        setState(() {
+          _version = packageInfo.version;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading version: $e');
+    }
   }
 
   Future<void> _loadContent() async {
@@ -152,6 +168,21 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                       ],
                     ),
                   ),
+
+                  const Spacer(),
+
+                  if (_version.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: Text(
+                        "Version $_version",
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.grey[500],
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),

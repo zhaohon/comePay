@@ -24,6 +24,7 @@ class UnifiedTransaction {
   final double? exchangeRate; // 汇率（兑换交易时有值）
   final int? sourceId; // 来源表记录ID
   final String? sourceTable; // 数据来源表名
+  final String? counterpartyUserId; // 收款人 UID（内转订单新字段）
 
   UnifiedTransaction({
     required this.id,
@@ -47,6 +48,7 @@ class UnifiedTransaction {
     this.exchangeRate,
     this.sourceId,
     this.sourceTable,
+    this.counterpartyUserId,
   });
 
   factory UnifiedTransaction.fromJson(Map<String, dynamic> json) {
@@ -76,6 +78,7 @@ class UnifiedTransaction {
           : null,
       sourceId: json['source_id'],
       sourceTable: json['source_table'],
+      counterpartyUserId: (json['counterparty_user_id'] ?? '').toString(),
     );
   }
 
@@ -102,6 +105,7 @@ class UnifiedTransaction {
       'exchange_rate': exchangeRate,
       'source_id': sourceId,
       'source_table': sourceTable,
+      'counterparty_user_id': counterpartyUserId,
     };
   }
 

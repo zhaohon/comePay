@@ -126,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     return Padding(
                       padding: EdgeInsets.symmetric(horizontal: paddingValue),
                       child: RefreshIndicator(
-                        onRefresh: () => walletViewModel.fetchWalletData(),
+                        onRefresh: _loadHomeData,
                         child: CustomScrollView(
                           slivers: [
                             SliverAppBar(

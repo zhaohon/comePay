@@ -690,7 +690,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cryptoAsset => 'Crypto Asset';
 
   @override
-  String get andPaymentsWithComePay => 'And Payments with Come Pay';
+  String get andPaymentsWithComePay => 'And Payments with Come Come Pay';
 
   @override
   String get createAPassword => 'Create a Password';

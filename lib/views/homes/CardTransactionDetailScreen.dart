@@ -51,6 +51,10 @@ class CardTransactionDetailScreen extends StatelessWidget {
     // 时间
     final tradeTime = transaction['trade_time'] as String? ?? '';
 
+    // 收款人 UID（内转订单新字段）
+    final counterpartyUserId =
+        (transaction['counterparty_user_id'] ?? '').toString();
+
     // 额外财务字段
     final fee = (transaction['fee'] is num)
         ? (transaction['fee'] as num).toDouble()
@@ -119,6 +123,7 @@ class CardTransactionDetailScreen extends StatelessWidget {
               description: description,
               status: status,
               address: address,
+              counterpartyUserId: counterpartyUserId,
             ),
 
             const SizedBox(height: 16),
@@ -223,6 +228,7 @@ class CardTransactionDetailScreen extends StatelessWidget {
     required String description,
     required String status,
     required String address,
+    required String counterpartyUserId,
   }) {
     // 决定显示哪个时间
     final displayTime =
@@ -249,6 +255,12 @@ class CardTransactionDetailScreen extends StatelessWidget {
         if (address.isNotEmpty) ...[
           _buildDivider(),
           _buildInfoRowWithCopy(context, l10n.address, address),
+        ],
+
+        // 收款人 UID（内转订单显示）
+        if (counterpartyUserId.isNotEmpty && counterpartyUserId != '0') ...[
+          _buildDivider(),
+          _buildInfoRowWithCopy(context, l10n.recipientUid, counterpartyUserId),
         ],
 
         // 描述

@@ -84,8 +84,7 @@ class _OtpInputState extends State<OtpInput> {
       children: List.generate(widget.length, (index) {
         return Expanded(
           child: Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: index == 0 || index == widget.length - 1 ? 0 : 4),
+            padding: const EdgeInsets.symmetric(horizontal: 4),
             child: AspectRatio(
               aspectRatio: 1,
               child: RawKeyboardListener(

@@ -661,7 +661,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get cryptoAsset => '加密资产';
 
   @override
-  String get andPaymentsWithComePay => '以及Come Pay支付';
+  String get andPaymentsWithComePay => '以及Come Come Pay支付';
 
   @override
   String get createAPassword => '创建密码';

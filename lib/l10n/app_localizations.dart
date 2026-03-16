@@ -1407,7 +1407,7 @@ abstract class AppLocalizations {
   /// No description provided for @andPaymentsWithComePay.
   ///
   /// In en, this message translates to:
-  /// **'And Payments with Come Pay'**
+  /// **'And Payments with Come Come Pay'**
   String get andPaymentsWithComePay;
 
   /// No description provided for @createAPassword.
