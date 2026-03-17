@@ -1713,6 +1713,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get recipientUid => 'UID Penerima';
 
   @override
+  String get senderUid => 'UID Pengirim';
+
+  @override
   String get enterRecipientUidHint => 'Masukkan UID penerima (hanya angka)';
 
   @override

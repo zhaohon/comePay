@@ -535,6 +535,7 @@
   "confirmTransaction": "确认交易",
   "enter6DigitTransactionPasswordToVerify": "请输入您的6位交易密码以验证身份",
   "recipientUid": "收款人 UID",
+  "senderUid": "付款人 UID",
   "enterRecipientUidHint": "请输入对方 UID (纯数字)",
   "internalTransferTip": "💡 内部转账免手续费，实时到账",
   "tokenWithdrawal": "代币提现",

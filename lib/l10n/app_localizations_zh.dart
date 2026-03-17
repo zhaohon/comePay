@@ -1658,6 +1658,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recipientUid => '收款人 UID';
 
   @override
+  String get senderUid => '付款人 UID';
+
+  @override
   String get enterRecipientUidHint => '请输入对方 UID (纯数字)';
 
   @override

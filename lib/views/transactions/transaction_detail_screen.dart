@@ -141,13 +141,16 @@ class TransactionDetailScreen extends StatelessWidget {
                 canCopy: true),
           ],
 
-          // 如果有收款人 UID，显示收款人 UID
+          // 如果有对手方 UID，显示收款人/付款人 UID
           if (transaction.counterpartyUserId != null &&
               transaction.counterpartyUserId!.isNotEmpty &&
               transaction.counterpartyUserId != '0') ...[
             _buildDivider(),
             _buildInfoRow(
-                localizations.recipientUid, transaction.counterpartyUserId!,
+                transaction.isIncome
+                    ? localizations.senderUid
+                    : localizations.recipientUid,
+                transaction.counterpartyUserId!,
                 canCopy: true),
           ],
 

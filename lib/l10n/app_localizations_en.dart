@@ -1708,6 +1708,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recipientUid => 'Recipient UID';
 
   @override
+  String get senderUid => 'Sender UID';
+
+  @override
   String get enterRecipientUidHint => 'Enter recipient UID (numbers only)';
 
   @override

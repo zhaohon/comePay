@@ -1707,6 +1707,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get recipientUid => 'UID المستلم';
 
   @override
+  String get senderUid => 'UID المرسل';
+
+  @override
   String get enterRecipientUidHint => 'أدخل UID المستلم (أرقام فقط)';
 
   @override

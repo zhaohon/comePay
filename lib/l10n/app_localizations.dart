@@ -3312,6 +3312,12 @@ abstract class AppLocalizations {
   /// **'Recipient UID'**
   String get recipientUid;
 
+  /// No description provided for @senderUid.
+  ///
+  /// In en, this message translates to:
+  /// **'Sender UID'**
+  String get senderUid;
+
   /// No description provided for @enterRecipientUidHint.
   ///
   /// In en, this message translates to:

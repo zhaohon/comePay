@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:comecomepay/utils/app_colors.dart';
 import 'package:comecomepay/utils/transaction_utils.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
@@ -124,6 +123,7 @@ class CardTransactionDetailScreen extends StatelessWidget {
               status: status,
               address: address,
               counterpartyUserId: counterpartyUserId,
+              isPositive: isPositive,
             ),
 
             const SizedBox(height: 16),
@@ -229,6 +229,7 @@ class CardTransactionDetailScreen extends StatelessWidget {
     required String status,
     required String address,
     required String counterpartyUserId,
+    required bool isPositive,
   }) {
     // 决定显示哪个时间
     final displayTime =
@@ -257,10 +258,13 @@ class CardTransactionDetailScreen extends StatelessWidget {
           _buildInfoRowWithCopy(context, l10n.address, address),
         ],
 
-        // 收款人 UID（内转订单显示）
+        // 收款人/付款人 UID（内转订单显示）
         if (counterpartyUserId.isNotEmpty && counterpartyUserId != '0') ...[
           _buildDivider(),
-          _buildInfoRowWithCopy(context, l10n.recipientUid, counterpartyUserId),
+          _buildInfoRowWithCopy(
+              context,
+              isPositive ? l10n.senderUid : l10n.recipientUid,
+              counterpartyUserId),
         ],
 
         // 描述

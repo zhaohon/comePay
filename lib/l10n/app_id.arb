@@ -535,6 +535,7 @@
   "confirmTransaction": "Konfirmasi Transaksi",
   "enter6DigitTransactionPasswordToVerify": "Silakan masukkan 6 digit kata sandi transaksi untuk memverifikasi identitas",
   "recipientUid": "UID Penerima",
+  "senderUid": "UID Pengirim",
   "enterRecipientUidHint": "Masukkan UID penerima (hanya angka)",
   "internalTransferTip": "💡 Bebas biaya untuk transfer internal, sampai seketika",
   "tokenWithdrawal": "Withdrawal Token",

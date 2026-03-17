@@ -535,6 +535,7 @@
   "confirmTransaction": "Confirm Transaction",
   "enter6DigitTransactionPasswordToVerify": "Please enter your 6-digit transaction password to verify identity",
   "recipientUid": "Recipient UID",
+  "senderUid": "Sender UID",
   "enterRecipientUidHint": "Enter recipient UID (numbers only)",
   "internalTransferTip": "💡 Free of charge for internal transfers, instant arrival",
   "tokenWithdrawal": "Token Withdrawal",

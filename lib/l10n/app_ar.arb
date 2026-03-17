@@ -535,6 +535,7 @@
   "confirmTransaction": "تأكيد المعاملة",
   "enter6DigitTransactionPasswordToVerify": "يرجى إدخال كلمة مرور المعاملة المكونة من 6 أرقام للتحقق من الهوية",
   "recipientUid": "UID المستلم",
+  "senderUid": "UID المرسل",
   "enterRecipientUidHint": "أدخل UID المستلم (أرقام فقط)",
   "internalTransferTip": "💡 مجاني للتحويلات الداخلية، وصول فوري",
   "tokenWithdrawal": "سحب الرمز",
