@@ -20,6 +20,7 @@ import 'package:comecomepay/models/card_account_details_model.dart';
 import 'package:comecomepay/views/homes/CardAuthorizationScreen.dart';
 import 'package:comecomepay/views/homes/ApplyPhysicalCardScreen.dart';
 import 'package:comecomepay/views/homes/ActivatePhysicalCardScreen.dart';
+import 'package:comecomepay/views/homes/PhysicalCardManagementScreen.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CardScreen extends StatefulWidget {
@@ -971,14 +972,15 @@ class _CardScreenState extends State<CardScreen> {
                           return;
                         }
 
-                        // If already applied for physical card, do nothing (or show a message)
+                        // If already applied for physical card, navigate to management screen
                         if (_currentCardDetails!.updatePhysical) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(AppLocalizations.of(context)!
-                                      .physicalCardAlreadyApplied ??
-                                  'Physical card already applied'),
-                              duration: const Duration(seconds: 2),
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  PhysicalCardManagementScreen(
+                                cardDetails: _currentCardDetails,
+                              ),
                             ),
                           );
                           return;

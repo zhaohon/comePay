@@ -148,7 +148,9 @@ class CardService extends BaseService {
           headers: {'Idempotency-Key': idempotencyKey},
         ),
       );
-      final data = response.data is Map ? response.data as Map<String, dynamic> : <String, dynamic>{};
+      final data = response.data is Map
+          ? response.data as Map<String, dynamic>
+          : <String, dynamic>{};
       if (data['code'] == 200 && data['data'] != null) {
         return data['data'] as Map<String, dynamic>;
       }
@@ -306,16 +308,14 @@ class CardService extends BaseService {
   /// [publicToken] 卡片唯一标识
   Future<String> getPin(String publicToken) async {
     try {
-      final response = await get(
-        '/card/pin',
-        queryParameters: {'public_token': publicToken},
-      );
+      final response = await get('/card/$publicToken/pin');
 
-      if (response['status'] == 'success' && response['data'] != null) {
+      if (response['code'] == 200 && response['data'] != null) {
         final data = response['data'] as Map<String, dynamic>;
         return data['pin'] as String? ?? '';
       } else {
-        throw Exception(response['message'] ?? 'Failed to get PIN');
+        throw Exception(
+            response['errstr'] ?? response['message'] ?? 'Failed to get PIN');
       }
     } catch (e) {
       print('Error getting PIN: $e');

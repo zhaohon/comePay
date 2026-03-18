@@ -567,5 +567,12 @@
   "cardTradeManualDeposit": "后台充值",
   "cardTradeConsume": "消费",
   "cardTradeUnknown": "交易",
-  "merchantNameLabel": "商户名称"
+  "merchantNameLabel": "商户名称",
+  "queryPinCode": "查詢PIN碼",
+  "reissuePhysicalCard": "補領實體卡",
+  "securityVerification": "安全驗證",
+  "resendCode": "重新獲取",
+  "query": "查詢",
+  "cardPinIs": "卡片PIN碼為",
+  "keepPinSafeTip": "請妥善保管，切勿轉告他人。"
 }

@@ -1808,4 +1808,26 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get merchantNameLabel => 'Merchant';
+
+  @override
+  String get queryPinCode => 'Query PIN';
+
+  @override
+  String get reissuePhysicalCard => 'Reissue Physical Card';
+
+  @override
+  String get securityVerification => 'Security Verification';
+
+  @override
+  String get resendCode => 'Resend';
+
+  @override
+  String get query => 'Query';
+
+  @override
+  String get cardPinIs => 'Card PIN is';
+
+  @override
+  String get keepPinSafeTip =>
+      'Please keep it safe and do not share it with others.';
 }

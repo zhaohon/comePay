@@ -1755,4 +1755,25 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get merchantNameLabel => '商户名称';
+
+  @override
+  String get queryPinCode => '查詢PIN碼';
+
+  @override
+  String get reissuePhysicalCard => '補領實體卡';
+
+  @override
+  String get securityVerification => '安全驗證';
+
+  @override
+  String get resendCode => '重新獲取';
+
+  @override
+  String get query => '查詢';
+
+  @override
+  String get cardPinIs => '卡片PIN碼為';
+
+  @override
+  String get keepPinSafeTip => '請妥善保管，切勿轉告他人。';
 }

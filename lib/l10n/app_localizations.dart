@@ -3509,6 +3509,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Merchant'**
   String get merchantNameLabel;
+
+  /// No description provided for @queryPinCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Query PIN'**
+  String get queryPinCode;
+
+  /// No description provided for @reissuePhysicalCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Reissue Physical Card'**
+  String get reissuePhysicalCard;
+
+  /// No description provided for @securityVerification.
+  ///
+  /// In en, this message translates to:
+  /// **'Security Verification'**
+  String get securityVerification;
+
+  /// No description provided for @resendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend'**
+  String get resendCode;
+
+  /// No description provided for @query.
+  ///
+  /// In en, this message translates to:
+  /// **'Query'**
+  String get query;
+
+  /// No description provided for @cardPinIs.
+  ///
+  /// In en, this message translates to:
+  /// **'Card PIN is'**
+  String get cardPinIs;
+
+  /// No description provided for @keepPinSafeTip.
+  ///
+  /// In en, this message translates to:
+  /// **'Please keep it safe and do not share it with others.'**
+  String get keepPinSafeTip;
 }
 
 class _AppLocalizationsDelegate
