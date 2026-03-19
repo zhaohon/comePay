@@ -21,6 +21,7 @@ import 'package:comecomepay/views/homes/CardAuthorizationScreen.dart';
 import 'package:comecomepay/views/homes/ApplyPhysicalCardScreen.dart';
 import 'package:comecomepay/views/homes/ActivatePhysicalCardScreen.dart';
 import 'package:comecomepay/views/homes/PhysicalCardManagementScreen.dart';
+import 'package:comecomepay/views/homes/CardBenefitsScreen.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CardScreen extends StatefulWidget {
@@ -1148,7 +1149,7 @@ class _CardScreenState extends State<CardScreen> {
           BoxShadow(
             color: Colors.black.withOpacity(0.2),
             blurRadius: 12,
-            offset: const Offset(0, 4),
+            // offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -1159,6 +1160,44 @@ class _CardScreenState extends State<CardScreen> {
 
           return Stack(
             children: [
+              // 顶部右侧：费率入口
+              Positioned(
+                top: height * 0.12,
+                right: width * 0.08,
+                child: GestureDetector(
+                  onTap: () {
+                    if (cardDetails != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CardBenefitsScreen(
+                            cardDetails: cardDetails,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.rates,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(
+                        Icons.info_outline,
+                        color: Colors.white,
+                        size: 16,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
               // 底部暗色渐变，增强文字区分度
               // Positioned(
               //   left: 0,
@@ -1186,7 +1225,7 @@ class _CardScreenState extends State<CardScreen> {
               // 内容统一从左下角定位
               Positioned(
                 left: width * 0.08,
-                bottom: height * 0.10,
+                bottom: height * 0.12,
                 right: width * 0.05,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1221,7 +1260,7 @@ class _CardScreenState extends State<CardScreen> {
                       ),
                     ),
 
-                    SizedBox(height: height * 0.03), // 卡号和底部信息之间的间距
+                    SizedBox(height: height * 0.06), // 卡号和底部信息之间的间距
 
                     // 底部一行：姓名 + 到期日 (移除硬编码标签)
                     Row(
@@ -1556,17 +1595,15 @@ class _CardScreenState extends State<CardScreen> {
     );
 
     try {
-      // 并行获取所有信息
       final results = await Future.wait([
         _cardService.getFullCardNumber(currentCard.publicToken),
         _cardService.getCvv(currentCard.publicToken),
-        _cardService.getPin(currentCard.publicToken),
       ]);
 
       final fullCardNumber =
           (results[0] as Map<String, String>)['card_number'] ?? '';
       final cvv = results[1] as String;
-      final pin = results[2] as String;
+      const pin = ''; // PIN 现在需要 OTP 才能获取，在此弹窗中不再默认显示
 
       // 关闭loading
       if (Navigator.canPop(context)) {
@@ -2429,8 +2466,9 @@ class _CardScreenState extends State<CardScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            const ActivatePhysicalCardScreen(),
+                        builder: (context) => ActivatePhysicalCardScreen(
+                          publicToken: _currentCardDetails?.publicToken ?? "",
+                        ),
                       ),
                     );
                   },

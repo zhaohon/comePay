@@ -35,19 +35,23 @@ class ModifyLoginPasswordScreen extends StatelessWidget {
                       fontSize: 14, fontWeight: FontWeight.w500),
                 ),
                 const SizedBox(height: 8),
-                TextField(
-                  controller: controller,
-                  obscureText: obscure,
-                  decoration: InputDecoration(
-                    hintText: hint,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none,
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFFE5E7EB)),
+                  ),
+                  child: TextField(
+                    controller: controller,
+                    obscureText: obscure,
+                    style: const TextStyle(fontSize: 14),
+                    decoration: InputDecoration(
+                      hintText: hint,
+                      hintStyle: const TextStyle(color: Color(0xFFD1D5DB)),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 14),
                     ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 14),
                   ),
                 ),
               ],
@@ -114,42 +118,56 @@ class ModifyLoginPasswordScreen extends StatelessWidget {
             // Confirm button di paling bawah
             bottomNavigationBar: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: viewModel.isLoading
-                      ? null
-                      : () async {
-                          final result = await viewModel.changePassword(
-                            _oldPasswordController.text,
-                            _newPasswordController.text,
-                            _confirmPasswordController.text,
-                          );
-                          if (result.success) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(result.message!)),
+              child: SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient:
+                        viewModel.isLoading ? null : AppColors.primaryGradient,
+                    color: viewModel.isLoading ? Colors.grey.shade300 : null,
+                    borderRadius: BorderRadius.circular(26),
+                    boxShadow: viewModel.isLoading
+                        ? null
+                        : [
+                            BoxShadow(
+                              color: AppColors.primary.withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                  ),
+                  child: ElevatedButton(
+                    onPressed: viewModel.isLoading
+                        ? null
+                        : () async {
+                            final result = await viewModel.changePassword(
+                              _oldPasswordController.text,
+                              _newPasswordController.text,
+                              _confirmPasswordController.text,
                             );
-                            _oldPasswordController.clear();
-                            _newPasswordController.clear();
-                            _confirmPasswordController.clear();
-                            Navigator.of(context).pop();
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(result.message!)),
-                            );
-                          }
-                        },
-                  borderRadius: BorderRadius.circular(12),
-                  child: Container(
-                    height: 52,
-                    decoration: BoxDecoration(
-                      gradient: viewModel.isLoading
-                          ? null
-                          : AppColors.primaryGradient,
-                      color: viewModel.isLoading ? Colors.grey.shade300 : null,
-                      borderRadius: BorderRadius.circular(12),
+                            if (result.success) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(result.message!)),
+                              );
+                              _oldPasswordController.clear();
+                              _newPasswordController.clear();
+                              _confirmPasswordController.clear();
+                              Navigator.of(context).pop();
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(result.message!)),
+                              );
+                            }
+                          },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(26),
+                      ),
+                      elevation: 0,
                     ),
-                    alignment: Alignment.center,
                     child: viewModel.isLoading
                         ? const SizedBox(
                             height: 24,
@@ -164,7 +182,7 @@ class ModifyLoginPasswordScreen extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 16,
                               color: Colors.white,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                   ),

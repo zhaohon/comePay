@@ -1830,4 +1830,48 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get keepPinSafeTip =>
       'Please keep it safe and do not share it with others.';
+
+  @override
+  String get cardBenefits => 'Card Benefits';
+
+  @override
+  String get rates => 'Rates';
+
+  @override
+  String get monthlyFee => 'Monthly Fee';
+
+  @override
+  String get monthlyLimit => 'Monthly Limit';
+
+  @override
+  String get fxFee => 'FX Fee';
+
+  @override
+  String get transactionFee => 'Transaction Fee';
+
+  @override
+  String get crossBorderFee => 'Cross-border Fee';
+
+  @override
+  String get failedTransactionFee => 'Failed Trans. Fee';
+
+  @override
+  String get smallTransactionFee => 'Small Trans. Fee';
+
+  @override
+  String get failedTransactionCountMonthly => 'Failed Trans. (Month)';
+
+  @override
+  String get smallTransactionCountMonthly => 'Small Trans. (Month)';
+
+  @override
+  String get instructions => 'Instructions:';
+
+  @override
+  String get failedTransactionFeeDesc =>
+      '1. Failed Transaction Fee: Starting Nov 18, 2025, a 0.4 USD fee will be charged for each failed transaction.';
+
+  @override
+  String get smallTransactionFeeDesc =>
+      '2. Small Transaction Fee: Starting Apr 1, 2024, a 0.15 USD fee will be charged for transactions below 10 USD.';
 }

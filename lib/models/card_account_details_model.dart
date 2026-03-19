@@ -26,6 +26,15 @@ class CardAccountDetailsModel {
   final String memberName; // 持卡人姓名
   final bool updatePhysical; // 是否已升级为实体卡
 
+  final double monthlyFee; // 月费
+  final double fxFee; // 货币转换费
+  final double failedTransactionFee; // 交易失败手续费
+  final double smallTransactionFee; // 小额交易手续费
+  final int failedTransactionCount; // 本月累计交易失败笔数
+  final int failedTransactionLimit; // 本月累计交易失败笔数上限
+  final int smallTransactionCount; // 本月累计小额交易笔数
+  final int smallTransactionLimit; // 本月累计小额交易笔数上限
+
   CardAccountDetailsModel({
     required this.id,
     required this.publicToken,
@@ -51,6 +60,14 @@ class CardAccountDetailsModel {
     required this.upgradeAmount,
     required this.memberName,
     required this.updatePhysical,
+    this.monthlyFee = 0.0,
+    this.fxFee = 0.0,
+    this.failedTransactionFee = 0.4,
+    this.smallTransactionFee = 0.15,
+    this.failedTransactionCount = 0,
+    this.failedTransactionLimit = 5,
+    this.smallTransactionCount = 0,
+    this.smallTransactionLimit = 6,
   });
 
   factory CardAccountDetailsModel.fromJson(Map<String, dynamic> json) {
@@ -81,6 +98,18 @@ class CardAccountDetailsModel {
       upgradeAmount: (data['upgrade_amount'] as num?)?.toDouble() ?? 0.0,
       memberName: data['member_name'] as String? ?? '',
       updatePhysical: data['update_physical'] as bool? ?? false,
+      monthlyFee: (data['monthly_fee'] as num?)?.toDouble() ?? 0.0,
+      fxFee: (data['fx_fee'] as num?)?.toDouble() ??
+          (data['recharge_fee'] as num?)?.toDouble() ??
+          0.0,
+      failedTransactionFee:
+          (data['failed_transaction_fee'] as num?)?.toDouble() ?? 0.4,
+      smallTransactionFee:
+          (data['small_transaction_fee'] as num?)?.toDouble() ?? 0.15,
+      failedTransactionCount: data['failed_transaction_count'] as int? ?? 0,
+      failedTransactionLimit: data['failed_transaction_limit'] as int? ?? 5,
+      smallTransactionCount: data['small_transaction_count'] as int? ?? 0,
+      smallTransactionLimit: data['small_transaction_limit'] as int? ?? 6,
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/services/card_service.dart';
+import 'package:comecomepay/utils/app_colors.dart';
 
 class QueryPinScreen extends StatefulWidget {
   final String publicToken;
@@ -30,6 +31,47 @@ class _QueryPinScreenState extends State<QueryPinScreen> {
     _timer?.cancel();
     _otpController.dispose();
     super.dispose();
+  }
+
+  bool _isSendingCode = false;
+  bool _hasSentCode = false;
+
+  Future<void> _onGetCodePressed() async {
+    if (_isSendingCode || _countdown > 0) return;
+
+    setState(() {
+      _isSendingCode = true;
+    });
+
+    try {
+      await _cardService.sendPinCode(
+        widget.publicToken,
+        'card_pin_query',
+      );
+      _startTimer();
+      setState(() {
+        _hasSentCode = true;
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content:
+                  Text(AppLocalizations.of(context)!.verificationCodeSent)),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSendingCode = false;
+        });
+      }
+    }
   }
 
   void _startTimer() {
@@ -63,10 +105,8 @@ class _QueryPinScreenState extends State<QueryPinScreen> {
     });
 
     try {
-      // 模拟验证码校验成功
-      await Future.delayed(const Duration(milliseconds: 800));
-
-      final pin = await _cardService.getPin(widget.publicToken);
+      final pin =
+          await _cardService.getPin(widget.publicToken, _otpController.text);
 
       if (mounted) {
         _showPinSuccessBottomSheet(pin);
@@ -218,9 +258,7 @@ class _QueryPinScreenState extends State<QueryPinScreen> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                      color: const Color(0xFF10B981).withOpacity(0.35),
-                      width: 1.5),
+                  border: Border.all(color: const Color(0xFFE5E7EB)),
                 ),
                 child: Row(
                   children: [
@@ -242,26 +280,36 @@ class _QueryPinScreenState extends State<QueryPinScreen> {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: TextButton(
-                        onPressed: _countdown > 0 ? null : _startTimer,
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          minimumSize: Size.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        ),
-                        child: Text(
-                          _countdown > 0
-                              ? "${localizations.resendCode} $_countdown 秒"
-                              : localizations.resendCode,
-                          style: TextStyle(
-                            color: _countdown > 0
-                                ? const Color(0xFF9CA3AF)
-                                : const Color(0xFF10B981),
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                          ),
+                    SizedBox(
+                      width: 110,
+                      child: GestureDetector(
+                        onTap: (_isSendingCode || _countdown > 0)
+                            ? null
+                            : _onGetCodePressed,
+                        child: Center(
+                          child: _isSendingCode
+                              ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: AppColors.primary,
+                                  ),
+                                )
+                              : Text(
+                                  _countdown > 0
+                                      ? "$_countdown 秒"
+                                      : (_hasSentCode
+                                          ? localizations.resendCode
+                                          : localizations.getCode),
+                                  style: TextStyle(
+                                    color: _countdown > 0
+                                        ? AppColors.textSecondary
+                                        : AppColors.primary,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                  ),
+                                ),
                         ),
                       ),
                     ),
@@ -276,34 +324,53 @@ class _QueryPinScreenState extends State<QueryPinScreen> {
                   color: Color(0xFF1A1D1E),
                 ),
               ),
-              const SizedBox(height: 48),
+              const SizedBox(height: 48), // 查询按钮
               SizedBox(
                 width: double.infinity,
                 height: 52,
-                child: ElevatedButton(
-                  onPressed: _isLoading ? null : _onQueryPressed,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF0A1129),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: _isLoading ? null : AppColors.primaryGradient,
+                    color: _isLoading ? Colors.grey : null,
+                    borderRadius: BorderRadius.circular(26),
+                    boxShadow: _isLoading
+                        ? null
+                        : [
+                            BoxShadow(
+                              color: AppColors.primary.withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                   ),
-                  child: _isLoading
-                      ? const SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                              color: Colors.white, strokeWidth: 2),
-                        )
-                      : Text(
-                          localizations.query,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
+                  child: ElevatedButton(
+                    onPressed: _isLoading ? null : _onQueryPressed,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(26),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: _isLoading
+                        ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : Text(
+                            AppLocalizations.of(context)!.query,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
+                  ),
                 ),
               ),
             ],

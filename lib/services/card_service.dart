@@ -304,11 +304,37 @@ class CardService extends BaseService {
     }
   }
 
+  /// 发送卡片PIN邮箱验证码
+  /// [publicToken] 卡片唯一标识
+  /// [purpose] 用途：card_pin_query 或 card_pin_activate
+  Future<void> sendPinCode(String publicToken, String purpose) async {
+    try {
+      final response = await post(
+        '/card/$publicToken/pin/code/send',
+        data: {'purpose': purpose},
+      );
+
+      if (response['code'] == 200) {
+        return;
+      } else {
+        throw Exception(
+            response['errstr'] ?? response['message'] ?? 'Failed to send code');
+      }
+    } catch (e) {
+      print('Error sending PIN code: $e');
+      rethrow;
+    }
+  }
+
   /// 获取PIN
   /// [publicToken] 卡片唯一标识
-  Future<String> getPin(String publicToken) async {
+  /// [otpCode] 邮箱验证码
+  Future<String> getPin(String publicToken, String otpCode) async {
     try {
-      final response = await get('/card/$publicToken/pin');
+      final response = await get(
+        '/card/$publicToken/pin',
+        queryParameters: {'otp_code': otpCode},
+      );
 
       if (response['code'] == 200 && response['data'] != null) {
         final data = response['data'] as Map<String, dynamic>;
@@ -319,6 +345,32 @@ class CardService extends BaseService {
       }
     } catch (e) {
       print('Error getting PIN: $e');
+      rethrow;
+    }
+  }
+
+  /// 设置/重置卡片PIN码
+  /// [publicToken] 卡片唯一标识
+  /// [pin] 新的PIN码
+  /// [otpCode] 邮箱验证码
+  Future<void> setPin(String publicToken, String pin, String otpCode) async {
+    try {
+      final response = await post(
+        '/card/$publicToken/pin',
+        data: {
+          'pin': pin,
+          'otp_code': otpCode,
+        },
+      );
+
+      if (response['code'] == 200) {
+        return;
+      } else {
+        throw Exception(
+            response['errstr'] ?? response['message'] ?? 'Failed to set PIN');
+      }
+    } catch (e) {
+      print('Error setting PIN: $e');
       rethrow;
     }
   }

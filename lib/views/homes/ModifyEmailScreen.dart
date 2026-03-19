@@ -73,19 +73,27 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
                   /// New Email
                   Text(AppLocalizations.of(context)!.newEmail),
                   const SizedBox(height: 8),
-                  TextField(
-                    controller: _newEmailController,
-                    onChanged: (value) => viewModel.validateEmail(value),
-                    decoration: InputDecoration(
-                      hintText:
-                          AppLocalizations.of(context)!.pleaseEnterYourEmail,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFE5E7EB)),
+                    ),
+                    child: TextField(
+                      controller: _newEmailController,
+                      onChanged: (value) => viewModel.validateEmail(value),
+                      decoration: InputDecoration(
+                        hintText:
+                            AppLocalizations.of(context)!.pleaseEnterYourEmail,
+                        hintStyle: const TextStyle(color: Color(0xFFD1D5DB)),
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 14),
+                        errorText:
+                            viewModel.errorMessage?.contains('email') == true
+                                ? viewModel.errorMessage
+                                : null,
                       ),
-                      errorText:
-                          viewModel.errorMessage?.contains('email') == true
-                              ? viewModel.errorMessage
-                              : null,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -93,47 +101,78 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
                   /// Email verification code + Get Code
                   Text(AppLocalizations.of(context)!.emailVerificationCode),
                   const SizedBox(height: 8),
-                  TextField(
-                    controller: _emailOtpController,
-                    decoration: InputDecoration(
-                      hintText: AppLocalizations.of(context)!
-                          .pleaseEnterVerificationCode,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      suffixIcon: TextButton(
-                        onPressed: viewModel.isLoading
-                            ? null
-                            : () async {
-                                final result =
-                                    await viewModel.requestChangeEmail(
-                                        _newEmailController.text.trim());
-                                if (result.success) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: Text(result.message ??
-                                            AppLocalizations.of(context)!
-                                                .otpSentToNewEmail)),
-                                  );
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: Text(result.message ??
-                                            AppLocalizations.of(context)!
-                                                .failedToSendOtp)),
-                                  );
-                                }
-                              },
-                        child: Text(
-                          viewModel.isLoading
-                              ? AppLocalizations.of(context)!.sending
-                              : AppLocalizations.of(context)!.getCode,
-                          style: TextStyle(
-                              color: viewModel.isLoading
-                                  ? Colors.grey
-                                  : Colors.green),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFE5E7EB)),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _emailOtpController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              hintText: AppLocalizations.of(context)!
+                                  .pleaseEnterVerificationCode,
+                              hintStyle:
+                                  const TextStyle(color: Color(0xFFD1D5DB)),
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 14),
+                            ),
+                          ),
                         ),
-                      ),
+                        SizedBox(
+                          width: 110,
+                          child: GestureDetector(
+                            onTap: viewModel.isLoading
+                                ? null
+                                : () async {
+                                    final result =
+                                        await viewModel.requestChangeEmail(
+                                            _newEmailController.text.trim());
+                                    if (result.success) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                            content: Text(result.message ??
+                                                AppLocalizations.of(context)!
+                                                    .otpSentToNewEmail)),
+                                      );
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                            content: Text(result.message ??
+                                                AppLocalizations.of(context)!
+                                                    .failedToSendOtp)),
+                                      );
+                                    }
+                                  },
+                            child: Center(
+                              child: viewModel.isLoading
+                                  ? const SizedBox(
+                                      width: 16,
+                                      height: 16,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: AppColors.primary,
+                                      ),
+                                    )
+                                  : Text(
+                                      AppLocalizations.of(context)!.getCode,
+                                      style: const TextStyle(
+                                        color: AppColors.primary,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -141,12 +180,21 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
                   /// Verification method
                   Text(AppLocalizations.of(context)!.verificationMethod),
                   const SizedBox(height: 8),
-                  TextField(
-                    readOnly: true,
-                    decoration: InputDecoration(
-                      hintText: AppLocalizations.of(context)!.emailVerification,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFE5E7EB)),
+                    ),
+                    child: TextField(
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        hintText:
+                            AppLocalizations.of(context)!.emailVerification,
+                        hintStyle: const TextStyle(color: Color(0xFFD1D5DB)),
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 14),
                       ),
                     ),
                   ),
@@ -155,58 +203,91 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
                   /// Verification code + Get Code
                   Text(AppLocalizations.of(context)!.enterVerificationCode),
                   const SizedBox(height: 8),
-                  TextField(
-                    controller: _verificationCodeController,
-                    decoration: InputDecoration(
-                      hintText: AppLocalizations.of(context)!
-                          .pleaseEnterVerificationCode,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      suffixIcon: TextButton(
-                        onPressed: viewModel.isLoading
-                            ? null
-                            : () async {
-                                final otpCode = _emailOtpController.text.trim();
-                                if (otpCode.isEmpty) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: Text(AppLocalizations.of(
-                                                context)!
-                                            .enterEmailVerificationCodeFirst)),
-                                  );
-                                  return;
-                                }
-                                final result =
-                                    await viewModel.verifyNewEmailOtp(
-                                        _newEmailController.text.trim(),
-                                        otpCode);
-                                if (result.success) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: Text(result.message ??
-                                            AppLocalizations.of(context)!
-                                                .newEmailVerifiedOtpSentToCurrent)),
-                                  );
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: Text(result.message ??
-                                            AppLocalizations.of(context)!
-                                                .failedToVerifyNewEmail)),
-                                  );
-                                }
-                              },
-                        child: Text(
-                          viewModel.isLoading
-                              ? AppLocalizations.of(context)!.verifying
-                              : AppLocalizations.of(context)!.getCode,
-                          style: TextStyle(
-                              color: viewModel.isLoading
-                                  ? Colors.grey
-                                  : Colors.green),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFE5E7EB)),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _verificationCodeController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              hintText: AppLocalizations.of(context)!
+                                  .pleaseEnterVerificationCode,
+                              hintStyle:
+                                  const TextStyle(color: Color(0xFFD1D5DB)),
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 14),
+                            ),
+                          ),
                         ),
-                      ),
+                        SizedBox(
+                          width: 110,
+                          child: GestureDetector(
+                            onTap: viewModel.isLoading
+                                ? null
+                                : () async {
+                                    final otpCode =
+                                        _emailOtpController.text.trim();
+                                    if (otpCode.isEmpty) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                            content: Text(AppLocalizations.of(
+                                                    context)!
+                                                .enterEmailVerificationCodeFirst)),
+                                      );
+                                      return;
+                                    }
+                                    final result =
+                                        await viewModel.verifyNewEmailOtp(
+                                            _newEmailController.text.trim(),
+                                            otpCode);
+                                    if (result.success) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                            content: Text(result.message ??
+                                                AppLocalizations.of(context)!
+                                                    .newEmailVerifiedOtpSentToCurrent)),
+                                      );
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                            content: Text(result.message ??
+                                                AppLocalizations.of(context)!
+                                                    .failedToVerifyNewEmail)),
+                                      );
+                                    }
+                                  },
+                            child: Center(
+                              child: viewModel.isLoading
+                                  ? const SizedBox(
+                                      width: 16,
+                                      height: 16,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: AppColors.primary,
+                                      ),
+                                    )
+                                  : Text(
+                                      AppLocalizations.of(context)!.getCode,
+                                      style: const TextStyle(
+                                        color: AppColors.primary,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -217,62 +298,78 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
             bottomNavigationBar: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: viewModel.isLoading
-                        ? null
-                        : () async {
-                            final verificationCode =
-                                _verificationCodeController.text.trim();
-                            if (verificationCode.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content: Text(AppLocalizations.of(context)!
-                                        .enterVerificationCode)),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: viewModel.isLoading
+                          ? null
+                          : AppColors.primaryGradient,
+                      color: viewModel.isLoading ? Colors.grey.shade300 : null,
+                      borderRadius: BorderRadius.circular(26),
+                      boxShadow: viewModel.isLoading
+                          ? null
+                          : [
+                              BoxShadow(
+                                color: AppColors.primary.withOpacity(0.3),
+                                blurRadius: 8,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                    ),
+                    child: ElevatedButton(
+                      onPressed: viewModel.isLoading
+                          ? null
+                          : () async {
+                              final verificationCode =
+                                  _verificationCodeController.text.trim();
+                              if (verificationCode.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(
+                                          AppLocalizations.of(context)!
+                                              .enterVerificationCode)),
+                                );
+                                return;
+                              }
+                              final result =
+                                  await viewModel.completeChangeEmail(
+                                _newEmailController.text.trim(),
+                                verificationCode,
                               );
-                              return;
-                            }
-                            final result = await viewModel.completeChangeEmail(
-                              _newEmailController.text.trim(),
-                              verificationCode,
-                            );
-                            if (result.success) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content: Text(result.message ??
-                                        AppLocalizations.of(context)!
-                                            .emailChangedSuccessfully)),
-                              );
-                              Navigator.pop(context);
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content: Text(result.message ??
-                                        AppLocalizations.of(context)!
-                                            .failedToChangeEmail)),
-                              );
-                            }
-                          },
-                    borderRadius: BorderRadius.circular(12),
-                    child: Container(
-                      height: 52,
-                      decoration: BoxDecoration(
-                        gradient: viewModel.isLoading
-                            ? null
-                            : AppColors.primaryGradient,
-                        color:
-                            viewModel.isLoading ? Colors.grey.shade300 : null,
-                        borderRadius: BorderRadius.circular(12),
+                              if (result.success) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(result.message ??
+                                          AppLocalizations.of(context)!
+                                              .emailChangedSuccessfully)),
+                                );
+                                Navigator.pop(context);
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(result.message ??
+                                          AppLocalizations.of(context)!
+                                              .failedToChangeEmail)),
+                                );
+                              }
+                            },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(26),
+                        ),
+                        elevation: 0,
                       ),
-                      alignment: Alignment.center,
                       child: viewModel.isLoading
                           ? const SizedBox(
                               width: 24,
                               height: 24,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                color: Colors.grey,
+                                color: Colors.white,
                               ),
                             )
                           : Text(
@@ -280,7 +377,7 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
                               style: const TextStyle(
                                 fontSize: 16,
                                 color: Colors.white,
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                     ),

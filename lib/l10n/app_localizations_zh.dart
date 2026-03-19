@@ -1776,4 +1776,48 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get keepPinSafeTip => '請妥善保管，切勿轉告他人。';
+
+  @override
+  String get cardBenefits => '卡片權益';
+
+  @override
+  String get rates => '費率';
+
+  @override
+  String get monthlyFee => '月费';
+
+  @override
+  String get monthlyLimit => '消费额度/月';
+
+  @override
+  String get fxFee => '货币转换费';
+
+  @override
+  String get transactionFee => '消费手续费';
+
+  @override
+  String get crossBorderFee => '跨境手续费';
+
+  @override
+  String get failedTransactionFee => '交易失败手续费';
+
+  @override
+  String get smallTransactionFee => '小额交易手续费';
+
+  @override
+  String get failedTransactionCountMonthly => '本月累计交易失败笔数';
+
+  @override
+  String get smallTransactionCountMonthly => '本月累计小额交易笔数';
+
+  @override
+  String get instructions => '说明：';
+
+  @override
+  String get failedTransactionFeeDesc =>
+      '1. 交易失敗手續費：自2025年11月18日起，我們將對每筆失敗交易收取0.4 USD。';
+
+  @override
+  String get smallTransactionFeeDesc =>
+      '2. 小額交易手續費：自2024年4月1日起，我們將對低於10 USD的交易收取0.15 USD的手續費。';
 }

@@ -95,9 +95,9 @@ class _PhysicalCardManagementScreenState
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              const ActivatePhysicalCardScreen(
+                          builder: (context) => ActivatePhysicalCardScreen(
                             isReset: true,
+                            publicToken: widget.cardDetails?.publicToken ?? "",
                           ),
                         ),
                       );

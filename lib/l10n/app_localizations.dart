@@ -3551,6 +3551,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please keep it safe and do not share it with others.'**
   String get keepPinSafeTip;
+
+  /// No description provided for @cardBenefits.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Benefits'**
+  String get cardBenefits;
+
+  /// No description provided for @rates.
+  ///
+  /// In en, this message translates to:
+  /// **'Rates'**
+  String get rates;
+
+  /// No description provided for @monthlyFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly Fee'**
+  String get monthlyFee;
+
+  /// No description provided for @monthlyLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly Limit'**
+  String get monthlyLimit;
+
+  /// No description provided for @fxFee.
+  ///
+  /// In en, this message translates to:
+  /// **'FX Fee'**
+  String get fxFee;
+
+  /// No description provided for @transactionFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Fee'**
+  String get transactionFee;
+
+  /// No description provided for @crossBorderFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Cross-border Fee'**
+  String get crossBorderFee;
+
+  /// No description provided for @failedTransactionFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed Trans. Fee'**
+  String get failedTransactionFee;
+
+  /// No description provided for @smallTransactionFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Small Trans. Fee'**
+  String get smallTransactionFee;
+
+  /// No description provided for @failedTransactionCountMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed Trans. (Month)'**
+  String get failedTransactionCountMonthly;
+
+  /// No description provided for @smallTransactionCountMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Small Trans. (Month)'**
+  String get smallTransactionCountMonthly;
+
+  /// No description provided for @instructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Instructions:'**
+  String get instructions;
+
+  /// No description provided for @failedTransactionFeeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'1. Failed Transaction Fee: Starting Nov 18, 2025, a 0.4 USD fee will be charged for each failed transaction.'**
+  String get failedTransactionFeeDesc;
+
+  /// No description provided for @smallTransactionFeeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'2. Small Transaction Fee: Starting Apr 1, 2024, a 0.15 USD fee will be charged for transactions below 10 USD.'**
+  String get smallTransactionFeeDesc;
 }
 
 class _AppLocalizationsDelegate

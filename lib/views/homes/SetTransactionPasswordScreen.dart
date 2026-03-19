@@ -102,34 +102,42 @@ class _SetTransactionPasswordScreenState
                     hint: AppLocalizations.of(context)!
                         .pleaseEnterVerificationCode,
                     controller: _verificationCodeController,
-                    suffix: TextButton(
-                      onPressed: viewModel.isOtpRequested
-                          ? null
-                          : () async {
-                              final result =
-                                  await viewModel.requestTransactionPassword(
-                                password: _transactionPasswordController.text,
-                                confirmPassword:
-                                    _confirmPasswordController.text,
-                              );
-                              if (result.success && mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(AppLocalizations.of(context)!
-                                        .otpSentToYourEmail),
-                                    backgroundColor: Colors.green,
-                                  ),
+                    suffix: SizedBox(
+                      width: 110,
+                      child: GestureDetector(
+                        onTap: viewModel.isOtpRequested
+                            ? null
+                            : () async {
+                                final result =
+                                    await viewModel.requestTransactionPassword(
+                                  password: _transactionPasswordController.text,
+                                  confirmPassword:
+                                      _confirmPasswordController.text,
                                 );
-                              }
-                            },
-                      child: Text(
-                        viewModel.isOtpRequested
-                            ? 'OTP Sent'
-                            : AppLocalizations.of(context)!.getCode,
-                        style: TextStyle(
-                          color: viewModel.isOtpRequested
-                              ? Colors.grey
-                              : AppColors.primary,
+                                if (result.success && mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                          AppLocalizations.of(context)!
+                                              .otpSentToYourEmail),
+                                      backgroundColor: AppColors.success,
+                                    ),
+                                  );
+                                }
+                              },
+                        child: Center(
+                          child: Text(
+                            viewModel.isOtpRequested
+                                ? '已发送'
+                                : AppLocalizations.of(context)!.getCode,
+                            style: TextStyle(
+                              color: viewModel.isOtpRequested
+                                  ? AppColors.textSecondary
+                                  : AppColors.primary,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -145,49 +153,61 @@ class _SetTransactionPasswordScreenState
         padding: const EdgeInsets.all(16.0),
         child: Consumer<SetTransactionPasswordViewModel>(
           builder: (context, viewModel, child) {
-            return Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: !viewModel.isOtpRequested
-                    ? null
-                    : () async {
-                        final result =
-                            await viewModel.completeTransactionPassword(
-                          otpCode: _verificationCodeController.text,
-                        );
-                        if (result.success && mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(result.message ??
-                                  AppLocalizations.of(context)!
-                                      .transactionPasswordSetSuccessfully),
-                              backgroundColor: Colors.green,
-                            ),
-                          );
-                          Navigator.of(context).pop();
-                        }
-                      },
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  height: 52,
-                  decoration: BoxDecoration(
-                    gradient: viewModel.isOtpRequested
-                        ? AppColors.primaryGradient
-                        : LinearGradient(
-                            colors: [
-                              Colors.grey.shade400,
-                              Colors.grey.shade400
-                            ],
+            return SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: !viewModel.isOtpRequested
+                      ? null
+                      : AppColors.primaryGradient,
+                  color:
+                      !viewModel.isOtpRequested ? Colors.grey.shade300 : null,
+                  borderRadius: BorderRadius.circular(26),
+                  boxShadow: !viewModel.isOtpRequested
+                      ? null
+                      : [
+                          BoxShadow(
+                            color: AppColors.primary.withOpacity(0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
                           ),
-                    borderRadius: BorderRadius.circular(12),
+                        ],
+                ),
+                child: ElevatedButton(
+                  onPressed: !viewModel.isOtpRequested
+                      ? null
+                      : () async {
+                          final result =
+                              await viewModel.completeTransactionPassword(
+                            otpCode: _verificationCodeController.text,
+                          );
+                          if (result.success && mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(result.message ??
+                                    AppLocalizations.of(context)!
+                                        .transactionPasswordSetSuccessfully),
+                                backgroundColor: AppColors.success,
+                              ),
+                            );
+                            Navigator.of(context).pop();
+                          }
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(26),
+                    ),
+                    elevation: 0,
                   ),
-                  alignment: Alignment.center,
                   child: Text(
                     AppLocalizations.of(context)!.confirm,
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.white,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
@@ -216,28 +236,41 @@ class _SetTransactionPasswordScreenState
           style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 8),
-        TextField(
-          controller:
-              value != null ? TextEditingController(text: value) : controller,
-          obscureText: obscure,
-          readOnly: readOnly,
-          style: TextStyle(
-            color: readOnly && value != null ? Colors.black : null,
-            fontWeight: readOnly && value != null ? FontWeight.w400 : null,
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: const Color(0xFFE5E7EB)),
           ),
-          decoration: InputDecoration(
-            hintText: hint,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide.none,
-            ),
-            filled: true,
-            fillColor: Colors.white,
-            suffixIcon: suffix,
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: value != null
+                      ? TextEditingController(text: value)
+                      : controller,
+                  obscureText: obscure,
+                  readOnly: readOnly,
+                  style: TextStyle(
+                    color: readOnly && value != null ? Colors.black : null,
+                    fontWeight:
+                        readOnly && value != null ? FontWeight.w400 : null,
+                    fontSize: 14,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: hint,
+                    hintStyle: const TextStyle(color: Color(0xFFD1D5DB)),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
+                  ),
+                  keyboardType:
+                      obscure ? TextInputType.number : TextInputType.text,
+                ),
+              ),
+              if (suffix != null) suffix,
+            ],
           ),
-          keyboardType: obscure ? TextInputType.number : TextInputType.text,
         ),
       ],
     );
