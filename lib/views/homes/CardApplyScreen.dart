@@ -130,7 +130,7 @@ class _CardApplyCardScreenState extends State<CardApplyCardScreen> {
 
                 // 内容
                 Text(
-                  '您已完成开卡费支付，现在可以进行KYC身份验证了。',
+                  AppLocalizations.of(context)!.kycVerificationReadyMsg,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,
@@ -180,9 +180,9 @@ class _CardApplyCardScreenState extends State<CardApplyCardScreen> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child: const Text(
-                            '前往验证',
-                            style: TextStyle(
+                          child: Text(
+                            AppLocalizations.of(context)!.goToVerify,
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
@@ -454,7 +454,7 @@ class _CardApplyCardScreenState extends State<CardApplyCardScreen> {
                       size: 14, color: Colors.grey.shade600),
                   const SizedBox(width: 6),
                   Text(
-                    'Min Fee: \$${coupon.minFee.toStringAsFixed(2)}',
+                    '${AppLocalizations.of(context)!.minFeeLabel}\$${coupon.minFee.toStringAsFixed(2)}',
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey.shade600,
@@ -464,7 +464,7 @@ class _CardApplyCardScreenState extends State<CardApplyCardScreen> {
                   Icon(Icons.discount, size: 14, color: Colors.grey.shade600),
                   const SizedBox(width: 6),
                   Text(
-                    'Max Discount: \$${coupon.maxDiscount.toStringAsFixed(2)}',
+                    '${AppLocalizations.of(context)!.maxDiscountLabel}\$${coupon.maxDiscount.toStringAsFixed(2)}',
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey.shade600,
@@ -479,7 +479,7 @@ class _CardApplyCardScreenState extends State<CardApplyCardScreen> {
                       size: 14, color: Colors.grey.shade600),
                   const SizedBox(width: 6),
                   Text(
-                    'Valid until: ${_formatDate(coupon.validUntil)}',
+                    '${AppLocalizations.of(context)!.validUntilLabel}${_formatDate(coupon.validUntil)}',
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey.shade600,
@@ -641,7 +641,7 @@ class _CardApplyCardScreenState extends State<CardApplyCardScreen> {
 
                       // 优惠券选择区域 - 更突出
                       Text(
-                        'Coupon',
+                        AppLocalizations.of(context)!.coupon,
                         style: const TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
@@ -688,7 +688,8 @@ class _CardApplyCardScreenState extends State<CardApplyCardScreen> {
                                   children: [
                                     Text(
                                       _selectedCoupon == null
-                                          ? 'Select a Coupon'
+                                          ? AppLocalizations.of(context)!
+                                              .selectACoupon
                                           : _selectedCoupon!.name,
                                       style: TextStyle(
                                         fontSize: 16,
@@ -701,7 +702,7 @@ class _CardApplyCardScreenState extends State<CardApplyCardScreen> {
                                     if (_selectedCoupon != null) ...[
                                       const SizedBox(height: 4),
                                       Text(
-                                        'Code: ${_selectedCoupon!.code}',
+                                        '${AppLocalizations.of(context)!.code}: ${_selectedCoupon!.code}',
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: Colors.grey.shade600,

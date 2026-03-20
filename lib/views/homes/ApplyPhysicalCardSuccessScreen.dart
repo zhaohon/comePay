@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:comecomepay/utils/app_colors.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 class ApplyPhysicalCardSuccessScreen extends StatelessWidget {
   const ApplyPhysicalCardSuccessScreen({super.key});
@@ -34,9 +35,9 @@ class ApplyPhysicalCardSuccessScreen extends StatelessWidget {
               const SizedBox(height: 48),
 
               // 成功标题
-              const Text(
-                '您已成功申领实体卡！',
-                style: TextStyle(
+              Text(
+                AppLocalizations.of(context)!.applyPhysicalCardSuccessTitle,
+                style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
@@ -49,25 +50,30 @@ class ApplyPhysicalCardSuccessScreen extends StatelessWidget {
               // 说明文案
               RichText(
                 textAlign: TextAlign.center,
-                text: const TextSpan(
-                  style: TextStyle(
+                text: TextSpan(
+                  style: const TextStyle(
                     fontSize: 14,
                     color: AppColors.textSecondary,
                     height: 1.8,
                   ),
                   children: [
-                    TextSpan(text: '您可在 '),
+                    TextSpan(text: AppLocalizations.of(context)!.youCanIn),
                     TextSpan(
-                      text: '【卡片】',
-                      style: TextStyle(color: Color(0xFF10B981)), // 绿色高亮
+                      text: AppLocalizations.of(context)!.cardTab,
+                      style: const TextStyle(color: Color(0xFF10B981)), // 绿色高亮
                     ),
-                    TextSpan(text: ' 界面中查看 '),
+                    TextSpan(text: AppLocalizations.of(context)!.screenView),
                     TextSpan(
-                      text: '【邮寄进度】\n',
-                      style: TextStyle(color: Color(0xFF10B981)), // 绿色高亮
+                      text:
+                          AppLocalizations.of(context)!.mailingProgressTabDesc,
+                      style: const TextStyle(color: Color(0xFF10B981)), // 绿色高亮
                     ),
-                    TextSpan(text: '我们将尽快为您寄送卡片，敬请查收！\n'),
-                    TextSpan(text: '请在收到卡片后进行激活后使用。'),
+                    TextSpan(
+                        text:
+                            AppLocalizations.of(context)!.willSendCardSoonTip),
+                    TextSpan(
+                        text: AppLocalizations.of(context)!
+                            .pleaseActivateAfterReceiving),
                   ],
                 ),
               ),
@@ -90,9 +96,9 @@ class ApplyPhysicalCardSuccessScreen extends StatelessWidget {
                     ),
                     elevation: 0,
                   ),
-                  child: const Text(
-                    '返回',
-                    style: TextStyle(
+                  child: Text(
+                    AppLocalizations.of(context)!.backButton,
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.w600,

@@ -1763,7 +1763,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reissuePhysicalCard => '補領實體卡';
 
   @override
-  String get securityVerification => '安全驗證';
+  String get securityVerification => '安全验证';
 
   @override
   String get resendCode => '重新獲取';
@@ -1820,4 +1820,115 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get smallTransactionFeeDesc =>
       '2. 小額交易手續費：自2024年4月1日起，我們將對低於10 USD的交易收取0.15 USD的手續費。';
+
+  @override
+  String get mailingProgress => '邮\n寄\n进\n度';
+
+  @override
+  String get mailingProgressTitle => '邮寄进度';
+
+  @override
+  String get upgradeApplication => '升级卡片申请';
+
+  @override
+  String get applicationTime => '申请时间';
+
+  @override
+  String get cardProduction => '制卡中';
+
+  @override
+  String get cardShipped => '卡片已寄出';
+
+  @override
+  String get shippedTime => '寄出时间';
+
+  @override
+  String get courierTracking => '快递查询';
+
+  @override
+  String get activateCardStep => '激活卡片';
+
+  @override
+  String get activateCardTip => '收到卡片后请激活后使用！';
+
+  @override
+  String get cardReceived => '已收到卡片';
+
+  @override
+  String get reminder => '温馨提示';
+
+  @override
+  String get activationConfirmTip => '请确认您已收到实体卡再进行激活操作！';
+
+  @override
+  String get notReceivedActivateLater => '未收到卡片，稍后激活';
+
+  @override
+  String get receivedActivateNow => '已收到卡片，马上激活';
+
+  @override
+  String get physicalCardPreparing => '实物卡准备中...';
+
+  @override
+  String get applyPhysicalCardSuccessTitle => '您已成功申领实体卡！';
+
+  @override
+  String get youCanIn => '您可在 ';
+
+  @override
+  String get cardTab => '【卡片】';
+
+  @override
+  String get screenView => ' 界面中查看 ';
+
+  @override
+  String get mailingProgressTabDesc => '【邮寄进度】\n';
+
+  @override
+  String get willSendCardSoonTip => '我们将尽快为您寄送卡片，敬请查收！\n';
+
+  @override
+  String get pleaseActivateAfterReceiving => '请在收到卡片后进行激活后使用。';
+
+  @override
+  String get backButton => '返回';
+
+  @override
+  String get kycVerificationReadyMsg => '您已完成开卡费支付，现在可以进行KYC身份验证了。';
+
+  @override
+  String get selectACoupon => '选择优惠券';
+
+  @override
+  String get minFeeLabel => '最低金额: ';
+
+  @override
+  String get maxDiscountLabel => '最高抵扣: ';
+
+  @override
+  String get validUntilLabel => '有效期至: ';
+
+  @override
+  String get completedStatus => '已完成';
+
+  @override
+  String get failedToGetCardInfo => '获取卡片信息失败: ';
+
+  @override
+  String get failedToLoadCardDetails => '加载卡片详情失败';
+
+  @override
+  String get failedToLoadCardDetailsRefresh => '加载卡片详情失败，请下拉刷新。';
+
+  @override
+  String get chooseVerificationMethod => '选择验证方式';
+
+  @override
+  String get copied => '已复制';
+
+  @override
+  String get cardReplaceRenew => '补换卡';
+
+  @override
+  String get rewardNews => '奖励消息';
 }

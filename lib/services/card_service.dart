@@ -4,6 +4,7 @@ import 'package:comecomepay/models/card_apply_progress_model.dart';
 import 'package:comecomepay/models/card_list_model.dart';
 import 'package:comecomepay/models/card_account_details_model.dart';
 import 'package:comecomepay/models/physical_upgrade_fee_info_model.dart';
+import 'package:comecomepay/models/physical_upgrade_progress_model.dart';
 import 'package:dio/dio.dart';
 
 class CardService extends BaseService {
@@ -43,6 +44,34 @@ class CardService extends BaseService {
       }
     } catch (e) {
       print('Error getting physical upgrade fee info: $e');
+      rethrow;
+    }
+  }
+
+  /// 查询实体卡升级进度
+  Future<PhysicalUpgradeProgressData?> getPhysicalUpgradeProgress(
+      String publicToken) async {
+    try {
+      final response = await get(
+        '/card/physical/upgrade/progress',
+        queryParameters: {'public_token': publicToken},
+      );
+
+      if (response['code'] == 200 && response['data'] != null) {
+        return PhysicalUpgradeProgressData.fromJson(response['data']);
+      } else {
+        throw Exception(response['errstr'] ??
+            response['message'] ??
+            'Failed to get physical upgrade progress');
+      }
+    } on DioException catch (e) {
+      final resData = e.response?.data;
+      final msg = (resData is Map)
+          ? (resData['message'] ?? resData['errstr'] ?? '查询进度失败')
+          : '查询进度失败';
+      throw Exception(msg);
+    } catch (e) {
+      print('Error getting physical upgrade progress: $e');
       rethrow;
     }
   }

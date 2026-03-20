@@ -1815,7 +1815,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get reissuePhysicalCard => 'Reissue Physical Card';
 
   @override
-  String get securityVerification => 'Security Verification';
+  String get securityVerification => 'Security verification';
 
   @override
   String get resendCode => 'Resend';
@@ -1873,4 +1873,121 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get smallTransactionFeeDesc =>
       '2. Small Transaction Fee: Starting Apr 1, 2024, a 0.15 USD fee will be charged for transactions below 10 USD.';
+
+  @override
+  String get mailingProgress => 'Mailing\nProgress';
+
+  @override
+  String get mailingProgressTitle => 'Mailing Progress';
+
+  @override
+  String get upgradeApplication => 'Upgrade Application';
+
+  @override
+  String get applicationTime => 'Application Time';
+
+  @override
+  String get cardProduction => 'Card Production';
+
+  @override
+  String get cardShipped => 'Card Shipped';
+
+  @override
+  String get shippedTime => 'Shipped Time';
+
+  @override
+  String get courierTracking => 'Courier Tracking';
+
+  @override
+  String get activateCardStep => 'Activate Card';
+
+  @override
+  String get activateCardTip => 'Please activate after receiving the card!';
+
+  @override
+  String get cardReceived => 'Card Received';
+
+  @override
+  String get reminder => 'Reminder';
+
+  @override
+  String get activationConfirmTip =>
+      'Please confirm you have received the physical card before activating!';
+
+  @override
+  String get notReceivedActivateLater => 'Not received, activate later';
+
+  @override
+  String get receivedActivateNow => 'Received, activate now';
+
+  @override
+  String get physicalCardPreparing => 'Physical card is being prepared...';
+
+  @override
+  String get applyPhysicalCardSuccessTitle =>
+      'You have successfully applied for a physical card!';
+
+  @override
+  String get youCanIn => 'You can view the ';
+
+  @override
+  String get cardTab => '[Card]';
+
+  @override
+  String get screenView => ' screen for ';
+
+  @override
+  String get mailingProgressTabDesc => '[Mailing Progress]\n';
+
+  @override
+  String get willSendCardSoonTip =>
+      'We will send your card as soon as possible, please look out for it!\n';
+
+  @override
+  String get pleaseActivateAfterReceiving =>
+      'Please activate it after receiving.';
+
+  @override
+  String get backButton => 'Back';
+
+  @override
+  String get kycVerificationReadyMsg =>
+      'You have completed the card fee payment, now you can proceed with KYC verification.';
+
+  @override
+  String get selectACoupon => 'Select a Coupon';
+
+  @override
+  String get minFeeLabel => 'Min Fee: ';
+
+  @override
+  String get maxDiscountLabel => 'Max Discount: ';
+
+  @override
+  String get validUntilLabel => 'Valid until: ';
+
+  @override
+  String get completedStatus => 'Completed';
+
+  @override
+  String get failedToGetCardInfo => 'Failed to load card info: ';
+
+  @override
+  String get failedToLoadCardDetails => 'Failed to load card details';
+
+  @override
+  String get failedToLoadCardDetailsRefresh =>
+      'Failed to load card details. Please pull down to refresh.';
+
+  @override
+  String get chooseVerificationMethod => 'Choose verification method';
+
+  @override
+  String get copied => 'Copied';
+
+  @override
+  String get cardReplaceRenew => 'Card Replace/Renew';
+
+  @override
+  String get rewardNews => 'Reward news';
 }

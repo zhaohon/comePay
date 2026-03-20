@@ -513,7 +513,7 @@ abstract class AppLocalizations {
   /// No description provided for @getCode.
   ///
   /// In en, this message translates to:
-  /// **'Get Code'**
+  /// **'Get code'**
   String get getCode;
 
   /// No description provided for @sending.
@@ -573,7 +573,7 @@ abstract class AppLocalizations {
   /// No description provided for @enterVerificationCode.
   ///
   /// In en, this message translates to:
-  /// **'Please enter the verification code'**
+  /// **'Enter verification code'**
   String get enterVerificationCode;
 
   /// No description provided for @emailChangedSuccessfully.
@@ -2559,7 +2559,7 @@ abstract class AppLocalizations {
   /// No description provided for @goToVerify.
   ///
   /// In en, this message translates to:
-  /// **'Go to Verify'**
+  /// **'Go to verify'**
   String get goToVerify;
 
   /// No description provided for @couponDiscount.
@@ -3525,7 +3525,7 @@ abstract class AppLocalizations {
   /// No description provided for @securityVerification.
   ///
   /// In en, this message translates to:
-  /// **'Security Verification'**
+  /// **'Security verification'**
   String get securityVerification;
 
   /// No description provided for @resendCode.
@@ -3635,6 +3635,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'2. Small Transaction Fee: Starting Apr 1, 2024, a 0.15 USD fee will be charged for transactions below 10 USD.'**
   String get smallTransactionFeeDesc;
+
+  /// No description provided for @mailingProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Mailing\nProgress'**
+  String get mailingProgress;
+
+  /// No description provided for @mailingProgressTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mailing Progress'**
+  String get mailingProgressTitle;
+
+  /// No description provided for @upgradeApplication.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade Application'**
+  String get upgradeApplication;
+
+  /// No description provided for @applicationTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Application Time'**
+  String get applicationTime;
+
+  /// No description provided for @cardProduction.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Production'**
+  String get cardProduction;
+
+  /// No description provided for @cardShipped.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Shipped'**
+  String get cardShipped;
+
+  /// No description provided for @shippedTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipped Time'**
+  String get shippedTime;
+
+  /// No description provided for @courierTracking.
+  ///
+  /// In en, this message translates to:
+  /// **'Courier Tracking'**
+  String get courierTracking;
+
+  /// No description provided for @activateCardStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate Card'**
+  String get activateCardStep;
+
+  /// No description provided for @activateCardTip.
+  ///
+  /// In en, this message translates to:
+  /// **'Please activate after receiving the card!'**
+  String get activateCardTip;
+
+  /// No description provided for @cardReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Received'**
+  String get cardReceived;
+
+  /// No description provided for @reminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder'**
+  String get reminder;
+
+  /// No description provided for @activationConfirmTip.
+  ///
+  /// In en, this message translates to:
+  /// **'Please confirm you have received the physical card before activating!'**
+  String get activationConfirmTip;
+
+  /// No description provided for @notReceivedActivateLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Not received, activate later'**
+  String get notReceivedActivateLater;
+
+  /// No description provided for @receivedActivateNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Received, activate now'**
+  String get receivedActivateNow;
+
+  /// No description provided for @physicalCardPreparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Physical card is being prepared...'**
+  String get physicalCardPreparing;
+
+  /// No description provided for @applyPhysicalCardSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You have successfully applied for a physical card!'**
+  String get applyPhysicalCardSuccessTitle;
+
+  /// No description provided for @youCanIn.
+  ///
+  /// In en, this message translates to:
+  /// **'You can view the '**
+  String get youCanIn;
+
+  /// No description provided for @cardTab.
+  ///
+  /// In en, this message translates to:
+  /// **'[Card]'**
+  String get cardTab;
+
+  /// No description provided for @screenView.
+  ///
+  /// In en, this message translates to:
+  /// **' screen for '**
+  String get screenView;
+
+  /// No description provided for @mailingProgressTabDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'[Mailing Progress]\n'**
+  String get mailingProgressTabDesc;
+
+  /// No description provided for @willSendCardSoonTip.
+  ///
+  /// In en, this message translates to:
+  /// **'We will send your card as soon as possible, please look out for it!\n'**
+  String get willSendCardSoonTip;
+
+  /// No description provided for @pleaseActivateAfterReceiving.
+  ///
+  /// In en, this message translates to:
+  /// **'Please activate it after receiving.'**
+  String get pleaseActivateAfterReceiving;
+
+  /// No description provided for @backButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get backButton;
+
+  /// No description provided for @kycVerificationReadyMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'You have completed the card fee payment, now you can proceed with KYC verification.'**
+  String get kycVerificationReadyMsg;
+
+  /// No description provided for @selectACoupon.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a Coupon'**
+  String get selectACoupon;
+
+  /// No description provided for @minFeeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Min Fee: '**
+  String get minFeeLabel;
+
+  /// No description provided for @maxDiscountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Discount: '**
+  String get maxDiscountLabel;
+
+  /// No description provided for @validUntilLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid until: '**
+  String get validUntilLabel;
+
+  /// No description provided for @completedStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get completedStatus;
+
+  /// No description provided for @failedToGetCardInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load card info: '**
+  String get failedToGetCardInfo;
+
+  /// No description provided for @failedToLoadCardDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load card details'**
+  String get failedToLoadCardDetails;
+
+  /// No description provided for @failedToLoadCardDetailsRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load card details. Please pull down to refresh.'**
+  String get failedToLoadCardDetailsRefresh;
+
+  /// No description provided for @chooseVerificationMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose verification method'**
+  String get chooseVerificationMethod;
+
+  /// No description provided for @copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get copied;
+
+  /// No description provided for @cardReplaceRenew.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Replace/Renew'**
+  String get cardReplaceRenew;
+
+  /// No description provided for @rewardNews.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward news'**
+  String get rewardNews;
 }
 
 class _AppLocalizationsDelegate

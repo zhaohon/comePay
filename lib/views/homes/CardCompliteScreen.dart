@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:comecomepay/views/homes/CardCompliteStatusScreen.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 class CardCompliteScreen extends StatefulWidget {
   const CardCompliteScreen({super.key});
@@ -54,9 +55,9 @@ class _CardCompliteScreenState extends State<CardCompliteScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  "Completed",
-                  style: TextStyle(
+                Text(
+                  AppLocalizations.of(context)!.completedStatus,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 40,
                     fontWeight: FontWeight.w600,

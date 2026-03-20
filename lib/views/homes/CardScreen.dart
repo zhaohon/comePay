@@ -22,6 +22,7 @@ import 'package:comecomepay/views/homes/ApplyPhysicalCardScreen.dart';
 import 'package:comecomepay/views/homes/ActivatePhysicalCardScreen.dart';
 import 'package:comecomepay/views/homes/PhysicalCardManagementScreen.dart';
 import 'package:comecomepay/views/homes/CardBenefitsScreen.dart';
+import 'package:comecomepay/models/physical_upgrade_progress_model.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CardScreen extends StatefulWidget {
@@ -624,19 +625,21 @@ class _CardScreenState extends State<CardScreen> {
         children: [
           _buildContent(),
           // 悬浮在最右侧居中的邮寄进度按钮
-          if (_cardList != null && _cardList!.hasCards)
-            // Positioned(
-            //   right: 0,
-            //   top: MediaQuery.of(context).size.height * 0.45,
-            //   child: _buildMailingProgressTab(context),
-            // ),
-            if (_isBusy)
-              Container(
-                color: Colors.black.withOpacity(0.3),
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
+          if (_cardList != null &&
+              _cardList!.hasCards &&
+              _currentCardDetails?.updatePhysical == true)
+            Positioned(
+              right: 0,
+              top: MediaQuery.of(context).size.height * 0.45,
+              child: _buildMailingProgressTab(context),
+            ),
+          if (_isBusy)
+            Container(
+              color: Colors.black.withOpacity(0.3),
+              child: const Center(
+                child: CircularProgressIndicator(),
               ),
+            ),
         ],
       ),
     );
@@ -1614,7 +1617,7 @@ class _CardScreenState extends State<CardScreen> {
         Navigator.pop(context);
       }
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('获取卡片信息失败: $e')),
+        SnackBar(content: Text('${AppLocalizations.of(context)!.failedToGetCardInfo}$e')),
       );
     }
   }
@@ -1950,8 +1953,8 @@ class _CardScreenState extends State<CardScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Security verification',
+                  Text(
+                  AppLocalizations.of(context)!.securityVerification,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -2005,7 +2008,7 @@ class _CardScreenState extends State<CardScreen> {
               TextFormField(
                 controller: _verificationCodeController,
                 decoration: InputDecoration(
-                  hintText: 'Enter verification code',
+                  hintText: AppLocalizations.of(context)!.enterVerificationCode,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -2015,9 +2018,9 @@ class _CardScreenState extends State<CardScreen> {
                     onPressed: () {
                       // TODO: Implement get code logic
                     },
-                    child: const Text(
-                      'Get code',
-                      style: TextStyle(color: Colors.blue),
+                    child: Text(
+                      AppLocalizations.of(context)!.getCode,
+                      style: const TextStyle(color: Colors.blue),
                     ),
                   ),
                 ),
@@ -2038,9 +2041,9 @@ class _CardScreenState extends State<CardScreen> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: const Text(
-                    'Confirm',
-                    style: TextStyle(
+                  child: Text(
+                    AppLocalizations.of(context)!.confirm,
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -2078,9 +2081,9 @@ class _CardScreenState extends State<CardScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Kindly Note',
-                    style: TextStyle(
+                  Text(
+                    AppLocalizations.of(context)!.reminder,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -2121,9 +2124,9 @@ class _CardScreenState extends State<CardScreen> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 24, vertical: 12),
                   ),
-                  child: const Text(
-                    'Card Not Received, Active later',
-                    style: TextStyle(
+                  child: Text(
+                    AppLocalizations.of(context)!.notReceivedActivateLater,
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
@@ -2254,7 +2257,7 @@ class _CardScreenState extends State<CardScreen> {
   Widget _buildMailingProgressTab(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        _showMailingProgressBottomSheet(context, isShipped: true);
+        _showMailingProgressBottomSheet(context);
       },
       child: Container(
         decoration: const BoxDecoration(
@@ -2272,10 +2275,10 @@ class _CardScreenState extends State<CardScreen> {
           ],
         ),
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
-        child: const Text(
-          '邮\n寄\n进\n度',
+        child: Text(
+          AppLocalizations.of(context)!.mailingProgress,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.bold,
             color: Color(0xFF0F172A),
@@ -2287,206 +2290,119 @@ class _CardScreenState extends State<CardScreen> {
   }
 
   /// 显示邮寄进度底部弹窗
-  void _showMailingProgressBottomSheet(BuildContext context,
-      {bool isShipped = true}) {
+  void _showMailingProgressBottomSheet(BuildContext context) {
+    if (_currentCardDetails == null) return;
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (BuildContext ctx) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(24),
-              topRight: Radius.circular(24),
-            ),
-          ),
-          padding: EdgeInsets.only(
-            left: 24,
-            right: 24,
-            top: 24,
-            bottom: MediaQuery.of(ctx).padding.bottom + 24,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 标题与关闭按钮
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        return FutureBuilder<PhysicalUpgradeProgressData?>(
+          future: _cardService
+              .getPhysicalUpgradeProgress(_currentCardDetails!.publicToken),
+          builder: (context, snapshot) {
+            return Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(24),
+                  topRight: Radius.circular(24),
+                ),
+              ),
+              padding: EdgeInsets.only(
+                left: 24,
+                right: 24,
+                top: 24,
+                bottom: MediaQuery.of(ctx).padding.bottom + 24,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "邮寄进度",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.pop(ctx),
-                    child: const Icon(Icons.close,
-                        color: AppColors.textPrimary, size: 24),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 32),
-
-              // 进度时间线区域
-              _buildTimeline(isShipped: isShipped),
-              const SizedBox(height: 48),
-
-              // 已收到卡片大按钮
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // 关闭进度底部弹窗
-                    Navigator.pop(ctx);
-                    // 弹出确实收到卡片对话框
-                    _showActivationConfirmDialog(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF0F172A), // 深色按钮
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: const Text(
-                    '已收到卡片',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void _showActivationConfirmDialog(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (BuildContext dialogCtx) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(24),
-              topRight: Radius.circular(24),
-            ),
-          ),
-          padding: const EdgeInsets.fromLTRB(24, 24, 24, 34), // 底部留些安全距离
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // 标题与关闭按钮
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "温馨提示",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.pop(dialogCtx),
-                    child: const Icon(Icons.close,
-                        color: AppColors.textPrimary, size: 24),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 32),
-
-              // 提示文案
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "请确认您已收到实体卡再进行激活操作！",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: AppColors.textPrimary,
-                    height: 1.5,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 32),
-
-              // 按钮1: 未收到卡片 (粉红)
-              SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(dialogCtx);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFF43F5E), // 粉红色
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: const Text(
-                    '未收到卡片，稍后激活',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // 按钮2: 已收到卡片 (深蓝)
-              SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(dialogCtx); // 关掉确认框
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ActivatePhysicalCardScreen(
-                          publicToken: _currentCardDetails?.publicToken ?? "",
+                  // 标题与关闭按钮
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.mailingProgressTitle,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
                         ),
                       ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF0F172A), // 深蓝色
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 0,
+                      GestureDetector(
+                        onTap: () => Navigator.pop(ctx),
+                        child: const Icon(Icons.close,
+                            color: AppColors.textPrimary, size: 24),
+                      ),
+                    ],
                   ),
-                  child: const Text(
-                    '已收到卡片，马上激活',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
+                  const SizedBox(height: 32),
+
+                  if (snapshot.connectionState == ConnectionState.waiting)
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(24),
+                        child: CircularProgressIndicator(),
+                      ),
                     ),
-                  ),
-                ),
+                  if (snapshot.hasError)
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Text(
+                          snapshot.error.toString(),
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ),
+                  if (snapshot.hasData && snapshot.data != null) ...[
+                    // 进度时间线区域
+                    _buildTimeline(snapshot.data!),
+                    const SizedBox(height: 48),
+
+                    // 已收到卡片大按钮
+                    SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: ElevatedButton(
+                        onPressed: snapshot.data!.isShippedOrDelivered
+                            ? () {
+                                // 关闭进度底部弹窗
+                                Navigator.pop(ctx);
+                              }
+                            : null,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: snapshot.data!.isShippedOrDelivered
+                              ? const Color(0xFF0F172A)
+                              : Colors.grey.shade300,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 0,
+                        ),
+                        child: Text(
+                          snapshot.data!.isShippedOrDelivered
+                              ? AppLocalizations.of(context)!.cardReceived
+                              : AppLocalizations.of(context)!
+                                  .physicalCardPreparing,
+                          style: TextStyle(
+                            color: snapshot.data!.isShippedOrDelivered
+                                ? Colors.white
+                                : Colors.grey.shade600,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
@@ -2519,89 +2435,105 @@ class _CardScreenState extends State<CardScreen> {
     );
   }
 
-  Widget _buildTimeline({required bool isShipped}) {
+  Widget _buildTimeline(PhysicalUpgradeProgressData data) {
+    bool hasSubmitted = data.hasSubmitted;
+    bool isShipped = data.isShippedOrDelivered;
+
+    String appTimeStr = '';
+    if (data.applicationTime != null) {
+      appTimeStr =
+          DateFormat('yyyy-MM-dd HH:mm:ss').format(data.applicationTime!);
+    }
+
+    String shippedTimeStr = '';
+    if (data.shippedTime != null) {
+      shippedTimeStr =
+          DateFormat('yyyy-MM-dd HH:mm:ss').format(data.shippedTime!);
+    }
+
     return Column(
       children: [
         // 1. 升级卡片申请
         _buildTimelineStep(
-          title: "升级卡片申请",
+          title: AppLocalizations.of(context)!.upgradeApplication,
           isActive: true,
-          isNextActive: true, // 默认制卡中肯定是亮的
+          isNextActive: hasSubmitted, // 制卡中已提交肯定是亮的
           isLast: false,
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 12),
-              _buildProgressDetailRow("申请时间", "2026-02-10 17:10:20"),
-              const SizedBox(height: 16),
-              _buildProgressDetailRow("收卡地址", "河北省石家庄市开发区润都荣园"),
-              const SizedBox(height: 16),
-              _buildProgressDetailRow("收件人", "赵宏 150****8358"),
-              const SizedBox(height: 16),
+              if (appTimeStr.isNotEmpty) ...[
+                _buildProgressDetailRow(
+                    AppLocalizations.of(context)!.applicationTime, appTimeStr),
+                const SizedBox(height: 16),
+              ],
             ],
           ),
         ),
         // 2. 制卡中
         _buildTimelineStep(
-          title: "制卡中",
-          isActive: true,
+          title: AppLocalizations.of(context)!.cardProduction,
+          isActive: hasSubmitted,
           isNextActive: isShipped, // 这根线只在已经发货时变绿
           isLast: false,
           content: const SizedBox(height: 16), // 空隙
         ),
         // 3. 卡片已寄出
         _buildTimelineStep(
-          title: "卡片已寄出",
+          title: AppLocalizations.of(context)!.cardShipped,
           isActive: isShipped,
-          isNextActive: false, // 只有激活了才变绿，默认这步还没激活，线置灰
-          isLast: false,
+          isNextActive: false,
+          isLast: true,
           content: isShipped
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 12),
-                    _buildProgressDetailRow("寄出时间", "2026-02-26 16:01:16"),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text("快递查询",
-                            style: TextStyle(
-                                color: AppColors.textSecondary, fontSize: 13)),
-                        Row(
-                          children: [
-                            const Text("SF5107905219317",
-                                style: TextStyle(
-                                    color: AppColors.textSecondary,
-                                    fontSize: 13)),
-                            const SizedBox(width: 4),
-                            const Icon(Icons.copy_outlined,
-                                size: 14, color: AppColors.textSecondary),
-                          ],
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 16),
+                    if (shippedTimeStr.isNotEmpty) ...[
+                      _buildProgressDetailRow(
+                          AppLocalizations.of(context)!.shippedTime,
+                          shippedTimeStr),
+                      const SizedBox(height: 16),
+                    ],
+                    if (data.trackingNo.isNotEmpty) ...[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(AppLocalizations.of(context)!.courierTracking,
+                              style: const TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 13)),
+                          GestureDetector(
+                            onTap: () {
+                              Clipboard.setData(
+                                  ClipboardData(text: data.trackingNo));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text(
+                                        AppLocalizations.of(context)!.copied),
+                                    duration: const Duration(seconds: 1)),
+                              );
+                            },
+                            child: Row(
+                              children: [
+                                Text(data.trackingNo,
+                                    style: const TextStyle(
+                                        color: AppColors.textSecondary,
+                                        fontSize: 13)),
+                                const SizedBox(width: 4),
+                                const Icon(Icons.copy_outlined,
+                                    size: 14, color: AppColors.textSecondary),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                    ],
                   ],
                 )
               : const SizedBox(height: 16),
-        ),
-        // 4. 激活卡片
-        _buildTimelineStep(
-          title: "激活卡片",
-          isActive: false, // 永远是灰色，直至用户真的激活
-          isNextActive: false,
-          isLast: true,
-          content: const Padding(
-            padding: EdgeInsets.only(top: 12),
-            child: Text(
-              "收到卡片后请激活后使用！",
-              style: TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 13,
-              ),
-            ),
-          ),
         ),
       ],
     );
