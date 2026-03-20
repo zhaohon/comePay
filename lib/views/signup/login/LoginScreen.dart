@@ -187,7 +187,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Center(
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, '/create_account');
+                      Navigator.pushNamed(context, '/create_account_email');
                     },
                     child: RichText(
                       text: TextSpan(

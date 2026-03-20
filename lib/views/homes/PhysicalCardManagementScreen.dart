@@ -103,18 +103,18 @@ class _PhysicalCardManagementScreenState
                       );
                     },
                   ),
-                  const SizedBox(height: 16),
-                  _buildMenuItem(
-                    context,
-                    title: localizations.reissuePhysicalCard,
-                    onTap: () {
-                      // TODO: Implement Reissue logic or navigate to screen
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text(localizations.featureComingSoon)),
-                      );
-                    },
-                  ),
+                  // const SizedBox(height: 16),
+                  // _buildMenuItem(
+                  //   context,
+                  //   title: localizations.reissuePhysicalCard,
+                  //   onTap: () {
+                  //     // TODO: Implement Reissue logic or navigate to screen
+                  //     ScaffoldMessenger.of(context).showSnackBar(
+                  //       SnackBar(
+                  //           content: Text(localizations.featureComingSoon)),
+                  //     );
+                  //   },
+                  // ),
                 ],
               ),
             ),

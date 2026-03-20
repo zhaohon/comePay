@@ -18,12 +18,15 @@ class ApplyPhysicalCardSuccessScreen extends StatelessWidget {
 
               // 顶部的大卡片图
               Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Image.asset(
-                    'assets/card.png',
-                    width: double.infinity,
-                    fit: BoxFit.cover,
+                child: AspectRatio(
+                  aspectRatio: 4999 / 2880,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Image.asset(
+                      'assets/card.png',
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),

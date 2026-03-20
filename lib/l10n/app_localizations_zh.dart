@@ -1673,7 +1673,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get internalTransfer => '内部转账';
 
   @override
-  String get pleaseEnter6DigitPin => '请输入完整的6位数字PIN码';
+  String get pleaseEnter6DigitPin => '请输入完整的4位数字PIN码';
 
   @override
   String get pinCodesDoNotMatch => '两次输入的PIN码不一致';
@@ -1700,16 +1700,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get pinCodeUsageWarning => '持卡人在 ATM 或POS终端机使用卡片时需输入PIN，请妥善保管';
 
   @override
-  String get pleaseSetNew6DigitPin => '请设置新的6位数字PIN码';
+  String get pleaseSetNew6DigitPin => '请设置新的4位数字PIN码';
 
   @override
-  String get pleaseEnter6DigitPinHint => '请输入6位数字PIN码';
+  String get pleaseEnter6DigitPinHint => '请输入4位数字PIN码';
 
   @override
-  String get pleaseConfirmNew6DigitPin => '请再次设置新的6位数字PIN码';
+  String get pleaseConfirmNew6DigitPin => '请再次设置新的4位数字PIN码';
 
   @override
-  String get pleaseConfirm6DigitPinHint => '请再次输入6位数字PIN码';
+  String get pleaseConfirm6DigitPinHint => '请再次输入4位数字PIN码';
 
   @override
   String get activateNow => '立即激活';

@@ -260,7 +260,7 @@ class _ActivatePhysicalCardScreenState
                   controller: _pinController1,
                   keyboardType: TextInputType.number,
                   obscureText: true, // 密码掩码
-                  maxLength: 6,
+                  maxLength: 4,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: InputDecoration(
                     counterText: "",
@@ -294,7 +294,7 @@ class _ActivatePhysicalCardScreenState
                   controller: _pinController2,
                   keyboardType: TextInputType.number,
                   obscureText: true, // 密码掩码
-                  maxLength: 6,
+                  maxLength: 4,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: InputDecoration(
                     counterText: "",

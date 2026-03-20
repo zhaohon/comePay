@@ -820,7 +820,7 @@ class _CardScreenState extends State<CardScreen> {
                 builder: (context, constraints) {
                   final cardWidth =
                       constraints.maxWidth - 16; // 水平方向总共有16的margin
-                  final cardHeight = cardWidth * (853 / 1280);
+                  final cardHeight = cardWidth * (2880 / 4999);
                   return SizedBox(
                     height: cardHeight,
                     child: PageView.builder(
@@ -1240,20 +1240,18 @@ class _CardScreenState extends State<CardScreen> {
                           Text(
                             card.cardNo,
                             style: TextStyle(
-                              color: const Color(0xFFE0E2E5), // 金属银色
+                              color: Colors.white, // 金属银色
                               fontSize: 26,
                               fontWeight: FontWeight.w700,
                               letterSpacing: 2.0, // 增加字间距更逼真
-                              shadows: embossed,
                             ),
                           ),
                           if (isCurrentCard) ...[
                             const SizedBox(width: 8),
                             Icon(
                               Icons.visibility_off,
-                              color: const Color(0xFFE0E2E5),
+                              color: Colors.white,
                               size: 20,
-                              shadows: embossed,
                             ),
                           ],
                         ],
@@ -1286,11 +1284,10 @@ class _CardScreenState extends State<CardScreen> {
                               : Text(
                                   _currentCardDetails?.memberName ?? 'NAME',
                                   style: TextStyle(
-                                    color: const Color(0xFFE0E2E5), // 金属银色
+                                    color: Colors.white, // 金属银色
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold, // 加粗一点让浮雕效果更好
                                     letterSpacing: 1.5,
-                                    shadows: embossed,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -1309,11 +1306,10 @@ class _CardScreenState extends State<CardScreen> {
                               child: Text(
                                 '**/**',
                                 style: TextStyle(
-                                  color: const Color(0xFFE0E2E5), // 金属银色
+                                  color: Colors.white, // 金属银色
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                   letterSpacing: 2.0,
-                                  shadows: embossed,
                                 ),
                               ),
                             ),
