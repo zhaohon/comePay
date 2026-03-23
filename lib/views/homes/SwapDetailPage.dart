@@ -722,10 +722,10 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
               const Divider(height: 24),
 
               // 手续费信息
-              _buildPreviewRow(AppLocalizations.of(context)!.feeRate,
-                  '${(swapViewModel.feeRate * 100).toStringAsFixed(2)}%'),
-              _buildPreviewRow(AppLocalizations.of(context)!.feeAmount,
-                  '${swapViewModel.feeAmount.toStringAsFixed(2)} HKD'),
+              _buildPreviewRow(AppLocalizations.of(context)!.fxFee,
+                  '${(swapViewModel.feeRate * 100 + 1).toStringAsFixed(2)}%'),
+              // _buildPreviewRow(AppLocalizations.of(context)!.feeAmount,
+              //     '${swapViewModel.feeAmount.toStringAsFixed(2)} HKD'),
 
               const SizedBox(height: 24),
 

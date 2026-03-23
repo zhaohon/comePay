@@ -87,12 +87,14 @@ class CardBenefitsScreen extends StatelessWidget {
                 _buildBenefitItem(
                   context,
                   l10n.fxFee,
-                  '${cardDetails.fxFee.toStringAsFixed(2)} %',
+                  '1.4 %',
+                  // '${(cardDetails.fxFee + 1).toStringAsFixed(2)} %',
                 ),
                 _buildBenefitItem(
                   context,
                   l10n.transactionFee,
-                  '${cardDetails.transactionFee.toStringAsFixed(2)} %',
+                  // '${cardDetails.transactionFee.toStringAsFixed(2)} %',
+                  '0.8 %',
                 ),
                 _buildBenefitItem(
                   context,

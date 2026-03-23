@@ -631,5 +631,6 @@
   "getCode": "获取验证码",
   "copied": "已复制",
   "cardReplaceRenew": "补换卡",
-  "rewardNews": "奖励消息"
+  "rewardNews": "奖励消息","cardHolderLabelText": "持卡人",
+  "expiryDateLabelText": "有效期"
 }

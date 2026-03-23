@@ -3857,6 +3857,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reward news'**
   String get rewardNews;
+
+  /// No description provided for @cardHolderLabelText.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get cardHolderLabelText;
+
+  /// No description provided for @expiryDateLabelText.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiry Date'**
+  String get expiryDateLabelText;
 }
 
 class _AppLocalizationsDelegate

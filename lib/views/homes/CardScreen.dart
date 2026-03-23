@@ -821,8 +821,9 @@ class _CardScreenState extends State<CardScreen> {
               // ===== 卡片展示区域（全宽） =====
               LayoutBuilder(
                 builder: (context, constraints) {
-                  final cardWidth =
-                      constraints.maxWidth - 16; // 水平方向总共有16的margin
+                  final screenWidth = constraints.maxWidth;
+                  final horizontalMargin = screenWidth * 0.08;
+                  final cardWidth = screenWidth - (horizontalMargin * 2);
                   final cardHeight = cardWidth * (2880 / 4999);
                   return SizedBox(
                     height: cardHeight,
@@ -1141,7 +1142,8 @@ class _CardScreenState extends State<CardScreen> {
     final embossed = _cardEmbossedShadows;
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+      margin: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width * 0.08),
       decoration: BoxDecoration(
         image: const DecorationImage(
           image: AssetImage('assets/card.png'),
@@ -1228,7 +1230,7 @@ class _CardScreenState extends State<CardScreen> {
               // 内容统一从左下角定位
               Positioned(
                 left: width * 0.08,
-                bottom: height * 0.12,
+                bottom: height * 0.07,
                 right: width * 0.05,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1244,8 +1246,8 @@ class _CardScreenState extends State<CardScreen> {
                             card.cardNo,
                             style: TextStyle(
                               color: Colors.white, // 金属银色
-                              fontSize: 26,
-                              fontWeight: FontWeight.w700,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w500,
                               letterSpacing: 2.0, // 增加字间距更逼真
                             ),
                           ),
@@ -1261,40 +1263,58 @@ class _CardScreenState extends State<CardScreen> {
                       ),
                     ),
 
-                    SizedBox(height: height * 0.06), // 卡号和底部信息之间的间距
+                    SizedBox(height: height * 0.02), // 卡号和底部信息之间的间距
 
                     // 底部一行：姓名 + 到期日 (移除硬编码标签)
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // 姓名部分（加载中显示骨架屏，避免先展示 NAME 再闪变）
                         Expanded(
                           flex: 1,
-                          child: (isCurrentCard && _currentCardDetails == null)
-                              ? Shimmer.fromColors(
-                                  baseColor: Colors.white.withOpacity(0.25),
-                                  highlightColor:
-                                      Colors.white.withOpacity(0.45),
-                                  child: Container(
-                                    height: 18,
-                                    width: 100,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                  ),
-                                )
-                              : Text(
-                                  _currentCardDetails?.memberName ?? 'NAME',
-                                  style: TextStyle(
-                                    color: Colors.white, // 金属银色
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold, // 加粗一点让浮雕效果更好
-                                    letterSpacing: 1.5,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!
+                                    .cardHolderLabelText,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12,
                                 ),
+                              ),
+                              const SizedBox(height: 4),
+                              (isCurrentCard && _currentCardDetails == null)
+                                  ? Shimmer.fromColors(
+                                      baseColor: Colors.white.withOpacity(0.25),
+                                      highlightColor:
+                                          Colors.white.withOpacity(0.45),
+                                      child: Container(
+                                        height: 18,
+                                        width: 100,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(4),
+                                        ),
+                                      ),
+                                    )
+                                  : Text(
+                                      _currentCardDetails?.memberName ?? 'NAME',
+                                      style: TextStyle(
+                                        color: Colors.white, // 金属银色
+                                        fontSize: 16,
+                                        fontWeight:
+                                            FontWeight.w500, // 加粗一点让浮雕效果更好
+                                        letterSpacing: 1.5,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                            ],
+                          ),
                         ),
 
                         // 到期日部分
@@ -1302,19 +1322,35 @@ class _CardScreenState extends State<CardScreen> {
                           flex: 1,
                           child: Align(
                             alignment: Alignment.centerLeft,
-                            child: GestureDetector(
-                              onTap: isCurrentCard
-                                  ? () => _showCardSecurityInfo()
-                                  : null,
-                              child: Text(
-                                '**/**',
-                                style: TextStyle(
-                                  color: Colors.white, // 金属银色
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 2.0,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!
+                                      .expiryDateLabelText,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
                                 ),
-                              ),
+                                const SizedBox(height: 4),
+                                GestureDetector(
+                                  onTap: isCurrentCard
+                                      ? () => _showCardSecurityInfo()
+                                      : null,
+                                  child: Text(
+                                    '**/**',
+                                    style: TextStyle(
+                                      color: Colors.white, // 金属银色
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                      letterSpacing: 2.0,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -1617,7 +1653,9 @@ class _CardScreenState extends State<CardScreen> {
         Navigator.pop(context);
       }
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${AppLocalizations.of(context)!.failedToGetCardInfo}$e')),
+        SnackBar(
+            content:
+                Text('${AppLocalizations.of(context)!.failedToGetCardInfo}$e')),
       );
     }
   }
@@ -1954,7 +1992,7 @@ class _CardScreenState extends State<CardScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                  AppLocalizations.of(context)!.securityVerification,
+                    AppLocalizations.of(context)!.securityVerification,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,

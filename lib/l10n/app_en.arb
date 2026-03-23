@@ -631,5 +631,6 @@
   "getCode": "Get code",
   "copied": "Copied",
   "cardReplaceRenew": "Card Replace/Renew",
-  "rewardNews": "Reward news"
+  "rewardNews": "Reward news","cardHolderLabelText": "Name",
+  "expiryDateLabelText": "Expiry Date"
 }

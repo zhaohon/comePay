@@ -1931,4 +1931,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get rewardNews => '奖励消息';
+
+  @override
+  String get cardHolderLabelText => '持卡人';
+
+  @override
+  String get expiryDateLabelText => '有效期';
 }

@@ -1991,4 +1991,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rewardNews => 'Reward news';
+
+  @override
+  String get cardHolderLabelText => 'Name';
+
+  @override
+  String get expiryDateLabelText => 'Expiry Date';
 }
