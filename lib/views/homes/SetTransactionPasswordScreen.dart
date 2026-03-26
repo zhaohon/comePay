@@ -110,6 +110,7 @@ class _SetTransactionPasswordScreenState
                             : () async {
                                 final result =
                                     await viewModel.requestTransactionPassword(
+                                  l10n: AppLocalizations.of(context)!,
                                   password: _transactionPasswordController.text,
                                   confirmPassword:
                                       _confirmPasswordController.text,
@@ -180,6 +181,7 @@ class _SetTransactionPasswordScreenState
                       : () async {
                           final result =
                               await viewModel.completeTransactionPassword(
+                            l10n: AppLocalizations.of(context)!,
                             otpCode: _verificationCodeController.text,
                           );
                           if (result.success && mounted) {

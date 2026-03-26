@@ -2001,4 +2001,48 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get expiryDateLabelText => 'Expiry Date';
+
+  @override
+  String get oldPasswordCannotBeEmpty => 'Kata sandi lama tidak boleh kosong';
+
+  @override
+  String get newPasswordCannotBeEmpty => 'Kata sandi baru tidak boleh kosong';
+
+  @override
+  String get confirmPasswordCannotBeEmpty =>
+      'Konfirmasi kata sandi tidak boleh kosong';
+
+  @override
+  String get changePasswordFailed => 'Gagal mengubah kata sandi';
+
+  @override
+  String get passwordFieldsCannotBeEmpty =>
+      'Kolom kata sandi tidak boleh kosong';
+
+  @override
+  String get otpCodeCannotBeEmpty => 'Kode OTP tidak boleh kosong';
+
+  @override
+  String get requestOtpFirst =>
+      'Hash sementara tidak tersedia. Silakan minta OTP terlebih dahulu.';
+
+  @override
+  String get newEmailCannotBeEmpty => 'Email baru tidak boleh kosong';
+
+  @override
+  String get invalidEmailFormat => 'Format email tidak valid';
+
+  @override
+  String get oldEmailOtpCannotBeEmpty => 'OTP email lama tidak boleh kosong';
+
+  @override
+  String get otpCodeMustBe5Digits => 'Kode OTP harus 5 digit';
+
+  @override
+  String get unexpectedError => 'Terjadi kesalahan yang tidak terduga';
+
+  @override
+  String errorOccurredWithDetails(Object error) {
+    return 'Terjadi kesalahan: $error';
+  }
 }

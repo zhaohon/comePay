@@ -1937,4 +1937,45 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get expiryDateLabelText => '有效期';
+
+  @override
+  String get oldPasswordCannotBeEmpty => '旧密码不能为空';
+
+  @override
+  String get newPasswordCannotBeEmpty => '新密码不能为空';
+
+  @override
+  String get confirmPasswordCannotBeEmpty => '确认密码不能为空';
+
+  @override
+  String get changePasswordFailed => '修改密码失败';
+
+  @override
+  String get passwordFieldsCannotBeEmpty => '密码字段不能为空';
+
+  @override
+  String get otpCodeCannotBeEmpty => '验证码不能为空';
+
+  @override
+  String get requestOtpFirst => '暂无临时哈希。请先请求验证码。';
+
+  @override
+  String get newEmailCannotBeEmpty => '新邮箱不能为空';
+
+  @override
+  String get invalidEmailFormat => '邮箱格式无效';
+
+  @override
+  String get oldEmailOtpCannotBeEmpty => '旧邮箱OTP不能为空';
+
+  @override
+  String get otpCodeMustBe5Digits => 'OTP码必须为5位数字';
+
+  @override
+  String get unexpectedError => '发生意外错误';
+
+  @override
+  String errorOccurredWithDetails(Object error) {
+    return '发生错误: $error';
+  }
 }

@@ -631,6 +631,20 @@
   "getCode": "获取验证码",
   "copied": "已复制",
   "cardReplaceRenew": "补换卡",
-  "rewardNews": "奖励消息","cardHolderLabelText": "持卡人",
-  "expiryDateLabelText": "有效期"
+  "rewardNews": "奖励消息",
+  "cardHolderLabelText": "持卡人",
+  "expiryDateLabelText": "有效期",
+  "oldPasswordCannotBeEmpty": "旧密码不能为空",
+  "newPasswordCannotBeEmpty": "新密码不能为空",
+  "confirmPasswordCannotBeEmpty": "确认密码不能为空",
+  "changePasswordFailed": "修改密码失败",
+  "passwordFieldsCannotBeEmpty": "密码字段不能为空",
+  "otpCodeCannotBeEmpty": "验证码不能为空",
+  "requestOtpFirst": "暂无临时哈希。请先请求验证码。",
+  "newEmailCannotBeEmpty": "新邮箱不能为空",
+  "invalidEmailFormat": "邮箱格式无效",
+  "oldEmailOtpCannotBeEmpty": "旧邮箱OTP不能为空",
+  "otpCodeMustBe5Digits": "OTP码必须为5位数字",
+  "unexpectedError": "发生意外错误",
+  "errorOccurredWithDetails": "发生错误: {error}"
 }

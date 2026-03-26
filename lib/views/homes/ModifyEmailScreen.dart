@@ -132,7 +132,8 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
                                 : () async {
                                     final result =
                                         await viewModel.requestChangeEmail(
-                                            _newEmailController.text.trim());
+                                            _newEmailController.text.trim(),
+                                            AppLocalizations.of(context)!);
                                     if (result.success) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
@@ -247,7 +248,8 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
                                     final result =
                                         await viewModel.verifyNewEmailOtp(
                                             _newEmailController.text.trim(),
-                                            otpCode);
+                                            otpCode,
+                                            AppLocalizations.of(context)!);
                                     if (result.success) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
@@ -337,6 +339,7 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
                                   await viewModel.completeChangeEmail(
                                 _newEmailController.text.trim(),
                                 verificationCode,
+                                AppLocalizations.of(context)!,
                               );
                               if (result.success) {
                                 ScaffoldMessenger.of(context).showSnackBar(

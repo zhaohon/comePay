@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:comecomepay/core/base_viewmodel.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/models/requests/transaction_password_request_model.dart';
 import 'package:comecomepay/models/responses/transaction_password_response_model.dart';
 import 'package:comecomepay/models/responses/transaction_password_error_model.dart';
@@ -75,12 +75,13 @@ class SetTransactionPasswordViewModel extends BaseViewModel {
 
   // Business logic methods
   Future<TransactionPasswordResult> requestTransactionPassword({
+    required AppLocalizations l10n,
     required String password,
     required String confirmPassword,
   }) async {
     // Validasi input
     if (password.isEmpty || confirmPassword.isEmpty) {
-      _errorMessage = 'Password fields cannot be empty';
+      _errorMessage = l10n.passwordFieldsCannotBeEmpty;
       notifyListeners();
       return TransactionPasswordResult(
         success: false,
@@ -90,7 +91,7 @@ class SetTransactionPasswordViewModel extends BaseViewModel {
     }
 
     if (password != confirmPassword) {
-      _errorMessage = 'Passwords do not match';
+      _errorMessage = l10n.passwordsDoNotMatch;
       notifyListeners();
       return TransactionPasswordResult(
         success: false,
@@ -158,7 +159,7 @@ class SetTransactionPasswordViewModel extends BaseViewModel {
         );
       } else {
         // Unexpected response
-        _errorMessage = 'An unexpected error occurred';
+        _errorMessage = l10n.errorOccurred;
         _tempHash = null;
         _isOtpRequested = false;
         notifyListeners();
@@ -169,7 +170,7 @@ class SetTransactionPasswordViewModel extends BaseViewModel {
         );
       }
     } catch (e) {
-      _errorMessage = 'An error occurred: ${e.toString()}';
+      _errorMessage = l10n.errorOccurredWithDetails(e.toString());
       _tempHash = null;
       _isOtpRequested = false;
       notifyListeners();
@@ -183,11 +184,12 @@ class SetTransactionPasswordViewModel extends BaseViewModel {
 
   // Business logic methods for complete transaction password
   Future<CompleteTransactionPasswordResult> completeTransactionPassword({
+    required AppLocalizations l10n,
     required String otpCode,
   }) async {
     // Validasi input
     if (otpCode.isEmpty) {
-      _errorMessage = 'OTP code cannot be empty';
+      _errorMessage = l10n.otpCodeCannotBeEmpty;
       notifyListeners();
       return CompleteTransactionPasswordResult(
         success: false,
@@ -197,7 +199,7 @@ class SetTransactionPasswordViewModel extends BaseViewModel {
     }
 
     if (_tempHash == null) {
-      _errorMessage = 'No temp hash available. Please request OTP first.';
+      _errorMessage = l10n.requestOtpFirst;
       notifyListeners();
       return CompleteTransactionPasswordResult(
         success: false,
@@ -246,7 +248,7 @@ class SetTransactionPasswordViewModel extends BaseViewModel {
         );
       } else {
         // Unexpected response
-        _errorMessage = 'An unexpected error occurred';
+        _errorMessage = l10n.errorOccurred;
         setBusy(false);
         return CompleteTransactionPasswordResult(
           success: false,
@@ -255,7 +257,7 @@ class SetTransactionPasswordViewModel extends BaseViewModel {
         );
       }
     } catch (e) {
-      _errorMessage = 'An error occurred: ${e.toString()}';
+      _errorMessage = l10n.errorOccurredWithDetails(e.toString());
       setBusy(false);
       return CompleteTransactionPasswordResult(
         success: false,

@@ -296,9 +296,23 @@ abstract class BaseService {
       case 200:
       case 201:
       case 202: // Accept
+        // Check for business-level errors if it's a map
+        if (data is Map) {
+          final status = data['status'];
+          if (status == 'error' || status == 'fail' || status == 'failed') {
+            final message = data['message'] ??
+                data['msg'] ??
+                data['error'] ??
+                'Unknown business error';
+
+            // Special handling for 403-like business errors (e.g. OTP required)
+            // But if it's already a 200, we check if it's meant to be an error
+            throw Exception(message);
+          }
+        }
         return data;
       case 400:
-        throw Exception('Bad Request: ${data['message'] ?? 'Invalid request'}');
+        throw Exception('${data['message'] ?? 'Invalid request'}');
       case 401:
         // ⚠️ DO NOT throw here! Let the interceptor's onError handle 401
         // The interceptor will handle token refresh automatically
@@ -311,14 +325,11 @@ abstract class BaseService {
         throw ForbiddenException(
             data['message'] ?? 'Access denied - OTP required');
       case 404:
-        throw Exception(
-            'Not Found: ${data['message'] ?? 'Resource not found'}');
+        throw Exception('${data['message'] ?? 'Resource not found'}');
       case 422:
-        throw Exception(
-            'Validation Error: ${data['message'] ?? 'Invalid data'}');
+        throw Exception('${data['message'] ?? 'Invalid data'}');
       case 429:
-        throw Exception(
-            'Too Many Requests: ${data['message'] ?? 'Rate limit exceeded'}');
+        throw Exception('${data['message'] ?? 'Rate limit exceeded'}');
       case 500:
       case 502:
       case 503:
@@ -348,11 +359,17 @@ abstract class BaseService {
   }
 
   // Common method for making GET requests
-  Future<dynamic> get(String endpoint,
-      {Map<String, dynamic>? queryParameters}) async {
+  Future<dynamic> get(
+    String endpoint, {
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+  }) async {
     try {
-      final response =
-          await _dio.get(endpoint, queryParameters: queryParameters);
+      final response = await _dio.get(
+        endpoint,
+        queryParameters: queryParameters,
+        options: options,
+      );
       return handleResponse(response);
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -360,9 +377,17 @@ abstract class BaseService {
   }
 
   // Common method for making POST requests
-  Future<dynamic> post(String endpoint, {dynamic data}) async {
+  Future<dynamic> post(
+    String endpoint, {
+    dynamic data,
+    Options? options,
+  }) async {
     try {
-      final response = await _dio.post(endpoint, data: data);
+      final response = await _dio.post(
+        endpoint,
+        data: data,
+        options: options,
+      );
       return handleResponse(response);
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -370,9 +395,17 @@ abstract class BaseService {
   }
 
   // Common method for making PUT requests
-  Future<dynamic> put(String endpoint, {dynamic data}) async {
+  Future<dynamic> put(
+    String endpoint, {
+    dynamic data,
+    Options? options,
+  }) async {
     try {
-      final response = await _dio.put(endpoint, data: data);
+      final response = await _dio.put(
+        endpoint,
+        data: data,
+        options: options,
+      );
       return handleResponse(response);
     } on DioException catch (e) {
       throw handleDioError(e);
@@ -380,9 +413,15 @@ abstract class BaseService {
   }
 
   // Common method for making DELETE requests
-  Future<dynamic> delete(String endpoint) async {
+  Future<dynamic> delete(
+    String endpoint, {
+    Options? options,
+  }) async {
     try {
-      final response = await _dio.delete(endpoint);
+      final response = await _dio.delete(
+        endpoint,
+        options: options,
+      );
       return handleResponse(response);
     } on DioException catch (e) {
       throw handleDioError(e);

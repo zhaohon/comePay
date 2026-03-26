@@ -3869,6 +3869,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Expiry Date'**
   String get expiryDateLabelText;
+
+  /// No description provided for @oldPasswordCannotBeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Old password cannot be empty'**
+  String get oldPasswordCannotBeEmpty;
+
+  /// No description provided for @newPasswordCannotBeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'New password cannot be empty'**
+  String get newPasswordCannotBeEmpty;
+
+  /// No description provided for @confirmPasswordCannotBeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password cannot be empty'**
+  String get confirmPasswordCannotBeEmpty;
+
+  /// No description provided for @changePasswordFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Change password failed'**
+  String get changePasswordFailed;
+
+  /// No description provided for @passwordFieldsCannotBeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Password fields cannot be empty'**
+  String get passwordFieldsCannotBeEmpty;
+
+  /// No description provided for @otpCodeCannotBeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP code cannot be empty'**
+  String get otpCodeCannotBeEmpty;
+
+  /// No description provided for @requestOtpFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'No temp hash available. Please request OTP first.'**
+  String get requestOtpFirst;
+
+  /// No description provided for @newEmailCannotBeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'New email cannot be empty'**
+  String get newEmailCannotBeEmpty;
+
+  /// No description provided for @invalidEmailFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email format'**
+  String get invalidEmailFormat;
+
+  /// No description provided for @oldEmailOtpCannotBeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Old email OTP cannot be empty'**
+  String get oldEmailOtpCannotBeEmpty;
+
+  /// No description provided for @otpCodeMustBe5Digits.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP code must be 5 digits'**
+  String get otpCodeMustBe5Digits;
+
+  /// No description provided for @unexpectedError.
+  ///
+  /// In en, this message translates to:
+  /// **'An unexpected error occurred'**
+  String get unexpectedError;
+
+  /// No description provided for @errorOccurredWithDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred: {error}'**
+  String errorOccurredWithDetails(Object error);
 }
 
 class _AppLocalizationsDelegate

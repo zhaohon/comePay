@@ -142,6 +142,7 @@ class ModifyLoginPasswordScreen extends StatelessWidget {
                         ? null
                         : () async {
                             final result = await viewModel.changePassword(
+                              AppLocalizations.of(context)!,
                               _oldPasswordController.text,
                               _newPasswordController.text,
                               _confirmPasswordController.text,

@@ -1997,4 +1997,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get expiryDateLabelText => 'Expiry Date';
+
+  @override
+  String get oldPasswordCannotBeEmpty => 'Old password cannot be empty';
+
+  @override
+  String get newPasswordCannotBeEmpty => 'New password cannot be empty';
+
+  @override
+  String get confirmPasswordCannotBeEmpty => 'Confirm password cannot be empty';
+
+  @override
+  String get changePasswordFailed => 'Change password failed';
+
+  @override
+  String get passwordFieldsCannotBeEmpty => 'Password fields cannot be empty';
+
+  @override
+  String get otpCodeCannotBeEmpty => 'OTP code cannot be empty';
+
+  @override
+  String get requestOtpFirst =>
+      'No temp hash available. Please request OTP first.';
+
+  @override
+  String get newEmailCannotBeEmpty => 'New email cannot be empty';
+
+  @override
+  String get invalidEmailFormat => 'Invalid email format';
+
+  @override
+  String get oldEmailOtpCannotBeEmpty => 'Old email OTP cannot be empty';
+
+  @override
+  String get otpCodeMustBe5Digits => 'OTP code must be 5 digits';
+
+  @override
+  String get unexpectedError => 'An unexpected error occurred';
+
+  @override
+  String errorOccurredWithDetails(Object error) {
+    return 'An error occurred: $error';
+  }
 }

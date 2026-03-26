@@ -631,6 +631,20 @@
   "getCode": "Get code",
   "copied": "Copied",
   "cardReplaceRenew": "Card Replace/Renew",
-  "rewardNews": "Reward news","cardHolderLabelText": "Name",
-  "expiryDateLabelText": "Expiry Date"
+  "rewardNews": "Reward news",
+  "cardHolderLabelText": "Name",
+  "expiryDateLabelText": "Expiry Date",
+  "oldPasswordCannotBeEmpty": "Old password cannot be empty",
+  "newPasswordCannotBeEmpty": "New password cannot be empty",
+  "confirmPasswordCannotBeEmpty": "Confirm password cannot be empty",
+  "changePasswordFailed": "Change password failed",
+  "passwordFieldsCannotBeEmpty": "Password fields cannot be empty",
+  "otpCodeCannotBeEmpty": "OTP code cannot be empty",
+  "requestOtpFirst": "No temp hash available. Please request OTP first.",
+  "newEmailCannotBeEmpty": "New email cannot be empty",
+  "invalidEmailFormat": "Invalid email format",
+  "oldEmailOtpCannotBeEmpty": "Old email OTP cannot be empty",
+  "otpCodeMustBe5Digits": "OTP code must be 5 digits",
+  "unexpectedError": "An unexpected error occurred",
+  "errorOccurredWithDetails": "An error occurred: {error}"
 }

@@ -96,7 +96,7 @@ class ProfileScreenViewModel extends BaseViewModel {
         return false;
       }
     } catch (e) {
-      _errorMessage = 'Exception: ${e.toString()}';
+      _errorMessage = '  ${e.toString()}';
       if (!isSilent) setBusy(false);
       notifyListeners();
       return false;
@@ -150,7 +150,7 @@ class ProfileScreenViewModel extends BaseViewModel {
         return false;
       }
     } catch (e) {
-      _errorMessage = 'Exception: ${e.toString()}';
+      _errorMessage = '  ${e.toString()}';
       setBusy(false);
       notifyListeners();
       return false;
@@ -220,7 +220,7 @@ class ProfileScreenViewModel extends BaseViewModel {
         return null;
       }
     } catch (e) {
-      _errorMessage = 'Exception: ${e.toString()}';
+      _errorMessage = '  ${e.toString()}';
       setBusy(false);
       notifyListeners();
       return null;

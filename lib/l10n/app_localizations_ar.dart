@@ -1996,4 +1996,51 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get expiryDateLabelText => 'Expiry Date';
+
+  @override
+  String get oldPasswordCannotBeEmpty =>
+      'لا يمكن أن تكون كلمة المرور القديمة فارغة';
+
+  @override
+  String get newPasswordCannotBeEmpty =>
+      'لا يمكن أن تكون كلمة المرور الجديدة فارغة';
+
+  @override
+  String get confirmPasswordCannotBeEmpty =>
+      'لا يمكن أن تكون كلمة مرور التأكيد فارغة';
+
+  @override
+  String get changePasswordFailed => 'فشل تغيير كلمة المرور';
+
+  @override
+  String get passwordFieldsCannotBeEmpty =>
+      'حقول كلمة المرور لا يمكن أن تكون فارغة';
+
+  @override
+  String get otpCodeCannotBeEmpty => 'لا يمكن أن يكون رمز التحقق فارغاً';
+
+  @override
+  String get requestOtpFirst => 'لا يتوفر هاش مؤقت. يرجى طلب رمز التحقق أولاً.';
+
+  @override
+  String get newEmailCannotBeEmpty =>
+      'لا يمكن أن يكون البريد الإلكتروني الجديد فارغًا';
+
+  @override
+  String get invalidEmailFormat => 'تنسيق البريد الإلكتروني غير صالح';
+
+  @override
+  String get oldEmailOtpCannotBeEmpty =>
+      'لا يمكن أن يكون رمز OTP للبريد الإلكتروني القديم فارغًا';
+
+  @override
+  String get otpCodeMustBe5Digits => 'يجب أن يتكون رمز OTP من 5 أرقام';
+
+  @override
+  String get unexpectedError => 'حدث خطأ غير متوقع';
+
+  @override
+  String errorOccurredWithDetails(Object error) {
+    return 'حدث خطأ: $error';
+  }
 }

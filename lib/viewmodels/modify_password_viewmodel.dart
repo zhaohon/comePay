@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:comecomepay/core/base_viewmodel.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/models/requests/change_password_request_model.dart';
 import 'package:comecomepay/models/responses/change_password_response_model.dart';
 import 'package:comecomepay/models/responses/change_password_error_model.dart';
@@ -42,11 +42,11 @@ class ModifyPasswordViewModel extends BaseViewModel {
   }
 
   // Business logic methods
-  Future<ChangePasswordResult> changePassword(
+  Future<ChangePasswordResult> changePassword(AppLocalizations l10n,
       String oldPassword, String newPassword, String confirmPassword) async {
     // Validasi input
     if (oldPassword.isEmpty) {
-      _errorMessage = 'Old password cannot be empty';
+      _errorMessage = l10n.oldPasswordCannotBeEmpty;
       notifyListeners();
       return ChangePasswordResult(
         success: false,
@@ -56,7 +56,7 @@ class ModifyPasswordViewModel extends BaseViewModel {
     }
 
     if (newPassword.isEmpty) {
-      _errorMessage = 'New password cannot be empty';
+      _errorMessage = l10n.newPasswordCannotBeEmpty;
       notifyListeners();
       return ChangePasswordResult(
         success: false,
@@ -66,7 +66,7 @@ class ModifyPasswordViewModel extends BaseViewModel {
     }
 
     if (confirmPassword.isEmpty) {
-      _errorMessage = 'Confirm password cannot be empty';
+      _errorMessage = l10n.confirmPasswordCannotBeEmpty;
       notifyListeners();
       return ChangePasswordResult(
         success: false,
@@ -76,7 +76,7 @@ class ModifyPasswordViewModel extends BaseViewModel {
     }
 
     if (newPassword != confirmPassword) {
-      _errorMessage = 'New password and confirm password do not match';
+      _errorMessage = l10n.passwordsDoNotMatch;
       notifyListeners();
       return ChangePasswordResult(
         success: false,
@@ -86,7 +86,7 @@ class ModifyPasswordViewModel extends BaseViewModel {
     }
 
     if (newPassword.length < 8) {
-      _errorMessage = 'New password must be at least 8 characters long';
+      _errorMessage = l10n.passwordMustBeAtLeast8Characters;
       notifyListeners();
       return ChangePasswordResult(
         success: false,
@@ -141,7 +141,7 @@ class ModifyPasswordViewModel extends BaseViewModel {
             responseType: ChangePasswordResponseType.success,
           );
         } else {
-          _errorMessage = response['error'] ?? 'Change password failed';
+          _errorMessage = response['error'] ?? l10n.changePasswordFailed;
           setBusy(false);
           return ChangePasswordResult(
             success: false,
@@ -151,7 +151,7 @@ class ModifyPasswordViewModel extends BaseViewModel {
         }
       } else {
         // Unexpected response
-        _errorMessage = 'An unexpected error occurred';
+        _errorMessage = l10n.unexpectedError;
         setBusy(false);
         return ChangePasswordResult(
           success: false,
@@ -160,7 +160,7 @@ class ModifyPasswordViewModel extends BaseViewModel {
         );
       }
     } catch (e) {
-      _errorMessage = 'An error occurred: ${e.toString()}';
+      _errorMessage = l10n.errorOccurredWithDetails(e.toString());
       setBusy(false);
       return ChangePasswordResult(
         success: false,

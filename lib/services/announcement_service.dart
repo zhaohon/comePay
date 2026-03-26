@@ -9,21 +9,16 @@ class AnnouncementService extends BaseService {
     int limit = 20,
     String lang = 'zh',
   }) async {
-    try {
-      final response = await dio.get(
-        '/announcements',
-        queryParameters: {
-          'page': page,
-          'limit': limit,
-          'lang': lang,
-        },
-      );
+    final response = await get(
+      '/announcements',
+      queryParameters: {
+        'page': page,
+        'limit': limit,
+        'lang': lang,
+      },
+    );
 
-      final data = handleResponse(response);
-      return AnnouncementListResponse.fromJson(data);
-    } catch (e) {
-      rethrow;
-    }
+    return AnnouncementListResponse.fromJson(response);
   }
 
   /// 获取公告详情
@@ -31,32 +26,19 @@ class AnnouncementService extends BaseService {
     int id, {
     String lang = 'zh',
   }) async {
-    try {
-      final response = await dio.get(
-        '/announcements/$id',
-        queryParameters: {
-          'lang': lang,
-        },
-      );
+    final response = await get(
+      '/announcements/$id',
+      queryParameters: {
+        'lang': lang,
+      },
+    );
 
-      final data = handleResponse(response);
-      return AnnouncementDetailResponse.fromJson(data);
-    } catch (e) {
-      rethrow;
-    }
+    return AnnouncementDetailResponse.fromJson(response);
   }
 
   /// 获取未读公告数量
   Future<UnreadCountResponse> getUnreadCount() async {
-    try {
-      final response = await dio.get(
-        '/announcements/unread-count',
-      );
-
-      final data = handleResponse(response);
-      return UnreadCountResponse.fromJson(data);
-    } catch (e) {
-      rethrow;
-    }
+    final response = await get('/announcements/unread-count');
+    return UnreadCountResponse.fromJson(response);
   }
 }

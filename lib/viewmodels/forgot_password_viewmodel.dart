@@ -240,7 +240,7 @@ class ForgotPasswordViewModel extends BaseViewModel {
         );
       }
     } catch (e) {
-      _errorMessage = 'Exception: ${e.toString()}';
+      _errorMessage = '  ${e.toString()}';
       Logger.businessLogic(
           'resetPasswordCreatePassword', 'Exception - $_errorMessage');
       setBusy(false);

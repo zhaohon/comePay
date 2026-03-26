@@ -115,7 +115,7 @@ class BindPhoneViewModel extends BaseViewModel {
         );
       }
     } catch (e) {
-      _errorMessage = 'Exception: ${e.toString()}';
+      _errorMessage = '  ${e.toString()}';
       _changePhoneResponse = null;
       setBusy(false);
       return ChangePhoneResult(
@@ -188,7 +188,7 @@ class BindPhoneViewModel extends BaseViewModel {
         );
       }
     } catch (e) {
-      _errorMessage = 'Exception: ${e.toString()}';
+      _errorMessage = '  ${e.toString()}';
       setBusy(false);
       return ChangePhoneResult(
         success: false,
@@ -258,7 +258,7 @@ class BindPhoneViewModel extends BaseViewModel {
         );
       }
     } catch (e) {
-      _errorMessage = 'Exception: ${e.toString()}';
+      _errorMessage = '  ${e.toString()}';
       setBusy(false);
       return ChangePhoneResult(
         success: false,
