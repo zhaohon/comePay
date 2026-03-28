@@ -366,13 +366,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get latestTransactions => '最新交易';
 
   @override
-  String get seeAllTransactions => '查看所有交易';
+  String get seeAllTransactions => 'See All Transactions';
 
   @override
-  String get noRelevantDataYet => '暂无相关数据';
+  String get noRelevantDataYet => 'No relevant data yet';
 
   @override
-  String get comeComePayCard => 'Come Come Pay 卡';
+  String get comeComePayCard => 'Come Come Pay Card';
 
   @override
   String get noMonthlyFee => '无月费';
@@ -1937,4 +1937,123 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get expiryDateLabelText => '有效期';
+
+  @override
+  String get oldPasswordCannotBeEmpty => '旧密码不能为空';
+
+  @override
+  String get newPasswordCannotBeEmpty => '新密码不能为空';
+
+  @override
+  String get confirmPasswordCannotBeEmpty => '确认密码不能为空';
+
+  @override
+  String get changePasswordFailed => '修改密码失败';
+
+  @override
+  String get passwordFieldsCannotBeEmpty => '密码字段不能为空';
+
+  @override
+  String get otpCodeCannotBeEmpty => '验证码不能为空';
+
+  @override
+  String get requestOtpFirst => '暂无临时哈希。请先请求验证码。';
+
+  @override
+  String get newEmailCannotBeEmpty => '新邮箱不能为空';
+
+  @override
+  String get invalidEmailFormat => '邮箱格式无效';
+
+  @override
+  String get oldEmailOtpCannotBeEmpty => '旧邮箱OTP不能为空';
+
+  @override
+  String get otpCodeMustBe5Digits => 'OTP码必须为5位数字';
+
+  @override
+  String get unexpectedError => '发生意外错误';
+
+  @override
+  String errorOccurredWithDetails(Object error) {
+    return '$error';
+  }
+
+  @override
+  String get userDataNotFound => '未找到用户数据';
+
+  @override
+  String get emailCannotBeEmpty => '邮箱不能为空';
+
+  @override
+  String get allFieldsRequired => '所有字段均为必填项';
+
+  @override
+  String get passwordTooShort6 => '密码长度至少为 6 个字符';
+
+  @override
+  String get failedToCreateWallet => '创建钱包失败';
+
+  @override
+  String get failedToGetProfile => 'Failed to get profile';
+
+  @override
+  String get failedToInitializeDiditToken => 'Failed to initialize Didit token';
+
+  @override
+  String get credit => 'Credit';
+
+  @override
+  String get debit => 'Debit';
+
+  @override
+  String get registrationSuccessful => '注册成功！请使用您的邮箱和密码登录。';
+
+  @override
+  String get kycVerification => 'KYC Verification';
+
+  @override
+  String get level1Verification => 'Level 1 Verification';
+
+  @override
+  String get featuresAndPermissions => 'Features & Permissions';
+
+  @override
+  String get completeAuthentication => 'Complete Authentication';
+
+  @override
+  String get applyCardLabel => 'Apply card';
+
+  @override
+  String get documentVerification => '证件验证';
+
+  @override
+  String get faceRecognition => 'Face recognition';
+
+  @override
+  String get noKycData => 'No KYC data available';
+
+  @override
+  String get passed => 'Passed';
+
+  @override
+  String get pending => 'Pending';
+
+  @override
+  String get newPhoneCannotBeEmpty => '新手机号不能为空';
+
+  @override
+  String get unexpectedResponse => '非预期的响应';
+
+  @override
+  String get emailPhoneOtpRequired => '电子邮箱、新手机号和手机验证码不能为空';
+
+  @override
+  String get newPhoneEmailOtpRequired => '新手机号和邮箱验证码不能为空';
+
+  @override
+  String get amountGreaterThanZero => '金额必须大于0';
+
+  @override
+  String get failedToCreateQuote => '创建报价失败：数据格式错误';
 }

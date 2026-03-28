@@ -74,9 +74,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         Provider.of<ProfileScreenViewModel>(context, listen: false);
     final accessToken = HiveStorageService.getAccessToken();
     if (accessToken != null) {
+      final l10n = AppLocalizations.of(context)!;
       // getProfile 内部有 setBusy(true)，我们需要确保它不阻塞主UI显示
       // 我们通过传递 isSilent: true 来实现
-      await viewModel.getProfile(accessToken, isSilent: true);
+      await viewModel.getProfile(l10n, isSilent: true);
 
       if (mounted && viewModel.profileResponse != null) {
         setState(() {
@@ -87,7 +88,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     // 无论如何，后台同步一下 KYC 状态
-    viewModel.fetchKycStatus();
+    final l10n = AppLocalizations.of(context)!;
+    viewModel.fetchKycStatus(l10n);
   }
 
   @override

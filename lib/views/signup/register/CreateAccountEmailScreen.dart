@@ -35,8 +35,10 @@ class _CreateAccountEmailScreenState extends State<CreateAccountEmailScreen> {
       // 触发重建以显示加载状态
       setState(() {});
 
+      final l10n = AppLocalizations.of(context)!;
       final result = await _signupViewModel.validateEmail(
         _emailController.text,
+        l10n,
         referralCode: _referralCodeController.text.trim().isEmpty
             ? null
             : _referralCodeController.text.trim(),

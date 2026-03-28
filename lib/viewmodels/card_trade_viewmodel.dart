@@ -47,7 +47,7 @@ class CardTradeViewModel extends BaseViewModel {
 
       notifyListeners();
     } catch (e) {
-      _errorMessage = 'Failed to load card trades: ${e.toString()}';
+      _errorMessage = '${e.toString()}';
       print('Error fetching card trades: $e');
       notifyListeners();
     } finally {
@@ -75,7 +75,8 @@ class CardTradeViewModel extends BaseViewModel {
       final formattedDate = '${date.day}/${date.month}/${date.year}';
 
       final isPositive = trade.tradeTotal >= 0;
-      final amount = '${trade.currencyCode} ${trade.tradeTotal.abs().toStringAsFixed(2)}';
+      final amount =
+          '${trade.currencyCode} ${trade.tradeTotal.abs().toStringAsFixed(2)}';
       final description = trade.merchantName;
       final type = isPositive ? 'Credit' : 'Debit';
 

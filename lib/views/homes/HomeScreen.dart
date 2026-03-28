@@ -71,7 +71,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         notificationViewModel.fetchUnreadNotificationCount(),
         notificationViewModel.fetchUnreadAnnouncementCount(),
         _walletViewModel.fetchWalletData(),
-        transactionViewModel.fetchLatestTransactions(limit: 10),
+        transactionViewModel
+            .fetchLatestTransactions(AppLocalizations.of(context)!, limit: 10),
       ]);
     } catch (e) {
       print('❌ HomeScreen 数据加载失败: $e');

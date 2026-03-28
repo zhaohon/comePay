@@ -624,7 +624,8 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
             : DropdownButton<PaymentCurrencyModel>(
                 value: _selectedCurrency,
                 hint: Text(l10n.pleaseSelectPaymentCurrency,
-                    style: const TextStyle(color: Color(0xFF9CA3AF), fontSize: 14)),
+                    style: const TextStyle(
+                        color: Color(0xFF9CA3AF), fontSize: 14)),
                 isExpanded: true,
                 icon: const Icon(Icons.keyboard_arrow_down,
                     size: 20, color: Color(0xFF9CA3AF)),
@@ -660,7 +661,8 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
                           ],
                         ),
                         Text(
-                          l10n.balanceColonFormat('\$${bal.toStringAsFixed(2)}'),
+                          l10n.balanceColonFormat(
+                              '\$${bal.toStringAsFixed(2)}'),
                           style: TextStyle(
                             fontSize: 12,
                             color: bal >=
@@ -817,7 +819,8 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
     final verifyToken = _verifyToken ?? '';
     if (publicToken.isEmpty || verifyToken.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.submitFailed), backgroundColor: AppColors.error),
+        SnackBar(
+            content: Text(l10n.submitFailed), backgroundColor: AppColors.error),
       );
       return;
     }
@@ -827,7 +830,8 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
         publicToken: publicToken,
         verifyToken: verifyToken,
         recipient: _nameController.text.trim(),
-        nameOnCard: widget.cardDetails?.memberName ?? _nameController.text.trim(),
+        nameOnCard:
+            widget.cardDetails?.memberName ?? _nameController.text.trim(),
         areaCode: _selectedCountry?.dialCode ?? '+86',
         phone: _phoneController.text.trim(),
         postalCountry: _selectedCountry?.code ?? 'CN',
@@ -847,7 +851,7 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
       }
     } catch (e) {
       if (mounted) {
-        final msg = e.toString().replaceFirst('Exception: ', '');
+        final msg = e.toString().replaceFirst('  ', '');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('${l10n.submitFailed}: $msg'),
@@ -984,11 +988,11 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
                                     });
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
-                                          content: Text(
-                                              l10n.verificationCodeSent)),
+                                          content:
+                                              Text(l10n.verificationCodeSent)),
                                     );
-                                    Timer.periodic(
-                                        const Duration(seconds: 1), (timer) {
+                                    Timer.periodic(const Duration(seconds: 1),
+                                        (timer) {
                                       if (!mounted || _remainingTime == 0) {
                                         timer.cancel();
                                       }
@@ -1089,8 +1093,8 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
                             if (_emailCodeController.text.trim().isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                    content: Text(l10n
-                                        .pleaseEnterEmailVerificationCode)),
+                                    content: Text(
+                                        l10n.pleaseEnterEmailVerificationCode)),
                               );
                               return;
                             }

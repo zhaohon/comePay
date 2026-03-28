@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:comecomepay/core/base_viewmodel.dart';
 import 'package:comecomepay/models/requests/change_phone_request_model.dart';
 import 'package:comecomepay/models/responses/change_phone_response_model.dart';
@@ -9,8 +8,8 @@ import 'package:comecomepay/models/requests/complete_change_phone_request_model.
 import 'package:comecomepay/models/responses/complete_change_phone_response_model.dart';
 import 'package:comecomepay/models/responses/complete_change_phone_error_model.dart';
 import 'package:comecomepay/services/global_service.dart';
-import 'package:comecomepay/services/hive_storage_service.dart';
 import 'package:comecomepay/utils/service_locator.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 // Result types for change phone scenarios
 class ChangePhoneResult {
@@ -55,10 +54,11 @@ class BindPhoneViewModel extends BaseViewModel {
   }
 
   // Business logic methods
-  Future<ChangePhoneResult> requestChangePhone(String newPhone) async {
+  Future<ChangePhoneResult> requestChangePhone(
+      AppLocalizations l10n, String newPhone) async {
     // Validasi input
     if (newPhone.isEmpty) {
-      _errorMessage = 'New phone cannot be empty';
+      _errorMessage = l10n.newPhoneCannotBeEmpty;
       notifyListeners();
       return ChangePhoneResult(
         success: false,
@@ -105,7 +105,7 @@ class BindPhoneViewModel extends BaseViewModel {
         );
       } else {
         // Unexpected response
-        _errorMessage = 'Unexpected response';
+        _errorMessage = l10n.unexpectedResponse;
         _changePhoneResponse = null;
         setBusy(false);
         return ChangePhoneResult(
@@ -115,7 +115,7 @@ class BindPhoneViewModel extends BaseViewModel {
         );
       }
     } catch (e) {
-      _errorMessage = 'Exception: ${e.toString()}';
+      _errorMessage = l10n.errorOccurredWithDetails(e.toString());
       _changePhoneResponse = null;
       setBusy(false);
       return ChangePhoneResult(
@@ -127,11 +127,11 @@ class BindPhoneViewModel extends BaseViewModel {
   }
 
   // Method untuk verify new phone OTP
-  Future<ChangePhoneResult> verifyNewPhoneOtp(
+  Future<ChangePhoneResult> verifyNewPhoneOtp(AppLocalizations l10n,
       String email, String newPhone, String phoneOtp) async {
     // Validasi input
     if (email.isEmpty || newPhone.isEmpty || phoneOtp.isEmpty) {
-      _errorMessage = 'Email, new phone, and phone OTP cannot be empty';
+      _errorMessage = l10n.emailPhoneOtpRequired;
       notifyListeners();
       return ChangePhoneResult(
         success: false,
@@ -179,7 +179,7 @@ class BindPhoneViewModel extends BaseViewModel {
         );
       } else {
         // Unexpected response
-        _errorMessage = 'Unexpected response';
+        _errorMessage = l10n.unexpectedResponse;
         setBusy(false);
         return ChangePhoneResult(
           success: false,
@@ -188,7 +188,7 @@ class BindPhoneViewModel extends BaseViewModel {
         );
       }
     } catch (e) {
-      _errorMessage = 'Exception: ${e.toString()}';
+      _errorMessage = l10n.errorOccurredWithDetails(e.toString());
       setBusy(false);
       return ChangePhoneResult(
         success: false,
@@ -200,10 +200,10 @@ class BindPhoneViewModel extends BaseViewModel {
 
   // Method untuk complete change phone
   Future<ChangePhoneResult> completeChangePhone(
-      String newPhone, String emailOtp) async {
+      AppLocalizations l10n, String newPhone, String emailOtp) async {
     // Validasi input
     if (newPhone.isEmpty || emailOtp.isEmpty) {
-      _errorMessage = 'New phone and email OTP cannot be empty';
+      _errorMessage = l10n.newPhoneEmailOtpRequired;
       notifyListeners();
       return ChangePhoneResult(
         success: false,
@@ -249,7 +249,7 @@ class BindPhoneViewModel extends BaseViewModel {
         );
       } else {
         // Unexpected response
-        _errorMessage = 'Unexpected response';
+        _errorMessage = l10n.unexpectedResponse;
         setBusy(false);
         return ChangePhoneResult(
           success: false,
@@ -258,7 +258,7 @@ class BindPhoneViewModel extends BaseViewModel {
         );
       }
     } catch (e) {
-      _errorMessage = 'Exception: ${e.toString()}';
+      _errorMessage = e.toString();
       setBusy(false);
       return ChangePhoneResult(
         success: false,

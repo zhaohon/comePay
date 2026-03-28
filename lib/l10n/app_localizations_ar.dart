@@ -1996,4 +1996,132 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get expiryDateLabelText => 'Expiry Date';
+
+  @override
+  String get oldPasswordCannotBeEmpty =>
+      'لا يمكن أن تكون كلمة المرور القديمة فارغة';
+
+  @override
+  String get newPasswordCannotBeEmpty =>
+      'لا يمكن أن تكون كلمة المرور الجديدة فارغة';
+
+  @override
+  String get confirmPasswordCannotBeEmpty =>
+      'لا يمكن أن تكون كلمة مرور التأكيد فارغة';
+
+  @override
+  String get changePasswordFailed => 'فشل تغيير كلمة المرور';
+
+  @override
+  String get passwordFieldsCannotBeEmpty =>
+      'حقول كلمة المرور لا يمكن أن تكون فارغة';
+
+  @override
+  String get otpCodeCannotBeEmpty => 'لا يمكن أن يكون رمز التحقق فارغاً';
+
+  @override
+  String get requestOtpFirst => 'لا يتوفر هاش مؤقت. يرجى طلب رمز التحقق أولاً.';
+
+  @override
+  String get newEmailCannotBeEmpty =>
+      'لا يمكن أن يكون البريد الإلكتروني الجديد فارغًا';
+
+  @override
+  String get invalidEmailFormat => 'تنسيق البريد الإلكتروني غير صالح';
+
+  @override
+  String get oldEmailOtpCannotBeEmpty =>
+      'لا يمكن أن يكون رمز OTP للبريد الإلكتروني القديم فارغًا';
+
+  @override
+  String get otpCodeMustBe5Digits => 'يجب أن يتكون رمز OTP من 5 أرقام';
+
+  @override
+  String get unexpectedError => 'حدث خطأ غير متوقع';
+
+  @override
+  String errorOccurredWithDetails(Object error) {
+    return 'حدث خطأ: $error';
+  }
+
+  @override
+  String get userDataNotFound => 'لم يتم العثور على بيانات المستخدم';
+
+  @override
+  String get emailCannotBeEmpty => 'البريد الإلكتروني لا يمكن أن يكون فارغاً';
+
+  @override
+  String get allFieldsRequired => 'جميع الحقول مطلوبة';
+
+  @override
+  String get passwordTooShort6 => 'يجب أن تكون كلمة المرor 6 أحرف على الأقل';
+
+  @override
+  String get failedToCreateWallet => 'فشل إنشاء المحفظة';
+
+  @override
+  String get failedToGetProfile => 'Failed to get profile';
+
+  @override
+  String get failedToInitializeDiditToken => 'Failed to initialize Didit token';
+
+  @override
+  String get credit => 'Credit';
+
+  @override
+  String get debit => 'Debit';
+
+  @override
+  String get registrationSuccessful =>
+      'Registration successful! Please login with your email and password.';
+
+  @override
+  String get kycVerification => 'KYC Verification';
+
+  @override
+  String get level1Verification => 'Level 1 Verification';
+
+  @override
+  String get featuresAndPermissions => 'Features & Permissions';
+
+  @override
+  String get completeAuthentication => 'Complete Authentication';
+
+  @override
+  String get applyCardLabel => 'Apply card';
+
+  @override
+  String get documentVerification => 'Document verification';
+
+  @override
+  String get faceRecognition => 'Face recognition';
+
+  @override
+  String get noKycData => 'No KYC data available';
+
+  @override
+  String get passed => 'Passed';
+
+  @override
+  String get pending => 'Pending';
+
+  @override
+  String get newPhoneCannotBeEmpty => 'New phone cannot be empty';
+
+  @override
+  String get unexpectedResponse => 'Unexpected response';
+
+  @override
+  String get emailPhoneOtpRequired =>
+      'Email, new phone, and phone OTP cannot be empty';
+
+  @override
+  String get newPhoneEmailOtpRequired =>
+      'New phone and email OTP cannot be empty';
+
+  @override
+  String get amountGreaterThanZero => 'Amount must be greater than 0';
+
+  @override
+  String get failedToCreateQuote => 'Failed to create quote: data format error';
 }

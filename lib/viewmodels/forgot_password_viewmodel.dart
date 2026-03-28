@@ -1,12 +1,12 @@
 import 'package:comecomepay/core/base_viewmodel.dart';
 import 'package:comecomepay/models/requests/reset_password_otp_verification_request_model.dart';
 import 'package:comecomepay/models/responses/forgot_password_response_model.dart';
-import 'package:comecomepay/models/responses/forgot_password_error_model.dart';
 import 'package:comecomepay/models/responses/reset_password_otp_verification_response_model.dart';
 
 import 'package:comecomepay/services/global_service.dart';
 import 'package:comecomepay/utils/service_locator.dart';
 import 'package:comecomepay/utils/logger.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 enum ResetPasswordCreatePasswordResponseType {
   success,
@@ -30,6 +30,7 @@ class ForgotPasswordViewModel extends BaseViewModel {
 
   ForgotPasswordResponseModel? _forgotPasswordResponse;
   String? _errorMessage;
+  ResetPasswordOtpVerificationResponseModel? _otpResponse;
 
   ForgotPasswordResponseModel? get forgotPasswordResponse =>
       _forgotPasswordResponse;
@@ -41,17 +42,18 @@ class ForgotPasswordViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  Future<ForgotPasswordResponseModel?> forgotPassword(String email) async {
+  Future<ForgotPasswordResponseModel?> forgotPassword(
+      String email, AppLocalizations l10n) async {
     // Validasi input
     if (email.isEmpty) {
-      _errorMessage = 'Email tidak boleh kosong';
+      _errorMessage = l10n.emailCannotBeEmpty;
       Logger.businessLogic('forgotPassword', 'Email is empty');
       notifyListeners();
       return null;
     }
 
     if (!isValidEmail(email)) {
-      _errorMessage = 'Format email tidak valid';
+      _errorMessage = l10n.pleaseEnterAValidEmailAddress;
       Logger.businessLogic('forgotPassword', 'Invalid email format');
       notifyListeners();
       return null;
@@ -64,44 +66,15 @@ class ForgotPasswordViewModel extends BaseViewModel {
         'forgotPassword', 'Starting forgot password for email: $email');
 
     try {
-      // Call service with email string directly
       final response = await _globalService.forgotPassword(email);
 
-      // Handle different response types
-      if (response is Map &&
-          response.containsKey('status') &&
-          response['status'] == 'success') {
-        // Forgot password berhasil
-        _forgotPasswordResponse = ForgotPasswordResponseModel(
-          email: email,
-          message: response['message'] ?? 'Password reset email sent',
-          otp: response['otp'] ?? '',
-          status: 'success',
-          name: response['name'],
-        );
-        _errorMessage = null;
-        Logger.businessLogic(
-            'forgotPassword', 'Success - ${response['message']}');
-        setBusy(false);
-        return _forgotPasswordResponse;
-      } else if (response is ForgotPasswordErrorModel) {
-        // Forgot password gagal
-        _errorMessage = response.error;
-        _forgotPasswordResponse = null;
-        Logger.businessLogic('forgotPassword', 'Error - ${response.error}');
-        setBusy(false);
-        return null;
-      } else {
-        // Unexpected response
-        _errorMessage = 'Terjadi kesalahan yang tidak terduga';
-        _forgotPasswordResponse = null;
-        Logger.businessLogic(
-            'forgotPassword', 'Unexpected response - $response');
-        setBusy(false);
-        return null;
-      }
+      // response is already success Map because BaseService would throw otherwise
+      _forgotPasswordResponse =
+          ForgotPasswordResponseModel.fromJson({...response, 'email': email});
+      setBusy(false);
+      return _forgotPasswordResponse;
     } catch (e) {
-      _errorMessage = 'Terjadi kesalahan: ${e.toString()}';
+      _errorMessage = l10n.errorOccurredWithDetails(e.toString());
       _forgotPasswordResponse = null;
       Logger.businessLogic('forgotPassword', 'Exception - ${e.toString()}');
       setBusy(false);
@@ -113,11 +86,12 @@ class ForgotPasswordViewModel extends BaseViewModel {
     required String email,
     required String newPassword,
     required String confirmPassword,
+    required AppLocalizations l10n,
   }) async {
     print('Email: $email, Password: $newPassword, Confirm: $confirmPassword');
 
     if (email.isEmpty || newPassword.isEmpty || confirmPassword.isEmpty) {
-      _errorMessage = 'Email and passwords cannot be empty';
+      _errorMessage = l10n.allFieldsRequired;
       Logger.businessLogic('resetPasswordCreatePassword', 'Empty fields');
       notifyListeners();
       return ResetPasswordCreatePasswordResult(
@@ -128,7 +102,7 @@ class ForgotPasswordViewModel extends BaseViewModel {
     }
 
     if (!isValidEmail(email)) {
-      _errorMessage = 'Invalid email format';
+      _errorMessage = l10n.pleaseEnterAValidEmailAddress;
       Logger.businessLogic(
           'resetPasswordCreatePassword', 'Invalid email format');
       notifyListeners();
@@ -140,7 +114,7 @@ class ForgotPasswordViewModel extends BaseViewModel {
     }
 
     if (newPassword.length < 8) {
-      _errorMessage = 'Password must be at least 8 characters long';
+      _errorMessage = l10n.passwordMustBeAtLeast8Characters;
       Logger.businessLogic('resetPasswordCreatePassword', 'Password too short');
       notifyListeners();
       return ResetPasswordCreatePasswordResult(
@@ -151,7 +125,7 @@ class ForgotPasswordViewModel extends BaseViewModel {
     }
 
     if (!newPassword.contains(RegExp(r'[A-Z]'))) {
-      _errorMessage = 'Password must contain an uppercase letter';
+      _errorMessage = l10n.passwordMustContainUppercase;
       Logger.businessLogic(
           'resetPasswordCreatePassword', 'Password missing uppercase');
       notifyListeners();
@@ -163,7 +137,7 @@ class ForgotPasswordViewModel extends BaseViewModel {
     }
 
     if (!newPassword.contains(RegExp(r'[0-9]'))) {
-      _errorMessage = 'Password must contain a number';
+      _errorMessage = l10n.passwordMustContainNumber;
       Logger.businessLogic(
           'resetPasswordCreatePassword', 'Password missing number');
       notifyListeners();
@@ -175,7 +149,7 @@ class ForgotPasswordViewModel extends BaseViewModel {
     }
 
     if (!newPassword.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-      _errorMessage = 'Password must contain a special character';
+      _errorMessage = l10n.passwordMustContainSpecial;
       Logger.businessLogic(
           'resetPasswordCreatePassword', 'Password missing special character');
       notifyListeners();
@@ -187,7 +161,7 @@ class ForgotPasswordViewModel extends BaseViewModel {
     }
 
     if (newPassword != confirmPassword) {
-      _errorMessage = 'Passwords do not match';
+      _errorMessage = l10n.passwordsDoNotMatch;
       Logger.businessLogic(
           'resetPasswordCreatePassword', 'Passwords do not match');
       notifyListeners();
@@ -229,7 +203,7 @@ class ForgotPasswordViewModel extends BaseViewModel {
           responseType: ResetPasswordCreatePasswordResponseType.error,
         );
       } else {
-        _errorMessage = 'Unexpected error occurred';
+        _errorMessage = l10n.unexpectedError;
         Logger.businessLogic(
             'resetPasswordCreatePassword', 'Unexpected response - $response');
         setBusy(false);
@@ -240,7 +214,7 @@ class ForgotPasswordViewModel extends BaseViewModel {
         );
       }
     } catch (e) {
-      _errorMessage = 'Exception: ${e.toString()}';
+      _errorMessage = l10n.errorOccurredWithDetails(e.toString());
       Logger.businessLogic(
           'resetPasswordCreatePassword', 'Exception - $_errorMessage');
       setBusy(false);
@@ -252,19 +226,20 @@ class ForgotPasswordViewModel extends BaseViewModel {
     }
   }
 
-  Future<bool> verifyResetPasswordOtp(String email, String otpCode) async {
+  Future<ResetPasswordOtpVerificationResponseModel?> verifyResetPasswordOtp(
+      String email, String otpCode, AppLocalizations l10n) async {
     if (email.isEmpty || otpCode.isEmpty) {
-      _errorMessage = 'Email dan OTP tidak boleh kosong';
+      _errorMessage = l10n.allFieldsRequired;
       Logger.businessLogic('verifyResetPasswordOtp', 'Email or OTP is empty');
       notifyListeners();
-      return false;
+      return null;
     }
 
     if (!isValidEmail(email)) {
-      _errorMessage = 'Format email tidak valid';
+      _errorMessage = l10n.pleaseEnterAValidEmailAddress;
       Logger.businessLogic('verifyResetPasswordOtp', 'Invalid email format');
       notifyListeners();
-      return false;
+      return null;
     }
 
     setBusy(true);
@@ -273,57 +248,38 @@ class ForgotPasswordViewModel extends BaseViewModel {
         'verifyResetPasswordOtp', 'Verifying OTP for email: $email');
 
     try {
-      final requestModel = ResetPasswordOtpVerificationRequestModel(
+      final request = ResetPasswordOtpVerificationRequestModel(
         email: email,
         otpCode: otpCode,
       );
 
-      final response =
-          await _globalService.verifyResetPasswordOtp(requestModel);
+      final response = await _globalService.verifyResetPasswordOtp(request);
 
-      if (response is Map && response.containsKey('status')) {
-        final otpResponse = ResetPasswordOtpVerificationResponseModel.fromJson(
-            response as Map<String, dynamic>);
-
-        if (otpResponse.status == 'success') {
-          _errorMessage = null;
-          Logger.businessLogic(
-              'verifyResetPasswordOtp', 'OTP verification success');
-          setBusy(false);
-          return true;
-        } else {
-          _errorMessage = otpResponse.error ?? 'OTP verification failed';
-          Logger.businessLogic('verifyResetPasswordOtp',
-              'OTP verification failed: $_errorMessage');
-          setBusy(false);
-          return false;
-        }
-      } else {
-        _errorMessage = 'Terjadi kesalahan yang tidak terduga';
-        Logger.businessLogic(
-            'verifyResetPasswordOtp', 'Unexpected response - $response');
-        setBusy(false);
-        return false;
-      }
+      // Success
+      _otpResponse =
+          ResetPasswordOtpVerificationResponseModel.fromJson(response);
+      setBusy(false);
+      return _otpResponse;
     } catch (e) {
-      _errorMessage = 'Terjadi kesalahan: ${e.toString()}';
+      _errorMessage = l10n.errorOccurredWithDetails(e.toString());
+      _otpResponse = null;
       Logger.businessLogic(
           'verifyResetPasswordOtp', 'Exception - ${e.toString()}');
       setBusy(false);
-      return false;
+      return null;
     }
   }
 
-  Future<bool> resendOtp(String email) async {
+  Future<bool> resendOtp(String email, AppLocalizations l10n) async {
     if (email.isEmpty) {
-      _errorMessage = 'Email tidak boleh kosong';
+      _errorMessage = l10n.emailCannotBeEmpty;
       Logger.businessLogic('resendOtp', 'Email is empty');
       notifyListeners();
       return false;
     }
 
     if (!isValidEmail(email)) {
-      _errorMessage = 'Format email tidak valid';
+      _errorMessage = l10n.pleaseEnterAValidEmailAddress;
       Logger.businessLogic('resendOtp', 'Invalid email format');
       notifyListeners();
       return false;
@@ -349,13 +305,13 @@ class ForgotPasswordViewModel extends BaseViewModel {
         setBusy(false);
         return false;
       } else {
-        _errorMessage = 'Terjadi kesalahan yang tidak terduga';
+        _errorMessage = l10n.unexpectedError;
         Logger.businessLogic('resendOtp', 'Unexpected response - $response');
         setBusy(false);
         return false;
       }
     } catch (e) {
-      _errorMessage = 'Terjadi kesalahan: ${e.toString()}';
+      _errorMessage = e.toString();
       Logger.businessLogic('resendOtp', 'Exception - ${e.toString()}');
       setBusy(false);
       return false;

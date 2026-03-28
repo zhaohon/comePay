@@ -598,6 +598,7 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
 
     // 创建预览（使用完整的币种名称，如USDT-TRC20）
     final success = await swapViewModel.createPreview(
+      AppLocalizations.of(context)!,
       fromCurrency: topCoin,
       toCurrency: bottomCoin,
       amount: amount,
@@ -828,6 +829,7 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
 
     // 执行兑换（使用完整的币种名称，如USDT-TRC20）
     final result = await swapViewModel.executeSwap(
+      AppLocalizations.of(context)!,
       fromCurrency: topCoin,
       toCurrency: bottomCoin,
       amount: swapViewModel.fromAmount,

@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:comecomepay/core/base_viewmodel.dart';
 import 'package:comecomepay/models/requests/change_email_request_model.dart';
 import 'package:comecomepay/models/responses/change_email_response_model.dart';
-import 'package:comecomepay/models/responses/change_email_error_model.dart';
 import 'package:comecomepay/models/requests/verify_new_email_request_model.dart';
 import 'package:comecomepay/models/responses/verify_new_email_response_model.dart';
 import 'package:comecomepay/models/requests/complete_change_email_request_model.dart';
 import 'package:comecomepay/models/responses/complete_change_email_response_model.dart';
 import 'package:comecomepay/services/global_service.dart';
-import 'package:comecomepay/services/hive_storage_service.dart';
 import 'package:comecomepay/utils/service_locator.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 // Result types for change email scenarios
 class ChangeEmailResult {
@@ -100,10 +99,11 @@ class ModifyEmailViewModel extends BaseViewModel {
   }
 
   // Business logic methods
-  Future<ChangeEmailResult> requestChangeEmail(String newEmail) async {
+  Future<ChangeEmailResult> requestChangeEmail(
+      String newEmail, AppLocalizations l10n) async {
     // Validasi input
     if (newEmail.isEmpty) {
-      _errorMessage = 'Email baru tidak boleh kosong';
+      _errorMessage = l10n.newEmailCannotBeEmpty;
       notifyListeners();
       return ChangeEmailResult(
         success: false,
@@ -113,7 +113,7 @@ class ModifyEmailViewModel extends BaseViewModel {
     }
 
     if (!isValidEmail(newEmail)) {
-      _errorMessage = 'Format email tidak valid';
+      _errorMessage = l10n.invalidEmailFormat;
       notifyListeners();
       return ChangeEmailResult(
         success: false,
@@ -128,75 +128,22 @@ class ModifyEmailViewModel extends BaseViewModel {
     _isEmailValid = true;
 
     try {
-      // Buat request model
       final request = ChangeEmailRequestModel(newEmail: newEmail);
-
-      // Call service
       final response = await _globalService.changeEmail(request);
 
-      // Handle different response types
-      if (response is ChangeEmailResponseModel) {
-        // Change email request berhasil
-        _changeEmailResponse = response;
-        _errorMessage = null;
-
-        setBusy(false);
-        return ChangeEmailResult(
-          success: true,
-          message: response.message,
-          responseType: ChangeEmailResponseType.otpSent,
-          newEmail: response.newEmail,
-          otp: response.otp,
-          nextStep: response.nextStep,
-        );
-      } else if (response is ChangeEmailErrorModel) {
-        // Change email error
-        _errorMessage = response.error;
-        _changeEmailResponse = null;
-        setBusy(false);
-        return ChangeEmailResult(
-          success: false,
-          message: response.error,
-          responseType: ChangeEmailResponseType.error,
-        );
-      } else if (response is Map<String, dynamic>) {
-        // Handle raw response if needed
-        if (response['status'] == 'success') {
-          _changeEmailResponse = ChangeEmailResponseModel.fromJson(response);
-          _errorMessage = null;
-          setBusy(false);
-          return ChangeEmailResult(
-            success: true,
-            message: response['message'],
-            responseType: ChangeEmailResponseType.otpSent,
-            newEmail: response['new_email'],
-            otp: response['otp'],
-            nextStep: response['next_step'],
-          );
-        } else {
-          _errorMessage = response['error'] ?? 'Change email failed';
-          _changeEmailResponse = null;
-          setBusy(false);
-          return ChangeEmailResult(
-            success: false,
-            message: _errorMessage,
-            responseType: ChangeEmailResponseType.error,
-          );
-        }
-      } else {
-        // Unexpected response
-        _errorMessage = 'Terjadi kesalahan yang tidak terduga';
-        _changeEmailResponse = null;
-        setBusy(false);
-        return ChangeEmailResult(
-          success: false,
-          message: _errorMessage,
-          responseType: ChangeEmailResponseType.error,
-        );
-      }
+      // Success
+      _changeEmailResponse = response as ChangeEmailResponseModel;
+      setBusy(false);
+      return ChangeEmailResult(
+        success: true,
+        message: _changeEmailResponse!.message,
+        responseType: ChangeEmailResponseType.otpSent,
+        newEmail: _changeEmailResponse!.newEmail,
+        otp: _changeEmailResponse!.otp,
+        nextStep: _changeEmailResponse!.nextStep,
+      );
     } catch (e) {
-      _errorMessage = 'Terjadi kesalahan: ${e.toString()}';
-      _changeEmailResponse = null;
+      _errorMessage = e.toString();
       setBusy(false);
       return ChangeEmailResult(
         success: false,
@@ -228,10 +175,10 @@ class ModifyEmailViewModel extends BaseViewModel {
 
   // Business logic methods for verify new email OTP
   Future<VerifyNewEmailResult> verifyNewEmailOtp(
-      String newEmail, String otpCode) async {
+      String newEmail, String otpCode, AppLocalizations l10n) async {
     // Validasi input
     if (newEmail.isEmpty) {
-      _errorMessage = 'Email baru tidak boleh kosong';
+      _errorMessage = l10n.newEmailCannotBeEmpty;
       notifyListeners();
       return VerifyNewEmailResult(
         success: false,
@@ -241,7 +188,7 @@ class ModifyEmailViewModel extends BaseViewModel {
     }
 
     if (!isValidEmail(newEmail)) {
-      _errorMessage = 'Format email tidak valid';
+      _errorMessage = l10n.invalidEmailFormat;
       notifyListeners();
       return VerifyNewEmailResult(
         success: false,
@@ -251,7 +198,7 @@ class ModifyEmailViewModel extends BaseViewModel {
     }
 
     if (otpCode.isEmpty) {
-      _errorMessage = 'Kode OTP tidak boleh kosong';
+      _errorMessage = l10n.otpCodeCannotBeEmpty;
       notifyListeners();
       return VerifyNewEmailResult(
         success: false,
@@ -261,7 +208,7 @@ class ModifyEmailViewModel extends BaseViewModel {
     }
 
     if (otpCode.length != 5) {
-      _errorMessage = 'Kode OTP harus 5 digit';
+      _errorMessage = l10n.otpCodeMustBe5Digits;
       notifyListeners();
       return VerifyNewEmailResult(
         success: false,
@@ -275,72 +222,26 @@ class ModifyEmailViewModel extends BaseViewModel {
     _errorMessage = null;
 
     try {
-      // Buat request model
       final request = VerifyNewEmailRequestModel(
         newEmail: newEmail,
         otpCode: otpCode,
       );
 
-      // Call service
       final response = await _globalService.verifyNewEmail(request);
 
-      // Handle different response types
-      if (response is VerifyNewEmailResponseModel) {
-        // Verify new email berhasil
-        _errorMessage = null;
-
-        setBusy(false);
-        return VerifyNewEmailResult(
-          success: true,
-          message: response.message,
-          responseType: VerifyNewEmailResponseType.otpSentToCurrent,
-          currentEmail: response.currentEmail,
-          otp: response.otp,
-          nextStep: response.nextStep,
-        );
-      } else if (response is ChangeEmailErrorModel) {
-        // Verify new email error
-        _errorMessage = response.error;
-        setBusy(false);
-        return VerifyNewEmailResult(
-          success: false,
-          message: response.error,
-          responseType: VerifyNewEmailResponseType.error,
-        );
-      } else if (response is Map<String, dynamic>) {
-        // Handle raw response if needed
-        if (response['status'] == 'success') {
-          _errorMessage = null;
-          setBusy(false);
-          return VerifyNewEmailResult(
-            success: true,
-            message: response['message'],
-            responseType: VerifyNewEmailResponseType.otpSentToCurrent,
-            currentEmail: response['current_email'],
-            otp: response['otp'],
-            nextStep: response['next_step'],
-          );
-        } else {
-          _errorMessage = response['error'] ?? 'Verify new email failed';
-          setBusy(false);
-          return VerifyNewEmailResult(
-            success: false,
-            message: _errorMessage,
-            responseType: VerifyNewEmailResponseType.error,
-          );
-        }
-      } else {
-        // Unexpected response
-        _errorMessage = 'Terjadi kesalahan yang tidak terduga';
-        setBusy(false);
-        return VerifyNewEmailResult(
-          success: false,
-          message: _errorMessage,
-          responseType: VerifyNewEmailResponseType.error,
-        );
-      }
+      // Success
+      final verifyResponse = response as VerifyNewEmailResponseModel;
+      setBusy(false);
+      return VerifyNewEmailResult(
+        success: true,
+        message: verifyResponse.message,
+        responseType: VerifyNewEmailResponseType.otpSentToCurrent,
+        currentEmail: verifyResponse.currentEmail,
+        otp: verifyResponse.otp,
+        nextStep: verifyResponse.nextStep,
+      );
     } catch (e) {
-      _errorMessage = 'Terjadi kesalahan: ${e.toString()}';
+      _errorMessage = e.toString();
       setBusy(false);
       return VerifyNewEmailResult(
         success: false,
@@ -352,45 +253,49 @@ class ModifyEmailViewModel extends BaseViewModel {
 
   // Business logic methods for complete change email
   Future<CompleteChangeEmailResult> completeChangeEmail(
-      String newEmail, String oldEmailOtp) async {
+      String newEmail, String oldEmailOtp, AppLocalizations l10n) async {
     // Validasi input
     if (newEmail.isEmpty) {
-      _errorMessage = 'Email baru tidak boleh kosong';
+      _errorMessage = l10n.newEmailCannotBeEmpty;
       notifyListeners();
       return CompleteChangeEmailResult(
         success: false,
         message: _errorMessage,
         responseType: CompleteChangeEmailResponseType.error,
+        newEmail: null,
       );
     }
 
     if (!isValidEmail(newEmail)) {
-      _errorMessage = 'Format email tidak valid';
+      _errorMessage = l10n.invalidEmailFormat;
       notifyListeners();
       return CompleteChangeEmailResult(
         success: false,
         message: _errorMessage,
         responseType: CompleteChangeEmailResponseType.error,
+        newEmail: null,
       );
     }
 
     if (oldEmailOtp.isEmpty) {
-      _errorMessage = 'Kode OTP email lama tidak boleh kosong';
+      _errorMessage = l10n.oldEmailOtpCannotBeEmpty;
       notifyListeners();
       return CompleteChangeEmailResult(
         success: false,
         message: _errorMessage,
         responseType: CompleteChangeEmailResponseType.error,
+        newEmail: null,
       );
     }
 
     if (oldEmailOtp.length != 5) {
-      _errorMessage = 'Kode OTP harus 5 digit';
+      _errorMessage = l10n.otpCodeMustBe5Digits;
       notifyListeners();
       return CompleteChangeEmailResult(
         success: false,
         message: _errorMessage,
         responseType: CompleteChangeEmailResponseType.error,
+        newEmail: null,
       );
     }
 
@@ -399,73 +304,30 @@ class ModifyEmailViewModel extends BaseViewModel {
     _errorMessage = null;
 
     try {
-      // Buat request model
       final request = CompleteChangeEmailRequestModel(
         newEmail: newEmail,
         oldEmailOtp: oldEmailOtp,
       );
 
-      // Call service
       final response = await _globalService.completeChangeEmail(request);
 
-      // Handle different response types
-      if (response is CompleteChangeEmailResponseModel) {
-        // Complete change email berhasil
-        _errorMessage = null;
-
-        setBusy(false);
-        return CompleteChangeEmailResult(
-          success: true,
-          message: response.message,
-          responseType: CompleteChangeEmailResponseType.success,
-          newEmail: response.newEmail,
-        );
-      } else if (response is ChangeEmailErrorModel) {
-        // Complete change email error
-        _errorMessage = response.error;
-        setBusy(false);
-        return CompleteChangeEmailResult(
-          success: false,
-          message: response.error,
-          responseType: CompleteChangeEmailResponseType.error,
-        );
-      } else if (response is Map<String, dynamic>) {
-        // Handle raw response if needed
-        if (response['status'] == 'success') {
-          _errorMessage = null;
-          setBusy(false);
-          return CompleteChangeEmailResult(
-            success: true,
-            message: response['message'],
-            responseType: CompleteChangeEmailResponseType.success,
-            newEmail: response['new_email'],
-          );
-        } else {
-          _errorMessage = response['error'] ?? 'Complete change email failed';
-          setBusy(false);
-          return CompleteChangeEmailResult(
-            success: false,
-            message: _errorMessage,
-            responseType: CompleteChangeEmailResponseType.error,
-          );
-        }
-      } else {
-        // Unexpected response
-        _errorMessage = 'Terjadi kesalahan yang tidak terduga';
-        setBusy(false);
-        return CompleteChangeEmailResult(
-          success: false,
-          message: _errorMessage,
-          responseType: CompleteChangeEmailResponseType.error,
-        );
-      }
+      // Success
+      final completeResponse = response as CompleteChangeEmailResponseModel;
+      setBusy(false);
+      return CompleteChangeEmailResult(
+        success: true,
+        message: completeResponse.message,
+        responseType: CompleteChangeEmailResponseType.success,
+        newEmail: completeResponse.newEmail,
+      );
     } catch (e) {
-      _errorMessage = 'Terjadi kesalahan: ${e.toString()}';
+      _errorMessage = l10n.errorOccurredWithDetails(e.toString());
       setBusy(false);
       return CompleteChangeEmailResult(
         success: false,
         message: _errorMessage,
         responseType: CompleteChangeEmailResponseType.error,
+        newEmail: null,
       );
     }
   }

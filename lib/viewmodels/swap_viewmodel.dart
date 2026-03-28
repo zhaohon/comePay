@@ -1,6 +1,7 @@
 import 'package:comecomepay/core/base_viewmodel.dart';
 import 'package:comecomepay/services/swap_service.dart';
 import 'dart:async';
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 class SwapViewModel extends BaseViewModel {
   final SwapService _swapService = SwapService();
@@ -99,13 +100,14 @@ class SwapViewModel extends BaseViewModel {
   }
 
   /// 创建兑换预览/报价
-  Future<bool> createPreview({
+  Future<bool> createPreview(
+    AppLocalizations l10n, {
     required String fromCurrency,
     required String toCurrency,
     required double amount,
   }) async {
     if (amount <= 0) {
-      _errorMessage = '金额必须大于0';
+      _errorMessage = l10n.amountGreaterThanZero;
       notifyListeners();
       return false;
     }
@@ -156,7 +158,7 @@ class SwapViewModel extends BaseViewModel {
         notifyListeners();
         return true;
       } else {
-        _errorMessage = '创建报价失败：数据格式错误';
+        _errorMessage = l10n.failedToCreateQuote;
         _isCreatingPreview = false;
         notifyListeners();
         return false;
@@ -170,7 +172,8 @@ class SwapViewModel extends BaseViewModel {
   }
 
   /// 执行兑换
-  Future<Map<String, dynamic>?> executeSwap({
+  Future<Map<String, dynamic>?> executeSwap(
+    AppLocalizations l10n, {
     required String fromCurrency,
     required String toCurrency,
     required double amount,
@@ -178,7 +181,7 @@ class SwapViewModel extends BaseViewModel {
     int? cardId, // 当涉及HKD时必填
   }) async {
     if (amount <= 0) {
-      _errorMessage = '金额必须大于0';
+      _errorMessage = l10n.amountGreaterThanZero;
       notifyListeners();
       return null;
     }

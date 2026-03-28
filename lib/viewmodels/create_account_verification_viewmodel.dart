@@ -1,12 +1,12 @@
 import 'dart:math';
-import 'package:flutter/material.dart';
 import 'package:comecomepay/core/base_viewmodel.dart';
 import 'package:comecomepay/models/requests/create_wallet_request_model.dart';
 import 'package:comecomepay/models/responses/create_wallet_response_model.dart';
-import 'package:comecomepay/models/responses/create_wallet_error_model.dart';
 import 'package:comecomepay/services/global_service.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
 import 'package:comecomepay/utils/service_locator.dart';
+
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 // Response types for different scenarios
 class CreateWalletResult {
@@ -45,11 +45,11 @@ class CreateAccountVerificationViewModel extends BaseViewModel {
   }
 
   // Business logic methods
-  Future<CreateWalletResult> createWallet() async {
+  Future<CreateWalletResult> createWallet(AppLocalizations l10n) async {
     // Get user data from Hive
     final user = HiveStorageService.getUser();
     if (user == null) {
-      _errorMessage = 'User data not found';
+      _errorMessage = l10n.userDataNotFound;
       notifyListeners();
       return CreateWalletResult(
         success: false,
@@ -82,41 +82,18 @@ class CreateAccountVerificationViewModel extends BaseViewModel {
       final response =
           await _globalService.createWallet(request, user.id.toString());
 
-      // Handle different response types
-      if (response is CreateWalletResponseModel) {
-        // Create wallet berhasil
-        _createWalletResponse = response;
-        _errorMessage = null;
+      // Success (BaseService handles failure by throwing)
+      _createWalletResponse = response as CreateWalletResponseModel;
+      _errorMessage = null;
 
-        setBusy(false);
-        return CreateWalletResult(
-          success: true,
-          message: response.message,
-          responseType: CreateWalletResponseType.success,
-        );
-      } else if (response is CreateWalletErrorModel) {
-        // Create wallet error
-        _errorMessage = response.error;
-        _createWalletResponse = null;
-        setBusy(false);
-        return CreateWalletResult(
-          success: false,
-          message: _errorMessage,
-          responseType: CreateWalletResponseType.error,
-        );
-      } else {
-        // Unexpected response
-        _errorMessage = 'Terjadi kesalahan yang tidak terduga';
-        _createWalletResponse = null;
-        setBusy(false);
-        return CreateWalletResult(
-          success: false,
-          message: _errorMessage,
-          responseType: CreateWalletResponseType.error,
-        );
-      }
+      setBusy(false);
+      return CreateWalletResult(
+        success: true,
+        message: response.message,
+        responseType: CreateWalletResponseType.success,
+      );
     } catch (e) {
-      _errorMessage = 'Terjadi kesalahan: ${e.toString()}';
+      _errorMessage = e.toString();
       _createWalletResponse = null;
       setBusy(false);
       return CreateWalletResult(

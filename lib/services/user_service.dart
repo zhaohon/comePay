@@ -7,18 +7,8 @@ class UserService extends BaseService {
   }
 
   /// 获取交易密码设置状态
-  /// 返回 true 表示已设置，false 表示未设置
   Future<bool> getTransactionPasswordStatus() async {
-    try {
-      final response = await get('/user/transaction-password/status');
-
-      if (response['status'] == 'success') {
-        return response['is_set'] == true;
-      }
-      return false;
-    } catch (e) {
-      print('Error fetching transaction password status: $e');
-      rethrow;
-    }
+    final response = await get('/user/transaction-password/status');
+    return response['is_set'] == true;
   }
 }

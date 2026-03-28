@@ -6,42 +6,30 @@ import 'package:dio/dio.dart';
 
 class WalletService extends BaseService {
   Future<WalletResponse> getWalletById(int idUser) async {
-    try {
-      final response = await dio.get(
-        'http://149.88.65.193:8010/api/v1/wallet/',
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'id_user': idUser.toString(),
-          },
-        ),
-      );
+    final response = await get(
+      'http://149.88.65.193:8010/api/v1/wallet/',
+      options: Options(
+        headers: {
+          'id_user': idUser.toString(),
+        },
+      ),
+    );
 
-      final data = handleResponse(response);
-      return WalletResponse.fromJson(data);
-    } catch (e) {
-      throw e;
-    }
+    return WalletResponse.fromJson(response);
   }
 
   Future<VerifyPinResponse> verifyPin(
       VerifyPinRequest request, int idUser) async {
-    try {
-      final response = await dio.post(
-        'http://149.88.65.193:8010/api/wallet/verify-pin',
-        data: request.toJson(),
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'id_user': idUser.toString(),
-          },
-        ),
-      );
+    final response = await post(
+      'http://149.88.65.193:8010/api/wallet/verify-pin',
+      data: request.toJson(),
+      options: Options(
+        headers: {
+          'id_user': idUser.toString(),
+        },
+      ),
+    );
 
-      final data = handleResponse(response);
-      return VerifyPinResponse.fromJson(data);
-    } catch (e) {
-      throw e;
-    }
+    return VerifyPinResponse.fromJson(response);
   }
 }

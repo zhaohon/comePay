@@ -2,7 +2,7 @@ import 'package:comecomepay/core/base_viewmodel.dart';
 import 'package:comecomepay/models/unified_transaction_model.dart';
 import 'package:comecomepay/services/unified_transaction_service.dart';
 import 'package:flutter/material.dart';
-import 'package:comecomepay/main.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 /// ViewModel responsible for managing unified transaction record state and business logic.
 /// Follows MVVM pattern and clean code principles with single responsibility.
@@ -54,7 +54,8 @@ class UnifiedTransactionViewModel extends BaseViewModel {
 
   /// Fetches the latest transactions (用于首页显示)
   /// [limit] - Number of latest records to fetch (default: 10)
-  Future<void> fetchLatestTransactions({int limit = 10}) async {
+  Future<void> fetchLatestTransactions(AppLocalizations l10n,
+      {int limit = 10}) async {
     setBusy(true);
     _errorMessage = null;
 
@@ -63,7 +64,7 @@ class UnifiedTransactionViewModel extends BaseViewModel {
           await _service.fetchLatestTransactions(limit: limit);
       notifyListeners();
     } catch (e) {
-      _handleError(e);
+      _handleError(l10n, e);
     } finally {
       setBusy(false);
     }
@@ -75,7 +76,8 @@ class UnifiedTransactionViewModel extends BaseViewModel {
   /// [type] - Filter by transaction type (optional)
   /// [status] - Filter by transaction status (optional)
   /// [refresh] - If true, clears existing data before loading (用于下拉刷新)
-  Future<void> fetchTransactions({
+  Future<void> fetchTransactions(
+    AppLocalizations l10n, {
     int? page,
     int? pageSize,
     String? type,
@@ -118,7 +120,7 @@ class UnifiedTransactionViewModel extends BaseViewModel {
 
       notifyListeners();
     } catch (e) {
-      _handleError(e);
+      _handleError(l10n, e);
     } finally {
       if (refresh) {
         setBusy(false);
@@ -127,7 +129,8 @@ class UnifiedTransactionViewModel extends BaseViewModel {
   }
 
   /// Loads more transactions (用于上拉加载更多)
-  Future<void> loadMore({String? type, String? status}) async {
+  Future<void> loadMore(AppLocalizations l10n,
+      {String? type, String? status}) async {
     if (_isLoadingMore || !_hasMore) return;
 
     _isLoadingMore = true;
@@ -150,7 +153,7 @@ class UnifiedTransactionViewModel extends BaseViewModel {
 
       notifyListeners();
     } catch (e) {
-      _handleError(e);
+      _handleError(l10n, e);
     } finally {
       _isLoadingMore = false;
       notifyListeners();
@@ -158,8 +161,10 @@ class UnifiedTransactionViewModel extends BaseViewModel {
   }
 
   /// Refreshes the transaction list (用于下拉刷新)
-  Future<void> refresh({String? type, String? status}) async {
+  Future<void> refresh(AppLocalizations l10n,
+      {String? type, String? status}) async {
     await fetchTransactions(
+      l10n,
       page: 1,
       type: type,
       status: status,
@@ -168,11 +173,11 @@ class UnifiedTransactionViewModel extends BaseViewModel {
   }
 
   /// Handles errors from API calls
-  void _handleError(dynamic e) {
+  void _handleError(AppLocalizations l10n, dynamic e) {
     // ⚠️ DO NOT manually handle 401/Unauthorized errors here!
     // The BaseService interceptor will automatically handle token refresh
     // Only handle other types of errors
-    _errorMessage = 'Failed to load transactions: ${e.toString()}';
+    _errorMessage = l10n.errorOccurredWithDetails(e.toString());
     print('Error fetching transactions: $e');
     notifyListeners();
   }

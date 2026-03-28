@@ -63,65 +63,35 @@ class WithdrawService extends BaseService {
   }
 
   /// 提交提现请求
-  /// [request] 提现请求模型
   Future<WithdrawResponseModel> withdraw(WithdrawRequestModel request) async {
-    try {
-      final response = await post('/wallet/withdrawal', data: request.toJson());
-
-      if (response['status'] == 'success') {
-        return WithdrawResponseModel.fromJson(response);
-      } else {
-        throw Exception(response['message'] ?? 'Withdrawal failed');
-      }
-    } catch (e) {
-      print('Error submitting withdrawal: $e');
-      rethrow;
-    }
+    final response = await post('/wallet/withdrawal', data: request.toJson());
+    return WithdrawResponseModel.fromJson(response);
   }
 
   /// 获取提现历史记录
-  /// [page] 页码（默认1）
-  /// [limit] 每页数量（默认20）
-  /// [status] 提现状态（可选）
   Future<WithdrawHistoryResponseModel> getWithdrawHistory({
     int page = 1,
     int limit = 20,
     String? status,
   }) async {
-    try {
-      final queryParams = {
-        'page': page,
-        'limit': limit,
-        if (status != null && status.isNotEmpty) 'status': status,
-      };
+    final queryParams = {
+      'page': page,
+      'limit': limit,
+      if (status != null && status.isNotEmpty) 'status': status,
+    };
 
-      final response =
-          await get('/wallet/withdrawals', queryParameters: queryParams);
+    final response =
+        await get('/wallet/withdrawals', queryParameters: queryParams);
 
-      return WithdrawHistoryResponseModel.fromJson(response);
-    } catch (e) {
-      print('Error fetching withdrawal history: $e');
-      rethrow;
-    }
+    return WithdrawHistoryResponseModel.fromJson(response);
   }
 
   /// 提交内部转账请求 (UID互转)
-  /// [request] 内部转账请求模型
   Future<InternalTransferResponseModel> transferByUid(
       InternalTransferRequestModel request) async {
-    try {
-      final response =
-          await post('/wallet/transfer-by-uid', data: request.toJson());
-
-      if (response['status'] == 'success') {
-        return InternalTransferResponseModel.fromJson(response);
-      } else {
-        throw Exception(response['message'] ?? 'Transfer failed');
-      }
-    } catch (e) {
-      print('Error submitting internal transfer: $e');
-      rethrow;
-    }
+    final response =
+        await post('/wallet/transfer-by-uid', data: request.toJson());
+    return InternalTransferResponseModel.fromJson(response);
   }
 }
 

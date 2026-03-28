@@ -34,7 +34,8 @@ class _LoginScreenState extends State<LoginScreen> {
     final email = _emailController.text.trim();
     final password = _passwordController.text;
 
-    final loginResult = await loginViewModel.login(email, password);
+    final l10n = AppLocalizations.of(context)!;
+    final loginResult = await loginViewModel.login(email, password, l10n);
 
     if (!mounted) return;
 

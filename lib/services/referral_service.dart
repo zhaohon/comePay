@@ -1,94 +1,41 @@
 import 'package:comecomepay/core/base_service.dart';
-import 'package:comecomepay/utils/logger.dart';
 
 class ReferralService extends BaseService {
   /// Get referral code
-  /// GET /user/referral-code
   Future<String> getReferralCode() async {
-    try {
-      final response = await get('/user/referral-code');
-      if (response['status'] == 'success') {
-        return response['referral_code'] ?? '';
-      } else {
-        throw Exception(response['message'] ?? 'Failed to get referral code');
-      }
-    } catch (e) {
-      Logger.error(
-          'getReferralCode', '/user/referral-code', e, StackTrace.current);
-      rethrow;
-    }
+    final response = await get('/user/referral-code');
+    return response['referral_code'] ?? '';
   }
 
   /// Get user tier info
-  /// GET /user/tier
   Future<Map<String, dynamic>> getUserTier() async {
-    try {
-      final response = await get('/user/tier');
-      if (response['status'] == 'success') {
-        return response['data'] ?? {};
-      } else {
-        throw Exception(response['message'] ?? 'Failed to get user tier');
-      }
-    } catch (e) {
-      Logger.error('getUserTier', '/user/tier', e, StackTrace.current);
-      rethrow;
-    }
+    final response = await get('/user/tier');
+    return response['data'] ?? {};
   }
 
   /// Get user tier progress
-  /// GET /user/tier/progress
   Future<Map<String, dynamic>> getUserTierProgress() async {
-    try {
-      final response = await get('/user/tier/progress');
-      if (response['status'] == 'success') {
-        return response['data'] ?? {};
-      } else {
-        throw Exception(
-            response['message'] ?? 'Failed to get user tier progress');
-      }
-    } catch (e) {
-      Logger.error(
-          'getUserTierProgress', '/user/tier/progress', e, StackTrace.current);
-      rethrow;
-    }
+    final response = await get('/user/tier/progress');
+    return response['data'] ?? {};
   }
 
   /// Get all tier configs (for slider cards)
-  /// GET /tier-configs
   Future<List<dynamic>> getTierConfigs() async {
-    try {
-      final response = await get('/tier-configs');
-      if (response['status'] == 'success' && response['data'] != null) {
-        return response['data']['configs'] ?? [];
-      } else {
-        throw Exception(response['message'] ?? 'Failed to get tier configs');
-      }
-    } catch (e) {
-      Logger.error('getTierConfigs', '/tier-configs', e, StackTrace.current);
-      rethrow;
-    }
+    final response = await get('/tier-configs');
+    return response['data']?['configs'] ?? [];
   }
 
   /// Get referral stats (overview)
-  /// GET /user/referral-stats
   Future<Map<String, dynamic>> getReferralStats() async {
     try {
       final response = await get('/user/referral-stats');
-      if (response['status'] == 'success') {
-        return response['stats'] ?? {};
-      } else {
-        throw Exception(response['message'] ?? 'Failed to get referral stats');
-      }
+      return response['stats'] ?? {};
     } catch (e) {
-      Logger.error(
-          'getReferralStats', '/user/referral-stats', e, StackTrace.current);
       return {};
     }
   }
 
   /// Get referrals list
-  /// GET /user/referrals
-  /// level: 0=all, 1=level1, 2=level2
   Future<Map<String, dynamic>> getReferrals(
       {int level = 0, int page = 1, int pageSize = 20}) async {
     try {
@@ -97,24 +44,16 @@ class ReferralService extends BaseService {
         'page': page,
         'page_size': pageSize,
       });
-      if (response['status'] == 'success') {
-        return {
-          'referrals': response['referrals'] ?? [],
-          'pagination': response['pagination'] ?? {}
-        };
-      } else {
-        throw Exception(response['message'] ?? 'Failed to get referrals');
-      }
+      return {
+        'referrals': response['referrals'] ?? [],
+        'pagination': response['pagination'] ?? {}
+      };
     } catch (e) {
-      Logger.error('getReferrals', '/user/referrals', e, StackTrace.current);
       return {'referrals': [], 'pagination': {}};
     }
   }
 
   /// Get commissions history
-  /// GET /user/commissions
-  /// type: 'card_opening', 'transaction'
-  /// level: 1, 2
   Future<Map<String, dynamic>> getCommissions(
       {int page = 1, int pageSize = 20, String? type, int? level}) async {
     try {
@@ -127,17 +66,11 @@ class ReferralService extends BaseService {
 
       final response = await get('/user/commissions', queryParameters: params);
 
-      if (response['status'] == 'success') {
-        return {
-          'commissions': response['commissions'] ?? [],
-          'pagination': response['pagination'] ?? {},
-        };
-      } else {
-        throw Exception(response['message'] ?? 'Failed to get commissions');
-      }
+      return {
+        'commissions': response['commissions'] ?? [],
+        'pagination': response['pagination'] ?? {},
+      };
     } catch (e) {
-      Logger.error(
-          'getCommissions', '/user/commissions', e, StackTrace.current);
       return {'commissions': [], 'pagination': {}};
     }
   }

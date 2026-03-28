@@ -5,6 +5,7 @@ import 'package:comecomepay/models/responses/login_response_model.dart';
 import 'package:comecomepay/services/global_service.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
 import 'package:comecomepay/utils/service_locator.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 // Response types for set password
 class SetPasswordResult {
@@ -44,12 +45,13 @@ class SetPasswordViewModel extends BaseViewModel {
 
   // Business logic methods
   Future<SetPasswordResult> setPassword({
+    required AppLocalizations l10n,
     required String email,
     required String password,
   }) async {
     // Validasi input
     if (email.isEmpty || password.isEmpty) {
-      _errorMessage = 'Email and password cannot be empty';
+      _errorMessage = l10n.passwordCannotBeEmpty;
       notifyListeners();
       return SetPasswordResult(
         success: false,
@@ -59,7 +61,7 @@ class SetPasswordViewModel extends BaseViewModel {
     }
 
     if (!isValidEmail(email)) {
-      _errorMessage = 'Invalid email format';
+      _errorMessage = l10n.pleaseEnterAValidEmailAddress;
       notifyListeners();
       return SetPasswordResult(
         success: false,
@@ -69,7 +71,7 @@ class SetPasswordViewModel extends BaseViewModel {
     }
 
     if (password.length < 8) {
-      _errorMessage = 'Password must be at least 8 characters long';
+      _errorMessage = l10n.passwordMustBeAtLeast8Characters;
       notifyListeners();
       return SetPasswordResult(
         success: false,
@@ -79,7 +81,7 @@ class SetPasswordViewModel extends BaseViewModel {
     }
 
     if (!password.contains(RegExp(r'[A-Z]'))) {
-      _errorMessage = 'Password must contain an uppercase letter';
+      _errorMessage = l10n.passwordMustContainUppercase;
       notifyListeners();
       return SetPasswordResult(
         success: false,
@@ -89,7 +91,7 @@ class SetPasswordViewModel extends BaseViewModel {
     }
 
     if (!password.contains(RegExp(r'[0-9]'))) {
-      _errorMessage = 'Password must contain a number';
+      _errorMessage = l10n.passwordMustContainNumber;
       notifyListeners();
       return SetPasswordResult(
         success: false,
@@ -99,7 +101,7 @@ class SetPasswordViewModel extends BaseViewModel {
     }
 
     if (!password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-      _errorMessage = 'Password must contain a special character';
+      _errorMessage = l10n.passwordMustContainSpecial;
       notifyListeners();
       return SetPasswordResult(
         success: false,
@@ -116,73 +118,46 @@ class SetPasswordViewModel extends BaseViewModel {
       // Call service
       final response = await _globalService.setPassword(email, password);
 
-      // Handle different response types
-      if (response is SetPasswordResponseModel) {
-        // Set password berhasil
-        _setPasswordResponse = response;
-        _errorMessage = null;
+      // Set password berhasil
+      _setPasswordResponse = response;
+      _errorMessage = null;
 
-        print('Raw Users : ${response.user.toJson()}');
+      // Simpan data authentication ke Hive seperti login
+      final rawUser = UserModel.fromJson(response.user.toJson());
 
-        // Simpan data authentication ke Hive seperti login
-        final rawUser = UserModel.fromJson(response.user.toJson());
+      final modifiedUser = UserModel(
+        id: rawUser.id,
+        email: rawUser.email,
+        firstName:
+            rawUser.firstName?.isEmpty ?? true ? '' : rawUser.firstName ?? '',
+        lastName:
+            rawUser.lastName?.isEmpty ?? true ? '' : rawUser.lastName ?? '',
+        phone: rawUser.phone ?? '',
+        status: rawUser.status ?? '',
+        walletId: rawUser.walletId ?? '',
+        kycLevel: rawUser.kycLevel ?? 0,
+        kycStatus: rawUser.kycStatus ?? '',
+        createdAt: rawUser.createdAt ?? DateTime.now(),
+        accountType: rawUser.accountType ?? '',
+        referralCode: rawUser.referralCode ?? '',
+      );
+      final loginResponse = LoginResponseModel(
+        accessToken: response.accessToken ?? '',
+        refreshToken: response.refreshToken ?? '',
+        message: response.message ?? '',
+        status: response.status ?? '',
+        user: modifiedUser,
+      );
+      await HiveStorageService.saveAuthData(loginResponse);
 
-
-        final modifiedUser = UserModel(
-          id: rawUser.id,
-          email: rawUser.email,
-          firstName:
-              rawUser.firstName?.isEmpty ?? true ? '' : rawUser.firstName ?? '',
-          lastName:
-              rawUser.lastName?.isEmpty ?? true ? '' : rawUser.lastName ?? '',
-          phone: rawUser.phone ?? '',
-          status: rawUser.status ?? '',
-          walletId: rawUser.walletId ?? '',
-          kycLevel: rawUser.kycLevel ?? 0,
-          kycStatus: rawUser.kycStatus ?? '',
-          createdAt: rawUser.createdAt ?? DateTime.now(),
-          accountType: rawUser.accountType ?? '',
-          referralCode: rawUser.referralCode ?? '',
-        );
-        final loginResponse = LoginResponseModel(
-          accessToken: response.accessToken ?? '',
-          refreshToken: response.refreshToken ?? '',
-          message: response.message ?? '',
-          status: response.status ?? '',
-          user: modifiedUser,
-        );
-        print('Saving login response to Hive: $loginResponse');
-        await HiveStorageService.saveAuthData(loginResponse);
-
-        setBusy(false);
-        return SetPasswordResult(
-          success: true,
-          message: response.message,
-          responseType: SetPasswordResponseType.success,
-        );
-      } else if (response is SetPasswordErrorModel) {
-        // Set password error
-        _errorMessage = response.error;
-        _setPasswordResponse = null;
-        setBusy(false);
-        return SetPasswordResult(
-          success: false,
-          message: _errorMessage,
-          responseType: SetPasswordResponseType.error,
-        );
-      } else {
-        // Unexpected response
-        _errorMessage = 'An unexpected error occurred';
-        _setPasswordResponse = null;
-        setBusy(false);
-        return SetPasswordResult(
-          success: false,
-          message: _errorMessage,
-          responseType: SetPasswordResponseType.error,
-        );
-      }
+      setBusy(false);
+      return SetPasswordResult(
+        success: true,
+        message: response.message,
+        responseType: SetPasswordResponseType.success,
+      );
     } catch (e) {
-      _errorMessage = 'An error occurred: ${e.toString()}';
+      _errorMessage = e.toString();
       _setPasswordResponse = null;
       setBusy(false);
       return SetPasswordResult(

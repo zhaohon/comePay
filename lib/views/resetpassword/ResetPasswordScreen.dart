@@ -131,8 +131,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             ? null
                             : () async {
                                 if (_formKey.currentState!.validate()) {
-                                  final response = await viewModel
-                                      .forgotPassword(_emailController.text);
+                                  final response =
+                                      await viewModel.forgotPassword(
+                                          _emailController.text, l10n);
 
                                   if (!mounted) return;
 

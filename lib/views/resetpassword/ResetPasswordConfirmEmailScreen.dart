@@ -131,7 +131,7 @@ class _ResetPasswordConfirmEmailScreenState
                           ? null
                           : () async {
                               final response =
-                                  await viewModel.forgotPassword(email);
+                                  await viewModel.forgotPassword(email, l10n);
                               if (!mounted) return;
 
                               if (response != null) {

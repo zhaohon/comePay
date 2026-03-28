@@ -58,14 +58,14 @@ class _ResetPasswordOtpScreenState extends State<ResetPasswordOtpScreen> {
     setState(() => _isLoading = true);
 
     final forgotPasswordViewModel = getIt<ForgotPasswordViewModel>();
-    final success =
-        await forgotPasswordViewModel.verifyResetPasswordOtp(_email, _otpCode);
+    final result = await forgotPasswordViewModel.verifyResetPasswordOtp(
+        _email, _otpCode, l10n);
 
     setState(() => _isLoading = false);
 
     if (!mounted) return;
 
-    if (success) {
+    if (result != null) {
       Navigator.pushNamed(
         context,
         '/ResetPasswordCreatePasswordScreen',
@@ -87,7 +87,7 @@ class _ResetPasswordOtpScreenState extends State<ResetPasswordOtpScreen> {
     final l10n = AppLocalizations.of(context)!;
     final forgotPasswordViewModel = getIt<ForgotPasswordViewModel>();
 
-    final success = await forgotPasswordViewModel.resendOtp(_email);
+    final success = await forgotPasswordViewModel.resendOtp(_email, l10n);
 
     if (!mounted) return;
 

@@ -317,8 +317,10 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
                                     state: _stateController.text,
                                   );
 
-                                  final response = await _viewModel
-                                      .initializeDiditToken(request);
+                                  final response =
+                                      await _viewModel.initializeDiditToken(
+                                          AppLocalizations.of(context)!,
+                                          request);
 
                                   if (response != null &&
                                       response.diditToken.data.url.isNotEmpty) {
