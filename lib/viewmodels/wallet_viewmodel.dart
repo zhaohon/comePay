@@ -76,8 +76,6 @@ class WalletViewModel extends BaseViewModel {
       setBusy(false);
       notifyListeners();
     } catch (e, stackTrace) {
-      print('❌ WalletViewModel Error: $e');
-      print('Stack trace: $stackTrace');
       setBusy(false);
       notifyListeners();
       // 不重新抛出异常，让UI继续显示

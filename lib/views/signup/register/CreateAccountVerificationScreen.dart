@@ -178,7 +178,8 @@ class _CreateAccountVerificationScreenState
                               ? null // Disable button saat loading
                               : () async {
                                   // Call createWallet method
-                                  final result = await viewModel.createWallet();
+                                  final result = await viewModel.createWallet(
+                                      AppLocalizations.of(context)!);
 
                                   if (result.success) {
                                     // Navigate to home on success

@@ -118,6 +118,7 @@ class _BindPhoneScreenState extends State<BindPhoneScreen> {
                               : () async {
                                   final result =
                                       await viewModel.requestChangePhone(
+                                          AppLocalizations.of(context)!,
                                           newPhoneController.text);
                                   if (result.success) {
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -188,6 +189,7 @@ class _BindPhoneScreenState extends State<BindPhoneScreen> {
                                   }
                                   final result =
                                       await viewModel.verifyNewPhoneOtp(
+                                          AppLocalizations.of(context)!,
                                           email,
                                           newPhoneController.text,
                                           phoneOtpController.text);
@@ -229,6 +231,7 @@ class _BindPhoneScreenState extends State<BindPhoneScreen> {
                             : () async {
                                 final result =
                                     await viewModel.completeChangePhone(
+                                        AppLocalizations.of(context)!,
                                         newPhoneController.text,
                                         emailOtpController.text);
                                 if (result.success) {

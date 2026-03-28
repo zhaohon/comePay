@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:comecomepay/viewmodels/kyc_viewmodel.dart';
 import 'package:comecomepay/utils/app_colors.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 class Profilkycscreen extends StatelessWidget {
   const Profilkycscreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return ChangeNotifierProvider(
-      create: (context) => KycViewModel()..fetchKycData(),
+      create: (context) => KycViewModel()..fetchKycData(l10n),
       child: Scaffold(
         backgroundColor: AppColors.pageBackground,
         appBar: AppBar(
@@ -21,9 +23,9 @@ class Profilkycscreen extends StatelessWidget {
               Navigator.pop(context);
             },
           ),
-          title: const Text(
-            'KYC Verification',
-            style: TextStyle(
+          title: Text(
+            l10n.kycVerification,
+            style: const TextStyle(
               color: Colors.black,
               fontSize: 18,
               fontWeight: FontWeight.w600,
@@ -53,7 +55,7 @@ class Profilkycscreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Error: ${viewModel.errorMessage}',
+                      '${l10n.errorOccurred}: ${viewModel.errorMessage}',
                       style: const TextStyle(fontSize: 14),
                     ),
                   ],
@@ -62,24 +64,24 @@ class Profilkycscreen extends StatelessWidget {
             }
 
             return RefreshIndicator(
-              onRefresh: viewModel.refreshKycData,
+              onRefresh: () => viewModel.refreshKycData(l10n),
               color: AppColors.primary,
               child: viewModel.kycData.isEmpty
                   ? ListView(
-                      children: const [
-                        SizedBox(height: 100),
+                      children: [
+                        const SizedBox(height: 100),
                         Center(
                           child: Column(
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.verified_user_outlined,
                                 size: 48,
                                 color: Colors.grey,
                               ),
-                              SizedBox(height: 16),
+                              const SizedBox(height: 16),
                               Text(
-                                'No KYC data available',
-                                style: TextStyle(
+                                l10n.noKycData,
+                                style: const TextStyle(
                                   fontSize: 14,
                                   color: Colors.grey,
                                 ),
@@ -112,9 +114,9 @@ class Profilkycscreen extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Text(
-                                    'Level 1 Verification',
-                                    style: TextStyle(
+                                  Text(
+                                    l10n.level1Verification,
+                                    style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.black,
@@ -146,7 +148,7 @@ class Profilkycscreen extends StatelessWidget {
                                         ),
                                         const SizedBox(width: 4),
                                         Text(
-                                          isPassed ? 'Passed' : 'Pending',
+                                          isPassed ? l10n.passed : l10n.pending,
                                           style: TextStyle(
                                             fontSize: 12,
                                             fontWeight: FontWeight.w600,
@@ -164,7 +166,7 @@ class Profilkycscreen extends StatelessWidget {
 
                               // Permissions
                               Text(
-                                'Features & Permissions',
+                                l10n.featuresAndPermissions,
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
@@ -172,12 +174,12 @@ class Profilkycscreen extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(height: 8),
-                              _buildPermissionItem('Apply card'),
+                              _buildPermissionItem(l10n.applyCardLabel),
                               const SizedBox(height: 16),
 
                               // User info
                               Text(
-                                'Complete Authentication',
+                                l10n.completeAuthentication,
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
@@ -195,12 +197,14 @@ class Profilkycscreen extends StatelessWidget {
                               const SizedBox(height: 12),
 
                               _buildVerificationItem(
-                                'Document verification',
+                                l10n.documentVerification,
                                 isPassed,
+                                l10n,
                               ),
                               _buildVerificationItem(
-                                'Face recognition',
+                                l10n.faceRecognition,
                                 isPassed,
+                                l10n,
                               ),
                             ],
                           ),
@@ -267,7 +271,8 @@ class Profilkycscreen extends StatelessWidget {
     );
   }
 
-  Widget _buildVerificationItem(String text, bool isPassed) {
+  Widget _buildVerificationItem(
+      String text, bool isPassed, AppLocalizations l10n) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
@@ -289,7 +294,7 @@ class Profilkycscreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
-              isPassed ? 'Passed' : 'Pending',
+              isPassed ? l10n.passed : l10n.pending,
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w600,

@@ -62,7 +62,7 @@ class _QueryPinScreenState extends State<QueryPinScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
+          SnackBar(content: Text('$e')),
         );
       }
     } finally {
@@ -114,7 +114,7 @@ class _QueryPinScreenState extends State<QueryPinScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
+          SnackBar(content: Text('$e')),
         );
       }
     } finally {

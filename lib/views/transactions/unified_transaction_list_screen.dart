@@ -28,7 +28,8 @@ class _UnifiedTransactionListScreenState
 
     // 初始加载数据
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _viewModel.fetchTransactions(refresh: true);
+      _viewModel.fetchTransactions(AppLocalizations.of(context)!,
+          refresh: true);
     });
 
     // 监听滚动事件，实现上拉加载
@@ -47,14 +48,14 @@ class _UnifiedTransactionListScreenState
         _scrollController.position.maxScrollExtent - 200) {
       // 距离底部还有200像素时开始加载
       if (!_viewModel.isLoadingMore && _viewModel.hasMore) {
-        _viewModel.loadMore();
+        _viewModel.loadMore(AppLocalizations.of(context)!);
       }
     }
   }
 
   /// 下拉刷新
   Future<void> _onRefresh() async {
-    await _viewModel.refresh();
+    await _viewModel.refresh(AppLocalizations.of(context)!);
   }
 
   @override
@@ -245,7 +246,7 @@ class _UnifiedTransactionListScreenState
             const SizedBox(height: 32),
             ElevatedButton(
               onPressed: () {
-                _viewModel.refresh();
+                _viewModel.refresh(AppLocalizations.of(context)!);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFA855F7),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:comecomepay/core/base_viewmodel.dart';
 import 'package:comecomepay/models/requests/change_email_request_model.dart';
 import 'package:comecomepay/models/responses/change_email_response_model.dart';
-import 'package:comecomepay/models/responses/change_email_error_model.dart';
 import 'package:comecomepay/models/requests/verify_new_email_request_model.dart';
 import 'package:comecomepay/models/responses/verify_new_email_response_model.dart';
 import 'package:comecomepay/models/requests/complete_change_email_request_model.dart';
@@ -132,36 +131,19 @@ class ModifyEmailViewModel extends BaseViewModel {
       final request = ChangeEmailRequestModel(newEmail: newEmail);
       final response = await _globalService.changeEmail(request);
 
-      if (response is ChangeEmailResponseModel) {
-        _changeEmailResponse = response;
-        setBusy(false);
-        return ChangeEmailResult(
-          success: true,
-          message: response.message,
-          responseType: ChangeEmailResponseType.otpSent,
-          newEmail: response.newEmail,
-          otp: response.otp,
-          nextStep: response.nextStep,
-        );
-      } else if (response is ChangeEmailErrorModel) {
-        _errorMessage = response.error;
-        setBusy(false);
-        return ChangeEmailResult(
-          success: false,
-          message: _errorMessage,
-          responseType: ChangeEmailResponseType.error,
-        );
-      } else {
-        _errorMessage = l10n.unexpectedError;
-        setBusy(false);
-        return ChangeEmailResult(
-          success: false,
-          message: _errorMessage,
-          responseType: ChangeEmailResponseType.error,
-        );
-      }
+      // Success
+      _changeEmailResponse = response as ChangeEmailResponseModel;
+      setBusy(false);
+      return ChangeEmailResult(
+        success: true,
+        message: _changeEmailResponse!.message,
+        responseType: ChangeEmailResponseType.otpSent,
+        newEmail: _changeEmailResponse!.newEmail,
+        otp: _changeEmailResponse!.otp,
+        nextStep: _changeEmailResponse!.nextStep,
+      );
     } catch (e) {
-      _errorMessage = l10n.errorOccurredWithDetails(e.toString());
+      _errorMessage = e.toString();
       setBusy(false);
       return ChangeEmailResult(
         success: false,
@@ -247,35 +229,19 @@ class ModifyEmailViewModel extends BaseViewModel {
 
       final response = await _globalService.verifyNewEmail(request);
 
-      if (response is VerifyNewEmailResponseModel) {
-        setBusy(false);
-        return VerifyNewEmailResult(
-          success: true,
-          message: response.message,
-          responseType: VerifyNewEmailResponseType.otpSentToCurrent,
-          currentEmail: response.currentEmail,
-          otp: response.otp,
-          nextStep: response.nextStep,
-        );
-      } else if (response is ChangeEmailErrorModel) {
-        _errorMessage = response.error;
-        setBusy(false);
-        return VerifyNewEmailResult(
-          success: false,
-          message: _errorMessage,
-          responseType: VerifyNewEmailResponseType.error,
-        );
-      } else {
-        _errorMessage = l10n.unexpectedError;
-        setBusy(false);
-        return VerifyNewEmailResult(
-          success: false,
-          message: _errorMessage,
-          responseType: VerifyNewEmailResponseType.error,
-        );
-      }
+      // Success
+      final verifyResponse = response as VerifyNewEmailResponseModel;
+      setBusy(false);
+      return VerifyNewEmailResult(
+        success: true,
+        message: verifyResponse.message,
+        responseType: VerifyNewEmailResponseType.otpSentToCurrent,
+        currentEmail: verifyResponse.currentEmail,
+        otp: verifyResponse.otp,
+        nextStep: verifyResponse.nextStep,
+      );
     } catch (e) {
-      _errorMessage = l10n.errorOccurredWithDetails(e.toString());
+      _errorMessage = e.toString();
       setBusy(false);
       return VerifyNewEmailResult(
         success: false,
@@ -345,33 +311,15 @@ class ModifyEmailViewModel extends BaseViewModel {
 
       final response = await _globalService.completeChangeEmail(request);
 
-      if (response is CompleteChangeEmailResponseModel) {
-        setBusy(false);
-        return CompleteChangeEmailResult(
-          success: true,
-          message: response.message,
-          responseType: CompleteChangeEmailResponseType.success,
-          newEmail: response.newEmail,
-        );
-      } else if (response is ChangeEmailErrorModel) {
-        _errorMessage = response.error;
-        setBusy(false);
-        return CompleteChangeEmailResult(
-          success: false,
-          message: response.error,
-          responseType: CompleteChangeEmailResponseType.error,
-          newEmail: null,
-        );
-      } else {
-        _errorMessage = l10n.unexpectedError;
-        setBusy(false);
-        return CompleteChangeEmailResult(
-          success: false,
-          message: _errorMessage,
-          responseType: CompleteChangeEmailResponseType.error,
-          newEmail: null,
-        );
-      }
+      // Success
+      final completeResponse = response as CompleteChangeEmailResponseModel;
+      setBusy(false);
+      return CompleteChangeEmailResult(
+        success: true,
+        message: completeResponse.message,
+        responseType: CompleteChangeEmailResponseType.success,
+        newEmail: completeResponse.newEmail,
+      );
     } catch (e) {
       _errorMessage = l10n.errorOccurredWithDetails(e.toString());
       setBusy(false);

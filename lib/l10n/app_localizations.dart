@@ -3945,8 +3945,164 @@ abstract class AppLocalizations {
   /// No description provided for @errorOccurredWithDetails.
   ///
   /// In en, this message translates to:
-  /// **'An error occurred: {error}'**
+  /// **'{error}'**
   String errorOccurredWithDetails(Object error);
+
+  /// No description provided for @userDataNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'User data not found'**
+  String get userDataNotFound;
+
+  /// No description provided for @emailCannotBeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Email cannot be empty'**
+  String get emailCannotBeEmpty;
+
+  /// No description provided for @allFieldsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'All fields are required'**
+  String get allFieldsRequired;
+
+  /// No description provided for @passwordTooShort6.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters long'**
+  String get passwordTooShort6;
+
+  /// No description provided for @failedToCreateWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create wallet'**
+  String get failedToCreateWallet;
+
+  /// No description provided for @failedToGetProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to get profile'**
+  String get failedToGetProfile;
+
+  /// No description provided for @failedToInitializeDiditToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to initialize Didit token'**
+  String get failedToInitializeDiditToken;
+
+  /// No description provided for @credit.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit'**
+  String get credit;
+
+  /// No description provided for @debit.
+  ///
+  /// In en, this message translates to:
+  /// **'Debit'**
+  String get debit;
+
+  /// No description provided for @registrationSuccessful.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration successful! Please login with your email and password.'**
+  String get registrationSuccessful;
+
+  /// No description provided for @kycVerification.
+  ///
+  /// In en, this message translates to:
+  /// **'KYC Verification'**
+  String get kycVerification;
+
+  /// No description provided for @level1Verification.
+  ///
+  /// In en, this message translates to:
+  /// **'Level 1 Verification'**
+  String get level1Verification;
+
+  /// No description provided for @featuresAndPermissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Features & Permissions'**
+  String get featuresAndPermissions;
+
+  /// No description provided for @completeAuthentication.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Authentication'**
+  String get completeAuthentication;
+
+  /// No description provided for @applyCardLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply card'**
+  String get applyCardLabel;
+
+  /// No description provided for @documentVerification.
+  ///
+  /// In en, this message translates to:
+  /// **'Document verification'**
+  String get documentVerification;
+
+  /// No description provided for @faceRecognition.
+  ///
+  /// In en, this message translates to:
+  /// **'Face recognition'**
+  String get faceRecognition;
+
+  /// No description provided for @noKycData.
+  ///
+  /// In en, this message translates to:
+  /// **'No KYC data available'**
+  String get noKycData;
+
+  /// No description provided for @passed.
+  ///
+  /// In en, this message translates to:
+  /// **'Passed'**
+  String get passed;
+
+  /// No description provided for @pending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get pending;
+
+  /// No description provided for @newPhoneCannotBeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'New phone cannot be empty'**
+  String get newPhoneCannotBeEmpty;
+
+  /// No description provided for @unexpectedResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'Unexpected response'**
+  String get unexpectedResponse;
+
+  /// No description provided for @emailPhoneOtpRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Email, new phone, and phone OTP cannot be empty'**
+  String get emailPhoneOtpRequired;
+
+  /// No description provided for @newPhoneEmailOtpRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'New phone and email OTP cannot be empty'**
+  String get newPhoneEmailOtpRequired;
+
+  /// No description provided for @amountGreaterThanZero.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount must be greater than 0'**
+  String get amountGreaterThanZero;
+
+  /// No description provided for @failedToCreateQuote.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create quote: data format error'**
+  String get failedToCreateQuote;
 }
 
 class _AppLocalizationsDelegate

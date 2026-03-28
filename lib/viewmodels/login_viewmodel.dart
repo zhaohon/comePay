@@ -1,13 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:comecomepay/core/base_viewmodel.dart';
 import 'package:comecomepay/models/requests/login_request_model.dart';
 import 'package:comecomepay/models/requests/otp_verification_request_model.dart';
 import 'package:comecomepay/models/responses/login_response_model.dart';
-import 'package:comecomepay/models/responses/login_error_model.dart';
 import 'package:comecomepay/models/responses/otp_verification_response_model.dart';
-import 'package:comecomepay/models/responses/otp_verification_error_model.dart';
 import 'package:comecomepay/services/global_service.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/utils/service_locator.dart';
 
 // Response types for different scenarios
@@ -26,6 +24,10 @@ class LoginResult {
     this.email,
   });
 }
+
+// Assuming VerifyOtpResult is an alias or identical to LoginResult for now,
+// as the body returns LoginResult instances.
+typedef VerifyOtpResult = LoginResult;
 
 enum LoginResponseType {
   success,
@@ -59,10 +61,11 @@ class LoginViewModel extends BaseViewModel {
   }
 
   // Business logic methods
-  Future<LoginResult> login(String email, String password) async {
+  Future<LoginResult> login(
+      String email, String password, AppLocalizations l10n) async {
     // Validasi input
     if (email.isEmpty || password.isEmpty) {
-      _errorMessage = 'Email dan password tidak boleh kosong';
+      _errorMessage = l10n.allFieldsRequired;
       notifyListeners();
       return LoginResult(
         success: false,
@@ -72,7 +75,7 @@ class LoginViewModel extends BaseViewModel {
     }
 
     if (!isValidEmail(email)) {
-      _errorMessage = 'Format email tidak valid';
+      _errorMessage = l10n.invalidEmailFormat;
       notifyListeners();
       return LoginResult(
         success: false,
@@ -92,7 +95,6 @@ class LoginViewModel extends BaseViewModel {
       // Call service
       final response = await _globalService.login(request);
 
-      // Handle different response types
       if (response is LoginSuccessResponse) {
         // Login berhasil
         _loginResponse = response.data;
@@ -106,58 +108,30 @@ class LoginViewModel extends BaseViewModel {
           success: true,
           responseType: LoginResponseType.success,
         );
-      } else if (response is LoginOtpRequiredResponse) {
-        // OTP required (HTTP 403)
+      } else {
+        // Harus LoginOtpRequiredResponse (karena jika error 400/500 sudah dilempar oleh BaseService)
+        final otpResponse = response as LoginOtpRequiredResponse;
         _errorMessage = null;
         _loginResponse = null;
 
         // Send email with OTP if email and otp are available
-        print('🔥 [LOGIN VIEWMODEL] About to send email with OTP...');
-        print(
-            '🔥 [LOGIN VIEWMODEL] Name: ${response.name}, Email: ${response.email}, OTP: ${response.otp}');
-        if (response.email != null && response.otp != null) {
-          print(
-              '🔥 [LOGIN VIEWMODEL] Email and OTP available, calling sendEmail...');
-          // Use name if available, otherwise use email as name
-          final name = response.name ?? response.email!.split('@').first;
-          await _globalService.sendEmail(response.email!, name, response.otp!);
-        } else {
-          print('🔥 [LOGIN VIEWMODEL] Missing data for email sending:');
-          print(
-              '🔥 [LOGIN VIEWMODEL] Email: ${response.email}, OTP: ${response.otp}');
+        if (otpResponse.email != null && otpResponse.otp != null) {
+          final name = otpResponse.name ?? otpResponse.email!.split('@').first;
+          await _globalService.sendEmail(
+              otpResponse.email!, name, otpResponse.otp!);
         }
 
         setBusy(false);
         return LoginResult(
           success: false,
-          message: response.message,
+          message: otpResponse.message,
           responseType: LoginResponseType.otpRequired,
-          otp: response.otp,
-          email: response.email,
-        );
-      } else if (response is LoginErrorResponse) {
-        // Login error (HTTP 401 or other errors)
-        _errorMessage = response.message;
-        _loginResponse = null;
-        setBusy(false);
-        return LoginResult(
-          success: false,
-          message: response.message,
-          responseType: LoginResponseType.error,
-        );
-      } else {
-        // Unexpected response
-        _errorMessage = 'Terjadi kesalahan yang tidak terduga';
-        _loginResponse = null;
-        setBusy(false);
-        return LoginResult(
-          success: false,
-          message: _errorMessage,
-          responseType: LoginResponseType.error,
+          otp: otpResponse.otp,
+          email: otpResponse.email,
         );
       }
     } catch (e) {
-      _errorMessage = 'Terjadi kesalahan: ${e.toString()}';
+      _errorMessage = e.toString();
       _loginResponse = null;
       setBusy(false);
       return LoginResult(
@@ -224,10 +198,11 @@ class LoginViewModel extends BaseViewModel {
   UserModel? get storedUser => HiveStorageService.getUser();
 
   // Method untuk OTP verification
-  Future<LoginResult> verifyOtp(String email, String otpCode) async {
+  Future<VerifyOtpResult> verifyOtp(
+      String email, String otpCode, AppLocalizations l10n) async {
     // Validasi input
     if (email.isEmpty || otpCode.isEmpty) {
-      _errorMessage = 'Email dan kode OTP tidak boleh kosong';
+      _errorMessage = l10n.allFieldsRequired;
       notifyListeners();
       return LoginResult(
         success: false,
@@ -237,7 +212,7 @@ class LoginViewModel extends BaseViewModel {
     }
 
     if (!isValidEmail(email)) {
-      _errorMessage = 'Format email tidak valid';
+      _errorMessage = l10n.invalidEmailFormat;
       notifyListeners();
       return LoginResult(
         success: false,
@@ -247,7 +222,7 @@ class LoginViewModel extends BaseViewModel {
     }
 
     if (otpCode.length != 5) {
-      _errorMessage = 'Kode OTP harus 5 digit';
+      _errorMessage = l10n.otpCodeMustBe5Digits;
       notifyListeners();
       return LoginResult(
         success: false,
@@ -268,84 +243,27 @@ class LoginViewModel extends BaseViewModel {
       // Call service
       final response = await _globalService.verifyOtp(request);
 
-      // Handle different response types
-      if (response is OtpVerificationResponseModel) {
-        // OTP verification berhasil
-        _loginResponse = LoginResponseModel(
-          accessToken: response.accessToken,
-          refreshToken: response.refreshToken,
-          message: response.message,
-          status: response.status,
-          user: response.user,
-        );
-        _errorMessage = null;
+      // Success (BaseService handles failure by throwing)
+      final otpResponse = response as OtpVerificationResponseModel;
+      _loginResponse = LoginResponseModel(
+        accessToken: otpResponse.accessToken,
+        refreshToken: otpResponse.refreshToken,
+        message: otpResponse.message,
+        status: otpResponse.status,
+        user: otpResponse.user,
+      );
+      _errorMessage = null;
 
-        // Simpan data authentication ke Hive
-        await HiveStorageService.saveAuthData(_loginResponse!);
+      // Simpan data authentication ke Hive
+      await HiveStorageService.saveAuthData(_loginResponse!);
 
-        setBusy(false);
-        return LoginResult(
-          success: true,
-          responseType: LoginResponseType.success,
-        );
-      } else if (response is OtpVerificationErrorModel) {
-        // OTP verification error
-        _errorMessage = response.error;
-        _loginResponse = null;
-        setBusy(false);
-        return LoginResult(
-          success: false,
-          message: _errorMessage,
-          responseType: LoginResponseType.error,
-        );
-      } else if (response is Map<String, dynamic>) {
-        // Handle new API response structure
-        if (response['status'] == 'success' ||
-            response['access_token'] != null) {
-          // Success response
-          _loginResponse = LoginResponseModel(
-            accessToken: response['access_token'],
-            refreshToken: response['refresh_token'],
-            message: response['message'],
-            status: response['status'],
-            user: response['user'] != null
-                ? UserModel.fromJson(response['user'])
-                : null,
-          );
-          _errorMessage = null;
-
-          // Simpan data authentication ke Hive
-          await HiveStorageService.saveAuthData(_loginResponse!);
-
-          setBusy(false);
-          return LoginResult(
-            success: true,
-            responseType: LoginResponseType.success,
-          );
-        } else {
-          // Error response
-          _errorMessage = response['error'] ?? 'Login failed';
-          _loginResponse = null;
-          setBusy(false);
-          return LoginResult(
-            success: false,
-            message: _errorMessage,
-            responseType: LoginResponseType.error,
-          );
-        }
-      } else {
-        // Unexpected response
-        _errorMessage = 'Terjadi kesalahan yang tidak terduga';
-        _loginResponse = null;
-        setBusy(false);
-        return LoginResult(
-          success: false,
-          message: _errorMessage,
-          responseType: LoginResponseType.error,
-        );
-      }
+      setBusy(false);
+      return LoginResult(
+        success: true,
+        responseType: LoginResponseType.success,
+      );
     } catch (e) {
-      _errorMessage = 'Terjadi kesalahan: ${e.toString()}';
+      _errorMessage = e.toString();
       _loginResponse = null;
       setBusy(false);
       return LoginResult(
@@ -357,10 +275,10 @@ class LoginViewModel extends BaseViewModel {
   }
 
   // Method untuk resend OTP
-  Future<LoginResult> resendOtp(String email) async {
+  Future<LoginResult> resendOtp(String email, AppLocalizations l10n) async {
     // Validasi input
     if (email.isEmpty) {
-      _errorMessage = 'Email tidak boleh kosong';
+      _errorMessage = l10n.emailCannotBeEmpty;
       notifyListeners();
       return LoginResult(
         success: false,
@@ -370,7 +288,7 @@ class LoginViewModel extends BaseViewModel {
     }
 
     if (!isValidEmail(email)) {
-      _errorMessage = 'Format email tidak valid';
+      _errorMessage = l10n.invalidEmailFormat;
       notifyListeners();
       return LoginResult(
         success: false,
@@ -387,38 +305,16 @@ class LoginViewModel extends BaseViewModel {
       // Call service
       final response = await _globalService.resendOtp(email);
 
-      // Handle different response types
-      if (response is Map<String, dynamic> && response['status'] == 'success') {
-        // Resend OTP berhasil
-        _errorMessage = null;
-        setBusy(false);
-        return LoginResult(
-          success: true,
-          message: response['message'] ?? 'New OTP sent to your email',
-          responseType: LoginResponseType.success,
-        );
-      } else if (response is Map<String, dynamic> &&
-          response['error'] != null) {
-        // Resend OTP gagal
-        _errorMessage = response['error'];
-        setBusy(false);
-        return LoginResult(
-          success: false,
-          message: _errorMessage,
-          responseType: LoginResponseType.error,
-        );
-      } else {
-        // Unexpected response
-        _errorMessage = 'Terjadi kesalahan yang tidak terduga';
-        setBusy(false);
-        return LoginResult(
-          success: false,
-          message: _errorMessage,
-          responseType: LoginResponseType.error,
-        );
-      }
+      // Success
+      _errorMessage = null;
+      setBusy(false);
+      return LoginResult(
+        success: true,
+        message: response['message'] ?? 'New OTP sent to your email',
+        responseType: LoginResponseType.success,
+      );
     } catch (e) {
-      _errorMessage = 'Terjadi kesalahan: ${e.toString()}';
+      _errorMessage = e.toString();
       setBusy(false);
       return LoginResult(
         success: false,

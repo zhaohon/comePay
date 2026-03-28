@@ -3,8 +3,6 @@ import 'package:comecomepay/models/responses/get_profile_response_model.dart';
 import 'package:comecomepay/models/responses/login_response_model.dart';
 import 'package:comecomepay/models/requests/update_profile_request_model.dart';
 import 'package:comecomepay/models/requests/didit_initialize_token_request_model.dart';
-import 'package:comecomepay/models/responses/didit_initialize_token_response_model.dart';
-import 'package:comecomepay/models/responses/didit_initialize_token_error_model.dart';
 import 'package:comecomepay/models/kyc_model.dart';
 import 'package:comecomepay/models/responses/kyc_status_response_model.dart';
 import 'package:comecomepay/services/kyc_service.dart';
@@ -12,6 +10,7 @@ import 'package:comecomepay/services/global_service.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
 import 'package:comecomepay/utils/service_locator.dart';
 import 'package:intl/intl.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 
 import '../models/carddetail_response_model.dart' show CarddetailResponseModel;
 
@@ -45,7 +44,7 @@ class ProfileScreenViewModel extends BaseViewModel {
     }
   }
 
-  Future<void> fetchKycStatus() async {
+  Future<void> fetchKycStatus(AppLocalizations l10n) async {
     print('DEBUG: fetchKycStatus called');
     if (_kycStatusResponse == null) {
       _kycStatusLoading = true;
@@ -59,6 +58,7 @@ class ProfileScreenViewModel extends BaseViewModel {
       _kycStatusResponse = response;
       notifyListeners();
     } catch (e) {
+      _errorMessage = l10n.errorOccurredWithDetails(e.toString());
       print('ProfileViewModel: Failed to fetch KYC status: $e');
     } finally {
       _kycStatusLoading = false;
@@ -66,91 +66,74 @@ class ProfileScreenViewModel extends BaseViewModel {
     }
   }
 
-  Future<bool> getProfile(String accessToken, {bool isSilent = false}) async {
+  Future<bool> getProfile(AppLocalizations l10n,
+      {String? accessToken, bool isSilent = false}) async {
     if (!isSilent) setBusy(true);
     _errorMessage = null;
 
     try {
-      final response = await _globalService.getProfile(accessToken);
+      // accessToken is optional now as GlobalService might use internal storage/interceptor
+      final response = await _globalService.getProfile(accessToken ?? '');
 
-      if (response is Map<String, dynamic> && response['status'] == 'success') {
-        _profileResponse = GetProfileResponseModel.fromJson(response);
-        // Save to Hive in table "getprofil"
-        await HiveStorageService.saveProfileData(_profileResponse!);
+      _profileResponse = response;
+      // Save to Hive in table "getprofil"
+      await HiveStorageService.saveProfileData(_profileResponse!);
 
-        if (!isSilent) {
-          setBusy(false);
-        }
-        notifyListeners(); // Still need to notify to update UI if data changed silently
-        return true;
-      } else if (response is Map<String, dynamic> &&
-          response['error'] != null) {
-        _errorMessage = response['error'];
-        if (!isSilent) setBusy(false);
-        notifyListeners();
-        return false;
-      } else {
-        _errorMessage = 'Failed to get profile';
-        if (!isSilent) setBusy(false);
-        notifyListeners();
-        return false;
+      if (!isSilent) {
+        setBusy(false);
       }
+      notifyListeners();
+      return true;
     } catch (e) {
-      _errorMessage = '  ${e.toString()}';
+      _errorMessage = e.toString();
       if (!isSilent) setBusy(false);
       notifyListeners();
       return false;
     }
   }
 
-  Future<bool> updateProfile(UpdateProfileRequestModel request) async {
+  Future<bool> updateProfile(
+      AppLocalizations l10n, UpdateProfileRequestModel request) async {
     setBusy(true);
     _errorMessage = null;
 
     try {
       final response = await _globalService.updateProfile(request);
 
-      if (response is GetProfileResponseModel) {
-        _profileResponse = response;
-        // Save to Hive in table "getprofil"
-        await HiveStorageService.saveProfileData(_profileResponse!);
-        // Update the user in auth data with new values
-        final currentAuth = HiveStorageService.getAuthData();
-        if (currentAuth != null && currentAuth.user != null) {
-          final updatedUser = UserModel(
-            id: _profileResponse!.user.id,
-            email: _profileResponse!.user.email,
-            firstName: _profileResponse!.user.firstName,
-            lastName: _profileResponse!.user.lastName,
-            phone: _profileResponse!.user.phone ?? currentAuth.user!.phone,
-            accountType: _profileResponse!.user.accountType,
-            status: _profileResponse!.user.status,
-            walletId: _profileResponse!.user.walletId,
-            kycLevel: _profileResponse!.user.kycLevel,
-            kycStatus: _profileResponse!.user.kycStatus,
-            createdAt: _profileResponse!.user.createdAt,
-            referralCode: _profileResponse!.user.referralCode,
-          );
-          final updatedAuth = LoginResponseModel(
-            accessToken: currentAuth.accessToken,
-            refreshToken: currentAuth.refreshToken,
-            message: currentAuth.message,
-            status: currentAuth.status,
-            user: updatedUser,
-          );
-          await HiveStorageService.saveAuthData(updatedAuth);
-        }
-        setBusy(false);
-        notifyListeners();
-        return true;
-      } else {
-        _errorMessage = 'Failed to update profile';
-        setBusy(false);
-        notifyListeners();
-        return false;
+      _profileResponse = response;
+      // Save to Hive in table "getprofil"
+      await HiveStorageService.saveProfileData(_profileResponse!);
+      // Update the user in auth data with new values
+      final currentAuth = HiveStorageService.getAuthData();
+      if (currentAuth != null && currentAuth.user != null) {
+        final updatedUser = UserModel(
+          id: _profileResponse!.user.id,
+          email: _profileResponse!.user.email,
+          firstName: _profileResponse!.user.firstName,
+          lastName: _profileResponse!.user.lastName,
+          phone: _profileResponse!.user.phone ?? currentAuth.user!.phone,
+          accountType: _profileResponse!.user.accountType,
+          status: _profileResponse!.user.status,
+          walletId: _profileResponse!.user.walletId,
+          kycLevel: _profileResponse!.user.kycLevel,
+          kycStatus: _profileResponse!.user.kycStatus,
+          createdAt: _profileResponse!.user.createdAt,
+          referralCode: _profileResponse!.user.referralCode,
+        );
+        final updatedAuth = LoginResponseModel(
+          accessToken: currentAuth.accessToken,
+          refreshToken: currentAuth.refreshToken,
+          message: currentAuth.message,
+          status: currentAuth.status,
+          user: updatedUser,
+        );
+        await HiveStorageService.saveAuthData(updatedAuth);
       }
+      setBusy(false);
+      notifyListeners();
+      return true;
     } catch (e) {
-      _errorMessage = '  ${e.toString()}';
+      _errorMessage = e.toString();
       setBusy(false);
       notifyListeners();
       return false;
@@ -163,7 +146,7 @@ class ProfileScreenViewModel extends BaseViewModel {
     return '${firstName.toUpperCase()}_${lastName.toUpperCase()}_$timestamp';
   }
 
-  Future<dynamic> initializeDiditToken(
+  Future<dynamic> initializeDiditToken(AppLocalizations l10n,
       [DiditInitializeTokenRequestModel? request]) async {
     setBusy(true);
     _errorMessage = null;
@@ -180,7 +163,7 @@ class ProfileScreenViewModel extends BaseViewModel {
         final profile = await HiveStorageService.getProfileData();
 
         if (user == null) {
-          _errorMessage = 'User data not found';
+          _errorMessage = l10n.userDataNotFound;
           setBusy(false);
           notifyListeners();
           return null;
@@ -204,46 +187,39 @@ class ProfileScreenViewModel extends BaseViewModel {
 
       final response = await _globalService.initializeDiditToken(finalRequest);
 
-      if (response is DiditInitializeTokenResponseModel) {
-        setBusy(false);
-        notifyListeners();
-        return response;
-      } else if (response is DiditInitializeTokenErrorModel) {
-        _errorMessage = response.message;
-        setBusy(false);
-        notifyListeners();
-        return null;
-      } else {
-        _errorMessage = 'Failed to initialize Didit token';
-        setBusy(false);
-        notifyListeners();
-        return null;
-      }
+      setBusy(false);
+      notifyListeners();
+      return response; // BaseService throws on DiditInitializeTokenErrorModel
     } catch (e) {
-      _errorMessage = '  ${e.toString()}';
+      _errorMessage = e.toString();
       setBusy(false);
       notifyListeners();
       return null;
     }
   }
 
-  Future<CarddetailResponseModel?> getCardData(int kyc_id) async {
+  Future<CarddetailResponseModel?> getCardData(
+      AppLocalizations l10n, int kyc_id) async {
+    _errorMessage = null;
     try {
       final result = await _globalService.initGetCard(kyc_id);
 
       if (result != null && result.data != null) {
         return result;
       } else {
+        _errorMessage = l10n.failedToLoadCardDetails;
         return null;
       }
     } catch (e) {
+      _errorMessage = e.toString();
       print('ViewModel: Failed to get card data: $e');
       return null;
     }
   }
 
-  Future<bool> createCard(
-      List<KycModel> kycData, GetProfileResponseModel profile) async {
+  Future<bool> createCard(AppLocalizations l10n, List<KycModel> kycData,
+      GetProfileResponseModel profile) async {
+    _errorMessage = null;
     try {
       // Build card data from kycData and profile
       final cardData = {
@@ -266,14 +242,11 @@ class ProfileScreenViewModel extends BaseViewModel {
       };
 
       final userId = profile.user.id.toString();
-      final result = await _globalService.createCard(cardData, userId);
+      await _globalService.createCard(cardData, userId);
 
-      if (result != null && result['code'] == 200) {
-        return true;
-      } else {
-        return false;
-      }
+      return true; // BaseService throws if code != 200
     } catch (e) {
+      _errorMessage = l10n.errorOccurredWithDetails(e.toString());
       print('ViewModel: Failed to create card: $e');
       return false;
     }

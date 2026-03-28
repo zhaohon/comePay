@@ -205,8 +205,7 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
       print('Error in card apply logic: $e');
       // If error, fallback to payment view or error view?
       // Let's show error snackbar and maybe stay loading or go to payment
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Error: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$e')));
     } finally {
       // Ensure we reset the flag so retry or subsequent refresh works
       _isLoadingData = false;

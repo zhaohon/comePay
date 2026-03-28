@@ -580,5 +580,10 @@
   "oldEmailOtpCannotBeEmpty": "لا يمكن أن يكون رمز OTP للبريد الإلكتروني القديم فارغًا",
   "otpCodeMustBe5Digits": "يجب أن يتكون رمز OTP من 5 أرقام",
   "unexpectedError": "حدث خطأ غير متوقع",
-  "errorOccurredWithDetails": "حدث خطأ: {error}"
+  "errorOccurredWithDetails": "حدث خطأ: {error}",
+  "userDataNotFound": "لم يتم العثور على بيانات المستخدم",
+  "emailCannotBeEmpty": "البريد الإلكتروني لا يمكن أن يكون فارغاً",
+  "allFieldsRequired": "جميع الحقول مطلوبة",
+  "passwordTooShort6": "يجب أن تكون كلمة المرor 6 أحرف على الأقل",
+  "failedToCreateWallet": "فشل إنشاء المحفظة"
 }

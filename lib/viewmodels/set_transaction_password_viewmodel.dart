@@ -2,10 +2,8 @@ import 'package:comecomepay/core/base_viewmodel.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/models/requests/transaction_password_request_model.dart';
 import 'package:comecomepay/models/responses/transaction_password_response_model.dart';
-import 'package:comecomepay/models/responses/transaction_password_error_model.dart';
 import 'package:comecomepay/models/requests/complete_transaction_password_request_model.dart';
 import 'package:comecomepay/models/responses/complete_transaction_password_response_model.dart';
-import 'package:comecomepay/models/responses/complete_transaction_password_error_model.dart';
 import 'package:comecomepay/services/global_service.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
 import 'package:comecomepay/utils/service_locator.dart';
@@ -133,44 +131,20 @@ class SetTransactionPasswordViewModel extends BaseViewModel {
       // Call service
       final response = await _globalService.requestTransactionPassword(request);
 
-      // Handle different response types
-      if (response is TransactionPasswordResponseModel) {
-        // Request berhasil
-        _tempHash = response.tempHash;
-        await HiveStorageService.saveTempHash(response.tempHash);
-        _errorMessage = null;
-        _isOtpRequested = true;
-        notifyListeners();
-        return TransactionPasswordResult(
-          success: true,
-          message: response.message,
-          responseType: TransactionPasswordResponseType.success,
-        );
-      } else if (response is TransactionPasswordErrorModel) {
-        // Request error
-        _errorMessage = response.error;
-        _tempHash = null;
-        _isOtpRequested = false;
-        notifyListeners();
-        return TransactionPasswordResult(
-          success: false,
-          message: _errorMessage,
-          responseType: TransactionPasswordResponseType.error,
-        );
-      } else {
-        // Unexpected response
-        _errorMessage = l10n.errorOccurred;
-        _tempHash = null;
-        _isOtpRequested = false;
-        notifyListeners();
-        return TransactionPasswordResult(
-          success: false,
-          message: _errorMessage,
-          responseType: TransactionPasswordResponseType.error,
-        );
-      }
+      // Success
+      final requestResponse = response as TransactionPasswordResponseModel;
+      _tempHash = requestResponse.tempHash;
+      await HiveStorageService.saveTempHash(requestResponse.tempHash);
+      _errorMessage = null;
+      _isOtpRequested = true;
+      notifyListeners();
+      return TransactionPasswordResult(
+        success: true,
+        message: requestResponse.message,
+        responseType: TransactionPasswordResponseType.success,
+      );
     } catch (e) {
-      _errorMessage = l10n.errorOccurredWithDetails(e.toString());
+      _errorMessage = e.toString();
       _tempHash = null;
       _isOtpRequested = false;
       notifyListeners();
@@ -223,41 +197,22 @@ class SetTransactionPasswordViewModel extends BaseViewModel {
       final response =
           await _globalService.completeTransactionPassword(request);
 
-      // Handle different response types
-      if (response is CompleteTransactionPasswordResponseModel) {
-        // Completion berhasil
-        _errorMessage = null;
-        // Clear temp hash after success
-        _tempHash = null;
-        await HiveStorageService.clearTempHash();
+      // Success
+      final completeResponse =
+          response as CompleteTransactionPasswordResponseModel;
+      _errorMessage = null;
+      // Clear temp hash after success
+      _tempHash = null;
+      await HiveStorageService.clearTempHash();
 
-        setBusy(false);
-        return CompleteTransactionPasswordResult(
-          success: true,
-          message: response.message,
-          responseType: CompleteTransactionPasswordResponseType.success,
-        );
-      } else if (response is CompleteTransactionPasswordErrorModel) {
-        // Completion error
-        _errorMessage = response.error;
-        setBusy(false);
-        return CompleteTransactionPasswordResult(
-          success: false,
-          message: _errorMessage,
-          responseType: CompleteTransactionPasswordResponseType.error,
-        );
-      } else {
-        // Unexpected response
-        _errorMessage = l10n.errorOccurred;
-        setBusy(false);
-        return CompleteTransactionPasswordResult(
-          success: false,
-          message: _errorMessage,
-          responseType: CompleteTransactionPasswordResponseType.error,
-        );
-      }
+      setBusy(false);
+      return CompleteTransactionPasswordResult(
+        success: true,
+        message: completeResponse.message,
+        responseType: CompleteTransactionPasswordResponseType.success,
+      );
     } catch (e) {
-      _errorMessage = l10n.errorOccurredWithDetails(e.toString());
+      _errorMessage = e.toString();
       setBusy(false);
       return CompleteTransactionPasswordResult(
         success: false,

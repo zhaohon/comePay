@@ -14,28 +14,35 @@ class UnauthorizedException implements Exception {
   final String message;
   UnauthorizedException(this.message);
   @override
-  String toString() => 'Unauthorized: $message';
+  String toString() => message;
 }
 
 class ForbiddenException implements Exception {
   final String message;
   ForbiddenException(this.message);
   @override
-  String toString() => 'Forbidden: $message';
+  String toString() => message;
 }
 
 class ServerErrorException implements Exception {
   final String message;
   ServerErrorException(this.message);
   @override
-  String toString() => 'Server Error: $message';
+  String toString() => message;
 }
 
 class NetworkException implements Exception {
   final String message;
   NetworkException(this.message);
   @override
-  String toString() => 'Network Error: $message';
+  String toString() => message;
+}
+
+class AppException implements Exception {
+  final String message;
+  AppException(this.message);
+  @override
+  String toString() => message;
 }
 
 abstract class BaseService {
@@ -307,12 +314,12 @@ abstract class BaseService {
 
             // Special handling for 403-like business errors (e.g. OTP required)
             // But if it's already a 200, we check if it's meant to be an error
-            throw Exception(message);
+            throw AppException(message);
           }
         }
         return data;
       case 400:
-        throw Exception('${data['message'] ?? 'Invalid request'}');
+        throw AppException('${data['message'] ?? 'Invalid request'}');
       case 401:
         // ⚠️ DO NOT throw here! Let the interceptor's onError handle 401
         // The interceptor will handle token refresh automatically
@@ -325,18 +332,18 @@ abstract class BaseService {
         throw ForbiddenException(
             data['message'] ?? 'Access denied - OTP required');
       case 404:
-        throw Exception('${data['message'] ?? 'Resource not found'}');
+        throw AppException('${data['message'] ?? 'Resource not found'}');
       case 422:
-        throw Exception('${data['message'] ?? 'Invalid data'}');
+        throw AppException('${data['message'] ?? 'Invalid data'}');
       case 429:
-        throw Exception('${data['message'] ?? 'Rate limit exceeded'}');
+        throw AppException('${data['message'] ?? 'Rate limit exceeded'}');
       case 500:
       case 502:
       case 503:
       case 504:
         throw ServerErrorException(data['message'] ?? 'Server error occurred');
       default:
-        throw Exception(
+        throw AppException(
             'HTTP ${response.statusCode}: ${data['message'] ?? 'Unknown error'}');
     }
   }

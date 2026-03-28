@@ -2045,4 +2045,85 @@ class AppLocalizationsId extends AppLocalizations {
   String errorOccurredWithDetails(Object error) {
     return 'Terjadi kesalahan: $error';
   }
+
+  @override
+  String get userDataNotFound => 'Data pengguna tidak ditemukan';
+
+  @override
+  String get emailCannotBeEmpty => 'Email tidak boleh kosong';
+
+  @override
+  String get allFieldsRequired => 'Semua bidang harus diisi';
+
+  @override
+  String get passwordTooShort6 => 'Password harus minimal 6 karakter';
+
+  @override
+  String get failedToCreateWallet => 'Gagal membuat dompet';
+
+  @override
+  String get failedToGetProfile => 'Failed to get profile';
+
+  @override
+  String get failedToInitializeDiditToken => 'Failed to initialize Didit token';
+
+  @override
+  String get credit => 'Credit';
+
+  @override
+  String get debit => 'Debit';
+
+  @override
+  String get registrationSuccessful =>
+      'Registration successful! Please login with your email and password.';
+
+  @override
+  String get kycVerification => 'KYC Verification';
+
+  @override
+  String get level1Verification => 'Level 1 Verification';
+
+  @override
+  String get featuresAndPermissions => 'Features & Permissions';
+
+  @override
+  String get completeAuthentication => 'Complete Authentication';
+
+  @override
+  String get applyCardLabel => 'Apply card';
+
+  @override
+  String get documentVerification => 'Document verification';
+
+  @override
+  String get faceRecognition => 'Face recognition';
+
+  @override
+  String get noKycData => 'No KYC data available';
+
+  @override
+  String get passed => 'Passed';
+
+  @override
+  String get pending => 'Pending';
+
+  @override
+  String get newPhoneCannotBeEmpty => 'New phone cannot be empty';
+
+  @override
+  String get unexpectedResponse => 'Unexpected response';
+
+  @override
+  String get emailPhoneOtpRequired =>
+      'Email, new phone, and phone OTP cannot be empty';
+
+  @override
+  String get newPhoneEmailOtpRequired =>
+      'New phone and email OTP cannot be empty';
+
+  @override
+  String get amountGreaterThanZero => 'Amount must be greater than 0';
+
+  @override
+  String get failedToCreateQuote => 'Failed to create quote: data format error';
 }

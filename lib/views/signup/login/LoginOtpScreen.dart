@@ -65,7 +65,7 @@ class _LoginOtpScreenState extends State<LoginOtpScreen> {
       return;
     }
 
-    final result = await _loginViewModel.verifyOtp(_email, _otpCode);
+    final result = await _loginViewModel.verifyOtp(_email, _otpCode, l10n);
 
     if (!mounted) return;
 
@@ -84,7 +84,7 @@ class _LoginOtpScreenState extends State<LoginOtpScreen> {
   Future<void> _resendOtp() async {
     final l10n = AppLocalizations.of(context)!;
 
-    final result = await _loginViewModel.resendOtp(_email);
+    final result = await _loginViewModel.resendOtp(_email, l10n);
 
     if (!mounted) return;
 

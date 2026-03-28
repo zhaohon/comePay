@@ -580,5 +580,10 @@
   "oldEmailOtpCannotBeEmpty": "OTP email lama tidak boleh kosong",
   "otpCodeMustBe5Digits": "Kode OTP harus 5 digit",
   "unexpectedError": "Terjadi kesalahan yang tidak terduga",
-  "errorOccurredWithDetails": "Terjadi kesalahan: {error}"
+  "errorOccurredWithDetails": "Terjadi kesalahan: {error}",
+  "userDataNotFound": "Data pengguna tidak ditemukan",
+  "emailCannotBeEmpty": "Email tidak boleh kosong",
+  "allFieldsRequired": "Semua bidang harus diisi",
+  "passwordTooShort6": "Password harus minimal 6 karakter",
+  "failedToCreateWallet": "Gagal membuat dompet"
 }

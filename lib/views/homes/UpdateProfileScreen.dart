@@ -33,7 +33,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         // Load profile if not loaded
         final accessToken = HiveStorageService.getAccessToken();
         if (accessToken != null) {
-          viewModel.getProfile(accessToken);
+          viewModel.getProfile(AppLocalizations.of(context)!);
         }
       }
     });
@@ -177,8 +177,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                               referralCode: _referralCodeController.text,
                             );
 
-                            final success =
-                                await viewModel.updateProfile(request);
+                            final success = await viewModel.updateProfile(
+                                AppLocalizations.of(context)!, request);
                             if (success) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(

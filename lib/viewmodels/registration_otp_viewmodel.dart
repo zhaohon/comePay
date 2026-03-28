@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/core/base_viewmodel.dart';
 import 'package:comecomepay/models/requests/registration_otp_verification_request_model.dart';
 import 'package:comecomepay/models/responses/registration_otp_verification_response_model.dart';
-import 'package:comecomepay/models/responses/registration_otp_verification_error_model.dart';
 import 'package:comecomepay/services/global_service.dart';
 import 'package:comecomepay/utils/service_locator.dart';
 
@@ -42,10 +42,11 @@ class RegistrationOtpViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  Future<RegistrationOtpResult> resendOtp(String email) async {
+  Future<RegistrationOtpResult> resendOtp(
+      String email, AppLocalizations l10n) async {
     // Validasi input
     if (email.isEmpty) {
-      _errorMessage = 'Email tidak boleh kosong';
+      _errorMessage = l10n.emailCannotBeEmpty;
       notifyListeners();
       return RegistrationOtpResult(
         success: false,
@@ -62,38 +63,16 @@ class RegistrationOtpViewModel extends BaseViewModel {
       // Call service
       final response = await _globalService.resendOtp(email);
 
-      // Handle different response types
-      if (response is Map<String, dynamic> && response['status'] == 'success') {
-        // Resend OTP berhasil
-        _errorMessage = null;
-        setBusy(false);
-        return RegistrationOtpResult(
-          success: true,
-          message: response['message'] ?? 'New OTP sent to your email',
-          responseType: RegistrationOtpResponseType.success,
-        );
-      } else if (response is Map<String, dynamic> &&
-          response['error'] != null) {
-        // Resend OTP gagal
-        _errorMessage = response['error'];
-        setBusy(false);
-        return RegistrationOtpResult(
-          success: false,
-          message: _errorMessage,
-          responseType: RegistrationOtpResponseType.error,
-        );
-      } else {
-        // Unexpected response
-        _errorMessage = 'Terjadi kesalahan yang tidak terduga';
-        setBusy(false);
-        return RegistrationOtpResult(
-          success: false,
-          message: _errorMessage,
-          responseType: RegistrationOtpResponseType.error,
-        );
-      }
+      // Success
+      _errorMessage = null;
+      setBusy(false);
+      return RegistrationOtpResult(
+        success: true,
+        message: response['message'] ?? 'New OTP sent to your email',
+        responseType: RegistrationOtpResponseType.success,
+      );
     } catch (e) {
-      _errorMessage = 'Terjadi kesalahan: ${e.toString()}';
+      _errorMessage = e.toString();
       setBusy(false);
       return RegistrationOtpResult(
         success: false,
@@ -107,10 +86,11 @@ class RegistrationOtpViewModel extends BaseViewModel {
   Future<RegistrationOtpResult> verifyRegistrationOtp({
     required String email,
     required String otpCode,
+    required AppLocalizations l10n,
   }) async {
     // Validasi input
     if (email.isEmpty) {
-      _errorMessage = 'Email tidak boleh kosong';
+      _errorMessage = l10n.emailCannotBeEmpty;
       notifyListeners();
       return RegistrationOtpResult(
         success: false,
@@ -120,7 +100,7 @@ class RegistrationOtpViewModel extends BaseViewModel {
     }
 
     if (otpCode.isEmpty || otpCode.length != 5) {
-      _errorMessage = 'OTP harus diisi dengan 5 digit';
+      _errorMessage = l10n.otpCodeMustBe5Digits;
       notifyListeners();
       return RegistrationOtpResult(
         success: false,
@@ -143,41 +123,18 @@ class RegistrationOtpViewModel extends BaseViewModel {
       // Call service
       final response = await _globalService.verifyRegistrationOtp(request);
 
-      // Handle different response types
-      if (response is RegistrationOtpVerificationResponseModel) {
-        // OTP verification berhasil
-        _otpResponse = response;
-        _errorMessage = null;
+      // Success
+      _otpResponse = response as RegistrationOtpVerificationResponseModel;
+      _errorMessage = null;
 
-        setBusy(false);
-        return RegistrationOtpResult(
-          success: true,
-          message: response.message,
-          responseType: RegistrationOtpResponseType.success,
-        );
-      } else if (response is RegistrationOtpVerificationErrorModel) {
-        // OTP verification error
-        _errorMessage = response.error;
-        _otpResponse = null;
-        setBusy(false);
-        return RegistrationOtpResult(
-          success: false,
-          message: _errorMessage,
-          responseType: RegistrationOtpResponseType.error,
-        );
-      } else {
-        // Unexpected response
-        _errorMessage = 'Terjadi kesalahan yang tidak terduga';
-        _otpResponse = null;
-        setBusy(false);
-        return RegistrationOtpResult(
-          success: false,
-          message: _errorMessage,
-          responseType: RegistrationOtpResponseType.error,
-        );
-      }
+      setBusy(false);
+      return RegistrationOtpResult(
+        success: true,
+        message: _otpResponse!.message,
+        responseType: RegistrationOtpResponseType.success,
+      );
     } catch (e) {
-      _errorMessage = 'Terjadi kesalahan: ${e.toString()}';
+      _errorMessage = e.toString();
       _otpResponse = null;
       setBusy(false);
       return RegistrationOtpResult(

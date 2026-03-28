@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
+import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/core/base_viewmodel.dart';
 import 'package:comecomepay/models/requests/signup_request_model.dart';
 import 'package:comecomepay/models/responses/signup_response_model.dart';
-import 'package:comecomepay/models/responses/signup_error_model.dart';
 import 'package:comecomepay/models/requests/email_validation_request_model.dart';
 import 'package:comecomepay/models/responses/email_validation_response_model.dart';
-import 'package:comecomepay/models/responses/email_validation_error_model.dart';
 import 'package:comecomepay/services/global_service.dart';
 import 'package:comecomepay/utils/service_locator.dart';
 
@@ -57,6 +56,7 @@ class SignupViewModel extends BaseViewModel {
     required String lastName,
     required String dateOfBirth,
     required String accountType,
+    required AppLocalizations l10n,
   }) async {
     // Validasi input
     if (email.isEmpty ||
@@ -65,7 +65,7 @@ class SignupViewModel extends BaseViewModel {
         firstName.isEmpty ||
         lastName.isEmpty ||
         dateOfBirth.isEmpty) {
-      _errorMessage = 'Semua field harus diisi';
+      _errorMessage = l10n.allFieldsRequired;
       notifyListeners();
       return SignupResult(
         success: false,
@@ -75,7 +75,7 @@ class SignupViewModel extends BaseViewModel {
     }
 
     if (!isValidEmail(email)) {
-      _errorMessage = 'Format email tidak valid';
+      _errorMessage = l10n.invalidEmailFormat;
       notifyListeners();
       return SignupResult(
         success: false,
@@ -85,7 +85,7 @@ class SignupViewModel extends BaseViewModel {
     }
 
     if (password.length < 6) {
-      _errorMessage = 'Password harus minimal 6 karakter';
+      _errorMessage = l10n.passwordTooShort6;
       notifyListeners();
       return SignupResult(
         success: false,
@@ -113,41 +113,18 @@ class SignupViewModel extends BaseViewModel {
       // Call service
       final response = await _globalService.signup(request);
 
-      // Handle different response types
-      if (response is SignupResponseModel) {
-        // Signup berhasil
-        _signupResponse = response;
-        _errorMessage = null;
+      // Success (BaseService handles failure by throwing)
+      _signupResponse = response as SignupResponseModel;
+      _errorMessage = null;
 
-        setBusy(false);
-        return SignupResult(
-          success: true,
-          message: response.message,
-          responseType: SignupResponseType.success,
-        );
-      } else if (response is SignupErrorModel) {
-        // Signup error
-        _errorMessage = response.error;
-        _signupResponse = null;
-        setBusy(false);
-        return SignupResult(
-          success: false,
-          message: _errorMessage,
-          responseType: SignupResponseType.error,
-        );
-      } else {
-        // Unexpected response
-        _errorMessage = 'Terjadi kesalahan yang tidak terduga';
-        _signupResponse = null;
-        setBusy(false);
-        return SignupResult(
-          success: false,
-          message: _errorMessage,
-          responseType: SignupResponseType.error,
-        );
-      }
+      setBusy(false);
+      return SignupResult(
+        success: true,
+        message: _signupResponse!.message,
+        responseType: SignupResponseType.success,
+      );
     } catch (e) {
-      _errorMessage = 'Terjadi kesalahan: ${e.toString()}';
+      _errorMessage = l10n.errorOccurredWithDetails(e.toString());
       _signupResponse = null;
       setBusy(false);
       return SignupResult(
@@ -169,11 +146,11 @@ class SignupViewModel extends BaseViewModel {
   String? get walletId => _signupResponse?.walletId;
 
   // Email validation method
-  Future<SignupResult> validateEmail(String email,
+  Future<SignupResult> validateEmail(String email, AppLocalizations l10n,
       {String? referralCode}) async {
     // Validasi input
     if (email.isEmpty) {
-      _errorMessage = 'Email tidak boleh kosong';
+      _errorMessage = l10n.emailCannotBeEmpty;
       notifyListeners();
       return SignupResult(
         success: false,
@@ -183,7 +160,7 @@ class SignupViewModel extends BaseViewModel {
     }
 
     if (!isValidEmail(email)) {
-      _errorMessage = 'Format email tidak valid';
+      _errorMessage = l10n.invalidEmailFormat;
       notifyListeners();
       return SignupResult(
         success: false,
@@ -206,41 +183,18 @@ class SignupViewModel extends BaseViewModel {
       // Call service
       final response = await _globalService.validateEmail(request);
 
-      // Handle different response types
-      if (response is EmailValidationResponseModel) {
-        // Email validation berhasil
-        _emailValidationResponse = response;
-        _errorMessage = null;
-        setBusy(false);
-        notifyListeners();
-        return SignupResult(
-          success: true,
-          message: response.message,
-          responseType: SignupResponseType.success,
-        );
-      } else if (response is EmailValidationErrorModel) {
-        // Email validation error
-        _errorMessage = response.error;
-        setBusy(false);
-        notifyListeners();
-        return SignupResult(
-          success: false,
-          message: _errorMessage,
-          responseType: SignupResponseType.error,
-        );
-      } else {
-        // Unexpected response
-        _errorMessage = 'Terjadi kesalahan yang tidak terduga';
-        setBusy(false);
-        notifyListeners();
-        return SignupResult(
-          success: false,
-          message: _errorMessage,
-          responseType: SignupResponseType.error,
-        );
-      }
+      // Success
+      _emailValidationResponse = response as EmailValidationResponseModel;
+      _errorMessage = null;
+      setBusy(false);
+      notifyListeners();
+      return SignupResult(
+        success: true,
+        message: _emailValidationResponse!.message,
+        responseType: SignupResponseType.success,
+      );
     } catch (e) {
-      _errorMessage = 'Terjadi kesalahan: ${e.toString()}';
+      _errorMessage = e.toString();
       setBusy(false);
       notifyListeners();
       return SignupResult(

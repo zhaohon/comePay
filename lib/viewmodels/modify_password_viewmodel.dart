@@ -2,7 +2,6 @@ import 'package:comecomepay/core/base_viewmodel.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/models/requests/change_password_request_model.dart';
 import 'package:comecomepay/models/responses/change_password_response_model.dart';
-import 'package:comecomepay/models/responses/change_password_error_model.dart';
 import 'package:comecomepay/services/global_service.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
 import 'package:comecomepay/utils/service_locator.dart';
@@ -110,57 +109,18 @@ class ModifyPasswordViewModel extends BaseViewModel {
       // Call service
       final response = await _globalService.changePassword(request);
 
-      // Handle different response types
-      if (response is ChangePasswordResponseModel) {
-        // Change password berhasil
-        _errorMessage = null;
+      // Success (BaseService handles failure by throwing)
+      final changeResponse = response as ChangePasswordResponseModel;
+      _errorMessage = null;
 
-        setBusy(false);
-        return ChangePasswordResult(
-          success: true,
-          message: response.message,
-          responseType: ChangePasswordResponseType.success,
-        );
-      } else if (response is ChangePasswordErrorModel) {
-        // Change password error
-        _errorMessage = response.error;
-        setBusy(false);
-        return ChangePasswordResult(
-          success: false,
-          message: response.error,
-          responseType: ChangePasswordResponseType.error,
-        );
-      } else if (response is Map<String, dynamic>) {
-        // Handle raw response if needed
-        if (response['status'] == 'success') {
-          _errorMessage = null;
-          setBusy(false);
-          return ChangePasswordResult(
-            success: true,
-            message: response['message'],
-            responseType: ChangePasswordResponseType.success,
-          );
-        } else {
-          _errorMessage = response['error'] ?? l10n.changePasswordFailed;
-          setBusy(false);
-          return ChangePasswordResult(
-            success: false,
-            message: _errorMessage,
-            responseType: ChangePasswordResponseType.error,
-          );
-        }
-      } else {
-        // Unexpected response
-        _errorMessage = l10n.unexpectedError;
-        setBusy(false);
-        return ChangePasswordResult(
-          success: false,
-          message: _errorMessage,
-          responseType: ChangePasswordResponseType.error,
-        );
-      }
+      setBusy(false);
+      return ChangePasswordResult(
+        success: true,
+        message: changeResponse.message,
+        responseType: ChangePasswordResponseType.success,
+      );
     } catch (e) {
-      _errorMessage = l10n.errorOccurredWithDetails(e.toString());
+      _errorMessage = e.toString();
       setBusy(false);
       return ChangePasswordResult(
         success: false,

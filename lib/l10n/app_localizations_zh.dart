@@ -366,13 +366,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get latestTransactions => '最新交易';
 
   @override
-  String get seeAllTransactions => '查看所有交易';
+  String get seeAllTransactions => 'See All Transactions';
 
   @override
-  String get noRelevantDataYet => '暂无相关数据';
+  String get noRelevantDataYet => 'No relevant data yet';
 
   @override
-  String get comeComePayCard => 'Come Come Pay 卡';
+  String get comeComePayCard => 'Come Come Pay Card';
 
   @override
   String get noMonthlyFee => '无月费';
@@ -1976,6 +1976,84 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String errorOccurredWithDetails(Object error) {
-    return '发生错误: $error';
+    return '$error';
   }
+
+  @override
+  String get userDataNotFound => '未找到用户数据';
+
+  @override
+  String get emailCannotBeEmpty => '邮箱不能为空';
+
+  @override
+  String get allFieldsRequired => '所有字段均为必填项';
+
+  @override
+  String get passwordTooShort6 => '密码长度至少为 6 个字符';
+
+  @override
+  String get failedToCreateWallet => '创建钱包失败';
+
+  @override
+  String get failedToGetProfile => 'Failed to get profile';
+
+  @override
+  String get failedToInitializeDiditToken => 'Failed to initialize Didit token';
+
+  @override
+  String get credit => 'Credit';
+
+  @override
+  String get debit => 'Debit';
+
+  @override
+  String get registrationSuccessful => '注册成功！请使用您的邮箱和密码登录。';
+
+  @override
+  String get kycVerification => 'KYC Verification';
+
+  @override
+  String get level1Verification => 'Level 1 Verification';
+
+  @override
+  String get featuresAndPermissions => 'Features & Permissions';
+
+  @override
+  String get completeAuthentication => 'Complete Authentication';
+
+  @override
+  String get applyCardLabel => 'Apply card';
+
+  @override
+  String get documentVerification => '证件验证';
+
+  @override
+  String get faceRecognition => 'Face recognition';
+
+  @override
+  String get noKycData => 'No KYC data available';
+
+  @override
+  String get passed => 'Passed';
+
+  @override
+  String get pending => 'Pending';
+
+  @override
+  String get newPhoneCannotBeEmpty => '新手机号不能为空';
+
+  @override
+  String get unexpectedResponse => '非预期的响应';
+
+  @override
+  String get emailPhoneOtpRequired => '电子邮箱、新手机号和手机验证码不能为空';
+
+  @override
+  String get newPhoneEmailOtpRequired => '新手机号和邮箱验证码不能为空';
+
+  @override
+  String get amountGreaterThanZero => '金额必须大于0';
+
+  @override
+  String get failedToCreateQuote => '创建报价失败：数据格式错误';
 }
