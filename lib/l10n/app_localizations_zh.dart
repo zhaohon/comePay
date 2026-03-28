@@ -465,7 +465,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get createPassword => '创建密码';
 
   @override
-  String get passwordMustBe8Characters => '密码必须为8个字符，包括1个大写字母、1个数字和1个特殊字符。';
+  String get passwordMustBe8Characters => '密码长度不能少于8个字符，包括1个大写字母、1个数字和1个特殊字符。';
 
   @override
   String get confirmPassword => '确认密码';

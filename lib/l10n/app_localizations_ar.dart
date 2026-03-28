@@ -487,7 +487,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get passwordMustBe8Characters =>
-      'كلمة المرور يجب أن تكون 8 أحرف، بما في ذلك 1 حرف كبير، 1 رقم، و1 حرف خاص.';
+      'يجب أن تتكون كلمة المرور من 8 أحرف على الأقل، بما في ذلك حرف واحد كبير، ورقم واحد، وحرف خاص واحد.';
 
   @override
   String get confirmPassword => 'تأكيد كلمة المرور';

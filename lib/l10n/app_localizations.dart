@@ -1017,7 +1017,7 @@ abstract class AppLocalizations {
   /// No description provided for @passwordMustBe8Characters.
   ///
   /// In en, this message translates to:
-  /// **'The password must be 8 characters, including 1 uppercase letter, 1 number and 1 special character.'**
+  /// **'The password must be at least 8 characters, including 1 uppercase letter, 1 number and 1 special character.'**
   String get passwordMustBe8Characters;
 
   /// No description provided for @confirmPassword.

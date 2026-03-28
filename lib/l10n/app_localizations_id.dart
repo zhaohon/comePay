@@ -486,7 +486,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get passwordMustBe8Characters =>
-      'Kata sandi harus terdiri dari 8 karakter, termasuk 1 huruf kapital, 1 angka, dan 1 karakter khusus.';
+      'Kata sandi harus terdiri dari minimal 8 karakter, termasuk 1 huruf kapital, 1 angka, dan 1 karakter khusus.';
 
   @override
   String get confirmPassword => 'Konfirmasi Kata Sandi';
