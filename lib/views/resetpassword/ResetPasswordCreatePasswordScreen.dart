@@ -60,10 +60,14 @@ class _ResetPasswordCreatePasswordScreenContentState
 
     setState(() => _isLoading = true);
 
-    final email = ModalRoute.of(context)?.settings.arguments as String? ?? '';
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final email = args?['email'] ?? '';
+    final otpCode = args?['otp_code'] ?? '';
+    
     final l10n = AppLocalizations.of(context)!;
     final result = await widget.viewModel.resetPasswordCreatePassword(
       email: email,
+      otpCode: otpCode,
       newPassword: _passwordController.text,
       confirmPassword: _confirmPasswordController.text,
       l10n: l10n,

@@ -69,7 +69,7 @@ class _ResetPasswordOtpScreenState extends State<ResetPasswordOtpScreen> {
       Navigator.pushNamed(
         context,
         '/ResetPasswordCreatePasswordScreen',
-        arguments: _email,
+        arguments: {'email': _email, 'otp_code': _otpCode},
       );
     } else {
       final errorMessage =

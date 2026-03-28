@@ -152,7 +152,7 @@
   "didnReceive": "Tidak menerima kode verifikasi?",
   "myEmail": "Email Saya",
   "createPassword": "Buat Kata Sandi",
-  "passwordMustBe8Characters": "Kata sandi harus terdiri dari 8 karakter, termasuk 1 huruf kapital, 1 angka, dan 1 karakter khusus.",
+  "passwordMustBe8Characters": "Kata sandi harus terdiri dari minimal 8 karakter, termasuk 1 huruf kapital, 1 angka, dan 1 karakter khusus.",
   "confirmPassword": "Konfirmasi Kata Sandi",
   "continues": "Lanjutkan",
   "entered": "Diterima",

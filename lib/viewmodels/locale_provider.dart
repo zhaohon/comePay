@@ -25,10 +25,14 @@ class LocaleProvider extends ChangeNotifier {
         _locale = Locale(deviceLocale.languageCode);
         print(
             '✅ Device locale is supported. Setting language to: ${deviceLocale.languageCode}');
+        // ⚠️ PERSIST the detected locale so BaseService can access it
+        _box.put('language', deviceLocale.languageCode);
       } else {
         // Fallback to English
         _locale = const Locale('en');
         print('⚠️ Device locale not supported. Defaulting to English.');
+        // Also persist the fallback so it's consistent
+        _box.put('language', 'en');
       }
     }
     notifyListeners();

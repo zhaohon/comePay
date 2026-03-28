@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:comecomepay/viewmodels/modify_email_viewmodel.dart';
 import 'package:comecomepay/utils/service_locator.dart';
@@ -19,6 +20,15 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
   final TextEditingController _verificationCodeController =
       TextEditingController();
 
+  // 🛡️ Independent state management for buttons
+  int _newEmailCountdown = 0;
+  int _oldEmailCountdown = 0;
+  bool _isSendingNewEmailCode = false;
+  bool _isSendingOldEmailCode = false;
+  bool _isSubmitting = false;
+  Timer? _newEmailTimer;
+  Timer? _oldEmailTimer;
+
   @override
   void initState() {
     super.initState();
@@ -27,10 +37,44 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
 
   @override
   void dispose() {
+    _newEmailTimer?.cancel();
+    _oldEmailTimer?.cancel();
     _newEmailController.dispose();
     _emailOtpController.dispose();
     _verificationCodeController.dispose();
     super.dispose();
+  }
+
+  void _startNewEmailTimer() {
+    _newEmailTimer?.cancel();
+    setState(() {
+      _newEmailCountdown = 60;
+    });
+    _newEmailTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_newEmailCountdown == 0) {
+        timer.cancel();
+      } else {
+        setState(() {
+          _newEmailCountdown--;
+        });
+      }
+    });
+  }
+
+  void _startOldEmailTimer() {
+    _oldEmailTimer?.cancel();
+    setState(() {
+      _oldEmailCountdown = 60;
+    });
+    _oldEmailTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_oldEmailCountdown == 0) {
+        timer.cancel();
+      } else {
+        setState(() {
+          _oldEmailCountdown--;
+        });
+      }
+    });
   }
 
   @override
@@ -50,20 +94,19 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
               ),
               title: Text(
                 AppLocalizations.of(context)!.modifyEmail,
-                style: TextStyle(color: Colors.black),
+                style: const TextStyle(color: Colors.black),
               ),
               centerTitle: true,
             ),
-
             body: SingleChildScrollView(
               padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /// Warning text merah
+                  /// Warning text
                   Text(
                     AppLocalizations.of(context)!.modifyEmailWarning,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.red,
                       fontSize: 13,
                     ),
@@ -98,7 +141,7 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  /// Email verification code + Get Code
+                  /// New Email OTP Button
                   Text(AppLocalizations.of(context)!.emailVerificationCode),
                   const SizedBox(height: 8),
                   Container(
@@ -127,33 +170,49 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
                         SizedBox(
                           width: 110,
                           child: GestureDetector(
-                            onTap: viewModel.isLoading
+                            onTap: (_isSendingNewEmailCode || _newEmailCountdown > 0)
                                 ? null
                                 : () async {
-                                    final result =
-                                        await viewModel.requestChangeEmail(
-                                            _newEmailController.text.trim(),
-                                            AppLocalizations.of(context)!);
-                                    if (result.success) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                            content: Text(result.message ??
-                                                AppLocalizations.of(context)!
-                                                    .otpSentToNewEmail)),
-                                      );
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                            content: Text(result.message ??
-                                                AppLocalizations.of(context)!
-                                                    .failedToSendOtp)),
-                                      );
+                                    setState(() {
+                                      _isSendingNewEmailCode = true;
+                                    });
+                                    try {
+                                      final result =
+                                          await viewModel.requestChangeEmail(
+                                              _newEmailController.text.trim(),
+                                              AppLocalizations.of(context)!);
+                                      if (result.success) {
+                                        _startNewEmailTimer();
+                                        if (mounted) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                                content: Text(result.message ??
+                                                    AppLocalizations.of(context)!
+                                                        .otpSentToNewEmail)),
+                                          );
+                                        }
+                                      } else {
+                                        if (mounted) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                                content: Text(result.message ??
+                                                    AppLocalizations.of(context)!
+                                                        .failedToSendOtp)),
+                                          );
+                                        }
+                                      }
+                                    } finally {
+                                      if (mounted) {
+                                        setState(() {
+                                          _isSendingNewEmailCode = false;
+                                        });
+                                      }
                                     }
                                   },
                             child: Center(
-                              child: viewModel.isLoading
+                              child: _isSendingNewEmailCode
                                   ? const SizedBox(
                                       width: 16,
                                       height: 16,
@@ -163,9 +222,13 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
                                       ),
                                     )
                                   : Text(
-                                      AppLocalizations.of(context)!.getCode,
-                                      style: const TextStyle(
-                                        color: AppColors.primary,
+                                      _newEmailCountdown > 0
+                                          ? "$_newEmailCountdown 秒"
+                                          : AppLocalizations.of(context)!.getCode,
+                                      style: TextStyle(
+                                        color: _newEmailCountdown > 0
+                                            ? AppColors.textSecondary
+                                            : AppColors.primary,
                                         fontWeight: FontWeight.w500,
                                         fontSize: 14,
                                       ),
@@ -178,7 +241,7 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  /// Verification method
+                  /// Verification Method Section
                   Text(AppLocalizations.of(context)!.verificationMethod),
                   const SizedBox(height: 8),
                   Container(
@@ -201,7 +264,7 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  /// Verification code + Get Code
+                  /// Old Email (Current) OTP Button
                   Text(AppLocalizations.of(context)!.enterVerificationCode),
                   const SizedBox(height: 8),
                   Container(
@@ -230,7 +293,7 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
                         SizedBox(
                           width: 110,
                           child: GestureDetector(
-                            onTap: viewModel.isLoading
+                            onTap: (_isSendingOldEmailCode || _oldEmailCountdown > 0)
                                 ? null
                                 : () async {
                                     final otpCode =
@@ -245,31 +308,49 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
                                       );
                                       return;
                                     }
-                                    final result =
-                                        await viewModel.verifyNewEmailOtp(
-                                            _newEmailController.text.trim(),
-                                            otpCode,
-                                            AppLocalizations.of(context)!);
-                                    if (result.success) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                            content: Text(result.message ??
-                                                AppLocalizations.of(context)!
-                                                    .newEmailVerifiedOtpSentToCurrent)),
-                                      );
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                            content: Text(result.message ??
-                                                AppLocalizations.of(context)!
-                                                    .failedToVerifyNewEmail)),
-                                      );
+                                    
+                                    setState(() {
+                                      _isSendingOldEmailCode = true;
+                                    });
+                                    
+                                    try {
+                                      final result =
+                                          await viewModel.verifyNewEmailOtp(
+                                              _newEmailController.text.trim(),
+                                              otpCode,
+                                              AppLocalizations.of(context)!);
+                                      if (result.success) {
+                                        _startOldEmailTimer();
+                                        if (mounted) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                                content: Text(result.message ??
+                                                    AppLocalizations.of(context)!
+                                                        .newEmailVerifiedOtpSentToCurrent)),
+                                          );
+                                        }
+                                      } else {
+                                        if (mounted) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                                content: Text(result.message ??
+                                                    AppLocalizations.of(context)!
+                                                        .failedToVerifyNewEmail)),
+                                          );
+                                        }
+                                      }
+                                    } finally {
+                                      if (mounted) {
+                                        setState(() {
+                                          _isSendingOldEmailCode = false;
+                                        });
+                                      }
                                     }
                                   },
                             child: Center(
-                              child: viewModel.isLoading
+                              child: _isSendingOldEmailCode
                                   ? const SizedBox(
                                       width: 16,
                                       height: 16,
@@ -279,9 +360,13 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
                                       ),
                                     )
                                   : Text(
-                                      AppLocalizations.of(context)!.getCode,
-                                      style: const TextStyle(
-                                        color: AppColors.primary,
+                                      _oldEmailCountdown > 0
+                                          ? "$_oldEmailCountdown 秒"
+                                          : AppLocalizations.of(context)!.getCode,
+                                      style: TextStyle(
+                                        color: _oldEmailCountdown > 0
+                                            ? AppColors.textSecondary
+                                            : AppColors.primary,
                                         fontWeight: FontWeight.w500,
                                         fontSize: 14,
                                       ),
@@ -296,7 +381,7 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
               ),
             ),
 
-            /// Confirm button di paling bawah
+            /// Confirm button at bottom
             bottomNavigationBar: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -305,12 +390,12 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
                   height: 52,
                   child: Container(
                     decoration: BoxDecoration(
-                      gradient: viewModel.isLoading
+                      gradient: _isSubmitting
                           ? null
                           : AppColors.primaryGradient,
-                      color: viewModel.isLoading ? Colors.grey.shade300 : null,
+                      color: _isSubmitting ? Colors.grey.shade300 : null,
                       borderRadius: BorderRadius.circular(26),
-                      boxShadow: viewModel.isLoading
+                      boxShadow: _isSubmitting
                           ? null
                           : [
                               BoxShadow(
@@ -321,7 +406,7 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
                             ],
                     ),
                     child: ElevatedButton(
-                      onPressed: viewModel.isLoading
+                      onPressed: _isSubmitting
                           ? null
                           : () async {
                               final verificationCode =
@@ -335,27 +420,44 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
                                 );
                                 return;
                               }
-                              final result =
-                                  await viewModel.completeChangeEmail(
-                                _newEmailController.text.trim(),
-                                verificationCode,
-                                AppLocalizations.of(context)!,
-                              );
-                              if (result.success) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content: Text(result.message ??
-                                          AppLocalizations.of(context)!
-                                              .emailChangedSuccessfully)),
+                              
+                              setState(() {
+                                _isSubmitting = true;
+                              });
+
+                              try {
+                                final result =
+                                    await viewModel.completeChangeEmail(
+                                  _newEmailController.text.trim(),
+                                  verificationCode,
+                                  AppLocalizations.of(context)!,
                                 );
-                                Navigator.pop(context);
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content: Text(result.message ??
-                                          AppLocalizations.of(context)!
-                                              .failedToChangeEmail)),
-                                );
+                                if (result.success) {
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(result.message ??
+                                              AppLocalizations.of(context)!
+                                                  .emailChangedSuccessfully)),
+                                    );
+                                    Navigator.pop(context);
+                                  }
+                                } else {
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(result.message ??
+                                              AppLocalizations.of(context)!
+                                                  .failedToChangeEmail)),
+                                    );
+                                  }
+                                }
+                              } finally {
+                                if (mounted) {
+                                  setState(() {
+                                    _isSubmitting = false;
+                                  });
+                                }
                               }
                             },
                       style: ElevatedButton.styleFrom(
@@ -366,7 +468,7 @@ class _ModifyEmailScreenState extends State<ModifyEmailScreen> {
                         ),
                         elevation: 0,
                       ),
-                      child: viewModel.isLoading
+                      child: _isSubmitting
                           ? const SizedBox(
                               width: 24,
                               height: 24,

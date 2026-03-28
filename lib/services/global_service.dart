@@ -183,8 +183,8 @@ class GlobalService extends BaseService {
   }
 
   // Method untuk reset password create password
-  Future<dynamic> resetPasswordCreatePassword(
-      String email, String newPassword, String confirmPassword) async {
+  Future<dynamic> resetPasswordCreatePassword(String email, String otpCode,
+      String newPassword, String confirmPassword) async {
     _apiLogger.logMethodEntry('resetPasswordCreatePassword', parameters: {
       'email': email,
     });
@@ -193,6 +193,7 @@ class GlobalService extends BaseService {
       '/auth/reset-password',
       data: {
         'email': email,
+        'otp_code': otpCode,
         'new_password': newPassword,
         'confirm_password': confirmPassword,
       },

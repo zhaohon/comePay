@@ -152,7 +152,7 @@
   "didnReceive": "didn’t receive",
   "myEmail": "My Email",
   "createPassword": "Create Password",
-  "passwordMustBe8Characters": "The password must be 8 characters, including 1 uppercase letter, 1 number and 1 special character.",
+  "passwordMustBe8Characters": "The password must be at least 8 characters, including 1 uppercase letter, 1 number and 1 special character.",
   "confirmPassword": "Confirm Password",
   "continues": "Continue",
   "entered": "Entered",

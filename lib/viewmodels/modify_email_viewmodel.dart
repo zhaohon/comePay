@@ -122,8 +122,6 @@ class ModifyEmailViewModel extends BaseViewModel {
       );
     }
 
-    // Set loading state
-    setBusy(true);
     _errorMessage = null;
     _isEmailValid = true;
 
@@ -133,7 +131,6 @@ class ModifyEmailViewModel extends BaseViewModel {
 
       // Success
       _changeEmailResponse = response as ChangeEmailResponseModel;
-      setBusy(false);
       return ChangeEmailResult(
         success: true,
         message: _changeEmailResponse!.message,
@@ -144,7 +141,6 @@ class ModifyEmailViewModel extends BaseViewModel {
       );
     } catch (e) {
       _errorMessage = e.toString();
-      setBusy(false);
       return ChangeEmailResult(
         success: false,
         message: _errorMessage,
@@ -218,7 +214,7 @@ class ModifyEmailViewModel extends BaseViewModel {
     }
 
     // Set loading state
-    setBusy(true);
+
     _errorMessage = null;
 
     try {
@@ -231,7 +227,6 @@ class ModifyEmailViewModel extends BaseViewModel {
 
       // Success
       final verifyResponse = response as VerifyNewEmailResponseModel;
-      setBusy(false);
       return VerifyNewEmailResult(
         success: true,
         message: verifyResponse.message,
@@ -242,7 +237,6 @@ class ModifyEmailViewModel extends BaseViewModel {
       );
     } catch (e) {
       _errorMessage = e.toString();
-      setBusy(false);
       return VerifyNewEmailResult(
         success: false,
         message: _errorMessage,
@@ -300,7 +294,7 @@ class ModifyEmailViewModel extends BaseViewModel {
     }
 
     // Set loading state
-    setBusy(true);
+
     _errorMessage = null;
 
     try {
@@ -313,7 +307,6 @@ class ModifyEmailViewModel extends BaseViewModel {
 
       // Success
       final completeResponse = response as CompleteChangeEmailResponseModel;
-      setBusy(false);
       return CompleteChangeEmailResult(
         success: true,
         message: completeResponse.message,
@@ -322,7 +315,6 @@ class ModifyEmailViewModel extends BaseViewModel {
       );
     } catch (e) {
       _errorMessage = l10n.errorOccurredWithDetails(e.toString());
-      setBusy(false);
       return CompleteChangeEmailResult(
         success: false,
         message: _errorMessage,

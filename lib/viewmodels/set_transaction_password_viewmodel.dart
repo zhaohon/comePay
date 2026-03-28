@@ -182,8 +182,6 @@ class SetTransactionPasswordViewModel extends BaseViewModel {
       );
     }
 
-    // Set loading state
-    setBusy(true);
     _errorMessage = null;
 
     try {
@@ -205,7 +203,6 @@ class SetTransactionPasswordViewModel extends BaseViewModel {
       _tempHash = null;
       await HiveStorageService.clearTempHash();
 
-      setBusy(false);
       return CompleteTransactionPasswordResult(
         success: true,
         message: completeResponse.message,
@@ -213,7 +210,6 @@ class SetTransactionPasswordViewModel extends BaseViewModel {
       );
     } catch (e) {
       _errorMessage = e.toString();
-      setBusy(false);
       return CompleteTransactionPasswordResult(
         success: false,
         message: _errorMessage,

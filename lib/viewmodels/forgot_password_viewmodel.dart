@@ -84,13 +84,14 @@ class ForgotPasswordViewModel extends BaseViewModel {
 
   Future<ResetPasswordCreatePasswordResult> resetPasswordCreatePassword({
     required String email,
+    required String otpCode,
     required String newPassword,
     required String confirmPassword,
     required AppLocalizations l10n,
   }) async {
-    print('Email: $email, Password: $newPassword, Confirm: $confirmPassword');
+    print('Email: $email, OTP: $otpCode, Password: $newPassword, Confirm: $confirmPassword');
 
-    if (email.isEmpty || newPassword.isEmpty || confirmPassword.isEmpty) {
+    if (email.isEmpty || otpCode.isEmpty || newPassword.isEmpty || confirmPassword.isEmpty) {
       _errorMessage = l10n.allFieldsRequired;
       Logger.businessLogic('resetPasswordCreatePassword', 'Empty fields');
       notifyListeners();
@@ -179,7 +180,7 @@ class ForgotPasswordViewModel extends BaseViewModel {
 
     try {
       final response = await _globalService.resetPasswordCreatePassword(
-          email, newPassword, confirmPassword);
+          email, otpCode, newPassword, confirmPassword);
 
       if (response is Map &&
           response.containsKey('status') &&

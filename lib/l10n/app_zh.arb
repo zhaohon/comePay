@@ -150,7 +150,7 @@
   "didnReceive": "没有收到验证码？",
   "myEmail": "我的邮箱",
   "createPassword": "创建密码",
-  "passwordMustBe8Characters": "密码必须为8个字符，包括1个大写字母、1个数字和1个特殊字符。",
+  "passwordMustBe8Characters": "密码长度不能少于8个字符，包括1个大写字母、1个数字和1个特殊字符。",
   "confirmPassword": "确认密码",
   "continues": "继续",
   "entered": "已输入",

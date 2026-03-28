@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:comecomepay/viewmodels/set_transaction_password_viewmodel.dart';
@@ -22,12 +23,35 @@ class _SetTransactionPasswordScreenState
   final TextEditingController _verificationCodeController =
       TextEditingController();
 
+  // 🛡️ Independent state management for buttons
+  int _countdown = 0;
+  bool _isSendingCode = false;
+  bool _isSubmitting = false;
+  Timer? _timer;
+
   @override
   void dispose() {
+    _timer?.cancel();
     _transactionPasswordController.dispose();
     _confirmPasswordController.dispose();
     _verificationCodeController.dispose();
     super.dispose();
+  }
+
+  void _startTimer() {
+    _timer?.cancel();
+    setState(() {
+      _countdown = 60;
+    });
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_countdown == 0) {
+        timer.cancel();
+      } else {
+        setState(() {
+          _countdown--;
+        });
+      }
+    });
   }
 
   @override
@@ -39,13 +63,15 @@ class _SetTransactionPasswordScreenState
         backgroundColor: AppColors.pageBackground,
         elevation: 0,
         foregroundColor: Colors.black,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: Consumer<SetTransactionPasswordViewModel>(
         builder: (context, viewModel, child) {
-          if (viewModel.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
+          // 💡 Removed global viewModel.isLoading check to prevent full screen spinner.
+          
           if (viewModel.errorMessage != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (mounted) {
@@ -105,40 +131,67 @@ class _SetTransactionPasswordScreenState
                     suffix: SizedBox(
                       width: 110,
                       child: GestureDetector(
-                        onTap: viewModel.isOtpRequested
+                        onTap: (_isSendingCode || _countdown > 0)
                             ? null
                             : () async {
-                                final result =
-                                    await viewModel.requestTransactionPassword(
-                                  l10n: AppLocalizations.of(context)!,
-                                  password: _transactionPasswordController.text,
-                                  confirmPassword:
-                                      _confirmPasswordController.text,
-                                );
-                                if (result.success && mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                          AppLocalizations.of(context)!
-                                              .otpSentToYourEmail),
-                                      backgroundColor: AppColors.success,
-                                    ),
+                                setState(() {
+                                  _isSendingCode = true;
+                                });
+                                try {
+                                  final result =
+                                      await viewModel.requestTransactionPassword(
+                                    l10n: AppLocalizations.of(context)!,
+                                    password: _transactionPasswordController.text,
+                                    confirmPassword:
+                                        _confirmPasswordController.text,
                                   );
+                                  if (result.success) {
+                                    _startTimer();
+                                    if (mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                              AppLocalizations.of(context)!
+                                                  .otpSentToYourEmail),
+                                          backgroundColor: AppColors.success,
+                                        ),
+                                      );
+                                    }
+                                  }
+                                } finally {
+                                  if (mounted) {
+                                    setState(() {
+                                      _isSendingCode = false;
+                                    });
+                                  }
                                 }
                               },
                         child: Center(
-                          child: Text(
-                            viewModel.isOtpRequested
-                                ? '已发送'
-                                : AppLocalizations.of(context)!.getCode,
-                            style: TextStyle(
-                              color: viewModel.isOtpRequested
-                                  ? AppColors.textSecondary
-                                  : AppColors.primary,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14,
-                            ),
-                          ),
+                          child: _isSendingCode
+                              ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: AppColors.primary,
+                                  ),
+                                )
+                              : Text(
+                                  _countdown > 0
+                                      ? "$_countdown 秒"
+                                      : (viewModel.isOtpRequested
+                                          ? AppLocalizations.of(context)!
+                                              .resendCode
+                                          : AppLocalizations.of(context)!
+                                              .getCode),
+                                  style: TextStyle(
+                                    color: _countdown > 0
+                                        ? AppColors.textSecondary
+                                        : AppColors.primary,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                  ),
+                                ),
                         ),
                       ),
                     ),
@@ -150,52 +203,63 @@ class _SetTransactionPasswordScreenState
           );
         },
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Consumer<SetTransactionPasswordViewModel>(
-          builder: (context, viewModel, child) {
-            return SizedBox(
+      bottomNavigationBar: Consumer<SetTransactionPasswordViewModel>(
+        builder: (context, viewModel, child) {
+          final isButtonEnabled = viewModel.isOtpRequested && !_isSubmitting;
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SizedBox(
               width: double.infinity,
               height: 52,
               child: Container(
                 decoration: BoxDecoration(
-                  gradient: !viewModel.isOtpRequested
-                      ? null
-                      : AppColors.primaryGradient,
-                  color:
-                      !viewModel.isOtpRequested ? Colors.grey.shade300 : null,
+                  gradient: isButtonEnabled
+                      ? AppColors.primaryGradient
+                      : null,
+                  color: isButtonEnabled ? null : Colors.grey.shade300,
                   borderRadius: BorderRadius.circular(26),
-                  boxShadow: !viewModel.isOtpRequested
-                      ? null
-                      : [
+                  boxShadow: isButtonEnabled
+                      ? [
                           BoxShadow(
                             color: AppColors.primary.withOpacity(0.3),
                             blurRadius: 8,
                             offset: const Offset(0, 4),
                           ),
-                        ],
+                        ]
+                      : null,
                 ),
                 child: ElevatedButton(
-                  onPressed: !viewModel.isOtpRequested
-                      ? null
-                      : () async {
-                          final result =
-                              await viewModel.completeTransactionPassword(
-                            l10n: AppLocalizations.of(context)!,
-                            otpCode: _verificationCodeController.text,
-                          );
-                          if (result.success && mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(result.message ??
-                                    AppLocalizations.of(context)!
-                                        .transactionPasswordSetSuccessfully),
-                                backgroundColor: AppColors.success,
-                              ),
+                  onPressed: isButtonEnabled
+                      ? () async {
+                          setState(() {
+                            _isSubmitting = true;
+                          });
+                          try {
+                            final result =
+                                await viewModel.completeTransactionPassword(
+                              l10n: AppLocalizations.of(context)!,
+                              otpCode: _verificationCodeController.text,
                             );
-                            Navigator.of(context).pop();
+                            if (result.success && mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(result.message ??
+                                      AppLocalizations.of(context)!
+                                          .transactionPasswordSetSuccessfully),
+                                  backgroundColor: AppColors.success,
+                                ),
+                              );
+                              Navigator.of(context).pop();
+                            }
+                          } finally {
+                            if (mounted) {
+                              setState(() {
+                                _isSubmitting = false;
+                              });
+                            }
                           }
-                        },
+                        }
+                      : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.transparent,
                     shadowColor: Colors.transparent,
@@ -204,19 +268,28 @@ class _SetTransactionPasswordScreenState
                     ),
                     elevation: 0,
                   ),
-                  child: Text(
-                    AppLocalizations.of(context)!.confirm,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: _isSubmitting
+                      ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : Text(
+                          AppLocalizations.of(context)!.confirm,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
