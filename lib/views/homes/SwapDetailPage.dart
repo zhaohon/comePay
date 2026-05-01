@@ -385,7 +385,7 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
     print('   转换后发送币种: "$fromCurrency"');
     print('   转换后接收币种: "$toCurrency"');
     print(
-        '   完整URL: http://149.88.65.193:8010/api/v1/wallet/exchange-rate?from=$fromCurrency&to=$toCurrency');
+        '   完整URL: http://8.163.2.250/api/v1/wallet/exchange-rate?from=$fromCurrency&to=$toCurrency');
 
     viewModel.fetchExchangeRate(fromCurrency, toCurrency).then((_) {
       print('✅ [SwapDetailPage] 汇率获取成功: ${viewModel.exchangeRate}');

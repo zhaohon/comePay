@@ -7,7 +7,7 @@ import 'package:dio/dio.dart';
 class WalletService extends BaseService {
   Future<WalletResponse> getWalletById(int idUser) async {
     final response = await get(
-      'http://149.88.65.193:8010/api/v1/wallet/',
+      'http://8.163.2.250/api/v1/wallet/',
       options: Options(
         headers: {
           'id_user': idUser.toString(),
@@ -21,7 +21,7 @@ class WalletService extends BaseService {
   Future<VerifyPinResponse> verifyPin(
       VerifyPinRequest request, int idUser) async {
     final response = await post(
-      'http://149.88.65.193:8010/api/wallet/verify-pin',
+      'http://8.163.2.250/api/wallet/verify-pin',
       data: request.toJson(),
       options: Options(
         headers: {

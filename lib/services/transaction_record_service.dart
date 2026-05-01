@@ -6,7 +6,7 @@ class TransactionRecordService extends BaseService {
   Future<TransactionRecordResponse> fetchTransactionRecords(
       {int page = 1, int limit = 10}) async {
     final response = await get(
-      'http://149.88.65.193:8010/api/transaction-record',
+      'http://8.163.2.250/api/transaction-record',
       queryParameters: {
         'page': page,
         'limit': limit,

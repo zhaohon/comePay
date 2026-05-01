@@ -34,7 +34,7 @@ android {
 
     defaultConfig {
         applicationId = "com.comecomepay.app"
-        minSdk = flutter.minSdkVersion
+        minSdk = 23
         targetSdk = flutter.targetSdkVersion
 
         // Load local.properties to get flutter version info
@@ -56,15 +56,29 @@ android {
 
         versionCode = flutterVersionCode
         versionName = flutterVersionName
+
+
+        externalNativeBuild {
+            cmake {
+                // Enable 16 KB page size support for NDK r27
+                arguments += "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
+            }
+        }
     }
 
     signingConfigs {
         create("release") {
+            println("DEBUG_SIGNING: Checking for key.properties at ${keystorePropertiesFile.absolutePath}")
             if (keystorePropertiesFile.exists()) {
+                println("DEBUG_SIGNING: key.properties found. Loading signing config.")
                 keyAlias = keystoreProperties["keyAlias"] as String
                 keyPassword = keystoreProperties["keyPassword"] as String
-                storeFile = file(keystoreProperties["storeFile"] as String)
+                val storePath = keystoreProperties["storeFile"] as String
+                storeFile = file(storePath)
                 storePassword = keystoreProperties["storePassword"] as String
+                println("DEBUG_SIGNING: Using alias: $keyAlias, storeFile: ${storeFile?.absolutePath}")
+            } else {
+                println("DEBUG_SIGNING: key.properties NOT FOUND! Falling back to default signing (likely debug).")
             }
         }
     }
@@ -72,8 +86,8 @@ android {
     buildTypes {
         release {
             // Use release signing configuration from key.properties
-            // signingConfig = signingConfigs.getByName("release")
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
+            // signingConfig = signingConfigs.getByName("debug")
 
             // Enable code shrinking/obfuscation with custom keep rules.
             isMinifyEnabled = true
@@ -82,6 +96,33 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+        }
+    }
+
+    // Packaging options for 16 KB page size support
+    packaging {
+        jniLibs {
+            // Use compressed (legacy) packaging to avoid 16 KB ZIP alignment
+            // issues caused by pre-built third-party .so libraries.
+            // This is compatible with all AGP versions and Google Play.
+            useLegacyPackaging = true
+        }
+
+        // Ensure all native libraries are included
+        pickFirsts += listOf(
+            "**/libc++_shared.so",
+            "**/libflutter.so"
+        )
+    }
+
+    // NDK version is already set above; no duplicate needed.
+    
+    // Force rebuild of all native components
+    tasks.whenTaskAdded {
+        if (name.contains("merge") && name.contains("JniLibFolders")) {
+            doFirst {
+                println("Merging JNI libraries with 16 KB alignment support")
+            }
         }
     }
 }

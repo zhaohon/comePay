@@ -1229,134 +1229,137 @@ class _CardScreenState extends State<CardScreen> {
 
               // 内容统一从左下角定位
               Positioned(
-                left: width * 0.08,
+                left: width * 0.10,
                 bottom: height * 0.07,
                 right: width * 0.05,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // 卡号
-                    GestureDetector(
-                      onTap:
-                          isCurrentCard ? () => _showCardSecurityInfo() : null,
-                      child: Row(
-                        children: [
-                          Text(
-                            card.cardNo,
-                            style: TextStyle(
-                              color: Colors.white, // 金属银色
-                              fontSize: 22,
-                              fontWeight: FontWeight.w500,
-                              letterSpacing: 2.0, // 增加字间距更逼真
-                            ),
-                          ),
-                          if (isCurrentCard) ...[
-                            const SizedBox(width: 8),
-                            Icon(
-                              Icons.visibility_off,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(height: height * 0.02), // 卡号和底部信息之间的间距
-
-                    // 底部一行：姓名 + 到期日 (移除硬编码标签)
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // 姓名部分（加载中显示骨架屏，避免先展示 NAME 再闪变）
-                        Expanded(
-                          flex: 1,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                AppLocalizations.of(context)!
-                                    .cardHolderLabelText,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 12,
-                                ),
+                child: Container(
+                  padding: EdgeInsets.only(
+                    left: width * 0.09,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // 卡号
+                      GestureDetector(
+                        onTap: isCurrentCard
+                            ? () => _showCardSecurityInfo()
+                            : null,
+                        child: Row(
+                          children: [
+                            Text(
+                              card.cardNo,
+                              style: TextStyle(
+                                color: Colors.white, // 金属银色
+                                fontSize: 20,
+                                fontFamily: 'CardNumberFont', // 使用新字体
+                                letterSpacing: 2.0, // 增加字间距更逼真
+                                fontWeight: FontWeight.bold,
                               ),
-                              const SizedBox(height: 4),
-                              (isCurrentCard && _currentCardDetails == null)
-                                  ? Shimmer.fromColors(
-                                      baseColor: Colors.white.withOpacity(0.25),
-                                      highlightColor:
-                                          Colors.white.withOpacity(0.45),
-                                      child: Container(
-                                        height: 18,
-                                        width: 100,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(4),
-                                        ),
-                                      ),
-                                    )
-                                  : Text(
-                                      _currentCardDetails?.memberName ?? 'NAME',
-                                      style: TextStyle(
-                                        color: Colors.white, // 金属银色
-                                        fontSize: 16,
-                                        fontWeight:
-                                            FontWeight.w500, // 加粗一点让浮雕效果更好
-                                        letterSpacing: 1.5,
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
+                            ),
+                            if (isCurrentCard) ...[
+                              const SizedBox(width: 8),
+                              Icon(
+                                Icons.visibility_off,
+                                color: Colors.white,
+                                size: 18,
+                              ),
                             ],
-                          ),
+                          ],
                         ),
+                      ),
 
-                        // 到期日部分
-                        Expanded(
-                          flex: 1,
-                          child: Align(
-                            alignment: Alignment.centerLeft,
+                      SizedBox(height: height * 0.05), // 卡号和底部信息之间的间距
+
+                      // 底部一行：姓名 + 到期日 (移除硬编码标签)
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // 1. 姓名部分：包裹 Expanded，让它填满剩余空间，限制最大宽度
+                          Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
                                   AppLocalizations.of(context)!
-                                      .expiryDateLabelText,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w500,
+                                      .cardHolderLabelText,
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 12,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
-                                GestureDetector(
-                                  onTap: isCurrentCard
-                                      ? () => _showCardSecurityInfo()
-                                      : null,
-                                  child: Text(
-                                    '**/**',
-                                    style: TextStyle(
-                                      color: Colors.white, // 金属银色
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500,
-                                      letterSpacing: 2.0,
-                                    ),
-                                  ),
-                                ),
+                                const SizedBox(height: 0),
+                                (isCurrentCard && _currentCardDetails == null)
+                                    ? Shimmer.fromColors(
+                                        baseColor:
+                                            Colors.white.withOpacity(0.25),
+                                        highlightColor:
+                                            Colors.white.withOpacity(0.45),
+                                        child: Container(
+                                          height: 18,
+                                          width: 100, // 骨架屏保持固定宽度即可
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(4),
+                                          ),
+                                        ),
+                                      )
+                                    : Text(
+                                        _currentCardDetails?.memberName ??
+                                            'NAME',
+                                        style: const TextStyle(
+                                          color: Colors.white, // 金属银色
+                                          fontSize: 12,
+                                        ),
+                                        maxLines: 1, // 限制单行
+                                        overflow:
+                                            TextOverflow.ellipsis, // 超出显示省略号
+                                      ),
                               ],
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+
+                          // 间距：保持你原有的逻辑，或者使用固定的 SizedBox(width: 24)
+                          SizedBox(width: width * 0.1),
+
+                          // 2. 到期日部分：去掉 Expanded，让它按照自身内容的真实宽度渲染，绝对不会被长名字挤压
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!
+                                    .expiryDateLabelText,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                              ),
+                              const SizedBox(height: 0),
+                              GestureDetector(
+                                onTap: isCurrentCard
+                                    ? () => _showCardSecurityInfo()
+                                    : null,
+                                child: const Text(
+                                  '**/**',
+                                  style: TextStyle(
+                                    color: Colors.white, // 金属银色
+                                    fontSize: 12,
+                                    letterSpacing: 2.0,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            width: width * 0.3,
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
 

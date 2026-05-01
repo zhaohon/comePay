@@ -2124,4 +2124,91 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get failedToCreateQuote => 'Failed to create quote: data format error';
+
+  @override
+  String get chatHowToStart => 'How to Start a Chat';
+
+  @override
+  String get chatStep1 =>
+      'Click the blue chat button in the bottom-right corner';
+
+  @override
+  String get chatStep2 => 'Type your question or concern';
+
+  @override
+  String get chatStep3 => 'Our support team will respond to you shortly';
+
+  @override
+  String get chatFaqTitle => 'Frequently Asked Questions';
+
+  @override
+  String get chatFaqQ1 => 'What are your support hours?';
+
+  @override
+  String get chatFaqA1 => 'Our team is available 24/7 to assist you.';
+
+  @override
+  String get chatFaqQ2 => 'How quickly will I get a response?';
+
+  @override
+  String get chatFaqA2 => 'Most inquiries are answered within 2-5 minutes.';
+
+  @override
+  String get chatFaqQ3 => 'Can I attach files?';
+
+  @override
+  String get chatFaqA3 =>
+      'Yes, you can send images and documents through the chat.';
+
+  @override
+  String get chatFaqQ4 => 'Is my conversation secure?';
+
+  @override
+  String get chatFaqA4 =>
+      'Yes, all conversations are encrypted and confidential.';
+
+  @override
+  String get chatOtherContactMethods => 'Other Contact Methods';
+
+  @override
+  String get chatEmailSupport => 'Email: support@comecomepay.com';
+
+  @override
+  String get chatResponseTime => 'Response Time: Within 24 hours';
+
+  @override
+  String get chatClickHint => 'Click here to start chatting!';
+
+  @override
+  String get chatAgentOnline => 'Agent Online';
+
+  @override
+  String get chatHelpSubtitle => 'We\'re here to help you 24/7';
+
+  @override
+  String get chatInitConnection => 'Initializing connection...';
+
+  @override
+  String get chatLoadingService => 'Loading chat service...';
+
+  @override
+  String get chatSettingSecure => 'Setting up secure channel...';
+
+  @override
+  String get chatAlmostReady => 'Almost ready...';
+
+  @override
+  String get chatConnectingTitle => 'Connecting to Customer Service';
+
+  @override
+  String get chatSettingSession => 'Setting up your chat session...';
+
+  @override
+  String get rules => 'القواعد';
+
+  @override
+  String get my => 'خاصتي';
+
+  @override
+  String get invitationSteps => 'خطوات الدعوة';
 }

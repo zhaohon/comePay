@@ -4103,6 +4103,174 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to create quote: data format error'**
   String get failedToCreateQuote;
+
+  /// No description provided for @chatHowToStart.
+  ///
+  /// In en, this message translates to:
+  /// **'How to Start a Chat'**
+  String get chatHowToStart;
+
+  /// No description provided for @chatStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Click the blue chat button in the bottom-right corner'**
+  String get chatStep1;
+
+  /// No description provided for @chatStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Type your question or concern'**
+  String get chatStep2;
+
+  /// No description provided for @chatStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Our support team will respond to you shortly'**
+  String get chatStep3;
+
+  /// No description provided for @chatFaqTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequently Asked Questions'**
+  String get chatFaqTitle;
+
+  /// No description provided for @chatFaqQ1.
+  ///
+  /// In en, this message translates to:
+  /// **'What are your support hours?'**
+  String get chatFaqQ1;
+
+  /// No description provided for @chatFaqA1.
+  ///
+  /// In en, this message translates to:
+  /// **'Our team is available 24/7 to assist you.'**
+  String get chatFaqA1;
+
+  /// No description provided for @chatFaqQ2.
+  ///
+  /// In en, this message translates to:
+  /// **'How quickly will I get a response?'**
+  String get chatFaqQ2;
+
+  /// No description provided for @chatFaqA2.
+  ///
+  /// In en, this message translates to:
+  /// **'Most inquiries are answered within 2-5 minutes.'**
+  String get chatFaqA2;
+
+  /// No description provided for @chatFaqQ3.
+  ///
+  /// In en, this message translates to:
+  /// **'Can I attach files?'**
+  String get chatFaqQ3;
+
+  /// No description provided for @chatFaqA3.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, you can send images and documents through the chat.'**
+  String get chatFaqA3;
+
+  /// No description provided for @chatFaqQ4.
+  ///
+  /// In en, this message translates to:
+  /// **'Is my conversation secure?'**
+  String get chatFaqQ4;
+
+  /// No description provided for @chatFaqA4.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, all conversations are encrypted and confidential.'**
+  String get chatFaqA4;
+
+  /// No description provided for @chatOtherContactMethods.
+  ///
+  /// In en, this message translates to:
+  /// **'Other Contact Methods'**
+  String get chatOtherContactMethods;
+
+  /// No description provided for @chatEmailSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Email: support@comecomepay.com'**
+  String get chatEmailSupport;
+
+  /// No description provided for @chatResponseTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Response Time: Within 24 hours'**
+  String get chatResponseTime;
+
+  /// No description provided for @chatClickHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Click here to start chatting!'**
+  String get chatClickHint;
+
+  /// No description provided for @chatAgentOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent Online'**
+  String get chatAgentOnline;
+
+  /// No description provided for @chatHelpSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'re here to help you 24/7'**
+  String get chatHelpSubtitle;
+
+  /// No description provided for @chatInitConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Initializing connection...'**
+  String get chatInitConnection;
+
+  /// No description provided for @chatLoadingService.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading chat service...'**
+  String get chatLoadingService;
+
+  /// No description provided for @chatSettingSecure.
+  ///
+  /// In en, this message translates to:
+  /// **'Setting up secure channel...'**
+  String get chatSettingSecure;
+
+  /// No description provided for @chatAlmostReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Almost ready...'**
+  String get chatAlmostReady;
+
+  /// No description provided for @chatConnectingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting to Customer Service'**
+  String get chatConnectingTitle;
+
+  /// No description provided for @chatSettingSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Setting up your chat session...'**
+  String get chatSettingSession;
+
+  /// No description provided for @rules.
+  ///
+  /// In en, this message translates to:
+  /// **'Rules'**
+  String get rules;
+
+  /// No description provided for @my.
+  ///
+  /// In en, this message translates to:
+  /// **'My'**
+  String get my;
+
+  /// No description provided for @invitationSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation Steps'**
+  String get invitationSteps;
 }
 
 class _AppLocalizationsDelegate

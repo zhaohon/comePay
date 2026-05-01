@@ -109,8 +109,8 @@ class _OtpInputState extends State<OtpInput> {
                   focusNode: _focusNodes[index],
                   textAlign: TextAlign.center,
                   keyboardType: TextInputType.number,
+                  autofillHints: const [AutofillHints.oneTimeCode],
                   obscureText: widget.obscureText,
-                  maxLength: 1,
                   showCursor: false, // 极致简约，隐藏光标
                   style: const TextStyle(
                     fontSize: 20,
@@ -119,6 +119,7 @@ class _OtpInputState extends State<OtpInput> {
                   ),
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(widget.length),
                   ],
                   decoration: InputDecoration(
                     counterText: '',
@@ -143,12 +144,29 @@ class _OtpInputState extends State<OtpInput> {
                   ),
                   onChanged: (value) {
                     if (value.length > 1) {
-                      // 防止粘贴多个字符
-                      _controllers[index].text = value[0];
-                      _controllers[index].selection =
-                          TextSelection.fromPosition(
-                        TextPosition(offset: 1),
-                      );
+                      // 💡 处理自动填充 (Autofill) 或粘贴完整验证码
+                      for (int i = 0; i < value.length; i++) {
+                        if (index + i < widget.length) {
+                          _controllers[index + i].text = value[i];
+                        }
+                      }
+                      
+                      // 移动焦点
+                      int nextFocusIndex = index + value.length;
+                      if (nextFocusIndex < widget.length) {
+                        _focusNodes[nextFocusIndex].requestFocus();
+                      } else {
+                        // 收起键盘
+                        FocusScope.of(context).unfocus();
+                      }
+                      
+                      // 触发回调
+                      final code = _controllers.map((c) => c.text).join();
+                      widget.onChanged?.call(code);
+                      if (code.length == widget.length) {
+                        widget.onCompleted?.call(code);
+                      }
+                      return;
                     }
                     _onChanged(value, index);
                   },

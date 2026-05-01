@@ -65,11 +65,11 @@ class _InviteFriendScreenState extends State<InviteFriendScreen> {
           ),
           centerTitle: true,
           actions: [
-            _buildSmallButton("Rules", () {
-              // TODO: Navigate to Rules
-            }),
+            // _buildSmallButton(localizations.rules, () {
+            //   // TODO: Navigate to Rules
+            // }),
             const SizedBox(width: 8),
-            _buildSmallButton("My", () {
+            _buildSmallButton(localizations.my, () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -425,8 +425,8 @@ class _InviteFriendScreenState extends State<InviteFriendScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("Invitation Steps",
-              style: TextStyle(
+          Text(localizations.invitationSteps,
+              style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87)),
@@ -558,6 +558,7 @@ class _InviteFriendScreenState extends State<InviteFriendScreen> {
   }
 
   Widget _buildCopyField(String label, String value) {
+    final localizations = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -589,9 +590,9 @@ class _InviteFriendScreenState extends State<InviteFriendScreen> {
             onTap: () {
               Clipboard.setData(ClipboardData(text: value));
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                    content: Text('Copied!'),
-                    duration: Duration(milliseconds: 500)),
+                SnackBar(
+                    content: Text(localizations.copied),
+                    duration: const Duration(milliseconds: 500)),
               );
             },
             child: const Icon(Icons.copy_outlined,

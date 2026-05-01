@@ -48,6 +48,7 @@ class SetPasswordViewModel extends BaseViewModel {
     required AppLocalizations l10n,
     required String email,
     required String password,
+    String? referralCode,
   }) async {
     // Validasi input
     if (email.isEmpty || password.isEmpty) {
@@ -116,7 +117,11 @@ class SetPasswordViewModel extends BaseViewModel {
 
     try {
       // Call service
-      final response = await _globalService.setPassword(email, password);
+      final response = await _globalService.setPassword(
+        email,
+        password,
+        referralCode: referralCode,
+      );
 
       // Set password berhasil
       _setPasswordResponse = response;

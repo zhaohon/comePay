@@ -6,7 +6,7 @@ import 'package:comecomepay/models/responses/kyc_status_response_model.dart';
 class KycService extends BaseService {
   KycService() {
     // 修改baseUrl而不是创建新的Dio实例，这样可以保留父类的拦截器（包括token）
-    dio.options.baseUrl = 'http://149.88.65.193:8010/api';
+    dio.options.baseUrl = 'http://8.163.2.250/api';
   }
 
   Future<Map<String, dynamic>> getUserKyc(String email) async {

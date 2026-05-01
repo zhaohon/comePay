@@ -301,7 +301,7 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
       if (accessToken == null) return;
 
       final response = await dio.get(
-        'http://149.88.65.193:8010/api/v1/wallet/',
+        'http://8.163.2.250/api/v1/wallet/',
         options: Options(
           headers: {'Authorization': 'Bearer $accessToken'},
         ),

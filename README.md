@@ -23,3 +23,5 @@ trc
 erc
 
 flutter clean && flutter pub get && flutter build ios --no-codesign
+
+flutter build appbundle

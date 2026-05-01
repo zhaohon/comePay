@@ -2056,4 +2056,88 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get failedToCreateQuote => '创建报价失败：数据格式错误';
+
+  @override
+  String get chatHowToStart => '如何开始聊天';
+
+  @override
+  String get chatStep1 => '点击右下角的蓝色聊天按钮';
+
+  @override
+  String get chatStep2 => '输入您的问题或疑虑';
+
+  @override
+  String get chatStep3 => '我们的支持团队会尽快回复您';
+
+  @override
+  String get chatFaqTitle => '常见问题';
+
+  @override
+  String get chatFaqQ1 => '你们的支持时间是什么时候？';
+
+  @override
+  String get chatFaqA1 => '我们的团队 24/7 全天候为您提供帮助。';
+
+  @override
+  String get chatFaqQ2 => '我多久能得到回复？';
+
+  @override
+  String get chatFaqA2 => '大多数查询在 2-5 分钟内得到回复。';
+
+  @override
+  String get chatFaqQ3 => '我可以添加附件吗？';
+
+  @override
+  String get chatFaqA3 => '可以，您可以通过聊天发送图片和文档。';
+
+  @override
+  String get chatFaqQ4 => '我的对话安全吗？';
+
+  @override
+  String get chatFaqA4 => '安全，所有对话都是加密且机密的。';
+
+  @override
+  String get chatOtherContactMethods => '其他联系方式';
+
+  @override
+  String get chatEmailSupport => '电子邮件: support@comecomepay.com';
+
+  @override
+  String get chatResponseTime => '回复时间: 24 小时内';
+
+  @override
+  String get chatClickHint => '点击这里开始聊天！';
+
+  @override
+  String get chatAgentOnline => '客服在线';
+
+  @override
+  String get chatHelpSubtitle => '我们 24/7 全天候为您提供帮助';
+
+  @override
+  String get chatInitConnection => '正在初始化连接...';
+
+  @override
+  String get chatLoadingService => '正在加载客服服务...';
+
+  @override
+  String get chatSettingSecure => '正在建立安全通道...';
+
+  @override
+  String get chatAlmostReady => '即将准备就绪...';
+
+  @override
+  String get chatConnectingTitle => '正在连接客服中心';
+
+  @override
+  String get chatSettingSession => '正在设置您的聊天会话...';
+
+  @override
+  String get rules => '规则';
+
+  @override
+  String get my => '我的';
+
+  @override
+  String get invitationSteps => '邀请步骤';
 }

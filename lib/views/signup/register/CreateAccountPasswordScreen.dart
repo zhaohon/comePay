@@ -68,14 +68,14 @@ class _CreateAccountPasswordScreenState
     });
 
     try {
-      final viewModel =
-          Provider.of<SetPasswordViewModel>(context, listen: false);
+      final viewModel = SetPasswordViewModel();
 
       // Call set-password API via ViewModel
       final result = await viewModel.setPassword(
         l10n: l10n,
         email: email,
         password: _passwordController.text,
+        referralCode: referralCode,
       );
 
       if (!mounted) return;
@@ -162,29 +162,27 @@ class _CreateAccountPasswordScreenState
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return ChangeNotifierProvider(
-        create: (_) => SetPasswordViewModel(),
-        child: Scaffold(
-          backgroundColor: AppColors.background,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios,
-                  color: AppColors.textPrimary),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ),
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 40),
-                    // ... (rest of the content)
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios,
+              color: AppColors.textPrimary),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 40),
+                // ... (rest of the content)
 
                     // Title
                     Text(
@@ -355,6 +353,6 @@ class _CreateAccountPasswordScreenState
               ),
             ),
           ),
-        ));
+        );
   }
 }

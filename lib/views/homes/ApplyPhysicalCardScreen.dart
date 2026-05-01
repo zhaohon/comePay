@@ -107,7 +107,7 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
       final accessToken = HiveStorageService.getAccessToken();
       if (accessToken != null) {
         final response = await dio.get(
-          'http://149.88.65.193:8010/api/v1/wallet/',
+          'http://8.163.2.250/api/v1/wallet/',
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
         );
         if (response.statusCode == 200 && response.data != null) {

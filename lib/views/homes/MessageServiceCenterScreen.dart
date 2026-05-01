@@ -59,19 +59,21 @@ class _MessageServiceCenterScreenState
   }
 
   String _getLoadingMessage() {
+    final l10n = AppLocalizations.of(context)!;
     if (_progress < 0.3) {
-      return 'Initializing connection...';
+      return l10n.chatInitConnection;
     } else if (_progress < 0.7) {
-      return 'Loading chat service...';
+      return l10n.chatLoadingService;
     } else if (_progress < 0.9) {
-      return 'Setting up secure channel...';
+      return l10n.chatSettingSecure;
     } else {
-      return 'Almost ready...';
+      return l10n.chatAlmostReady;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.pageBackground,
       appBar: AppBar(
@@ -82,7 +84,7 @@ class _MessageServiceCenterScreenState
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          AppLocalizations.of(context)!.messageServiceCenter,
+          l10n.messageServiceCenter,
           style: const TextStyle(color: Colors.black),
         ),
         centerTitle: true,
@@ -98,7 +100,7 @@ class _MessageServiceCenterScreenState
       body: Stack(
         children: [
           // 使用全局单例的WebView
-          _chatService.buildWebView(),
+          _chatService.buildWebView(l10n),
 
           // 加载动画（仅首次加载时显示）
           if (_isLoading && !_chatService.isInitialized)
@@ -146,9 +148,9 @@ class _MessageServiceCenterScreenState
                     const SizedBox(height: 32),
 
                     // 标题
-                    const Text(
-                      'Connecting to Customer Service',
-                      style: TextStyle(
+                    Text(
+                      l10n.chatConnectingTitle,
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF1F2937),
@@ -158,7 +160,7 @@ class _MessageServiceCenterScreenState
 
                     // 副标题
                     Text(
-                      'Setting up your chat session...',
+                      l10n.chatSettingSession,
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey.shade600,

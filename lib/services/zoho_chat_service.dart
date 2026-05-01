@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import '../l10n/app_localizations.dart';
 
 /// 全局Zoho客服服务 - 确保客服插件只加载一次
 class ZohoChatService {
@@ -45,10 +46,10 @@ class ZohoChatService {
     }
   }
 
-  Widget buildWebView() {
+  Widget buildWebView(AppLocalizations l10n) {
     return InAppWebView(
       initialData: InAppWebViewInitialData(
-        data: _getHtmlContent(),
+        data: _getHtmlContent(l10n),
         baseUrl: WebUri('https://app.comecomepay.com'),
       ),
       initialSettings: InAppWebViewSettings(
@@ -94,14 +95,14 @@ class ZohoChatService {
     );
   }
 
-  String _getHtmlContent() {
+  String _getHtmlContent(AppLocalizations l10n) {
     return '''
 <!DOCTYPE html>
-<html lang="en">
+<html lang="${l10n.localeName}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Service</title>
+    <title>${l10n.customerServiceCenter}</title>
     <style>
         * {
             margin: 0;
@@ -272,73 +273,73 @@ class ZohoChatService {
             <div class="icon-wrapper">
                 <div class="icon">💬</div>
             </div>
-            <h1>Customer Service Center</h1>
-            <p class="subtitle">We're here to help you 24/7</p>
+            <h1>${l10n.customerServiceCenter}</h1>
+            <p class="subtitle">${l10n.chatHelpSubtitle}</p>
             <div class="status-badge" id="statusBadge" style="display:none;">
                 <span class="status-dot"></span>
-                <span>Agent Online</span>
+                <span>${l10n.chatAgentOnline}</span>
             </div>
         </div>
 
         <div class="guide-card">
             <div class="guide-title">
-                💡 How to Start a Chat
+                💡 ${l10n.chatHowToStart}
             </div>
             <div class="step">
                 <div class="step-number">1</div>
                 <div class="step-content">
-                    Click the <strong>blue chat button</strong> in the bottom-right corner
+                    ${l10n.chatStep1}
                 </div>
             </div>
             <div class="step">
                 <div class="step-number">2</div>
                 <div class="step-content">
-                    Type your question or concern
+                    ${l10n.chatStep2}
                 </div>
             </div>
             <div class="step">
                 <div class="step-number">3</div>
                 <div class="step-content">
-                    Our support team will respond to you shortly
+                    ${l10n.chatStep3}
                 </div>
             </div>
         </div>
 
         <div class="guide-card">
             <div class="guide-title">
-                ❓ Frequently Asked Questions
+                ❓ ${l10n.chatFaqTitle}
             </div>
             <div class="faq">
-                <div class="faq-question">Q: What are your support hours?</div>
-                <div class="faq-answer">A: Our team is available 24/7 to assist you.</div>
+                <div class="faq-question">Q: ${l10n.chatFaqQ1}</div>
+                <div class="faq-answer">A: ${l10n.chatFaqA1}</div>
             </div>
             <div class="faq">
-                <div class="faq-question">Q: How quickly will I get a response?</div>
-                <div class="faq-answer">A: Most inquiries are answered within 2-5 minutes.</div>
+                <div class="faq-question">Q: ${l10n.chatFaqQ2}</div>
+                <div class="faq-answer">A: ${l10n.chatFaqA2}</div>
             </div>
             <div class="faq">
-                <div class="faq-question">Q: Can I attach files?</div>
-                <div class="faq-answer">A: Yes, you can send images and documents through the chat.</div>
+                <div class="faq-question">Q: ${l10n.chatFaqQ3}</div>
+                <div class="faq-answer">A: ${l10n.chatFaqA3}</div>
             </div>
             <div class="faq">
-                <div class="faq-question">Q: Is my conversation secure?</div>
-                <div class="faq-answer">A: Yes, all conversations are encrypted and confidential.</div>
+                <div class="faq-question">Q: ${l10n.chatFaqQ4}</div>
+                <div class="faq-answer">A: ${l10n.chatFaqA4}</div>
             </div>
         </div>
 
         <div class="guide-card">
             <div class="guide-title">
-                📧 Other Contact Methods
+                📧 ${l10n.chatOtherContactMethods}
             </div>
             <div class="step-content">
-                <p><strong>Email:</strong> support@comecomepay.com</p>
-                <p style="margin-top:8px;"><strong>Response Time:</strong> Within 24 hours</p>
+                <p><strong>${l10n.chatEmailSupport}</strong></p>
+                <p style="margin-top:8px;"><strong>${l10n.chatResponseTime}</strong></p>
             </div>
         </div>
     </div>
 
     <div class="chat-button-hint" id="chatHint">
-        <div class="hint-text">👉 Click here to start chatting!</div>
+        <div class="hint-text">👉 ${l10n.chatClickHint}</div>
     </div>
 
     <script>

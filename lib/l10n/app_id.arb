@@ -585,5 +585,8 @@
   "emailCannotBeEmpty": "Email tidak boleh kosong",
   "allFieldsRequired": "Semua bidang harus diisi",
   "passwordTooShort6": "Password harus minimal 6 karakter",
-  "failedToCreateWallet": "Gagal membuat dompet"
+  "failedToCreateWallet": "Gagal membuat dompet",
+  "rules": "Aturan",
+  "my": "Saya",
+  "invitationSteps": "Langkah Undangan"
 }

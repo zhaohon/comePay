@@ -585,5 +585,8 @@
   "emailCannotBeEmpty": "البريد الإلكتروني لا يمكن أن يكون فارغاً",
   "allFieldsRequired": "جميع الحقول مطلوبة",
   "passwordTooShort6": "يجب أن تكون كلمة المرor 6 أحرف على الأقل",
-  "failedToCreateWallet": "فشل إنشاء المحفظة"
+  "failedToCreateWallet": "فشل إنشاء المحفظة",
+  "rules": "القواعد",
+  "my": "خاصتي",
+  "invitationSteps": "خطوات الدعوة"
 }
