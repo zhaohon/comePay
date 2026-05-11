@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -27,12 +28,35 @@
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/png" href="favicon.png" />
 
   <title>comecomepay</title>
+
+  <!-- Zoho SalesIQ Integration -->
+  <style>
+    /* Force hide the widget until Flutter explicitly shows it */
+    #zsiq_float, .zsiq_floatmain { display: none !important; }
+  </style>
+  <script type="text/javascript">
+    window.$zoho = window.$zoho || {};
+    $zoho.salesiq = $zoho.salesiq || {
+      ready: function() {
+        // Hide float window by default on web app start
+        if ($zoho.salesiq.floatwindow) {
+          $zoho.salesiq.floatwindow.visible('hide');
+        }
+      }
+    };
+  </script>
+  <script id="zsiqscript" src="https://salesiq.zohopublic.com/widget?wc=siq08ab9b342cfc15548c359a0b37265cf12c83a97d3cb3709367f46e8ed175589b" defer></script>
+
+  <script src="assets/packages/flutter_inappwebview_web/assets/web/web_support.js" type="text/javascript"></script>
+
   <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
   <script src="flutter_bootstrap.js" async></script>
 </body>
+
 </html>

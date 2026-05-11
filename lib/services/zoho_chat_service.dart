@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import '../l10n/app_localizations.dart';
+import 'zoho_web_stub.dart' if (dart.library.js) 'zoho_web_helper.dart';
 
 /// 全局Zoho客服服务 - 确保客服插件只加载一次
 class ZohoChatService {
@@ -47,6 +49,68 @@ class ZohoChatService {
   }
 
   Widget buildWebView(AppLocalizations l10n) {
+    if (kIsWeb) {
+      // For Web, we don't use InAppWebView, we use the global widget in index.html
+      // We automatically trigger show when this widget is mounted
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        openChat();
+      });
+
+      return Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Colors.grey[50]!, Colors.grey[100]!],
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 60),
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFA855F7), Color(0xFF9333EA)],
+                  ),
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFFA855F7).withOpacity(0.3),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: const Icon(Icons.chat_bubble_outline,
+                    size: 40, color: Colors.white),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                l10n.customerServiceCenter,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1F2937),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l10n.chatHelpSubtitle,
+                style: TextStyle(color: Colors.grey[600], fontSize: 14),
+              ),
+              const SizedBox(height: 40),
+              _buildWebGuideCard(l10n),
+            ],
+          ),
+        ),
+      );
+    }
+
     return InAppWebView(
       initialData: InAppWebViewInitialData(
         data: _getHtmlContent(l10n),
@@ -394,18 +458,103 @@ class ZohoChatService {
   }
 
   void openChat() {
-    _webViewController?.evaluateJavascript(source: '''
+    if (kIsWeb) {
+      ZohoWebHelper.toggleChat(true);
+    } else {
+      _webViewController?.evaluateJavascript(source: '''
       if (window.\$zoho && window.\$zoho.salesiq && window.\$zoho.salesiq.floatwindow) {
         window.\$zoho.salesiq.floatwindow.visible('show');
       }
     ''');
+    }
   }
 
   void closeChat() {
-    _webViewController?.evaluateJavascript(source: '''
+    if (kIsWeb) {
+      ZohoWebHelper.toggleChat(false);
+    } else {
+      _webViewController?.evaluateJavascript(source: '''
       if (window.\$zoho && window.\$zoho.salesiq && window.\$zoho.salesiq.floatwindow) {
         window.\$zoho.salesiq.floatwindow.visible('hide');
       }
     ''');
+    }
+  }
+
+  Widget _buildWebGuideCard(AppLocalizations l10n) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.lightbulb_outline, color: Color(0xFFA855F7)),
+              const SizedBox(width: 8),
+              Text(
+                l10n.chatHowToStart,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          _buildStep(1, l10n.chatStep1),
+          _buildStep(2, l10n.chatStep2),
+          _buildStep(3, l10n.chatStep3),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStep(int number, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 24,
+            height: 24,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFFA855F7), Color(0xFF9333EA)],
+              ),
+              shape: BoxShape.circle,
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              '$number',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(color: Color(0xFF4B5563), height: 1.5),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

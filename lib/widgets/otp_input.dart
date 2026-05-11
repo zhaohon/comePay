@@ -34,7 +34,16 @@ class _OtpInputState extends State<OtpInput> {
     );
     _focusNodes = List.generate(
       widget.length,
-      (index) => FocusNode(),
+      (index) => FocusNode(
+        onKeyEvent: (node, event) {
+          if (event is KeyDownEvent &&
+              event.logicalKey == LogicalKeyboardKey.backspace) {
+            _handleBackspace(index);
+            return KeyEventResult.handled;
+          }
+          return KeyEventResult.ignored;
+        },
+      ),
     );
 
     // 自动聚焦第一个输入框
@@ -57,24 +66,48 @@ class _OtpInputState extends State<OtpInput> {
   }
 
   void _onChanged(String value, int index) {
-    if (value.isNotEmpty) {
-      // 输入了数字，移动到下一个框
+    if (value.length > 1) {
+      // 处理粘贴或多字符输入
+      String cleanValue = value.replaceAll(RegExp(r'[^0-9]'), '');
+      for (int i = 0; i < cleanValue.length; i++) {
+        if (index + i < widget.length) {
+          _controllers[index + i].text = cleanValue[i];
+        }
+      }
+
+      int nextFocusIndex = index + cleanValue.length;
+      if (nextFocusIndex < widget.length) {
+        _focusNodes[nextFocusIndex].requestFocus();
+      } else {
+        _focusNodes[widget.length - 1].requestFocus();
+      }
+    } else if (value.isNotEmpty) {
+      // 输入单个字符，移动到下一个
       if (index < widget.length - 1) {
         _focusNodes[index + 1].requestFocus();
-      } else {
-        // 最后一个框，取消焦点
-        _focusNodes[index].unfocus();
       }
     }
 
-    // 通知输入变化
     final code = _controllers.map((c) => c.text).join();
     widget.onChanged?.call(code);
 
-    // 检查是否全部填完
     if (code.length == widget.length) {
       widget.onCompleted?.call(code);
     }
+  }
+
+  void _handleBackspace(int index) {
+    if (_controllers[index].text.isNotEmpty) {
+      // 如果当前框有内容，清除它
+      _controllers[index].clear();
+    } else if (index > 0) {
+      // 如果当前框为空，跳到前一个框并清除
+      _controllers[index - 1].clear();
+      _focusNodes[index - 1].requestFocus();
+    }
+
+    final code = _controllers.map((c) => c.text).join();
+    widget.onChanged?.call(code);
   }
 
   @override
@@ -87,90 +120,56 @@ class _OtpInputState extends State<OtpInput> {
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: AspectRatio(
               aspectRatio: 1,
-              child: RawKeyboardListener(
-                focusNode: FocusNode(),
-                onKey: (RawKeyEvent event) {
-                  // 处理退格键
-                  if (event is RawKeyDownEvent &&
-                      event.logicalKey == LogicalKeyboardKey.backspace) {
-                    if (_controllers[index].text.isEmpty && index > 0) {
-                      // 当前框为空，删除前一个框的内容并聚焦
-                      _controllers[index - 1].clear();
-                      _focusNodes[index - 1].requestFocus();
-
-                      // 通知变化
-                      final code = _controllers.map((c) => c.text).join();
-                      widget.onChanged?.call(code);
-                    }
+              child: TextField(
+                controller: _controllers[index],
+                focusNode: _focusNodes[index],
+                textAlign: TextAlign.center,
+                keyboardType: TextInputType.number,
+                autofillHints: const [AutofillHints.oneTimeCode],
+                obscureText: widget.obscureText,
+                showCursor: true, // 显示光标，方便定位
+                cursorColor: AppColors.primary,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+                // 点击时全选，实现覆盖输入
+                onTap: () {
+                  if (_controllers[index].text.isNotEmpty) {
+                    _controllers[index].selection = TextSelection(
+                      baseOffset: 0,
+                      extentOffset: _controllers[index].text.length,
+                    );
                   }
                 },
-                child: TextField(
-                  controller: _controllers[index],
-                  focusNode: _focusNodes[index],
-                  textAlign: TextAlign.center,
-                  keyboardType: TextInputType.number,
-                  autofillHints: const [AutofillHints.oneTimeCode],
-                  obscureText: widget.obscureText,
-                  showCursor: false, // 极致简约，隐藏光标
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  // 每个框只允许 1 个字符
+                  LengthLimitingTextInputFormatter(1),
+                ],
+                decoration: InputDecoration(
+                  counterText: '',
+                  filled: true,
+                  fillColor: AppColors.pageBackground,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide:
+                        const BorderSide(color: AppColors.border, width: 1),
                   ),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(widget.length),
-                  ],
-                  decoration: InputDecoration(
-                    counterText: '',
-                    filled: true,
-                    fillColor: AppColors.pageBackground,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide:
-                          const BorderSide(color: AppColors.border, width: 1),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide:
-                          const BorderSide(color: AppColors.border, width: 1),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(
-                          color: AppColors.primary, width: 1.5),
-                    ),
-                    contentPadding: EdgeInsets.zero,
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide:
+                        const BorderSide(color: AppColors.border, width: 1),
                   ),
-                  onChanged: (value) {
-                    if (value.length > 1) {
-                      // 💡 处理自动填充 (Autofill) 或粘贴完整验证码
-                      for (int i = 0; i < value.length; i++) {
-                        if (index + i < widget.length) {
-                          _controllers[index + i].text = value[i];
-                        }
-                      }
-                      
-                      // 移动焦点
-                      int nextFocusIndex = index + value.length;
-                      if (nextFocusIndex < widget.length) {
-                        _focusNodes[nextFocusIndex].requestFocus();
-                      } else {
-                        // 收起键盘
-                        FocusScope.of(context).unfocus();
-                      }
-                      
-                      // 触发回调
-                      final code = _controllers.map((c) => c.text).join();
-                      widget.onChanged?.call(code);
-                      if (code.length == widget.length) {
-                        widget.onCompleted?.call(code);
-                      }
-                      return;
-                    }
-                    _onChanged(value, index);
-                  },
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(
+                        color: AppColors.primary, width: 1.5),
+                  ),
+                  contentPadding: EdgeInsets.zero,
                 ),
+                onChanged: (value) => _onChanged(value, index),
               ),
             ),
           ),

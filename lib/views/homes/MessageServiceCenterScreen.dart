@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/utils/app_colors.dart';
@@ -25,17 +26,17 @@ class _MessageServiceCenterScreenState
     _chatService.addProgressListener(_onProgressChanged);
     _chatService.addLoadingListener(_onLoadingChanged);
 
-    // 如果已经初始化，直接显示
-    if (_chatService.isInitialized) {
-      setState(() {
-        _isLoading = false;
-        _progress = 1.0;
-      });
+    // 如果是 Web 端或已经初始化，直接显示
+    if (kIsWeb || _chatService.isInitialized) {
+      _isLoading = false;
+      _progress = 1.0;
     }
   }
 
   @override
   void dispose() {
+    // 离开页面时隐藏 Web 端的 Zoho 窗口
+    _chatService.closeChat();
     // 移除监听器
     _chatService.removeProgressListener(_onProgressChanged);
     _chatService.removeLoadingListener(_onLoadingChanged);
