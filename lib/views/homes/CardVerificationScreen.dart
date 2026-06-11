@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:comecomepay/viewmodels/profile_screen_viewmodel.dart';
 import 'package:comecomepay/views/homes/ProfilKycDiditScreen.dart';
 import 'package:comecomepay/models/requests/didit_initialize_token_request_model.dart';
@@ -17,7 +19,8 @@ class Cardverificationscreen extends StatefulWidget {
   State<Cardverificationscreen> createState() => _VerificationScreenState();
 }
 
-class _VerificationScreenState extends State<Cardverificationscreen> {
+class _VerificationScreenState extends State<Cardverificationscreen>
+    with WidgetsBindingObserver {
   late ProfileScreenViewModel _viewModel;
   final KycService _kycService = KycService();
   final _formKey = GlobalKey<FormState>();
@@ -40,9 +43,32 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _viewModel = ProfileScreenViewModel();
     _loadCountries(); // 加载国家数据
     _checkEligibility(); // 检查KYC资格
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _nameController.dispose();
+    _surnameController.dispose();
+    _phoneNumberController.dispose();
+    _stateController.dispose();
+    _cityController.dispose();
+    _addressController.dispose();
+    _postcodeController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // 当用户从外部浏览器切回 App 时，自动检查一次状态
+      print('App resumed, checking KYC status...');
+      _checkEligibility();
+    }
   }
 
   /// 从JSON文件加载国家数据
@@ -325,15 +351,35 @@ class _VerificationScreenState extends State<Cardverificationscreen> {
                                   if (response != null &&
                                       response.diditToken.data.url.isNotEmpty) {
                                     if (!mounted) return;
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            ProfilkycDiditScreen(
-                                          url: response.diditToken.data.url,
+                                    if (kIsWeb) {
+                                      // Web端：使用外部浏览器打开以确保相机权限正常
+                                      final Uri kycUrl = Uri.parse(
+                                          response.diditToken.data.url);
+                                      if (await canLaunchUrl(kycUrl)) {
+                                        await launchUrl(kycUrl,
+                                            mode: LaunchMode
+                                                .externalApplication);
+                                      } else {
+                                        if (!mounted) return;
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                              content: Text(
+                                                  'Could not open KYC link')),
+                                        );
+                                      }
+                                    } else {
+                                      // 移动端：继续使用现有的 WebView 页面
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              ProfilkycDiditScreen(
+                                            url: response.diditToken.data.url,
+                                          ),
                                         ),
-                                      ),
-                                    );
+                                      );
+                                    }
                                   } else {
                                     if (!mounted) return;
                                     ScaffoldMessenger.of(context).showSnackBar(

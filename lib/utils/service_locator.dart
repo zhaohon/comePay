@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:comecomepay/services/global_service.dart';
+import 'package:comecomepay/services/three_ds_service.dart';
 import 'package:comecomepay/viewmodels/login_viewmodel.dart';
 import 'package:comecomepay/viewmodels/signup_viewmodel.dart';
 import 'package:comecomepay/viewmodels/registration_otp_viewmodel.dart';
@@ -23,6 +24,7 @@ final GetIt getIt = GetIt.instance;
 void setupServiceLocator() {
   // Register services
   getIt.registerLazySingleton<GlobalService>(() => GlobalService());
+  getIt.registerLazySingleton<ThreeDSService>(() => ThreeDSService());
 
   // Register viewmodels
   getIt.registerFactory<LoginViewModel>(() => LoginViewModel());

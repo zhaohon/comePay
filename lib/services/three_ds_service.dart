@@ -16,4 +16,15 @@ class ThreeDSService extends BaseService {
 
     return GetThreeDSRecordsResponse.fromJson(response['data']);
   }
+
+  /// 确认或拒绝 BIO 3DS 挑战
+  Future<dynamic> confirmBio3DSMessage(
+      String notificationId, bool isApprove) async {
+    final status = isApprove ? 'SUCCESS' : 'FAILURE';
+    final response = await put(
+      '/3ds/messages/$notificationId/confirm',
+      data: {'status': status},
+    );
+    return response;
+  }
 }

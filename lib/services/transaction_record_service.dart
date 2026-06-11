@@ -6,7 +6,7 @@ class TransactionRecordService extends BaseService {
   Future<TransactionRecordResponse> fetchTransactionRecords(
       {int page = 1, int limit = 10}) async {
     final response = await get(
-      'http://8.163.2.250/api/transaction-record',
+      'https://app.comecomepay.com/api/transaction-record',
       queryParameters: {
         'page': page,
         'limit': limit,

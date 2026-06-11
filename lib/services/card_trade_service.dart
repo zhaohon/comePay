@@ -10,7 +10,7 @@ class CardTradeService extends BaseService {
   }) async {
     try {
       final response = await dio.get(
-        'http://8.163.2.250/api/v1/card/trade',
+        'https://app.comecomepay.com/api/v1/card/trade',
         queryParameters: {
           'publicToken': publicToken,
           'page': page,

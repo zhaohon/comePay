@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:comecomepay/viewmodels/card_authorization_viewmodel.dart';
 import 'package:comecomepay/models/three_ds_record_model.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:comecomepay/views/homes/AuthorizationDetailScreen.dart';
 
 class CardAuthorizationScreen extends StatelessWidget {
   const CardAuthorizationScreen({super.key});
@@ -131,87 +132,115 @@ class _AuthorizationItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Date Row - formatted date
-          Text(
-            _formatDate(record.receivedAt), // You might need a utility for this
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[500],
-            ),
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AuthorizationDetailScreen(record: record),
           ),
-          const SizedBox(height: 12),
+        );
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Date Row - formatted date
+            Text(
+              _formatDate(record.receivedAt),
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey[500],
+              ),
+            ),
+            const SizedBox(height: 12),
 
-          // Merchant and Amount Row
-          Row(
-            children: [
-              // Merchant Icon placeholder
-              Container(
-                width: 24,
-                height: 24,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFFFF0F5), // Light pink/red bg
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Container(
-                    width: 12,
-                    height: 2,
-                    color: const Color(0xFFD81B60), // Minus sign color
+            // Merchant and Amount Row
+            Row(
+              children: [
+                // Merchant Icon placeholder
+                Container(
+                  width: 24,
+                  height: 24,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFFFF0F5), // Light pink/red bg
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Container(
+                      width: 12,
+                      height: 2,
+                      color: const Color(0xFFD81B60), // Minus sign color
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 12),
+                const SizedBox(width: 12),
 
-              // Merchant Name
-              Expanded(
-                child: Text(
-                  record.merchantName,
+                // Merchant Name
+                Expanded(
+                  child: Text(
+                    record.merchantName,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+
+                // Amount
+                Text(
+                  "-${record.amount} ${record.currency}",
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: Colors.black87,
+                    color: Color(0xFFD81B60), // Red color for expense
                   ),
                 ),
-              ),
+              ],
+            ),
+            const SizedBox(height: 8),
 
-              // Amount
-              Text(
-                "-${record.amount} ${record.currency}",
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xFFD81B60), // Red color for expense
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-
-          // Code/Status Row
-          Row(
-            children: [
-              const SizedBox(width: 36), // Align with text above (24 + 12)
-              Text(
-                "${AppLocalizations.of(context)!.code}: ${record.passcode}",
-                style: const TextStyle(
-                  fontSize: 13,
-                  color: Color(
-                      0xFF4CAF50), // Green for successfully generated code
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          )
-        ],
+            // Code/Status Row
+            Row(
+              children: [
+                const SizedBox(width: 36), // Align with text above (24 + 12)
+                if (record.authMethod == 'BIO')
+                  Text(
+                    record.confirmationStatus == 'SUCCESS'
+                        ? AppLocalizations.of(context)!.statusCompleted
+                        : (record.confirmationStatus == 'FAILURE'
+                            ? AppLocalizations.of(context)!.statusRejected
+                            : AppLocalizations.of(context)!.threeDsPending),
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: record.confirmationStatus == 'SUCCESS'
+                          ? const Color(0xFF4CAF50)
+                          : (record.confirmationStatus == 'FAILURE'
+                              ? const Color(0xFFE91E8C)
+                              : Colors.grey[600]),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  )
+                else if (record.passcode?.isNotEmpty == true)
+                  Text(
+                    "${AppLocalizations.of(context)!.code}: ${record.passcode}",
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: Color(0xFF4CAF50),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

@@ -29,7 +29,7 @@ class SendPdpViewModel extends BaseViewModel {
     notifyListeners();
     try {
       final resp = await _dio.get(
-        'http://8.163.2.250/api/networks',
+        'https://app.comecomepay.com/api/networks',
         queryParameters: {'coin': symbol},
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
@@ -75,7 +75,7 @@ class SendPdpViewModel extends BaseViewModel {
 
     try {
       final resp = await _dio.post(
-        'http://8.163.2.250/api/withdraw',
+        'https://app.comecomepay.com/api/withdraw',
         data: {
           'coin_id': coinId,
           'network_id': networkId,

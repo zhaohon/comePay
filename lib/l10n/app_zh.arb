@@ -684,5 +684,62 @@
   "chatSettingSession": "正在设置您的聊天会话...",
   "rules": "规则",
   "my": "我的",
-  "invitationSteps": "邀请步骤"
+  "completeAuthentication": "完成认证",
+  "level1Verification": "1级认证",
+  "applyCardLabel": "申请卡片",
+  "kycVerification": "KYC验证",
+  "passed": "已通过",
+  "seeAllTransactions": "查看所有交易",
+  "noRelevantDataYet": "暂无相关数据",
+  "failedToGetProfile": "获取个人资料失败",
+  "debit": "借记",
+  "faceRecognition": "人脸识别",
+  "pending": "待处理",
+  "credit": "信用",
+  "featuresAndPermissions": "功能与权限",
+  "comeComePayCard": "Come Come Pay 卡",
+  "noKycData": "暂无 KYC 数据",
+  "failedToInitializeDiditToken": "初始化 Didit Token 失败",
+  "invitationSteps": "邀请步骤",
+  "threeDsPaymentAuth": "消费授权",
+  "threeDsPendingConfirm": "您有一笔消费待确认",
+  "threeDsConfirmTip": "请认真核实下方消费信息进行授权是否本人消费，如超时未授权消费将会取消交易",
+  "threeDsAmount": "交易金额",
+  "threeDsMerchant": "商户信息",
+  "threeDsTxId": "交易流水号",
+  "threeDsCreatedAt": "创建时间",
+  "threeDsApprove": "批准交易",
+  "threeDsReject": "拒绝交易",
+  "threeDsAuthDetails": "授权明细",
+  "threeDsAuthTime": "授权时间",
+  "threeDsTxTime": "交易时间",
+  "threeDsPending": "待确认",
+  "threeDsApprovedSuccess": "✅ 已批准：{merchant} 的交易",
+  "@threeDsApprovedSuccess": {
+    "placeholders": {
+      "merchant": {
+        "type": "String",
+        "example": "Flipkart"
+      }
+    }
+  },
+  "threeDsRejectedSuccess": "❌ 已拒绝交易",
+  "threeDsApproveFailed": "确认失败: {error}",
+  "@threeDsApproveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Network error"
+      }
+    }
+  },
+  "threeDsRejectFailed": "拒绝失败: {error}",
+  "@threeDsRejectFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Network error"
+      }
+    }
+  }
 }

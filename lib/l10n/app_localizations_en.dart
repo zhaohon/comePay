@@ -2207,4 +2207,63 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get invitationSteps => 'Invitation Steps';
+
+  @override
+  String get threeDsPaymentAuth => 'Payment Authorization';
+
+  @override
+  String get threeDsPendingConfirm =>
+      'You have a pending transaction to confirm';
+
+  @override
+  String get threeDsConfirmTip =>
+      'Please carefully verify the transaction details below to ensure it is your own purchase. If not authorized within the time limit, the transaction will be cancelled.';
+
+  @override
+  String get threeDsAmount => 'Transaction Amount';
+
+  @override
+  String get threeDsMerchant => 'Merchant Info';
+
+  @override
+  String get threeDsTxId => 'Transaction ID';
+
+  @override
+  String get threeDsCreatedAt => 'Created At';
+
+  @override
+  String get threeDsApprove => 'Approve';
+
+  @override
+  String get threeDsReject => 'Reject';
+
+  @override
+  String get threeDsAuthDetails => 'Authorization Details';
+
+  @override
+  String get threeDsAuthTime => 'Authorization Time';
+
+  @override
+  String get threeDsTxTime => 'Transaction Time';
+
+  @override
+  String get threeDsPending => 'Pending';
+
+  @override
+  String threeDsApprovedSuccess(String merchant) {
+    return '✅ Approved transaction at: $merchant';
+  }
+
+  @override
+  String get threeDsRejectedSuccess => '❌ Transaction rejected';
+
+  @override
+  String threeDsApproveFailed(String error) {
+    return 'Approval failed: $error';
+  }
+
+  @override
+  String threeDsRejectFailed(String error) {
+    return 'Rejection failed: $error';
+  }
 }

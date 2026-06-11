@@ -13,7 +13,8 @@ class TransactionService extends BaseService {
 
   Future<TransactionPreviewResponse> previewTransaction(
       TransactionPreviewRequest request) async {
-    final response = await post('http://8.163.2.250/api/transaction/preview',
+    final response = await post(
+        'https://app.comecomepay.com/api/transaction/preview',
         data: request.toJson());
     return TransactionPreviewResponse.fromJson(response);
   }

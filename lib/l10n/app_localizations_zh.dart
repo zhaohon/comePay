@@ -366,13 +366,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get latestTransactions => '最新交易';
 
   @override
-  String get seeAllTransactions => 'See All Transactions';
+  String get seeAllTransactions => '查看所有交易';
 
   @override
-  String get noRelevantDataYet => 'No relevant data yet';
+  String get noRelevantDataYet => '暂无相关数据';
 
   @override
-  String get comeComePayCard => 'Come Come Pay Card';
+  String get comeComePayCard => 'Come Come Pay 卡';
 
   @override
   String get noMonthlyFee => '无月费';
@@ -1995,49 +1995,49 @@ class AppLocalizationsZh extends AppLocalizations {
   String get failedToCreateWallet => '创建钱包失败';
 
   @override
-  String get failedToGetProfile => 'Failed to get profile';
+  String get failedToGetProfile => '获取个人资料失败';
 
   @override
-  String get failedToInitializeDiditToken => 'Failed to initialize Didit token';
+  String get failedToInitializeDiditToken => '初始化 Didit Token 失败';
 
   @override
-  String get credit => 'Credit';
+  String get credit => '信用';
 
   @override
-  String get debit => 'Debit';
+  String get debit => '借记';
 
   @override
   String get registrationSuccessful => '注册成功！请使用您的邮箱和密码登录。';
 
   @override
-  String get kycVerification => 'KYC Verification';
+  String get kycVerification => 'KYC验证';
 
   @override
-  String get level1Verification => 'Level 1 Verification';
+  String get level1Verification => '1级认证';
 
   @override
-  String get featuresAndPermissions => 'Features & Permissions';
+  String get featuresAndPermissions => '功能与权限';
 
   @override
-  String get completeAuthentication => 'Complete Authentication';
+  String get completeAuthentication => '完成认证';
 
   @override
-  String get applyCardLabel => 'Apply card';
+  String get applyCardLabel => '申请卡片';
 
   @override
   String get documentVerification => '证件验证';
 
   @override
-  String get faceRecognition => 'Face recognition';
+  String get faceRecognition => '人脸识别';
 
   @override
-  String get noKycData => 'No KYC data available';
+  String get noKycData => '暂无 KYC 数据';
 
   @override
-  String get passed => 'Passed';
+  String get passed => '已通过';
 
   @override
-  String get pending => 'Pending';
+  String get pending => '待处理';
 
   @override
   String get newPhoneCannotBeEmpty => '新手机号不能为空';
@@ -2140,4 +2140,61 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get invitationSteps => '邀请步骤';
+
+  @override
+  String get threeDsPaymentAuth => '消费授权';
+
+  @override
+  String get threeDsPendingConfirm => '您有一笔消费待确认';
+
+  @override
+  String get threeDsConfirmTip => '请认真核实下方消费信息进行授权是否本人消费，如超时未授权消费将会取消交易';
+
+  @override
+  String get threeDsAmount => '交易金额';
+
+  @override
+  String get threeDsMerchant => '商户信息';
+
+  @override
+  String get threeDsTxId => '交易流水号';
+
+  @override
+  String get threeDsCreatedAt => '创建时间';
+
+  @override
+  String get threeDsApprove => '批准交易';
+
+  @override
+  String get threeDsReject => '拒绝交易';
+
+  @override
+  String get threeDsAuthDetails => '授权明细';
+
+  @override
+  String get threeDsAuthTime => '授权时间';
+
+  @override
+  String get threeDsTxTime => '交易时间';
+
+  @override
+  String get threeDsPending => '待确认';
+
+  @override
+  String threeDsApprovedSuccess(String merchant) {
+    return '✅ 已批准：$merchant 的交易';
+  }
+
+  @override
+  String get threeDsRejectedSuccess => '❌ 已拒绝交易';
+
+  @override
+  String threeDsApproveFailed(String error) {
+    return '确认失败: $error';
+  }
+
+  @override
+  String threeDsRejectFailed(String error) {
+    return '拒绝失败: $error';
+  }
 }

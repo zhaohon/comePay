@@ -700,5 +700,46 @@
   "chatSettingSession": "Setting up your chat session...",
   "rules": "Rules",
   "my": "My",
-  "invitationSteps": "Invitation Steps"
+  "invitationSteps": "Invitation Steps",
+  "threeDsPaymentAuth": "Payment Authorization",
+  "threeDsPendingConfirm": "You have a pending transaction to confirm",
+  "threeDsConfirmTip": "Please carefully verify the transaction details below to ensure it is your own purchase. If not authorized within the time limit, the transaction will be cancelled.",
+  "threeDsAmount": "Transaction Amount",
+  "threeDsMerchant": "Merchant Info",
+  "threeDsTxId": "Transaction ID",
+  "threeDsCreatedAt": "Created At",
+  "threeDsApprove": "Approve",
+  "threeDsReject": "Reject",
+  "threeDsAuthDetails": "Authorization Details",
+  "threeDsAuthTime": "Authorization Time",
+  "threeDsTxTime": "Transaction Time",
+  "threeDsPending": "Pending",
+  "threeDsApprovedSuccess": "✅ Approved transaction at: {merchant}",
+  "@threeDsApprovedSuccess": {
+    "placeholders": {
+      "merchant": {
+        "type": "String",
+        "example": "Flipkart"
+      }
+    }
+  },
+  "threeDsRejectedSuccess": "❌ Transaction rejected",
+  "threeDsApproveFailed": "Approval failed: {error}",
+  "@threeDsApproveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Network error"
+      }
+    }
+  },
+  "threeDsRejectFailed": "Rejection failed: {error}",
+  "@threeDsRejectFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Network error"
+      }
+    }
+  }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:convert';
 import 'package:comecomepay/views/homes/SendScreen.dart' show Sendscreen;
 
 import 'package:comecomepay/views/homes/WalletAccountScreen.dart'
@@ -15,6 +17,10 @@ import '../../viewmodels/wallet_viewmodel.dart';
 import '../../utils/app_colors.dart';
 import '../../widgets/transaction_item_widget.dart';
 import 'package:comecomepay/views/transactions/transaction_detail_screen.dart';
+import 'package:comecomepay/views/homes/widgets/three_ds_bio_confirm_dialog.dart';
+import 'package:comecomepay/utils/service_locator.dart';
+import 'package:comecomepay/services/three_ds_service.dart';
+import 'package:comecomepay/services/notification_service.dart';
 
 import 'ReceiveScreen.dart';
 
@@ -29,6 +35,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   late WalletViewModel _walletViewModel;
   DateTime? _lastPressedAt; // 记录上次按返回键的时间
 
+  Timer? _notificationPollingTimer;
+  final Set<String> _handledNotificationIds = {};
+
   @override
   void initState() {
     super.initState();
@@ -37,13 +46,152 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     // Load data on first display, after the first frame is rendered
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadHomeData();
+      _startNotificationPolling();
     });
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _notificationPollingTimer?.cancel();
     super.dispose();
+  }
+
+  void _startNotificationPolling() {
+    _notificationPollingTimer?.cancel();
+    // 每 30 秒轮询一次通知
+    _notificationPollingTimer =
+        Timer.periodic(const Duration(seconds: 30), (_) {
+      _pollFor3DSBioNotification();
+    });
+  }
+
+  Future<void> _pollFor3DSBioNotification() async {
+    if (!mounted) return;
+    try {
+      final notificationViewModel =
+          Provider.of<NotificationViewModel>(context, listen: false);
+
+      // 获取最新通知
+      await notificationViewModel.getNotifikasi(limit: 5);
+
+      for (var notif in notificationViewModel.notifications) {
+        if (notif.status == 'unread' && notif.data != null) {
+          try {
+            final dataMap = jsonDecode(notif.data!);
+            if (dataMap['type'] == '3ds_bio_confirmation' &&
+                dataMap['auth_method'] == 'BIO') {
+              final notifId =
+                  dataMap['notification_id']?.toString() ?? notif.id.toString();
+
+              // 防止重复弹出和多重覆盖（使用 Set 记录所有已处理的 ID）
+              if (_handledNotificationIds.contains(notifId)) continue;
+
+              // 计算真实剩余时间
+              int calcRemainingSeconds = 600;
+              final expiry = dataMap['challenge_expiry'];
+              if (expiry != null) {
+                int expiryInt = int.tryParse(expiry.toString()) ?? 0;
+                if (expiryInt > 0) {
+                  int nowSeconds =
+                      DateTime.now().millisecondsSinceEpoch ~/ 1000;
+                  calcRemainingSeconds = expiryInt - nowSeconds;
+                }
+              }
+
+              // 如果已经过期，直接跳过不弹出
+              if (calcRemainingSeconds <= 0) {
+                // 也可以顺便把它加入 handled 防止后续再计算
+                _handledNotificationIds.add(notifId);
+                continue;
+              }
+
+              _handledNotificationIds.add(notifId);
+
+              if (!mounted) return;
+
+              // 解析时间
+              String dateString = notif.createdAt;
+              try {
+                final date = DateTime.parse(notif.createdAt).toLocal();
+                dateString =
+                    "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}:${date.second.toString().padLeft(2, '0')}";
+              } catch (_) {}
+
+              // 主动标记为已读（拉取详情接口兼具已读功能）
+              try {
+                // Ignore result, just call to trigger read state
+                await NotificationService().getNotificationDetail(notif.id);
+              } catch (_) {}
+
+              // 弹出对话框
+              ThreeDSBioConfirmDialog.show(
+                context,
+                amount: dataMap['amount']?.toString() ?? '0',
+                currency: dataMap['currency']?.toString() ?? '',
+                merchantName:
+                    dataMap['merchant_name']?.toString() ?? 'Unknown Merchant',
+                transactionId: notifId, // 可以显示 transaction.DsTransactionId 如果需要
+                createdAt: dateString,
+                countdownSeconds: calcRemainingSeconds,
+                onApprove: () async {
+                  try {
+                    await getIt<ThreeDSService>()
+                        .confirmBio3DSMessage(notifId, true);
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(AppLocalizations.of(context)!
+                              .threeDsApprovedSuccess(
+                                  dataMap['merchant_name']?.toString() ?? '')),
+                          backgroundColor: const Color(0xFF4CAF50),
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text(AppLocalizations.of(context)!
+                                .threeDsApproveFailed(e.toString()))),
+                      );
+                    }
+                  }
+                },
+                onReject: () async {
+                  try {
+                    await getIt<ThreeDSService>()
+                        .confirmBio3DSMessage(notifId, false);
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(AppLocalizations.of(context)!
+                              .threeDsRejectedSuccess),
+                          backgroundColor: const Color(0xFFE91E8C),
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text(AppLocalizations.of(context)!
+                                .threeDsRejectFailed(e.toString()))),
+                      );
+                    }
+                  }
+                },
+              );
+              break; // 每次只处理一条未处理的消息
+            }
+          } catch (e) {
+            print("JSON 解析失败: $e");
+          }
+        }
+      }
+    } catch (e) {
+      print("轮询通知失败: $e");
+    }
   }
 
   @override

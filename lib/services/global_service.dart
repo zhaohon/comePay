@@ -529,7 +529,7 @@ class GlobalService extends BaseService {
       SendMessageRequestModel request) async {
     _apiLogger.logMethodEntry('sendChatMessage');
     final data = await post(
-      'http://8.163.2.250/api/chat/send',
+      'https://app.comecomepay.com/api/chat/send',
       data: request.toJson(),
     );
     _apiLogger.logMethodExit('sendChatMessage', result: 'Success');
@@ -595,7 +595,7 @@ class GlobalService extends BaseService {
   Future<CarddetailResponseModel> initGetCard(int kyc_id) async {
     _apiLogger.logMethodEntry('initGetCard', parameters: {'kyc_id': kyc_id});
     final data = await get(
-      'http://8.163.2.250/api/v1/card',
+      'https://app.comecomepay.com/api/v1/card',
       queryParameters: {'kyc_id': kyc_id},
     );
     _apiLogger.logMethodExit('initGetCard', result: 'Success');
@@ -632,7 +632,7 @@ class GlobalService extends BaseService {
     _apiLogger.logMethodEntry('getCardData', parameters: {'user_id': userId});
     try {
       final data = await get(
-        'http://8.163.2.250/api/card',
+        'https://app.comecomepay.com/api/card',
         options: Options(
           headers: {'id_user': userId},
         ),
@@ -676,7 +676,7 @@ class GlobalService extends BaseService {
     _apiLogger.logMethodEntry('sendEmail', parameters: {'email': email});
     try {
       await post(
-        'http://8.163.2.250/api/v1/auth/verify-otp',
+        'https://app.comecomepay.com/api/v1/auth/verify-otp',
         data: {
           'email': email,
           'referral_code': '',
@@ -698,7 +698,7 @@ class GlobalService extends BaseService {
     _apiLogger.logMethodEntry('createWallet', parameters: {'user_id': userId});
     try {
       final data = await post(
-        'http://8.163.2.250/api/wallet',
+        'https://app.comecomepay.com/api/wallet',
         data: request.toJson(),
         options: Options(
           headers: {'id_user': userId},
@@ -725,7 +725,7 @@ class GlobalService extends BaseService {
     _apiLogger.logMethodEntry('createCard', parameters: {'user_id': userId});
     try {
       final data = await post(
-        'http://8.163.2.250/api/card',
+        'https://app.comecomepay.com/api/card',
         data: cardData,
         options: Options(
           headers: {'id_user': userId},
@@ -754,7 +754,7 @@ class GlobalService extends BaseService {
     });
     try {
       final data = await get(
-        'http://8.163.2.250/api/chat/history/$userId',
+        'https://app.comecomepay.com/api/chat/history/$userId',
         queryParameters: {
           'page': page,
           'limit': limit,

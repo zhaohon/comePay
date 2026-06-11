@@ -21,9 +21,9 @@ class _ProfilcouponscreenState extends State<Profilcouponscreen> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        backgroundColor: AppColors.pageBackground,
+        backgroundColor: Colors.white,
         appBar: AppBar(
-          backgroundColor: AppColors.pageBackground,
+          backgroundColor: Colors.white,
           elevation: 0,
           foregroundColor: Colors.black,
           leading: IconButton(
@@ -31,7 +31,7 @@ class _ProfilcouponscreenState extends State<Profilcouponscreen> {
             onPressed: () => Navigator.pop(context),
           ),
           title: Text(localizations.coupon),
-          actions: [
+          /* actions: [
             IconButton(
               icon: Icon(Icons.settings),
               onPressed: () {
@@ -43,7 +43,7 @@ class _ProfilcouponscreenState extends State<Profilcouponscreen> {
                 );
               },
             ),
-          ],
+          ], */
           bottom: TabBar(
             tabs: [
               Tab(text: localizations.available),

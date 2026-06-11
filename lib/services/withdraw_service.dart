@@ -59,7 +59,7 @@ class WithdrawResponseModel {
 class WithdrawService extends BaseService {
   WithdrawService() {
     // 设置baseUrl，保留父类的拦截器（包括token）
-    dio.options.baseUrl = 'http://8.163.2.250/api/v1';
+    dio.options.baseUrl = 'https://app.comecomepay.com/api/v1';
   }
 
   /// 提交提现请求

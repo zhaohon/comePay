@@ -303,7 +303,7 @@ class _CardApplyConfirmScreenState extends State<CardApplyConfirmScreen> {
       final accessToken = HiveStorageService.getAccessToken();
       if (accessToken == null) return;
       final response = await dio.get(
-        'http://8.163.2.250/api/v1/wallet/',
+        'https://app.comecomepay.com/api/v1/wallet/',
         options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
       );
       if (response.statusCode == 200 && response.data != null) {

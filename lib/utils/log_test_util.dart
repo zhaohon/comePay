@@ -9,7 +9,7 @@ class LogTestUtil {
   static void testLongResponse(Map<String, dynamic> responseData) {
     Logger.response(
       'GET',
-      'http://8.163.2.250/api/v1/wallet/',
+      'https://app.comecomepay.com/api/v1/wallet/',
       200,
       responseData,
       const Duration(milliseconds: 773),

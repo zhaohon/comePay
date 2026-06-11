@@ -4271,6 +4271,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Invitation Steps'**
   String get invitationSteps;
+
+  /// No description provided for @threeDsPaymentAuth.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Authorization'**
+  String get threeDsPaymentAuth;
+
+  /// No description provided for @threeDsPendingConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'You have a pending transaction to confirm'**
+  String get threeDsPendingConfirm;
+
+  /// No description provided for @threeDsConfirmTip.
+  ///
+  /// In en, this message translates to:
+  /// **'Please carefully verify the transaction details below to ensure it is your own purchase. If not authorized within the time limit, the transaction will be cancelled.'**
+  String get threeDsConfirmTip;
+
+  /// No description provided for @threeDsAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Amount'**
+  String get threeDsAmount;
+
+  /// No description provided for @threeDsMerchant.
+  ///
+  /// In en, this message translates to:
+  /// **'Merchant Info'**
+  String get threeDsMerchant;
+
+  /// No description provided for @threeDsTxId.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction ID'**
+  String get threeDsTxId;
+
+  /// No description provided for @threeDsCreatedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Created At'**
+  String get threeDsCreatedAt;
+
+  /// No description provided for @threeDsApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get threeDsApprove;
+
+  /// No description provided for @threeDsReject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get threeDsReject;
+
+  /// No description provided for @threeDsAuthDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Authorization Details'**
+  String get threeDsAuthDetails;
+
+  /// No description provided for @threeDsAuthTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Authorization Time'**
+  String get threeDsAuthTime;
+
+  /// No description provided for @threeDsTxTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Time'**
+  String get threeDsTxTime;
+
+  /// No description provided for @threeDsPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get threeDsPending;
+
+  /// No description provided for @threeDsApprovedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'✅ Approved transaction at: {merchant}'**
+  String threeDsApprovedSuccess(String merchant);
+
+  /// No description provided for @threeDsRejectedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'❌ Transaction rejected'**
+  String get threeDsRejectedSuccess;
+
+  /// No description provided for @threeDsApproveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Approval failed: {error}'**
+  String threeDsApproveFailed(String error);
+
+  /// No description provided for @threeDsRejectFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejection failed: {error}'**
+  String threeDsRejectFailed(String error);
 }
 
 class _AppLocalizationsDelegate
