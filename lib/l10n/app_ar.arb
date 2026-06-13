@@ -735,5 +735,11 @@
         "example": "Network error"
       }
     }
-  }
+  },
+  "threeDsSettingTitle": "إعدادات التحقق 3DS",
+  "threeDsPlanOtp": "إنشاء كلمة مرور (OTP)",
+  "threeDsPlanBio": "تطبيق الدفع (BIO)",
+  "threeDsPlanAll": "كلا الوضعين (ALL)",
+  "threeDsUpdateSuccess": "تم تحديث إعدادات 3DS بنجاح",
+  "threeDsUpdateFailed": "فشل تحديث إعدادات 3DS"
 }

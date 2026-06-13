@@ -604,7 +604,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get details => 'تفاصيل';
 
   @override
-  String get id => 'ID';
+  String get id => 'معرف';
 
   @override
   String get status => 'الحالة';
@@ -650,7 +650,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get receiveStatus => 'مستلم';
 
   @override
-  String get swapStatus => 'Swap';
+  String get swapStatus => 'تبادل';
 
   @override
   String get applyVirtualCard => 'تطبيق البطاقة الافتراضية';
@@ -1809,193 +1809,192 @@ class AppLocalizationsAr extends AppLocalizations {
   String get merchantNameLabel => 'التاجر';
 
   @override
-  String get queryPinCode => 'Query PIN';
+  String get queryPinCode => 'الاستعلام عن كلمة المرور';
 
   @override
-  String get reissuePhysicalCard => 'Reissue Physical Card';
+  String get reissuePhysicalCard => 'إعادة إصدار بطاقة فعلية';
 
   @override
-  String get securityVerification => 'Security verification';
+  String get securityVerification => 'التحقق الأمني';
 
   @override
-  String get resendCode => 'Resend';
+  String get resendCode => 'إعادة إرسال';
 
   @override
-  String get query => 'Query';
+  String get query => 'استعلام';
 
   @override
-  String get cardPinIs => 'Card PIN is';
+  String get cardPinIs => 'رمز PIN للبطاقة هو';
 
   @override
   String get keepPinSafeTip =>
-      'Please keep it safe and do not share it with others.';
+      'يرجى الاحتفاظ به بأمان وعدم مشاركته مع الآخرين.';
 
   @override
-  String get cardBenefits => 'Card Benefits';
+  String get cardBenefits => 'مزايا البطاقة';
 
   @override
-  String get rates => 'Rates';
+  String get rates => 'الأسعار';
 
   @override
-  String get monthlyFee => 'Monthly Fee';
+  String get monthlyFee => 'رسوم شهرية';
 
   @override
-  String get monthlyLimit => 'Monthly Limit';
+  String get monthlyLimit => 'الحد الشهري';
 
   @override
-  String get fxFee => 'FX Fee';
+  String get fxFee => 'رسوم صرف العملات';
 
   @override
-  String get transactionFee => 'Transaction Fee';
+  String get transactionFee => 'رسوم المعاملات';
 
   @override
-  String get crossBorderFee => 'Cross-border Fee';
+  String get crossBorderFee => 'رسوم عبر الحدود';
 
   @override
-  String get failedTransactionFee => 'Failed Trans. Fee';
+  String get failedTransactionFee => 'رسوم فشل المعاملة';
 
   @override
-  String get smallTransactionFee => 'Small Trans. Fee';
+  String get smallTransactionFee => 'رسوم المعاملات الصغيرة';
 
   @override
-  String get failedTransactionCountMonthly => 'Failed Trans. (Month)';
+  String get failedTransactionCountMonthly => 'المعاملات الفاشلة (الشهر)';
 
   @override
-  String get smallTransactionCountMonthly => 'Small Trans. (Month)';
+  String get smallTransactionCountMonthly => 'المعاملات الصغيرة (الشهر)';
 
   @override
-  String get instructions => 'Instructions:';
+  String get instructions => 'تعليمات:';
 
   @override
   String get failedTransactionFeeDesc =>
-      '1. Failed Transaction Fee: Starting Nov 18, 2025, a 0.4 USD fee will be charged for each failed transaction.';
+      '1. رسوم فشل المعاملة: بدءًا من 18 نوفمبر 2025، سيتم فرض رسوم قدرها 0.4 دولار على كل معاملة فاشلة.';
 
   @override
   String get smallTransactionFeeDesc =>
-      '2. Small Transaction Fee: Starting Apr 1, 2024, a 0.15 USD fee will be charged for transactions below 10 USD.';
+      '2. رسوم المعاملات الصغيرة: بدءًا من 1 أبريل 2024، سيتم فرض رسوم قدرها 0.15 دولار على المعاملات التي تقل عن 10 دولارات.';
 
   @override
-  String get mailingProgress => 'Mailing\nProgress';
+  String get mailingProgress => 'تقدم البريد';
 
   @override
-  String get mailingProgressTitle => 'Mailing Progress';
+  String get mailingProgressTitle => 'تقدم البريد';
 
   @override
-  String get upgradeApplication => 'Upgrade Application';
+  String get upgradeApplication => 'ترقية التطبيق';
 
   @override
-  String get applicationTime => 'Application Time';
+  String get applicationTime => 'وقت التطبيق';
 
   @override
-  String get cardProduction => 'Card Production';
+  String get cardProduction => 'إنتاج البطاقة';
 
   @override
-  String get cardShipped => 'Card Shipped';
+  String get cardShipped => 'تم شحن البطاقة';
 
   @override
-  String get shippedTime => 'Shipped Time';
+  String get shippedTime => 'وقت الشحن';
 
   @override
-  String get courierTracking => 'Courier Tracking';
+  String get courierTracking => 'تتبع البريد';
 
   @override
-  String get activateCardStep => 'Activate Card';
+  String get activateCardStep => 'تفعيل البطاقة';
 
   @override
-  String get activateCardTip => 'Please activate after receiving the card!';
+  String get activateCardTip => 'يرجى التفعيل بعد استلام البطاقة!';
 
   @override
-  String get cardReceived => 'Card Received';
+  String get cardReceived => 'تم استلام البطاقة';
 
   @override
-  String get reminder => 'Reminder';
+  String get reminder => 'تذكير';
 
   @override
   String get activationConfirmTip =>
-      'Please confirm you have received the physical card before activating!';
+      'يرجى التأكد من استلام البطاقة الفعلية قبل التفعيل!';
 
   @override
-  String get notReceivedActivateLater => 'Not received, activate later';
+  String get notReceivedActivateLater => 'لم يتم الاستلام، قم بالتفعيل لاحقًا';
 
   @override
-  String get receivedActivateNow => 'Received, activate now';
+  String get receivedActivateNow => 'تم الاستلام، قم بالتفعيل الآن';
 
   @override
-  String get physicalCardPreparing => 'Physical card is being prepared...';
+  String get physicalCardPreparing => 'يتم تجهيز البطاقة الفعلية...';
 
   @override
   String get applyPhysicalCardSuccessTitle =>
-      'You have successfully applied for a physical card!';
+      'لقد تقدمت بطلب للحصول على بطاقة فعلية بنجاح!';
 
   @override
-  String get youCanIn => 'You can view the ';
+  String get youCanIn => 'يمكنك عرض ';
 
   @override
-  String get cardTab => '[Card]';
+  String get cardTab => '[البطاقة]';
 
   @override
-  String get screenView => ' screen for ';
+  String get screenView => ' شاشة للحصول على ';
 
   @override
-  String get mailingProgressTabDesc => '[Mailing Progress]\n';
+  String get mailingProgressTabDesc => '[تقدم البريد]\n';
 
   @override
   String get willSendCardSoonTip =>
-      'We will send your card as soon as possible, please look out for it!\n';
+      'سنرسل بطاقتك في أقرب وقت ممكن، يرجى ترقبها!\n';
 
   @override
-  String get pleaseActivateAfterReceiving =>
-      'Please activate it after receiving.';
+  String get pleaseActivateAfterReceiving => 'يرجى تفعيله بعد الاستلام.';
 
   @override
-  String get backButton => 'Back';
+  String get backButton => 'رجوع';
 
   @override
   String get kycVerificationReadyMsg =>
-      'You have completed the card fee payment, now you can proceed with KYC verification.';
+      'لقد أكملت دفع رسوم البطاقة، يمكنك الآن متابعة تحقق KYC.';
 
   @override
-  String get selectACoupon => 'Select a Coupon';
+  String get selectACoupon => 'حدد قسيمة';
 
   @override
-  String get minFeeLabel => 'Min Fee: ';
+  String get minFeeLabel => 'الحد الأدنى للرسوم: ';
 
   @override
-  String get maxDiscountLabel => 'Max Discount: ';
+  String get maxDiscountLabel => 'أقصى خصم: ';
 
   @override
-  String get validUntilLabel => 'Valid until: ';
+  String get validUntilLabel => 'صالح حتى: ';
 
   @override
-  String get completedStatus => 'Completed';
+  String get completedStatus => 'مكتمل';
 
   @override
-  String get failedToGetCardInfo => 'Failed to load card info: ';
+  String get failedToGetCardInfo => 'فشل في تحميل معلومات البطاقة: ';
 
   @override
-  String get failedToLoadCardDetails => 'Failed to load card details';
+  String get failedToLoadCardDetails => 'فشل في تحميل تفاصيل البطاقة';
 
   @override
   String get failedToLoadCardDetailsRefresh =>
-      'Failed to load card details. Please pull down to refresh.';
+      'فشل في تحميل تفاصيل البطاقة. يرجى سحب الشاشة للأسفل للتحديث.';
 
   @override
-  String get chooseVerificationMethod => 'Choose verification method';
+  String get chooseVerificationMethod => 'اختر طريقة التحقق';
 
   @override
-  String get copied => 'Copied';
+  String get copied => 'تم النسخ';
 
   @override
-  String get cardReplaceRenew => 'Card Replace/Renew';
+  String get cardReplaceRenew => 'استبدال/تجديد البطاقة';
 
   @override
-  String get rewardNews => 'Reward news';
+  String get rewardNews => 'أخبار المكافآت';
 
   @override
-  String get cardHolderLabelText => 'Name';
+  String get cardHolderLabelText => 'الاسم';
 
   @override
-  String get expiryDateLabelText => 'Expiry Date';
+  String get expiryDateLabelText => 'تاريخ الانتهاء';
 
   @override
   String get oldPasswordCannotBeEmpty =>
@@ -2060,148 +2059,147 @@ class AppLocalizationsAr extends AppLocalizations {
   String get failedToCreateWallet => 'فشل إنشاء المحفظة';
 
   @override
-  String get failedToGetProfile => 'Failed to get profile';
+  String get failedToGetProfile => 'فشل في الحصول على الملف الشخصي';
 
   @override
-  String get failedToInitializeDiditToken => 'Failed to initialize Didit token';
+  String get failedToInitializeDiditToken => 'فشل في تهيئة رمز Didit';
 
   @override
-  String get credit => 'Credit';
+  String get credit => 'ائتمان';
 
   @override
-  String get debit => 'Debit';
+  String get debit => 'مدين';
 
   @override
   String get registrationSuccessful =>
-      'Registration successful! Please login with your email and password.';
+      'تم التسجيل بنجاح! يرجى تسجيل الدخول باستخدام بريدك الإلكتروني وكلمة المرور.';
 
   @override
-  String get kycVerification => 'KYC Verification';
+  String get kycVerification => 'التحقق من KYC';
 
   @override
-  String get level1Verification => 'Level 1 Verification';
+  String get level1Verification => 'التحقق من المستوى 1';
 
   @override
-  String get featuresAndPermissions => 'Features & Permissions';
+  String get featuresAndPermissions => 'الميزات والأذونات';
 
   @override
-  String get completeAuthentication => 'Complete Authentication';
+  String get completeAuthentication => 'إكمال المصادقة';
 
   @override
-  String get applyCardLabel => 'Apply card';
+  String get applyCardLabel => 'طلب بطاقة';
 
   @override
-  String get documentVerification => 'Document verification';
+  String get documentVerification => 'التحقق من الوثيقة';
 
   @override
-  String get faceRecognition => 'Face recognition';
+  String get faceRecognition => 'التعرف على الوجه';
 
   @override
-  String get noKycData => 'No KYC data available';
+  String get noKycData => 'لا تتوفر بيانات KYC';
 
   @override
-  String get passed => 'Passed';
+  String get passed => 'تم الاجتياز';
 
   @override
-  String get pending => 'Pending';
+  String get pending => 'قيد الانتظار';
 
   @override
-  String get newPhoneCannotBeEmpty => 'New phone cannot be empty';
+  String get newPhoneCannotBeEmpty =>
+      'لا يمكن أن يكون رقم الهاتف الجديد فارغًا';
 
   @override
-  String get unexpectedResponse => 'Unexpected response';
+  String get unexpectedResponse => 'استجابة غير متوقعة';
 
   @override
   String get emailPhoneOtpRequired =>
-      'Email, new phone, and phone OTP cannot be empty';
+      'لا يمكن أن يكون البريد الإلكتروني ورقم الهاتف الجديد ورمز OTP للهاتف فارغًا';
 
   @override
   String get newPhoneEmailOtpRequired =>
-      'New phone and email OTP cannot be empty';
+      'لا يمكن أن يكون رقم الهاتف الجديد ورمز OTP للبريد الإلكتروني فارغًا';
 
   @override
-  String get amountGreaterThanZero => 'Amount must be greater than 0';
+  String get amountGreaterThanZero => 'يجب أن يكون المبلغ أكبر من 0';
 
   @override
-  String get failedToCreateQuote => 'Failed to create quote: data format error';
+  String get failedToCreateQuote => 'فشل إنشاء الاقتباس: خطأ في تنسيق البيانات';
 
   @override
-  String get chatHowToStart => 'How to Start a Chat';
+  String get chatHowToStart => 'كيف تبدأ محادثة';
 
   @override
   String get chatStep1 =>
-      'Click the blue chat button in the bottom-right corner';
+      'انقر على زر المحادثة الأزرق في الزاوية السفلية اليمنى';
 
   @override
-  String get chatStep2 => 'Type your question or concern';
+  String get chatStep2 => 'اكتب سؤالك أو استفسارك';
 
   @override
-  String get chatStep3 => 'Our support team will respond to you shortly';
+  String get chatStep3 => 'فريق الدعم الخاص بنا سيرد عليك قريبا';
 
   @override
-  String get chatFaqTitle => 'Frequently Asked Questions';
+  String get chatFaqTitle => 'الأسئلة الشائعة';
 
   @override
-  String get chatFaqQ1 => 'What are your support hours?';
+  String get chatFaqQ1 => 'ما هي ساعات الدعم الخاصة بكم؟';
 
   @override
-  String get chatFaqA1 => 'Our team is available 24/7 to assist you.';
+  String get chatFaqA1 => 'فريقنا متاح 24/7 لمساعدتك.';
 
   @override
-  String get chatFaqQ2 => 'How quickly will I get a response?';
+  String get chatFaqQ2 => 'ما مدى سرعة الرد؟';
 
   @override
-  String get chatFaqA2 => 'Most inquiries are answered within 2-5 minutes.';
+  String get chatFaqA2 => 'يتم الرد على معظم الاستفسارات في غضون 2-5 دقائق.';
 
   @override
-  String get chatFaqQ3 => 'Can I attach files?';
+  String get chatFaqQ3 => 'هل يمكنني إرفاق ملفات؟';
 
   @override
-  String get chatFaqA3 =>
-      'Yes, you can send images and documents through the chat.';
+  String get chatFaqA3 => 'نعم، يمكنك إرسال الصور والمستندات من خلال المحادثة.';
 
   @override
-  String get chatFaqQ4 => 'Is my conversation secure?';
+  String get chatFaqQ4 => 'هل محادثتي آمنة؟';
 
   @override
-  String get chatFaqA4 =>
-      'Yes, all conversations are encrypted and confidential.';
+  String get chatFaqA4 => 'نعم، جميع المحادثات مشفرة وسرية.';
 
   @override
-  String get chatOtherContactMethods => 'Other Contact Methods';
+  String get chatOtherContactMethods => 'طرق الاتصال الأخرى';
 
   @override
-  String get chatEmailSupport => 'Email: support@comecomepay.com';
+  String get chatEmailSupport => 'البريد الإلكتروني: support@comecomepay.com';
 
   @override
-  String get chatResponseTime => 'Response Time: Within 24 hours';
+  String get chatResponseTime => 'وقت الاستجابة: خلال 24 ساعة';
 
   @override
-  String get chatClickHint => 'Click here to start chatting!';
+  String get chatClickHint => 'انقر هنا لبدء المحادثة!';
 
   @override
-  String get chatAgentOnline => 'Agent Online';
+  String get chatAgentOnline => 'الوكيل متصل';
 
   @override
-  String get chatHelpSubtitle => 'We\'re here to help you 24/7';
+  String get chatHelpSubtitle => 'نحن هنا لمساعدتك 24/7';
 
   @override
-  String get chatInitConnection => 'Initializing connection...';
+  String get chatInitConnection => 'جاري تهيئة الاتصال...';
 
   @override
-  String get chatLoadingService => 'Loading chat service...';
+  String get chatLoadingService => 'تحميل خدمة المحادثة...';
 
   @override
-  String get chatSettingSecure => 'Setting up secure channel...';
+  String get chatSettingSecure => 'إعداد القناة الآمنة...';
 
   @override
-  String get chatAlmostReady => 'Almost ready...';
+  String get chatAlmostReady => 'قريباً...';
 
   @override
-  String get chatConnectingTitle => 'Connecting to Customer Service';
+  String get chatConnectingTitle => 'الاتصال بخدمة العملاء';
 
   @override
-  String get chatSettingSession => 'Setting up your chat session...';
+  String get chatSettingSession => 'إعداد جلسة المحادثة الخاصة بك...';
 
   @override
   String get rules => 'القواعد';
@@ -2213,61 +2211,78 @@ class AppLocalizationsAr extends AppLocalizations {
   String get invitationSteps => 'خطوات الدعوة';
 
   @override
-  String get threeDsPaymentAuth => 'Payment Authorization';
+  String get threeDsPaymentAuth => 'تصريح الدفع';
 
   @override
-  String get threeDsPendingConfirm =>
-      'You have a pending transaction to confirm';
+  String get threeDsPendingConfirm => 'لديك معاملة معلقة للتأكيد';
 
   @override
   String get threeDsConfirmTip =>
-      'Please carefully verify the transaction details below to ensure it is your own purchase. If not authorized within the time limit, the transaction will be cancelled.';
+      'يرجى التحقق بعناية من تفاصيل المعاملة أدناه للتأكد من أنها عملية شراء خاصة بك. إذا لم يتم التصريح خلال الوقت المحدد، فسيتم إلغاء المعاملة.';
 
   @override
-  String get threeDsAmount => 'Transaction Amount';
+  String get threeDsAmount => 'مبلغ المعاملة';
 
   @override
-  String get threeDsMerchant => 'Merchant Info';
+  String get threeDsMerchant => 'معلومات التاجر';
 
   @override
-  String get threeDsTxId => 'Transaction ID';
+  String get threeDsTxId => 'رقم المعاملة';
 
   @override
-  String get threeDsCreatedAt => 'Created At';
+  String get threeDsCreatedAt => 'وقت الإنشاء';
 
   @override
-  String get threeDsApprove => 'Approve';
+  String get threeDsApprove => 'موافقة';
 
   @override
-  String get threeDsReject => 'Reject';
+  String get threeDsReject => 'رفض';
 
   @override
-  String get threeDsAuthDetails => 'Authorization Details';
+  String get threeDsAuthDetails => 'تفاصيل التفويض';
 
   @override
-  String get threeDsAuthTime => 'Authorization Time';
+  String get threeDsAuthTime => 'وقت التفويض';
 
   @override
-  String get threeDsTxTime => 'Transaction Time';
+  String get threeDsTxTime => 'وقت المعاملة';
 
   @override
-  String get threeDsPending => 'Pending';
+  String get threeDsPending => 'قيد الانتظار';
 
   @override
   String threeDsApprovedSuccess(String merchant) {
-    return '✅ Approved transaction at: $merchant';
+    return '✅ تمت الموافقة على المعاملة عند: $merchant';
   }
 
   @override
-  String get threeDsRejectedSuccess => '❌ Transaction rejected';
+  String get threeDsRejectedSuccess => '❌ تم رفض المعاملة';
 
   @override
   String threeDsApproveFailed(String error) {
-    return 'Approval failed: $error';
+    return 'فشلت الموافقة: $error';
   }
 
   @override
   String threeDsRejectFailed(String error) {
-    return 'Rejection failed: $error';
+    return 'فشل الرفض: $error';
   }
+
+  @override
+  String get threeDsSettingTitle => 'إعدادات التحقق 3DS';
+
+  @override
+  String get threeDsPlanOtp => 'إنشاء كلمة مرور (OTP)';
+
+  @override
+  String get threeDsPlanBio => 'تطبيق الدفع (BIO)';
+
+  @override
+  String get threeDsPlanAll => 'كلا الوضعين (ALL)';
+
+  @override
+  String get threeDsUpdateSuccess => 'تم تحديث إعدادات 3DS بنجاح';
+
+  @override
+  String get threeDsUpdateFailed => 'فشل تحديث إعدادات 3DS';
 }

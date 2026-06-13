@@ -952,8 +952,8 @@ class _CardScreenState extends State<CardScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                const CardAuthorizationScreen(),
+                            builder: (context) => CardAuthorizationScreen(
+                                publicToken: _currentCardDetails!.publicToken),
                           ),
                         );
                       },

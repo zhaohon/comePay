@@ -2266,4 +2266,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String threeDsRejectFailed(String error) {
     return 'Rejection failed: $error';
   }
+
+  @override
+  String get threeDsSettingTitle => '3DS Verification Settings';
+
+  @override
+  String get threeDsPlanOtp => 'OTP (Email Verification)';
+
+  @override
+  String get threeDsPlanBio => 'BIO (App Push Authorization)';
+
+  @override
+  String get threeDsPlanAll => 'Both Modes';
+
+  @override
+  String get threeDsUpdateSuccess => 'Successfully updated 3DS settings';
+
+  @override
+  String get threeDsUpdateFailed => 'Failed to update 3DS settings';
 }

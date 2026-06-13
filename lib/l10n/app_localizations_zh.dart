@@ -2197,4 +2197,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String threeDsRejectFailed(String error) {
     return '拒绝失败: $error';
   }
+
+  @override
+  String get threeDsSettingTitle => '3DS 验证设置';
+
+  @override
+  String get threeDsPlanOtp => 'OTP (邮箱验证码)';
+
+  @override
+  String get threeDsPlanBio => 'BIO (App 推送授权)';
+
+  @override
+  String get threeDsPlanAll => '两种模式 (ALL)';
+
+  @override
+  String get threeDsUpdateSuccess => '修改 3DS 授权方式成功';
+
+  @override
+  String get threeDsUpdateFailed => '修改 3DS 授权方式失败';
 }

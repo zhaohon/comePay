@@ -1,46 +1,30 @@
 import re
 
-with open('lib/views/homes/CardScreen.dart', 'r') as f:
-    text = f.read()
+with open("lib/views/homes/CardAuthorizationScreen.dart", "r") as f:
+    content = f.read()
 
-# Fix spacing differences using regex to match any whitespace
-def replace_with_whitespace(old, new):
-    global text
-    # Escaping brackets/parentheses for literal match, but replacing spaces with \s+
-    pattern = re.escape(old).replace(r'\ ', r'\s+')
-    text = re.sub(pattern, new, text)
+replacements = {
+    "'3DS Verification Settings', // Will be localized": "AppLocalizations.of(context)!.threeDsSettingTitle,",
+    "title: 'OTP (Email Verification)'": "title: AppLocalizations.of(context)!.threeDsPlanOtp",
+    "title: 'BIO (App Push Authorization)'": "title: AppLocalizations.of(context)!.threeDsPlanBio",
+    "title: 'Both Modes'": "title: AppLocalizations.of(context)!.threeDsPlanAll",
+}
 
-# Chunk 0
-replace_with_whitespace("const Center(\n                            child:\n                                Text('Failed to load card details'),\n                          )", "Center(\n                            child:\n                                Text(AppLocalizations.of(context)!.failedToLoadCardDetails),\n                          )")
-# Chunk 1
-replace_with_whitespace("const Text(\n                                 'Failed to load card details. Please pull down to refresh.',\n                                 textAlign: TextAlign.center,", "Text(\n                                 AppLocalizations.of(context)!.failedToLoadCardDetailsRefresh,\n                                 textAlign: TextAlign.center,")
-# Chunk 2
-replace_with_whitespace("const Text('Failed to load card details')", "Text(AppLocalizations.of(context)!.failedToLoadCardDetails)")
-# Chunk 3
-replace_with_whitespace("child:\n                                const Text('Failed to load card details'),", "child:\n                                Text(AppLocalizations.of(context)!.failedToLoadCardDetails),")
-# Chunk 4
-replace_with_whitespace("SnackBar(content: Text('获取卡片信息失败: $e'))", "SnackBar(content: Text('${AppLocalizations.of(context)!.failedToGetCardInfo}$e'))")
-# Chunk 5
-replace_with_whitespace("const Text(\n                  'Security verification',", "Text(\n                  AppLocalizations.of(context)!.securityVerification,")
-# Chunk 6
-replace_with_whitespace("const Text(\n                  'Choose verification method',", "Text(\n                  AppLocalizations.of(context)!.chooseVerificationMethod,")
-# Chunk 7
-replace_with_whitespace("child: Text(value),", "child: Text(value == 'email verification' ? AppLocalizations.of(context)!.emailVerification : value),")
-# Chunk 8
-replace_with_whitespace("const Text(\n                  'Verification',", "Text(\n                  AppLocalizations.of(context)!.verification,")
-# Chunk 9
-replace_with_whitespace("hintText: 'Enter verification code',", "hintText: AppLocalizations.of(context)!.enterVerificationCode,")
-# Chunk 13
-replace_with_whitespace("const Text(\n                  'Please confirm that you have received the physical card before activating it!',", "Text(\n                  AppLocalizations.of(context)!.activationConfirmTip,")
-# Chunk 15
-replace_with_whitespace("const Text(\n                  'Card Received, active immediately',", "Text(\n                  AppLocalizations.of(context)!.receivedActivateNow,")
-# Chunk 16
-replace_with_whitespace("const Text(\n                        'Card Replace/Renew',", "Text(\n                        AppLocalizations.of(context)!.cardReplaceRenew,")
-# Chunk 17
-replace_with_whitespace("const Text(\n                        'Report Loss',", "Text(\n                        AppLocalizations.of(context)!.reportLoss,")
-# Chunk 18
-replace_with_whitespace("const Text(\n                        'Reward news',", "Text(\n                        AppLocalizations.of(context)!.rewardNews,")
+for k, v in replacements.items():
+    content = content.replace(k, v)
 
-with open('lib/views/homes/CardScreen.dart', 'w') as f:
-    f.write(text)
+with open("lib/views/homes/CardAuthorizationScreen.dart", "w") as f:
+    f.write(content)
 
+with open("/Users/admin/.gemini/antigravity/brain/b5d67282-ed58-40ef-b007-f7e00c3be737/task.md", "r") as f:
+    task = f.read()
+
+task = task.replace("- [ ] Add `updateThreeDSPlan` method to `CardService`", "- [x] Add `updateThreeDSPlan` method to `CardService`")
+task = task.replace("- [ ] Add new localization keys for 3DS settings to `app_en.arb`, `app_zh.arb`, `app_ar.arb`", "- [x] Add new localization keys for 3DS settings to `app_en.arb`, `app_zh.arb`, `app_ar.arb`")
+task = task.replace("- [ ] Update `CardAuthorizationScreen` to take `publicToken` via constructor and use it in `CardScreen.dart`", "- [x] Update `CardAuthorizationScreen` to take `publicToken` via constructor and use it in `CardScreen.dart`")
+task = task.replace("- [ ] Add settings icon to `CardAuthorizationScreen` AppBar", "- [x] Add settings icon to `CardAuthorizationScreen` AppBar")
+task = task.replace("- [ ] Implement `_showSettingsBottomSheet` in `CardAuthorizationScreen`", "- [x] Implement `_showSettingsBottomSheet` in `CardAuthorizationScreen`")
+task = task.replace("- [ ] Implement `PUT /card/3ds` API action on selection", "- [x] Implement `PUT /card/3ds` API action on selection")
+
+with open("/Users/admin/.gemini/antigravity/brain/b5d67282-ed58-40ef-b007-f7e00c3be737/task.md", "w") as f:
+    f.write(task)

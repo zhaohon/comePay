@@ -226,4 +226,17 @@ class CardService extends BaseService {
     );
     return response['data'] as Map<String, dynamic>;
   }
+
+  /// 修改卡片3DS认证方式
+  Future<Map<String, dynamic>> updateThreeDSPlan(
+      String plan, String publicToken) async {
+    final response = await put(
+      '/card/3ds',
+      data: {
+        'plan': plan,
+        'public_token': publicToken,
+      },
+    );
+    return response['data'] as Map<String, dynamic>;
+  }
 }

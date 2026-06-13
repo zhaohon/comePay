@@ -4373,6 +4373,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Rejection failed: {error}'**
   String threeDsRejectFailed(String error);
+
+  /// No description provided for @threeDsSettingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'3DS Verification Settings'**
+  String get threeDsSettingTitle;
+
+  /// No description provided for @threeDsPlanOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP (Email Verification)'**
+  String get threeDsPlanOtp;
+
+  /// No description provided for @threeDsPlanBio.
+  ///
+  /// In en, this message translates to:
+  /// **'BIO (App Push Authorization)'**
+  String get threeDsPlanBio;
+
+  /// No description provided for @threeDsPlanAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Both Modes'**
+  String get threeDsPlanAll;
+
+  /// No description provided for @threeDsUpdateSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully updated 3DS settings'**
+  String get threeDsUpdateSuccess;
+
+  /// No description provided for @threeDsUpdateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update 3DS settings'**
+  String get threeDsUpdateFailed;
 }
 
 class _AppLocalizationsDelegate

@@ -4,21 +4,24 @@ import 'package:comecomepay/viewmodels/card_authorization_viewmodel.dart';
 import 'package:comecomepay/models/three_ds_record_model.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/views/homes/AuthorizationDetailScreen.dart';
+import 'package:comecomepay/services/card_service.dart';
 
 class CardAuthorizationScreen extends StatelessWidget {
-  const CardAuthorizationScreen({super.key});
+  final String publicToken;
+  const CardAuthorizationScreen({super.key, required this.publicToken});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => CardAuthorizationViewModel()..loadRecords(),
-      child: const _CardAuthorizationView(),
+      child: _CardAuthorizationView(publicToken: publicToken),
     );
   }
 }
 
 class _CardAuthorizationView extends StatefulWidget {
-  const _CardAuthorizationView();
+  final String publicToken;
+  const _CardAuthorizationView({required this.publicToken});
 
   @override
   State<_CardAuthorizationView> createState() => _CardAuthorizationViewState();
@@ -62,6 +65,12 @@ class _CardAuthorizationViewState extends State<_CardAuthorizationView> {
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
+        // actions: [
+        //   IconButton(
+        //     icon: const Icon(Icons.settings, color: Colors.black),
+        //     onPressed: () => _showSettingsBottomSheet(context),
+        //   ),
+        // ],
       ),
       body: Consumer<CardAuthorizationViewModel>(
         builder: (context, viewModel, child) {
@@ -122,6 +131,86 @@ class _CardAuthorizationViewState extends State<_CardAuthorizationView> {
         },
       ),
     );
+  }
+
+  void _showSettingsBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (BuildContext sheetContext) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.threeDsSettingTitle,
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16),
+                _buildMethodTile(sheetContext,
+                    title: AppLocalizations.of(context)!.threeDsPlanOtp,
+                    planCode: 'OTP'),
+                _buildMethodTile(sheetContext,
+                    title: AppLocalizations.of(context)!.threeDsPlanBio,
+                    planCode: 'BIO'),
+                _buildMethodTile(sheetContext,
+                    title: AppLocalizations.of(context)!.threeDsPlanAll,
+                    planCode: 'ALL'),
+                const SizedBox(height: 10),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildMethodTile(BuildContext context,
+      {required String title, required String planCode}) {
+    return ListTile(
+      title: Text(title, textAlign: TextAlign.center),
+      onTap: () {
+        Navigator.pop(context);
+        _updateThreeDSPlan(planCode);
+      },
+    );
+  }
+
+  Future<void> _updateThreeDSPlan(String planCode) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+    );
+
+    try {
+      await CardService().updateThreeDSPlan(planCode, widget.publicToken);
+      if (mounted) Navigator.pop(context); // Close loading
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.threeDsUpdateSuccess),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) Navigator.pop(context); // Close loading
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.threeDsUpdateFailed),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 }
 
