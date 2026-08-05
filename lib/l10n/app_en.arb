@@ -740,6 +740,12 @@
   "threeDsPlanOtp": "OTP (Email Verification)",
   "threeDsPlanBio": "BIO (App Push Authorization)",
   "threeDsPlanAll": "Both Modes",
-  "threeDsUpdateSuccess": "Successfully updated 3DS settings",
-  "threeDsUpdateFailed": "Failed to update 3DS settings"
+  "threeDsUpdateSuccess": "Successfully Updated 3DS Auth Method",
+  "threeDsUpdateFailed": "Failed to Update 3DS Auth Method",
+  "deactivateAccount": "Deactivate Account",
+  "deactivateWarningTitle": "Confirm Deactivation",
+  "deactivateWarningContent": "Once deactivated, your account cannot be recovered. All assets, linked cards, and transaction records will be permanently cleared or frozen. Are you sure you want to continue?",
+  "confirmDeactivate": "Confirm Deactivate",
+  "deactivateOtpPrompt": "Please enter the OTP sent to your email to complete deactivation",
+  "accountDeactivatedSuccessfully": "Account successfully deactivated"
 }

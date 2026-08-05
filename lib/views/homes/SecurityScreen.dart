@@ -9,6 +9,8 @@ import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
 import 'package:comecomepay/models/responses/get_profile_response_model.dart';
 import 'package:comecomepay/utils/app_colors.dart';
+import 'package:comecomepay/services/user_service.dart';
+import 'package:comecomepay/widgets/otp_input.dart';
 
 class Securityscreen extends StatefulWidget {
   const Securityscreen({super.key});
@@ -19,6 +21,7 @@ class Securityscreen extends StatefulWidget {
 
 class _SecurityscreenState extends State<Securityscreen> {
   GetProfileResponseModel? _profileData;
+  final UserService _userService = UserService();
 
   @override
   void initState() {
@@ -132,6 +135,15 @@ class _SecurityscreenState extends State<Securityscreen> {
                                       ModifyLoginPasswordScreen()),
                             );
                           },
+                        ),
+                        _buildDivider(),
+                        _buildCardItem(
+                          context,
+                          icon: Icons.person_off,
+                          iconColor: Colors.red,
+                          title: localizations.deactivateAccount,
+                          value: '',
+                          onTap: () => _handleDeactivateAccount(context),
                         ),
                       ],
                     ),
@@ -321,6 +333,279 @@ class _SecurityscreenState extends State<Securityscreen> {
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 3),
           ),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleDeactivateAccount(BuildContext context) async {
+    final localizations = AppLocalizations.of(context)!;
+
+    // 1. Show warning dialog
+    final confirmed = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
+          ),
+        ),
+        padding: EdgeInsets.only(
+          left: 24,
+          right: 24,
+          top: 24,
+          bottom: MediaQuery.of(context).padding.bottom + 24,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40,
+              height: 4,
+              margin: const EdgeInsets.only(bottom: 24),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.warning_amber_rounded,
+                  color: Colors.red, size: 36),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              localizations.deactivateWarningTitle,
+              style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              localizations.deactivateWarningContent,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 15, color: Colors.grey.shade600, height: 1.5),
+            ),
+            const SizedBox(height: 32),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      side: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    onPressed: () => Navigator.pop(context, false),
+                    child: Text(localizations.cancel,
+                        style: const TextStyle(
+                            color: Colors.black54, fontSize: 16)),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      backgroundColor: Colors.red.shade600,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      elevation: 0,
+                    ),
+                    onPressed: () => Navigator.pop(context, true),
+                    child: Text(localizations.confirmDeactivate,
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600)),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    // 2. Request Deactivation OTP
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+
+    try {
+      await _userService.requestAccountDeactivation();
+      if (context.mounted) Navigator.pop(context); // Close loading
+    } catch (e) {
+      if (context.mounted) {
+        Navigator.pop(context); // Close loading
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
+        );
+      }
+      return;
+    }
+
+    if (!context.mounted) return;
+
+    // 3. Show OTP Dialog
+    final String? otp = await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        String currentOtp = '';
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24),
+              topRight: Radius.circular(24),
+            ),
+          ),
+          padding: EdgeInsets.only(
+            left: 24,
+            right: 24,
+            top: 24,
+            bottom: MediaQuery.of(context).viewInsets.bottom +
+                MediaQuery.of(context).padding.bottom +
+                24,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: 24),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Icons.mark_email_read_rounded,
+                    color: AppColors.primary, size: 36),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                localizations.deactivateWarningTitle,
+                style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                localizations.deactivateOtpPrompt,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 15, color: Colors.grey.shade600, height: 1.5),
+              ),
+              const SizedBox(height: 24),
+              OtpInput(
+                length: 6,
+                onCompleted: (value) {
+                  currentOtp = value;
+                },
+              ),
+              const SizedBox(height: 32),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        side: BorderSide(color: Colors.grey.shade300),
+                      ),
+                      onPressed: () => Navigator.pop(context, null),
+                      child: Text(localizations.cancel,
+                          style: const TextStyle(
+                              color: Colors.black54, fontSize: 16)),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        backgroundColor: AppColors.primary,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        elevation: 0,
+                      ),
+                      onPressed: () {
+                        if (currentOtp.length == 6) {
+                          Navigator.pop(context, currentOtp);
+                        }
+                      },
+                      child: Text(localizations.confirm,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600)),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (otp == null || otp.length != 6) return; // User cancelled or incomplete
+
+    // 4. Submit Deactivation
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+
+    try {
+      await _userService.submitAccountDeactivation(otp);
+
+      // Success! Clear data and route to login
+      await HiveStorageService.clearAllData();
+      if (context.mounted) {
+        Navigator.pop(context); // Close loading
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(localizations.accountDeactivatedSuccessfully),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/login_screen', (route) => false);
+      }
+    } catch (e) {
+      if (context.mounted) {
+        Navigator.pop(context); // Close loading
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
         );
       }
     }

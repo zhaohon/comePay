@@ -37,7 +37,7 @@ class _SecurityInfoItemState extends State<SecurityInfoItem> {
           Text(
             widget.label,
             style: const TextStyle(
-              fontSize: 15,
+              fontSize: 12,
               color: AppColors.textSecondary,
             ),
           ),
@@ -46,7 +46,7 @@ class _SecurityInfoItemState extends State<SecurityInfoItem> {
               Text(
                 widget.value,
                 style: const TextStyle(
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
                   letterSpacing: 1,

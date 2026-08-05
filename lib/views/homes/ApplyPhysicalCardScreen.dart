@@ -58,7 +58,7 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
 
   // Fees
   double _cardFee = 0.0;
-  final double _shippingFee = 0.00;
+  double _shippingFee = 0.00;
 
   @override
   void initState() {
@@ -132,6 +132,7 @@ class _ApplyPhysicalCardScreenState extends State<ApplyPhysicalCardScreen> {
 
       setState(() {
         _cardFee = feeInfo.upgradeAmount;
+        _shippingFee = feeInfo.shippingFee;
         _currencies = feeInfo.currencies;
         if (_currencies.isNotEmpty) {
           _selectedCurrency = _currencies.first;

@@ -4401,14 +4401,50 @@ abstract class AppLocalizations {
   /// No description provided for @threeDsUpdateSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Successfully updated 3DS settings'**
+  /// **'Successfully Updated 3DS Auth Method'**
   String get threeDsUpdateSuccess;
 
   /// No description provided for @threeDsUpdateFailed.
   ///
   /// In en, this message translates to:
-  /// **'Failed to update 3DS settings'**
+  /// **'Failed to Update 3DS Auth Method'**
   String get threeDsUpdateFailed;
+
+  /// No description provided for @deactivateAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivate Account'**
+  String get deactivateAccount;
+
+  /// No description provided for @deactivateWarningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Deactivation'**
+  String get deactivateWarningTitle;
+
+  /// No description provided for @deactivateWarningContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Once deactivated, your account cannot be recovered. All assets, linked cards, and transaction records will be permanently cleared or frozen. Are you sure you want to continue?'**
+  String get deactivateWarningContent;
+
+  /// No description provided for @confirmDeactivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Deactivate'**
+  String get confirmDeactivate;
+
+  /// No description provided for @deactivateOtpPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the OTP sent to your email to complete deactivation'**
+  String get deactivateOtpPrompt;
+
+  /// No description provided for @accountDeactivatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Account successfully deactivated'**
+  String get accountDeactivatedSuccessfully;
 }
 
 class _AppLocalizationsDelegate

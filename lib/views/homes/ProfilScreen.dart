@@ -17,7 +17,9 @@ import 'package:comecomepay/viewmodels/profile_screen_viewmodel.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/utils/app_colors.dart';
 import 'package:comecomepay/views/debug/token_refresh_test_page.dart';
+import 'package:comecomepay/services/user_service.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'ProfilKycScreen.dart';
 
@@ -29,6 +31,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   String? email;
   String? userId;
+  Map<String, String>? _partnerLink;
 
   @override
   void initState() {
@@ -43,7 +46,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
     // 2. 异步初始化 ViewModel 缓存并触发网络刷新
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadCachedProfile();
+      _fetchPartnerLink();
     });
+  }
+
+  Future<void> _fetchPartnerLink() async {
+    try {
+      final data = await UserService().getPartnerLink();
+      if (mounted && data != null) {
+        setState(() {
+          _partnerLink = data;
+        });
+      }
+    } catch (e) {
+      print('Failed to fetch partner link: $e');
+    }
   }
 
   Future<void> _loadCachedProfile() async {
@@ -367,6 +384,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       );
                     },
                   ),
+                  if (_partnerLink != null &&
+                      _partnerLink!['name'] != null &&
+                      _partnerLink!['name']!.isNotEmpty) ...[
+                    _buildDivider(),
+                    _buildProfileItem(
+                      context,
+                      icon: Icons.link,
+                      title: _partnerLink!['name'] ?? '',
+                      iconColor: Colors.deepPurple,
+                      onTap: () async {
+                        final urlString = _partnerLink!['url'];
+                        if (urlString != null && urlString.isNotEmpty) {
+                          var finalUrl = urlString;
+                          if (!finalUrl.startsWith('http')) {
+                            finalUrl = 'https://$finalUrl';
+                          }
+                          final uri = Uri.parse(finalUrl);
+                          if (await canLaunchUrl(uri)) {
+                            await launchUrl(uri,
+                                mode: LaunchMode.externalApplication);
+                          }
+                        }
+                      },
+                    ),
+                  ],
                 ],
               ),
             ),

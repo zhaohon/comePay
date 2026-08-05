@@ -2215,4 +2215,23 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get threeDsUpdateFailed => '修改 3DS 授权方式失败';
+
+  @override
+  String get deactivateAccount => '注销账号';
+
+  @override
+  String get deactivateWarningTitle => '注销确认';
+
+  @override
+  String get deactivateWarningContent =>
+      '账号注销后将无法恢复，所有资产、绑卡和交易记录将被永久清空或冻结。您确定要继续吗？';
+
+  @override
+  String get confirmDeactivate => '确认注销';
+
+  @override
+  String get deactivateOtpPrompt => '请输入您邮箱中的验证码以完成注销';
+
+  @override
+  String get accountDeactivatedSuccessfully => '账号已成功注销';
 }

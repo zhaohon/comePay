@@ -439,18 +439,32 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              ...coinList.map((coin) {
-                return ListTile(
-                  leading: _getCoinIcon(coin),
-                  title: Text(
-                    coin,
-                    style: const TextStyle(color: AppColors.textPrimary),
-                  ),
-                  selected: coin == current,
-                  selectedTileColor: AppColors.primaryLight,
-                  onTap: () => Navigator.pop(context, coin),
-                );
-              }).toList(),
+              Flexible(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: coinList.length,
+                  itemBuilder: (context, index) {
+                    final coin = coinList[index];
+                    return ListTile(
+                      leading: _getCoinIcon(coin),
+                      title: Text(
+                        coin,
+                        style: const TextStyle(color: AppColors.textPrimary),
+                      ),
+                      trailing: Text(
+                        _formatAmount(_getCoinBalance(coin)),
+                        style: const TextStyle(
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      selected: coin == current,
+                      selectedTileColor: AppColors.primaryLight,
+                      onTap: () => Navigator.pop(context, coin),
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         );
@@ -516,7 +530,7 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
       setState(() {
         // 根据目标币种的小数位数格式化
         if (bottomCoin == 'BTC') {
-          _bottomAmountController.text = result.toStringAsFixed(8);
+          _bottomAmountController.text = _formatAmount(result);
         } else {
           _bottomAmountController.text = result.toStringAsFixed(2);
         }
@@ -916,378 +930,396 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
     );
   }
 
+  // 格式化数字，最多保留8位小数，去除多余的尾随0
+  String _formatAmount(double amount) {
+    String str = amount.toStringAsFixed(8);
+    if (str.contains('.')) {
+      str = str.replaceAll(RegExp(r'0*$'), '');
+      if (str.endsWith('.')) {
+        str = str.substring(0, str.length - 1);
+      }
+    }
+    return str;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer2<SwapViewModel, WalletViewModel>(
       builder: (context, swapViewModel, walletViewModel, child) {
-        return Scaffold(
-          backgroundColor: AppColors.pageBackground,
-          appBar: AppBar(
+        return GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Scaffold(
             backgroundColor: AppColors.pageBackground,
-            elevation: 0,
-            centerTitle: true,
-            title: Text(
-              AppLocalizations.of(context)!.swap,
-              style: TextStyle(
-                color: AppColors.textPrimary,
-                fontWeight: FontWeight.bold,
+            appBar: AppBar(
+              backgroundColor: AppColors.pageBackground,
+              elevation: 0,
+              centerTitle: true,
+              title: Text(
+                AppLocalizations.of(context)!.swap,
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios,
-                  color: AppColors.textPrimary),
-              onPressed: () => Navigator.pop(context),
-            ),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.history, color: AppColors.textPrimary),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/SwapHistory');
-                },
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios,
+                    color: AppColors.textPrimary),
+                onPressed: () => Navigator.pop(context),
               ),
-            ],
-          ),
-          body: isLoading
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircularProgressIndicator(
-                        color: AppColors.primary,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        AppLocalizations.of(context)!.loading,
-                        style: TextStyle(
-                          color: AppColors.textSecondary,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              : SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.history, color: AppColors.textPrimary),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/SwapHistory');
+                  },
+                ),
+              ],
+            ),
+            body: isLoading
+                ? Center(
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Top Row - 发送（按照图一：币种选择在上，输入框在下）
-                        _buildSwapRow(
-                          amountController: _amountController,
-                          symbol: topCoin,
-                          isTop: true,
-                          onChanged: _onAmountChanged,
-                          availableBalance:
-                              _getCoinBalance(topCoin).toStringAsFixed(8),
+                        CircularProgressIndicator(
+                          color: AppColors.primary,
                         ),
-
-                        const SizedBox(height: 12),
-
-                        // Swap Arrow
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Divider(
-                                color: AppColors.primary,
-                                thickness: 1,
-                                endIndent: 12,
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: _swapCoins,
-                              child: Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: AppColors.cardBackground,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                      color: AppColors.primary, width: 2),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: AppColors.primary.withOpacity(0.2),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Icon(
-                                  Icons.swap_vert,
-                                  color: AppColors.primary,
-                                  size: 20,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Divider(
-                                color: AppColors.primary,
-                                thickness: 1,
-                                indent: 12,
-                              ),
-                            ),
-                          ],
+                        const SizedBox(height: 16),
+                        Text(
+                          AppLocalizations.of(context)!.loading,
+                          style: TextStyle(
+                            color: AppColors.textSecondary,
+                            fontSize: 14,
+                          ),
                         ),
+                      ],
+                    ),
+                  )
+                : SingleChildScrollView(
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        children: [
+                          // Top Row - 发送（按照图一：币种选择在上，输入框在下）
+                          _buildSwapRow(
+                            amountController: _amountController,
+                            symbol: topCoin,
+                            isTop: true,
+                            onChanged: _onAmountChanged,
+                            availableBalance:
+                                _formatAmount(_getCoinBalance(topCoin)),
+                          ),
 
-                        const SizedBox(height: 12),
+                          const SizedBox(height: 12),
 
-                        // Bottom Row - 接收（按照图一：币种选择在上，输入框在下）
-                        _buildSwapRow(
-                          amountController: _bottomAmountController,
-                          symbol: bottomCoin,
-                          isTop: false,
-                          readOnly: true,
-                          availableBalance:
-                              _getCoinBalance(bottomCoin).toStringAsFixed(2),
-                        ),
-
-                        const SizedBox(height: 20),
-
-                        // 卡片选择（当涉及HKD时显示）
-                        if (_needsCardSelection()) ...[
-                          // 转账方向标识
+                          // Swap Arrow
                           Row(
                             children: [
-                              Icon(
-                                bottomCoin == 'HKD'
-                                    ? Icons.arrow_downward
-                                    : Icons.arrow_upward,
-                                size: 16,
-                                color: bottomCoin == 'HKD'
-                                    ? Colors.green
-                                    : Colors.orange,
+                              Expanded(
+                                child: Divider(
+                                  color: AppColors.primary,
+                                  thickness: 1,
+                                  endIndent: 12,
+                                ),
                               ),
-                              const SizedBox(width: 4),
-                              Text(
-                                bottomCoin == 'HKD'
-                                    ? AppLocalizations.of(context)!
-                                        .transferToCard
-                                    : AppLocalizations.of(context)!
-                                        .transferFromCard,
-                                style: TextStyle(
-                                  fontSize: 13,
+                              GestureDetector(
+                                onTap: _swapCoins,
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.cardBackground,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                        color: AppColors.primary, width: 2),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color:
+                                            AppColors.primary.withOpacity(0.2),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    Icons.swap_vert,
+                                    color: AppColors.primary,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Divider(
+                                  color: AppColors.primary,
+                                  thickness: 1,
+                                  indent: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 12),
+
+                          // Bottom Row - 接收（按照图一：币种选择在上，输入框在下）
+                          _buildSwapRow(
+                            amountController: _bottomAmountController,
+                            symbol: bottomCoin,
+                            isTop: false,
+                            readOnly: true,
+                            availableBalance:
+                                _formatAmount(_getCoinBalance(bottomCoin)),
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          // 卡片选择（当涉及HKD时显示）
+                          if (_needsCardSelection()) ...[
+                            // 转账方向标识
+                            Row(
+                              children: [
+                                Icon(
+                                  bottomCoin == 'HKD'
+                                      ? Icons.arrow_downward
+                                      : Icons.arrow_upward,
+                                  size: 16,
                                   color: bottomCoin == 'HKD'
                                       ? Colors.green
                                       : Colors.orange,
-                                  fontWeight: FontWeight.w600,
                                 ),
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                bottomCoin == 'HKD'
-                                    ? AppLocalizations.of(context)!
-                                        .rechargeToCard
-                                    : AppLocalizations.of(context)!
-                                        .withdrawFromCard,
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  color: AppColors.textSecondary,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          GestureDetector(
-                            onTap: _showCardSelectionSheet,
-                            child: Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                gradient: _selectedCard != null
-                                    ? AppColors.primaryGradient
-                                    : null,
-                                color: _selectedCard == null
-                                    ? AppColors.cardBackground
-                                    : null,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: _selectedCard != null
-                                      ? Colors.transparent
-                                      : AppColors.border,
-                                  width: 1,
-                                ),
-                              ),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 40,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      color: _selectedCard != null
-                                          ? Colors.white.withOpacity(0.3)
-                                          : AppColors.border,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: _selectedCard != null
-                                        ? const Center(
-                                            child: Text(
-                                              'P',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                                fontStyle: FontStyle.italic,
-                                              ),
-                                            ),
-                                          )
-                                        : Icon(
-                                            Icons.credit_card,
-                                            color: AppColors.textSecondary,
-                                          ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          _selectedCard != null
-                                              ? _selectedCard!.cardNo
-                                              : AppLocalizations.of(context)!
-                                                  .selectCard,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: _selectedCard != null
-                                                ? Colors.white
-                                                : AppColors.textSecondary,
-                                          ),
-                                        ),
-                                        if (_selectedCard != null &&
-                                            _selectedCardDetails != null) ...[
-                                          const SizedBox(height: 2),
-                                          Text(
-                                            '${_selectedCardDetails!.currencyCode} • ${_selectedCardDetails!.balance.toStringAsFixed(2)} ${_selectedCardDetails!.currencyCode}',
-                                            style: TextStyle(
-                                              color:
-                                                  Colors.white.withOpacity(0.9),
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ],
-                                      ],
-                                    ),
-                                  ),
-                                  Icon(
-                                    Icons.arrow_forward_ios,
-                                    size: 16,
-                                    color: _selectedCard != null
-                                        ? Colors.white
-                                        : AppColors.textSecondary,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                        ],
-
-                        // 汇率显示
-                        if (swapViewModel.isLoadingRate)
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                width: 16,
-                                height: 16,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                    AppColors.primary,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                AppLocalizations.of(context)!.gettingRate,
-                                style: const TextStyle(
-                                    color: AppColors.textSecondary),
-                              ),
-                            ],
-                          )
-                        else if (swapViewModel.errorMessage != null)
-                          Text(
-                            "${AppLocalizations.of(context)!.error}: ${swapViewModel.errorMessage}",
-                            style: const TextStyle(
-                                color: AppColors.error, fontSize: 12),
-                          )
-                        else if (swapViewModel.exchangeRate > 0)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 12),
-                            decoration: BoxDecoration(
-                              color: AppColors.primaryLight,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
+                                const SizedBox(width: 4),
                                 Text(
-                                  "1 $topCoin ≈ ${swapViewModel.exchangeRate.toStringAsFixed(4)} $bottomCoin",
-                                  style: const TextStyle(
-                                    color: AppColors.textPrimary,
-                                    fontWeight: FontWeight.w500,
+                                  bottomCoin == 'HKD'
+                                      ? AppLocalizations.of(context)!
+                                          .transferToCard
+                                      : AppLocalizations.of(context)!
+                                          .transferFromCard,
+                                  style: TextStyle(
                                     fontSize: 13,
+                                    color: bottomCoin == 'HKD'
+                                        ? Colors.green
+                                        : Colors.orange,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                                 const SizedBox(width: 8),
-                                GestureDetector(
-                                  onTap: _fetchRate,
-                                  child: Icon(
-                                    Icons.refresh,
-                                    size: 16,
-                                    color: AppColors.primary,
+                                Text(
+                                  bottomCoin == 'HKD'
+                                      ? AppLocalizations.of(context)!
+                                          .rechargeToCard
+                                      : AppLocalizations.of(context)!
+                                          .withdrawFromCard,
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: AppColors.textSecondary,
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-
-                        const SizedBox(height: 40),
-
-                        // 兑换按钮（使用渐变样式）
-                        Container(
-                          width: double.infinity,
-                          height: 52,
-                          decoration: BoxDecoration(
-                            gradient: AppColors.primaryGradient,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: ElevatedButton(
-                            onPressed: swapViewModel.isExecutingSwap
-                                ? null
-                                : _handleSwapButtonClick,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              shadowColor: Colors.transparent,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              elevation: 0,
-                            ),
-                            child: swapViewModel.isExecutingSwap
-                                ? const SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                      strokeWidth: 2,
+                            const SizedBox(height: 12),
+                            GestureDetector(
+                              onTap: _showCardSelectionSheet,
+                              child: Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  gradient: _selectedCard != null
+                                      ? AppColors.primaryGradient
+                                      : null,
+                                  color: _selectedCard == null
+                                      ? AppColors.cardBackground
+                                      : null,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: _selectedCard != null
+                                        ? Colors.transparent
+                                        : AppColors.border,
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        color: _selectedCard != null
+                                            ? Colors.white.withOpacity(0.3)
+                                            : AppColors.border,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: _selectedCard != null
+                                          ? const Center(
+                                              child: Text(
+                                                'P',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontStyle: FontStyle.italic,
+                                                ),
+                                              ),
+                                            )
+                                          : Icon(
+                                              Icons.credit_card,
+                                              color: AppColors.textSecondary,
+                                            ),
                                     ),
-                                  )
-                                : Text(
-                                    AppLocalizations.of(context)!.swapAction,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            _selectedCard != null
+                                                ? _selectedCard!.cardNo
+                                                : AppLocalizations.of(context)!
+                                                    .selectCard,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: _selectedCard != null
+                                                  ? Colors.white
+                                                  : AppColors.textSecondary,
+                                            ),
+                                          ),
+                                          if (_selectedCard != null &&
+                                              _selectedCardDetails != null) ...[
+                                            const SizedBox(height: 2),
+                                            Text(
+                                              '${_selectedCardDetails!.currencyCode} • ${_selectedCardDetails!.balance.toStringAsFixed(2)} ${_selectedCardDetails!.currencyCode}',
+                                              style: TextStyle(
+                                                color: Colors.white
+                                                    .withOpacity(0.9),
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ],
+                                        ],
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.arrow_forward_ios,
+                                      size: 16,
+                                      color: _selectedCard != null
+                                          ? Colors.white
+                                          : AppColors.textSecondary,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                          ],
+
+                          // 汇率显示
+                          if (swapViewModel.isLoadingRate)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      AppColors.primary,
                                     ),
                                   ),
-                          ),
-                        ),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  AppLocalizations.of(context)!.gettingRate,
+                                  style: const TextStyle(
+                                      color: AppColors.textSecondary),
+                                ),
+                              ],
+                            )
+                          else if (swapViewModel.errorMessage != null)
+                            Text(
+                              "${AppLocalizations.of(context)!.error}: ${swapViewModel.errorMessage}",
+                              style: const TextStyle(
+                                  color: AppColors.error, fontSize: 12),
+                            )
+                          else if (swapViewModel.exchangeRate > 0)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 12),
+                              decoration: BoxDecoration(
+                                color: AppColors.primaryLight,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "1 $topCoin ≈ ${swapViewModel.exchangeRate.toStringAsFixed(4)} $bottomCoin",
+                                    style: const TextStyle(
+                                      color: AppColors.textPrimary,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  GestureDetector(
+                                    onTap: _fetchRate,
+                                    child: Icon(
+                                      Icons.refresh,
+                                      size: 16,
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
 
-                        const SizedBox(height: 20),
-                      ],
+                          const SizedBox(height: 40),
+
+                          // 兑换按钮（使用渐变样式）
+                          Container(
+                            width: double.infinity,
+                            height: 52,
+                            decoration: BoxDecoration(
+                              gradient: AppColors.primaryGradient,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: ElevatedButton(
+                              onPressed: swapViewModel.isExecutingSwap
+                                  ? null
+                                  : _handleSwapButtonClick,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.transparent,
+                                shadowColor: Colors.transparent,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                elevation: 0,
+                              ),
+                              child: swapViewModel.isExecutingSwap
+                                  ? const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : Text(
+                                      AppLocalizations.of(context)!.swapAction,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 20),
+                        ],
+                      ),
                     ),
                   ),
-                ),
+          ),
         );
       },
     );
@@ -1388,8 +1420,7 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
                             child: GestureDetector(
                               onTap: () {
                                 final balance = _getCoinBalance(symbol);
-                                _amountController.text =
-                                    balance.toStringAsFixed(8);
+                                _amountController.text = _formatAmount(balance);
                                 _onAmountChanged(_amountController.text);
                               },
                               child: Container(

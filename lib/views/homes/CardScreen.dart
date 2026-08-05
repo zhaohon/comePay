@@ -1229,9 +1229,9 @@ class _CardScreenState extends State<CardScreen> {
 
               // 内容统一从左下角定位
               Positioned(
-                left: width * 0.10,
+                left: width * 0.0,
                 bottom: height * 0.07,
-                right: width * 0.05,
+                right: width * 0.03,
                 child: Container(
                   padding: EdgeInsets.only(
                     left: width * 0.09,
@@ -1277,6 +1277,7 @@ class _CardScreenState extends State<CardScreen> {
                         children: [
                           // 1. 姓名部分：包裹 Expanded，让它填满剩余空间，限制最大宽度
                           Expanded(
+                            // flex: 1,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
@@ -1286,7 +1287,7 @@ class _CardScreenState extends State<CardScreen> {
                                       .cardHolderLabelText,
                                   style: const TextStyle(
                                     color: Colors.white,
-                                    fontSize: 12,
+                                    fontSize: 10,
                                   ),
                                 ),
                                 const SizedBox(height: 0),
@@ -1311,7 +1312,7 @@ class _CardScreenState extends State<CardScreen> {
                                             'NAME',
                                         style: const TextStyle(
                                           color: Colors.white, // 金属银色
-                                          fontSize: 12,
+                                          fontSize: 9,
                                         ),
                                         maxLines: 1, // 限制单行
                                         overflow:
@@ -1322,39 +1323,38 @@ class _CardScreenState extends State<CardScreen> {
                           ),
 
                           // 间距：保持你原有的逻辑，或者使用固定的 SizedBox(width: 24)
-                          SizedBox(width: width * 0.1),
 
                           // 2. 到期日部分：去掉 Expanded，让它按照自身内容的真实宽度渲染，绝对不会被长名字挤压
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                AppLocalizations.of(context)!
-                                    .expiryDateLabelText,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                ),
-                              ),
-                              const SizedBox(height: 0),
-                              GestureDetector(
-                                onTap: isCurrentCard
-                                    ? () => _showCardSecurityInfo()
-                                    : null,
-                                child: const Text(
-                                  '**/**',
-                                  style: TextStyle(
-                                    color: Colors.white, // 金属银色
-                                    fontSize: 12,
-                                    letterSpacing: 2.0,
+                          Expanded(
+                            flex: 1,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!
+                                      .expiryDateLabelText,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Container(
-                            width: width * 0.3,
+                                const SizedBox(height: 0),
+                                GestureDetector(
+                                  onTap: isCurrentCard
+                                      ? () => _showCardSecurityInfo()
+                                      : null,
+                                  child: const Text(
+                                    '**/**',
+                                    style: TextStyle(
+                                      color: Colors.white, // 金属银色
+                                      fontSize: 12,
+                                      letterSpacing: 2.0,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       )

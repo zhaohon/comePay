@@ -2286,8 +2286,29 @@ class AppLocalizationsId extends AppLocalizations {
   String get threeDsPlanAll => 'Both Modes';
 
   @override
-  String get threeDsUpdateSuccess => 'Successfully updated 3DS settings';
+  String get threeDsUpdateSuccess => 'Successfully Updated 3DS Auth Method';
 
   @override
-  String get threeDsUpdateFailed => 'Failed to update 3DS settings';
+  String get threeDsUpdateFailed => 'Failed to Update 3DS Auth Method';
+
+  @override
+  String get deactivateAccount => 'Deactivate Account';
+
+  @override
+  String get deactivateWarningTitle => 'Confirm Deactivation';
+
+  @override
+  String get deactivateWarningContent =>
+      'Once deactivated, your account cannot be recovered. All assets, linked cards, and transaction records will be permanently cleared or frozen. Are you sure you want to continue?';
+
+  @override
+  String get confirmDeactivate => 'Confirm Deactivate';
+
+  @override
+  String get deactivateOtpPrompt =>
+      'Please enter the OTP sent to your email to complete deactivation';
+
+  @override
+  String get accountDeactivatedSuccessfully =>
+      'Account successfully deactivated';
 }

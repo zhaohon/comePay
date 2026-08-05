@@ -254,8 +254,6 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
     }
   }
 
-
-
   Future<String?> _showTransactionPasswordBottomSheet() {
     return showModalBottomSheet<String>(
       context: context,

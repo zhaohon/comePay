@@ -741,5 +741,11 @@
   "threeDsPlanBio": "تطبيق الدفع (BIO)",
   "threeDsPlanAll": "كلا الوضعين (ALL)",
   "threeDsUpdateSuccess": "تم تحديث إعدادات 3DS بنجاح",
-  "threeDsUpdateFailed": "فشل تحديث إعدادات 3DS"
+  "threeDsUpdateFailed": "فشل تحديث إعدادات 3DS",
+  "deactivateAccount": "إلغاء تنشيط الحساب",
+  "deactivateWarningTitle": "تأكيد إلغاء التنشيط",
+  "deactivateWarningContent": "بمجرد إلغاء التنشيط، لا يمكن استرداد حسابك. سيتم مسح أو تجميد جميع الأصول والبطاقات المرتبطة وسجلات المعاملات بشكل دائم. هل أنت متأكد أنك تريد المتابعة؟",
+  "confirmDeactivate": "تأكيد إلغاء التنشيط",
+  "deactivateOtpPrompt": "يرجى إدخال رمز التحقق المرسل إلى بريدك الإلكتروني لإكمال إلغاء التنشيط",
+  "accountDeactivatedSuccessfully": "تم إلغاء تنشيط الحساب بنجاح"
 }

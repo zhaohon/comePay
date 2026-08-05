@@ -193,9 +193,7 @@ class _InviteFriendScreenState extends State<InviteFriendScreen> {
           height: 180, // Adjust height as needed
           child: PageView.builder(
             controller: _pageController,
-            itemCount: _viewModel.tierConfigs.length > 1
-                ? _viewModel.tierConfigs.length - 1
-                : 0,
+            itemCount: _viewModel.tierConfigs.length,
             onPageChanged: (index) {
               setState(() {
                 _currentPage = index;
@@ -207,11 +205,10 @@ class _InviteFriendScreenState extends State<InviteFriendScreen> {
               // But we keep using 'index' for decoration to ensure V1 gets the first style if desired.
               // Assuming user wants V1 to be the "first" card shown.
 
-              if (index >= _viewModel.tierConfigs.length - 1)
+              if (index >= _viewModel.tierConfigs.length)
                 return const SizedBox.shrink(); // Safety check
 
-              final config =
-                  _viewModel.tierConfigs[index + 1]; // Skip the first one (V0)
+              final config = _viewModel.tierConfigs[index];
               final isCurrent =
                   config['tier_level'] == _viewModel.userTier['tier_level'];
 
@@ -331,10 +328,7 @@ class _InviteFriendScreenState extends State<InviteFriendScreen> {
         // Indicator
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(
-              _viewModel.tierConfigs.length > 1
-                  ? _viewModel.tierConfigs.length - 1
-                  : 0, (index) {
+          children: List.generate(_viewModel.tierConfigs.length, (index) {
             return Container(
               margin: const EdgeInsets.symmetric(horizontal: 4),
               width: 8,

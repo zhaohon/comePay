@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:comecomepay/viewmodels/send_pdp_detail_otp_viewmodel.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:comecomepay/widgets/otp_input.dart';
 
 class SendPdpDetailOtp extends StatelessWidget {
   const SendPdpDetailOtp({super.key});
@@ -26,31 +27,9 @@ class _SendPdpDetailOtpContent extends StatefulWidget {
 }
 
 class _SendPdpDetailOtpContentState extends State<_SendPdpDetailOtpContent> {
-  late List<TextEditingController> _controllers;
-  late List<FocusNode> _focusNodes;
-
-  @override
-  void initState() {
-    super.initState();
-    _controllers = List.generate(5, (index) => TextEditingController());
-    _focusNodes = List.generate(5, (index) => FocusNode());
-  }
-
-  @override
-  void dispose() {
-    for (var controller in _controllers) {
-      controller.dispose();
-    }
-    for (var focusNode in _focusNodes) {
-      focusNode.dispose();
-    }
-    super.dispose();
-  }
-
-  void _onOtpCompleted(BuildContext context) async {
+  void _onOtpCompleted(BuildContext context, String otp) async {
     final viewModel =
         Provider.of<SendPdpDetailOtpViewModel>(context, listen: false);
-    String otp = _controllers.map((controller) => controller.text).join();
     if (otp.length == 5) {
       bool isVerified = await viewModel.verifyPin(otp,
           1); // Assuming id_user is 1, you can get it from storage or provider
@@ -125,46 +104,12 @@ class _SendPdpDetailOtpContentState extends State<_SendPdpDetailOtpContent> {
                     fontSize: 16 * textScaleFactor, color: Colors.black),
               ),
               SizedBox(height: screenHeight * 0.04),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(5, (index) {
-                  return Container(
-                    margin:
-                        EdgeInsets.symmetric(horizontal: screenWidth * 0.01),
-                    padding: EdgeInsets.all(screenWidth * 0.02),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.blue),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    width: 45.0 * textScaleFactor,
-                    height: 45.0 * textScaleFactor,
-                    child: TextField(
-                      controller: _controllers[index],
-                      focusNode: _focusNodes[index],
-                      keyboardType: TextInputType.number,
-                      textAlign: TextAlign.center,
-                      maxLength: 1,
-                      style: TextStyle(fontSize: 18 * textScaleFactor),
-                      decoration: InputDecoration(
-                        counterText: '',
-                        border: InputBorder.none,
-                      ),
-                      onChanged: (value) {
-                        if (value.isNotEmpty && index < 4) {
-                          FocusScope.of(context)
-                              .requestFocus(_focusNodes[index + 1]);
-                        } else if (value.isEmpty && index > 0) {
-                          FocusScope.of(context)
-                              .requestFocus(_focusNodes[index - 1]);
-                        }
-                        // Aksi saat kotak terakhir diisi
-                        if (index == 4 && value.isNotEmpty) {
-                          _onOtpCompleted(context);
-                        }
-                      },
-                    ),
-                  );
-                }),
+              OtpInput(
+                length: 5,
+                obscureText: false,
+                onCompleted: (val) {
+                  _onOtpCompleted(context, val);
+                },
               ),
             ],
           ),

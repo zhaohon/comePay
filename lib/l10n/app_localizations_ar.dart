@@ -2285,4 +2285,24 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get threeDsUpdateFailed => 'فشل تحديث إعدادات 3DS';
+
+  @override
+  String get deactivateAccount => 'إلغاء تنشيط الحساب';
+
+  @override
+  String get deactivateWarningTitle => 'تأكيد إلغاء التنشيط';
+
+  @override
+  String get deactivateWarningContent =>
+      'بمجرد إلغاء التنشيط، لا يمكن استرداد حسابك. سيتم مسح أو تجميد جميع الأصول والبطاقات المرتبطة وسجلات المعاملات بشكل دائم. هل أنت متأكد أنك تريد المتابعة؟';
+
+  @override
+  String get confirmDeactivate => 'تأكيد إلغاء التنشيط';
+
+  @override
+  String get deactivateOtpPrompt =>
+      'يرجى إدخال رمز التحقق المرسل إلى بريدك الإلكتروني لإكمال إلغاء التنشيط';
+
+  @override
+  String get accountDeactivatedSuccessfully => 'تم إلغاء تنشيط الحساب بنجاح';
 }
