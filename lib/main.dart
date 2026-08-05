@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io' show Platform;
 import 'package:comecomepay/views/homes/AboutUsScreen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +25,10 @@ import 'package:comecomepay/viewmodels/swap_viewmodel.dart';
 import 'package:comecomepay/models/responses/login_response_model.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
+
+// Firebase imports
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 // Import all screen classes
 import 'package:comecomepay/views/onboarding/SplashScreen.dart';
@@ -83,6 +88,41 @@ class L10n {
 }
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase (Manually passing options to bypass Xcode manual linking)
+  await Firebase.initializeApp(
+    options: const FirebaseOptions(
+      apiKey: 'AIzaSyAQChITJHvky6gKiW_-cwcvNM4JMfK0OYY',
+      appId: '1:848715465177:ios:10715fff8e46d4fdf0d9c8',
+      messagingSenderId: '848715465177',
+      projectId: 'comepay-a31f4',
+      storageBucket: 'comepay-a31f4.firebasestorage.app',
+      iosBundleId: 'com.example.comecomepay',
+    ),
+  );
+
+  // Request APNs/notification permissions
+  await FirebaseMessaging.instance.requestPermission(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+
+  // Get device token and log it for backend integration
+  try {
+    if (Platform.isIOS) {
+      // iOS specific: Ensure APNs token is ready before requesting FCM token
+      await FirebaseMessaging.instance.getAPNSToken();
+    }
+    final String? token = await FirebaseMessaging.instance.getToken();
+    debugPrint('--- DEVICE PUSH TOKEN ---');
+    debugPrint(token);
+    debugPrint('-------------------------');
+  } catch (e) {
+    debugPrint('Failed to get Push Token (Are you on a Simulator?): $e');
+  }
+
   // Initialize Hive
   await Hive.initFlutter();
 

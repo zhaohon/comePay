@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "848715465177",
+    "project_id": "comepay-a31f4",
+    "storage_bucket": "comepay-a31f4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:848715465177:android:63596dbe7018fa04f0d9c8",
+        "android_client_info": {
+          "package_name": "com.comecomepay.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBh2FSxQ3WrBat41QF-g96Z_a7WF7DMbFs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
