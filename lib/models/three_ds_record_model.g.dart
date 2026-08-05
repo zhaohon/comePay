@@ -6,6 +6,7 @@ part of 'three_ds_record_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+
 ThreeDSRecordModel _$ThreeDSRecordModelFromJson(Map<String, dynamic> json) =>
     ThreeDSRecordModel(
       id: (json['id'] as num).toInt(),
