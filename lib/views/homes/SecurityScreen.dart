@@ -523,7 +523,7 @@ class _SecurityscreenState extends State<Securityscreen> {
               ),
               const SizedBox(height: 24),
               OtpInput(
-                length: 6,
+                length: 5,
                 onCompleted: (value) {
                   currentOtp = value;
                 },
@@ -556,7 +556,7 @@ class _SecurityscreenState extends State<Securityscreen> {
                         elevation: 0,
                       ),
                       onPressed: () {
-                        if (currentOtp.length == 6) {
+                        if (currentOtp.length == 5) {
                           Navigator.pop(context, currentOtp);
                         }
                       },
@@ -575,7 +575,7 @@ class _SecurityscreenState extends State<Securityscreen> {
       },
     );
 
-    if (otp == null || otp.length != 6) return; // User cancelled or incomplete
+    if (otp == null || otp.length != 5) return; // User cancelled or incomplete
 
     // 4. Submit Deactivation
     showDialog(
