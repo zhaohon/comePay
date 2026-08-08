@@ -90,38 +90,75 @@ class L10n {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase (Manually passing options to bypass Xcode manual linking)
-  await Firebase.initializeApp(
-    options: const FirebaseOptions(
-      apiKey: 'AIzaSyAQChITJHvky6gKiW_-cwcvNM4JMfK0OYY',
-      appId: '1:848715465177:ios:10715fff8e46d4fdf0d9c8',
-      messagingSenderId: '848715465177',
-      projectId: 'comepay-a31f4',
-      storageBucket: 'comepay-a31f4.firebasestorage.app',
-      iosBundleId: 'com.example.comecomepay',
-    ),
-  );
-
-  // Request APNs/notification permissions
-  await FirebaseMessaging.instance.requestPermission(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
-
-  // Get device token and log it for backend integration
-  try {
-    if (Platform.isIOS) {
-      // iOS specific: Ensure APNs token is ready before requesting FCM token
-      await FirebaseMessaging.instance.getAPNSToken();
-    }
-    final String? token = await FirebaseMessaging.instance.getToken();
-    debugPrint('--- DEVICE PUSH TOKEN ---');
-    debugPrint(token);
-    debugPrint('-------------------------');
-  } catch (e) {
-    debugPrint('Failed to get Push Token (Are you on a Simulator?): $e');
+  // Initialize Firebase (Manually passing options only for iOS to bypass Xcode manual linking)
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp(
+      options: Platform.isIOS
+          ? const FirebaseOptions(
+              apiKey: 'AIzaSyAQChITJHvky6gKiW_-cwcvNM4JMfK0OYY',
+              appId: '1:848715465177:ios:10715fff8e46d4fdf0d9c8',
+              messagingSenderId: '848715465177',
+              projectId: 'comepay-a31f4',
+              storageBucket: 'comepay-a31f4.firebasestorage.app',
+              iosBundleId: 'com.example.comecomepay',
+            )
+          : null,
+    );
   }
+
+  // Run Firebase Token fetching in a non-blocking background Future
+  // This prevents Huawei / China ROMs without Google Mobile Services (GMS) from
+  // hanging indefinitely on `await getToken()` which results in an app white-screen!
+  Future.microtask(() async {
+    try {
+      // Request APNs/notification permissions
+      await FirebaseMessaging.instance.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+
+      // Get device token and log it for backend integration
+      if (Platform.isIOS) {
+        // iOS specific: Ensure APNs token is ready before requesting FCM token
+        await FirebaseMessaging.instance.getAPNSToken();
+      }
+      final String? token = await FirebaseMessaging.instance.getToken().timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          debugPrint(
+              'FCM Token fetch TIMEOUT (15s) - GMS framework is broken or network is blocked');
+          return null;
+        },
+      );
+      debugPrint('--- DEVICE PUSH TOKEN ---');
+      debugPrint(token ?? 'NO_TOKEN (Init Failed or Timeout)');
+      debugPrint('-------------------------');
+
+      // Phase 6: Listen for token refreshes
+      FirebaseMessaging.instance.onTokenRefresh.listen((String newToken) {
+        debugPrint('--- TOKEN REFRESHED ---');
+        debugPrint(newToken);
+        // Here you will upload the new token to your backend
+      });
+
+      // Phase 7: Handle notification clicks when app is in Background
+      FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+        debugPrint(
+            'Notification clicked! App was in background. Data: ${message.data}');
+      });
+
+      // Phase 7: Handle notification clicks when app is completely Terminated
+      final RemoteMessage? initialMessage =
+          await FirebaseMessaging.instance.getInitialMessage();
+      if (initialMessage != null) {
+        debugPrint(
+            'App launched from terminated state via notification! Data: ${initialMessage.data}');
+      }
+    } catch (e) {
+      debugPrint('Background Firebase startup log: $e');
+    }
+  });
 
   // Initialize Hive
   await Hive.initFlutter();
