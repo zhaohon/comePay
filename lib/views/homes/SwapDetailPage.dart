@@ -33,6 +33,8 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
   CardListResponseModel? _cardList;
   CardListItemModel? _selectedCard;
   CardAccountDetailsModel? _selectedCardDetails;
+  // 并行获取的卡片详情缓存字典，以 publicToken 为 key
+  Map<String, CardAccountDetailsModel> _cachedCardDetails = {};
 
   // 币种列表（钱包币种）
   List<WalletBalance> _walletCoins = [];
@@ -201,32 +203,53 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
     return null;
   }
 
-  /// 加载卡片列表
+  /// 加载卡片列表 (并利用 Future.wait 预加载所有详情存入字典)
   Future<void> _loadCardList() async {
     try {
       final cardList = await _cardService.getCardList();
       setState(() {
         _cardList = cardList;
-        // 如果有卡片且未选择，默认选择第一张
-        if (_selectedCard == null && cardList.hasCards) {
-          _selectedCard = cardList.cards.first;
-          _loadCardDetails(cardList.cards.first.publicToken);
-        }
       });
+
+      if (cardList.hasCards) {
+        // 利用并发请求所有卡的详情 (Promise.all aggregated fetch)
+        final futures = cardList.cards.map(
+            (card) => _cardService.getCardAccountDetails(card.publicToken));
+        final detailsList = await Future.wait(futures);
+
+        setState(() {
+          for (int i = 0; i < cardList.cards.length; i++) {
+            _cachedCardDetails[cardList.cards[i].publicToken] = detailsList[i];
+          }
+          // 首次未选择时，默认选中第一张
+          if (_selectedCard == null) {
+            _selectedCard = cardList.cards.first;
+            _selectedCardDetails = detailsList.first;
+          }
+        });
+      }
     } catch (e) {
       print('Error loading card list: $e');
     }
   }
 
-  /// 加载卡片详情（余额）
+  /// 加载卡片详情（优先走字典缓存，解决切换 Loading）
   Future<void> _loadCardDetails(String publicToken) async {
+    if (_cachedCardDetails.containsKey(publicToken)) {
+      setState(() {
+        _selectedCardDetails = _cachedCardDetails[publicToken];
+      });
+      return;
+    }
+    // 降级: 如果缓存里没有再请求
     try {
       final details = await _cardService.getCardAccountDetails(publicToken);
       setState(() {
+        _cachedCardDetails[publicToken] = details;
         _selectedCardDetails = details;
       });
     } catch (e) {
-      print('Error loading card details: $e');
+      print('Error loading fallback card details: $e');
     }
   }
 
@@ -296,6 +319,11 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
                     final card = _cardList!.cards[index];
                     final isSelected = _selectedCard?.id == card.id;
 
+                    final cachedDetail = _cachedCardDetails[card.publicToken];
+                    final balanceText = cachedDetail != null
+                        ? '\$${cachedDetail.balance.toStringAsFixed(2)}'
+                        : '';
+
                     return Container(
                       margin: const EdgeInsets.only(bottom: 12),
                       decoration: BoxDecoration(
@@ -337,7 +365,7 @@ class _SwapDetailPageState extends State<SwapDetailPage> {
                           ),
                         ),
                         subtitle: Text(
-                          '${card.currency} • ${card.cardScheme.toUpperCase()}',
+                          '${balanceText.isNotEmpty ? '$balanceText • ' : ''}${card.currency}${card.cardScheme.isNotEmpty ? ' • ${card.cardScheme.toUpperCase()}' : ''}',
                           style: const TextStyle(
                             color: AppColors.textSecondary,
                             fontSize: 12,
