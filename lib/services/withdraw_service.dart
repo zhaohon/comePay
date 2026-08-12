@@ -24,6 +24,7 @@ class WithdrawRequestModel {
       'amount': amount,
       'address': address,
       'network': network,
+      if (transactionPassword != null) 'transaction_password': transactionPassword,
     };
   }
 }
