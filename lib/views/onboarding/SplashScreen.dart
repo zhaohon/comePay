@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:comecomepay/services/push_service.dart';
 import 'dart:async';
 import 'package:provider/provider.dart';
 import 'package:comecomepay/viewmodels/login_viewmodel.dart';
@@ -72,6 +73,9 @@ class _SplashScreenState extends State<SplashScreen>
             if (loginViewModel.hasStoredAuthData &&
                 loginViewModel.storedAccessToken != null &&
                 loginViewModel.storedRefreshToken != null) {
+              // App boot check: Ensure push token is synced for current valid user session
+              PushService().registerDevice();
+
               Navigator.pushReplacementNamed(context, '/home');
             } else {
               Navigator.pushReplacementNamed(context, '/onboarding_screen');

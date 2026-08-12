@@ -367,10 +367,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get withdrawal => 'Withdrawal';
 
   @override
-  String get send => 'Send';
+  String get send => 'Withdraw';
 
   @override
-  String get receive => 'Receive';
+  String get receive => 'Deposit';
 
   @override
   String get swap => 'SWAP';
@@ -2305,4 +2305,23 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get accountDeactivatedSuccessfully =>
       'Account successfully deactivated';
+
+  @override
+  String get confirmReceivePhysicalCardTitle =>
+      'Confirm Receiving Physical Card?';
+
+  @override
+  String get confirmReceivePhysicalCardDesc =>
+      'Please confirm that the package has been delivered and signed by yourself. Upon confirmation, the mailing progress will no longer be displayed.';
+
+  @override
+  String get cardDeliveryConfirmed => 'Delivery Confirmed!';
+
+  @override
+  String cardDeliveryConfirmFailed(String error) {
+    return 'Confirm delivery failed: $error';
+  }
+
+  @override
+  String get adminAdjustment => 'Admin Adjustment';
 }

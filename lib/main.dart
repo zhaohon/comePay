@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:comecomepay/services/push_service.dart';
 import 'dart:io' show Platform;
 import 'package:comecomepay/views/homes/AboutUsScreen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -139,7 +140,11 @@ void main() async {
       FirebaseMessaging.instance.onTokenRefresh.listen((String newToken) {
         debugPrint('--- TOKEN REFRESHED ---');
         debugPrint(newToken);
-        // Here you will upload the new token to your backend
+
+        // Wait for Hive to be ready if called during boot
+        if (HiveStorageService.getAccessToken() != null) {
+          PushService().registerDevice();
+        }
       });
 
       // Phase 7: Handle notification clicks when app is in Background

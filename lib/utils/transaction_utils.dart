@@ -20,6 +20,8 @@ class TransactionUtils {
         return l10n.typeTransfer;
       case 'fee':
         return l10n.typeFee;
+      case 'admin_adjustment':
+        return l10n.adminAdjustment;
       default:
         return type; // Fallback to raw type if unknown
     }

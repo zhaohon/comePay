@@ -47,6 +47,7 @@ class _CardScreenState extends State<CardScreen> {
   // 卡片列表相关状态
   CardListResponseModel? _cardList;
   bool _isLoadingCards = false;
+  final Set<int> _optimisticHiddenMailingTabs = {};
   String? _cardError;
 
   // 当前选中的卡片索引
@@ -627,7 +628,8 @@ class _CardScreenState extends State<CardScreen> {
           // 悬浮在最右侧居中的邮寄进度按钮
           if (_cardList != null &&
               _cardList!.hasCards &&
-              _currentCardDetails?.updatePhysical == true)
+              _currentCardDetails?.updatePhysical == true &&
+              !_optimisticHiddenMailingTabs.contains(_currentCardDetails!.id))
             Positioned(
               right: 0,
               top: MediaQuery.of(context).size.height * 0.45,
@@ -824,7 +826,7 @@ class _CardScreenState extends State<CardScreen> {
                   final screenWidth = constraints.maxWidth;
                   final horizontalMargin = screenWidth * 0.08;
                   final cardWidth = screenWidth - (horizontalMargin * 2);
-                  final cardHeight = cardWidth * (2880 / 4999);
+                  final cardHeight = cardWidth * (6216 / 10788);
                   return SizedBox(
                     height: cardHeight,
                     child: PageView.builder(
@@ -1828,7 +1830,7 @@ class _CardScreenState extends State<CardScreen> {
                       ),
                       SizedBox(height: size.height * 0.05),
                       AspectRatio(
-                        aspectRatio: 1280 / 813, // 保持原图比例
+                        aspectRatio: 10788 / 6216, // 保持原图比例
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(16),
                           child: Image.asset(
@@ -2093,6 +2095,136 @@ class _CardScreenState extends State<CardScreen> {
                 ),
               ),
               const SizedBox(height: 16),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showConfirmDeliveryDialog(BuildContext parentCtx) {
+    if (_currentCardDetails == null) return;
+    showModalBottomSheet(
+      context: parentCtx,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24),
+              topRight: Radius.circular(24),
+            ),
+          ),
+          padding: EdgeInsets.only(
+            left: 24,
+            right: 24,
+            top: 24,
+            bottom: MediaQuery.of(ctx).padding.bottom + 32,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // 顶部拖拽把手
+              Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: 24),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              // 标题
+              Text(
+                AppLocalizations.of(context)!.confirmReceivePhysicalCardTitle,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 16),
+              // 内容
+              Text(
+                AppLocalizations.of(context)!.confirmReceivePhysicalCardDesc,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: AppColors.textSecondary,
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 32),
+              // 底部按钮
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(ctx),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey.shade100,
+                        foregroundColor: AppColors.textPrimary,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(AppLocalizations.of(context)!.cancel,
+                          style: const TextStyle(fontSize: 16)),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        Navigator.pop(ctx); // 关闭确认弹窗
+                        Navigator.pop(parentCtx); // 关闭进度底部弹窗
+                        try {
+                            final result = await _cardService.confirmPhysicalCardDelivery(_currentCardDetails!.id);
+                            if (result["status"] == "success") {
+                              if (mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(AppLocalizations.of(context)!.cardDeliveryConfirmed)),
+                                );
+                              }
+                              setState(() {
+                                _optimisticHiddenMailingTabs.add(_currentCardDetails!.id);
+                              });
+                            }
+
+                        } catch (e) {
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text(
+                                      AppLocalizations.of(context)!
+                                          .cardDeliveryConfirmFailed(
+                                              e.toString()),
+                                      style:
+                                          const TextStyle(color: Colors.red))),
+                            );
+                          }
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF0F172A),
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(AppLocalizations.of(context)!.confirm,
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         );
@@ -2411,8 +2543,7 @@ class _CardScreenState extends State<CardScreen> {
                       child: ElevatedButton(
                         onPressed: snapshot.data!.isShippedOrDelivered
                             ? () {
-                                // 关闭进度底部弹窗
-                                Navigator.pop(ctx);
+                                _showConfirmDeliveryDialog(ctx);
                               }
                             : null,
                         style: ElevatedButton.styleFrom(

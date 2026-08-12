@@ -7,6 +7,7 @@ import 'package:comecomepay/services/global_service.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/utils/service_locator.dart';
+import 'package:comecomepay/services/push_service.dart';
 
 // Response types for different scenarios
 class LoginResult {
@@ -102,6 +103,9 @@ class LoginViewModel extends BaseViewModel {
 
         // Simpan data authentication ke Hive
         await HiveStorageService.saveAuthData(response.data);
+
+        // Register FCM Push Device to backend after successful login
+        PushService().registerDevice();
 
         setBusy(false);
         return LoginResult(
@@ -256,6 +260,9 @@ class LoginViewModel extends BaseViewModel {
 
       // Simpan data authentication ke Hive
       await HiveStorageService.saveAuthData(_loginResponse!);
+
+      // Register FCM Push Device to backend after successful OTP login
+      PushService().registerDevice();
 
       setBusy(false);
       return LoginResult(

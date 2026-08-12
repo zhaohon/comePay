@@ -118,6 +118,13 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
       return;
     }
 
+    // 等待异步完成：
+    final isPasswordSet = await TransactionPasswordGuard.check(context);
+    if (!isPasswordSet) return;
+
+    final password = await _showTransactionPasswordBottomSheet();
+    if (password == null || password.isEmpty) return;
+
     setState(() {
       _isLoading = true;
     });
@@ -136,6 +143,7 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
         amount: amount,
         address: _addressController.text.trim(),
         network: network,
+              transactionPassword: password,
       );
 
       final response = await _withdrawService.withdraw(request);

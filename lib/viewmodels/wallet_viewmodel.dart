@@ -47,6 +47,34 @@ class WalletViewModel extends BaseViewModel {
       print('🔄 WalletViewModel: Fetching wallet data for user ${user.id}');
       _walletResponse = await _walletService.getWalletById(user.id);
 
+            // Inject HKD as an unclickable balance item
+            _walletResponse!.wallet.balances.add(WalletBalance(
+              id: -1,
+              currency: "HKD",
+              balance: _walletResponse!.wallet.totalAssetHkd,
+              mainCoinType: 0,
+              coinType: "",
+              symbol: "HKD",
+              decimals: 2,
+              tokenStatus: 1,
+              mainSymbol: "HKD",
+              logo: "assets/hkd.png",
+              coinName: "HKD",
+              address: "",
+              createdAt: "",
+              updatedAt: "",
+            ));
+
+
+            // Global sort putting USDT prefix at bottom... wait, USDT at top!
+            _walletResponse!.wallet.balances.sort((a, b) {
+              final isAUsdt = a.currency.toUpperCase().startsWith("USDT");
+              final isBUsdt = b.currency.toUpperCase().startsWith("USDT");
+              if (isAUsdt != isBUsdt) return isAUsdt ? -1 : 1;
+              return a.currency.compareTo(b.currency);
+            });
+
+
       print('✅ WalletViewModel: Received wallet response');
       print('   Balances count: ${_walletResponse!.wallet.balances.length}');
 

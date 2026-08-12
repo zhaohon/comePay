@@ -5,6 +5,7 @@ import 'package:comecomepay/views/homes/ModifyLoginPasswordScreen.dart'
     show ModifyLoginPasswordScreen;
 import 'package:comecomepay/views/homes/SetTransactionPasswordScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:comecomepay/services/push_service.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
 import 'package:comecomepay/models/responses/get_profile_response_model.dart';
@@ -313,6 +314,7 @@ class _SecurityscreenState extends State<Securityscreen> {
 
     try {
       // Clear all data from Hive storage (auth and profile)
+      await PushService().unregisterDevice();
       await HiveStorageService.clearAllData();
 
       // Navigate to LoginScreen after a short delay
@@ -588,6 +590,7 @@ class _SecurityscreenState extends State<Securityscreen> {
       await _userService.submitAccountDeactivation(otp);
 
       // Success! Clear data and route to login
+      await PushService().unregisterDevice();
       await HiveStorageService.clearAllData();
       if (context.mounted) {
         Navigator.pop(context); // Close loading

@@ -386,11 +386,13 @@ abstract class BaseService {
   // Common method for making DELETE requests
   Future<dynamic> delete(
     String endpoint, {
+    Object? data,
     Options? options,
   }) async {
     try {
       final response = await _dio.delete(
         endpoint,
+        data: data,
         options: options,
       );
       return handleResponse(response);

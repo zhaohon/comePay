@@ -114,8 +114,8 @@
   "account": "Account",
   "deposit": "Deposit",
   "withdrawal": "Withdrawal",
-  "send": "Send",
-  "receive": "Receive",
+  "send": "Withdraw",
+  "receive": "Deposit",
   "swap": "SWAP",
   "fundFlow": "Fund flow",
   "latestTransactions": "Latest Transactions",
@@ -748,4 +748,10 @@
   "confirmDeactivate": "Confirm Deactivate",
   "deactivateOtpPrompt": "Please enter the OTP sent to your email to complete deactivation",
   "accountDeactivatedSuccessfully": "Account successfully deactivated"
+  ,"confirmReceivePhysicalCardTitle": "Confirm Receiving Physical Card?",
+  "confirmReceivePhysicalCardDesc": "Please confirm that the package has been delivered and signed by yourself. Upon confirmation, the mailing progress will no longer be displayed.",
+  "cardDeliveryConfirmed": "Delivery Confirmed!",
+  "cardDeliveryConfirmFailed": "Confirm delivery failed: {error}",
+  "@cardDeliveryConfirmFailed": { "placeholders": { "error": { "type": "String" } } }
+  ,"adminAdjustment": "Admin Adjustment"
 }

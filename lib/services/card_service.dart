@@ -38,6 +38,14 @@ class CardService extends BaseService {
         : null;
   }
 
+  /// 用户确认收货
+  Future<Map<String, dynamic>> confirmPhysicalCardDelivery(
+      int applicationId) async {
+    final response = await post(
+        '/card/physical-application/$applicationId/confirm-delivery');
+    return response as Map<String, dynamic>;
+  }
+
   /// 发送实体卡升级邮箱验证码
   Future<void> sendPhysicalUpgradeEmailCode(
       String publicToken, String email) async {

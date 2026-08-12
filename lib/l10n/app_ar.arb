@@ -114,8 +114,8 @@
   "account": "الحساب",
   "deposit": "الإيداع",
   "withdrawal": "السحب",
-  "send": "إرسال",
-  "receive": "استلام",
+  "send": "سحب",
+  "receive": "إيداع",
   "swap": "مبادلة",
   "fundFlow": "تدفق الأموال",
   "latestTransactions": "أحدث المعاملات",
@@ -748,4 +748,10 @@
   "confirmDeactivate": "تأكيد إلغاء التنشيط",
   "deactivateOtpPrompt": "يرجى إدخال رمز التحقق المرسل إلى بريدك الإلكتروني لإكمال إلغاء التنشيط",
   "accountDeactivatedSuccessfully": "تم إلغاء تنشيط الحساب بنجاح"
+  ,"confirmReceivePhysicalCardTitle": "هل تؤكد استلام البطاقة الفعلية؟",
+  "confirmReceivePhysicalCardDesc": "يرجى التأكد من تسليم الطرد وتوقيعه بنفسك. عند التأكيد، لن يتم عرض تقدم البريد بعد الآن.",
+  "cardDeliveryConfirmed": "تم تأكيد التسليم!",
+  "cardDeliveryConfirmFailed": "فشل تأكيد التسليم: {error}",
+  "@cardDeliveryConfirmFailed": { "placeholders": { "error": { "type": "String" } } }
+  ,"adminAdjustment": "تعديل الإدارة"
 }

@@ -351,10 +351,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get withdrawal => '取款';
 
   @override
-  String get send => '发送';
+  String get send => '提币';
 
   @override
-  String get receive => '接收';
+  String get receive => '充币';
 
   @override
   String get swap => '交换';
@@ -1778,10 +1778,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get keepPinSafeTip => '請妥善保管，切勿轉告他人。';
 
   @override
-  String get cardBenefits => '卡片權益';
+  String get cardBenefits => '卡片权益';
 
   @override
-  String get rates => '費率';
+  String get rates => '费率';
 
   @override
   String get monthlyFee => '月费';
@@ -2234,4 +2234,21 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get accountDeactivatedSuccessfully => '账号已成功注销';
+
+  @override
+  String get confirmReceivePhysicalCardTitle => '确认收到实体卡？';
+
+  @override
+  String get confirmReceivePhysicalCardDesc => '请确认快递已送达并由您本人签收，确认后将不再展示邮寄进度。';
+
+  @override
+  String get cardDeliveryConfirmed => '已确认收货！';
+
+  @override
+  String cardDeliveryConfirmFailed(String error) {
+    return '确认收货失败: $error';
+  }
+
+  @override
+  String get adminAdjustment => '管理员调账';
 }

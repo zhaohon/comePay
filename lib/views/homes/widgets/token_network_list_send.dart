@@ -78,6 +78,7 @@ class _TokenNetworkListSendState extends State<TokenNetworkListSend> {
   Widget build(BuildContext context) {
     return Consumer<WalletViewModel>(
       builder: (context, viewModel, child) {
+
         return Column(
           children: [
             // 搜索框已隐藏
@@ -159,7 +160,17 @@ class _TokenNetworkListSendState extends State<TokenNetworkListSend> {
                 ),
                 child: balance.logo.isNotEmpty
                     ? ClipOval(
-                        child: Image.network(
+                              child: balance.logo.startsWith("assets/")
+                                  ? Image.asset(
+                                      balance.logo,
+                                      width: 44,
+                                      height: 44,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return Icon(Icons.attach_money, color: AppColors.primary, size: 24);
+                                      },
+                                    )
+                                  : Image.network(
                           balance.logo,
                           width: 44,
                           height: 44,

@@ -114,8 +114,8 @@
   "account": "Akun",
   "deposit": "Deposit",
   "withdrawal": "Penarikan",
-  "send": "Kirim",
-  "receive": "Terima",
+  "send": "Tarik",
+  "receive": "Setor",
   "swap": "SWAP",
   "fundFlow": "Arus Dana",
   "latestTransactions": "Transaksi Terbaru",
@@ -589,4 +589,10 @@
   "rules": "Aturan",
   "my": "Saya",
   "invitationSteps": "Langkah Undangan"
+  ,"confirmReceivePhysicalCardTitle": "Konfirmasi Penerimaan Kartu Fisik?",
+  "confirmReceivePhysicalCardDesc": "Harap konfirmasi bahwa paket telah dikirim dan ditandatangani oleh Anda sendiri. Setelah konfirmasi, kemajuan pengiriman tidak akan ditampilkan lagi.",
+  "cardDeliveryConfirmed": "Pengiriman Dikonfirmasi!",
+  "cardDeliveryConfirmFailed": "Gagal mengonfirmasi pengiriman: {error}",
+  "@cardDeliveryConfirmFailed": { "placeholders": { "error": { "type": "String" } } }
+  ,"adminAdjustment": "Penyesuaian Admin"
 }

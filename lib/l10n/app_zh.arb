@@ -115,8 +115,8 @@
   "account": "账户",
   "deposit": "存款",
   "withdrawal": "取款",
-  "send": "发送",
-  "receive": "接收",
+  "send": "提币",
+  "receive": "充币",
   "swap": "交换",
   "fundFlow": "资金流",
   "latestTransactions": "最新交易",
@@ -573,8 +573,8 @@
   "query": "查詢",
   "cardPinIs": "卡片PIN碼為",
   "keepPinSafeTip": "請妥善保管，切勿轉告他人。",
-  "cardBenefits": "卡片權益",
-  "rates": "費率",
+  "cardBenefits": "卡片权益",
+  "rates": "费率",
   "monthlyFee": "月费",
   "monthlyLimit": "消费额度/月",
   "fxFee": "货币转换费",
@@ -748,4 +748,10 @@
   "confirmDeactivate": "确认注销",
   "deactivateOtpPrompt": "请输入您邮箱中的验证码以完成注销",
   "accountDeactivatedSuccessfully": "账号已成功注销"
+  ,"confirmReceivePhysicalCardTitle": "确认收到实体卡？",
+  "confirmReceivePhysicalCardDesc": "请确认快递已送达并由您本人签收，确认后将不再展示邮寄进度。",
+  "cardDeliveryConfirmed": "已确认收货！",
+  "cardDeliveryConfirmFailed": "确认收货失败: {error}",
+  "@cardDeliveryConfirmFailed": { "placeholders": { "error": { "type": "String" } } }
+  ,"adminAdjustment": "管理员调账"
 }

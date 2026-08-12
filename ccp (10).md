@@ -32,26 +32,17 @@ Base URLs:
 
 # 卡片
 
-## PUT 修改卡片3DS认证方式
+## POST 用户确认实体卡收货
 
-PUT /card/3ds
+POST /card/physical-application/{id}/confirm-delivery
 
-修改当前用户持有卡片的3DS认证方式，支持 OTP、BIO 或 ALL。只有PokePay接受变更后才更新本地卡片状态。
-
-> Body 请求参数
-
-```json
-{
-  "plan": "BIO",
-  "public_token": "123456"
-}
-```
+用户确认已收到实体卡，申请必须处于已发货状态；重复确认已签收申请会幂等返回成功
 
 ### 请求参数
 
 |名称|位置|类型|必选|说明|
 |---|---|---|---|---|
-|body|body|[handlers.UpdateCardThreeDSPlanRequest](#schemahandlers.updatecardthreedsplanrequest)| 是 |none|
+|id|path|integer| 是 |实体卡申请ID|
 
 > 返回示例
 
@@ -59,12 +50,17 @@ PUT /card/3ds
 
 ```json
 {
-  "data": {
-    "public_token": "123456",
-    "request_id": "req_123",
-    "three_ds_auth_plan": "BIO"
+  "application": {
+    "created_at": "2024-01-01T00:00:00Z",
+    "delivered_at": "2024-01-08T00:00:00Z",
+    "id": 1,
+    "reject_reason": "地址信息不完整",
+    "shipped_at": "2024-01-05T00:00:00Z",
+    "status": "pending",
+    "status_text": "待审核",
+    "tracking_number": "SF1234567890"
   },
-  "message": "Card 3DS authentication plan updated successfully",
+  "message": "Delivery confirmed successfully",
   "status": "success"
 }
 ```
@@ -73,20 +69,20 @@ PUT /card/3ds
 
 |状态码|状态码含义|说明|数据模型|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|修改成功|[handlers.UpdateCardThreeDSPlanResponse](#schemahandlers.updatecardthreedsplanresponse)|
-|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|请求参数错误|[handlers.ErrorResponse](#schemahandlers.errorresponse)|
-|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|未授权|[handlers.ErrorResponse](#schemahandlers.errorresponse)|
-|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|卡片不存在|[handlers.ErrorResponse](#schemahandlers.errorresponse)|
-|502|[Bad Gateway](https://tools.ietf.org/html/rfc7231#section-6.6.3)|PokePay API 错误|[handlers.ErrorResponse](#schemahandlers.errorresponse)|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|确认收货成功|[internal_handlers.ConfirmPhysicalCardDeliveryResponse](#schemainternal_handlers.confirmphysicalcarddeliveryresponse)|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|未授权|[internal_handlers.ErrorResponse](#schemainternal_handlers.errorresponse)|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|申请不存在或不属于当前用户|[internal_handlers.ErrorResponse](#schemainternal_handlers.errorresponse)|
+|409|[Conflict](https://tools.ietf.org/html/rfc7231#section-6.5.8)|当前状态不能确认收货|[internal_handlers.ErrorResponse](#schemainternal_handlers.errorresponse)|
+|500|[Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1)|服务器内部错误|[internal_handlers.ErrorResponse](#schemainternal_handlers.errorresponse)|
 
 # 数据模型
 
-<h2 id="tocS_handlers.ErrorResponse">handlers.ErrorResponse</h2>
+<h2 id="tocS_internal_handlers.ErrorResponse">internal_handlers.ErrorResponse</h2>
 
-<a id="schemahandlers.errorresponse"></a>
-<a id="schema_handlers.ErrorResponse"></a>
-<a id="tocShandlers.errorresponse"></a>
-<a id="tocshandlers.errorresponse"></a>
+<a id="schemainternal_handlers.errorresponse"></a>
+<a id="schema_internal_handlers.ErrorResponse"></a>
+<a id="tocSinternal_handlers.errorresponse"></a>
+<a id="tocsinternal_handlers.errorresponse"></a>
 
 ```json
 {
@@ -103,95 +99,74 @@ PUT /card/3ds
 |details|string|false|none||none|
 |error|string|false|none||none|
 
-<h2 id="tocS_handlers.UpdateCardThreeDSPlanRequest">handlers.UpdateCardThreeDSPlanRequest</h2>
+<h2 id="tocS_internal_handlers.ConfirmPhysicalCardDeliveryResponse">internal_handlers.ConfirmPhysicalCardDeliveryResponse</h2>
 
-<a id="schemahandlers.updatecardthreedsplanrequest"></a>
-<a id="schema_handlers.UpdateCardThreeDSPlanRequest"></a>
-<a id="tocShandlers.updatecardthreedsplanrequest"></a>
-<a id="tocshandlers.updatecardthreedsplanrequest"></a>
-
-```json
-{
-  "plan": "BIO",
-  "public_token": "123456"
-}
-
-```
-
-将当前用户持有卡片的3DS认证方式切换为 OTP、BIO 或 ALL
-
-### 属性
-
-|名称|类型|必选|约束|中文名|说明|
-|---|---|---|---|---|---|
-|plan|string|true|none||认证方式: OTP=验证码, BIO=App推送确认, ALL=两者都支持|
-|public_token|string|true|none||卡片 Public Token|
-
-#### 枚举值
-
-|属性|值|
-|---|---|
-|plan|OTP|
-|plan|BIO|
-|plan|ALL|
-
-<h2 id="tocS_handlers.UpdateCardThreeDSPlanResponse">handlers.UpdateCardThreeDSPlanResponse</h2>
-
-<a id="schemahandlers.updatecardthreedsplanresponse"></a>
-<a id="schema_handlers.UpdateCardThreeDSPlanResponse"></a>
-<a id="tocShandlers.updatecardthreedsplanresponse"></a>
-<a id="tocshandlers.updatecardthreedsplanresponse"></a>
+<a id="schemainternal_handlers.confirmphysicalcarddeliveryresponse"></a>
+<a id="schema_internal_handlers.ConfirmPhysicalCardDeliveryResponse"></a>
+<a id="tocSinternal_handlers.confirmphysicalcarddeliveryresponse"></a>
+<a id="tocsinternal_handlers.confirmphysicalcarddeliveryresponse"></a>
 
 ```json
 {
-  "data": {
-    "public_token": "123456",
-    "request_id": "req_123",
-    "three_ds_auth_plan": "BIO"
+  "application": {
+    "created_at": "2024-01-01T00:00:00Z",
+    "delivered_at": "2024-01-08T00:00:00Z",
+    "id": 1,
+    "reject_reason": "地址信息不完整",
+    "shipped_at": "2024-01-05T00:00:00Z",
+    "status": "pending",
+    "status_text": "待审核",
+    "tracking_number": "SF1234567890"
   },
-  "message": "Card 3DS authentication plan updated successfully",
+  "message": "Delivery confirmed successfully",
   "status": "success"
 }
 
 ```
 
+用户确认实体卡已收货后的申请状态
+
 ### 属性
 
 |名称|类型|必选|约束|中文名|说明|
 |---|---|---|---|---|---|
-|data|[handlers.UpdateCardThreeDSPlanResponseData](#schemahandlers.updatecardthreedsplanresponsedata)|false|none||none|
+|application|[internal_handlers.PhysicalCardApplicationResponse](#schemainternal_handlers.physicalcardapplicationresponse)|false|none||实体卡申请详情|
 |message|string|false|none||none|
 |status|string|false|none||none|
 
-<h2 id="tocS_handlers.UpdateCardThreeDSPlanResponseData">handlers.UpdateCardThreeDSPlanResponseData</h2>
+<h2 id="tocS_internal_handlers.PhysicalCardApplicationResponse">internal_handlers.PhysicalCardApplicationResponse</h2>
 
-<a id="schemahandlers.updatecardthreedsplanresponsedata"></a>
-<a id="schema_handlers.UpdateCardThreeDSPlanResponseData"></a>
-<a id="tocShandlers.updatecardthreedsplanresponsedata"></a>
-<a id="tocshandlers.updatecardthreedsplanresponsedata"></a>
+<a id="schemainternal_handlers.physicalcardapplicationresponse"></a>
+<a id="schema_internal_handlers.PhysicalCardApplicationResponse"></a>
+<a id="tocSinternal_handlers.physicalcardapplicationresponse"></a>
+<a id="tocsinternal_handlers.physicalcardapplicationresponse"></a>
 
 ```json
 {
-  "public_token": "123456",
-  "request_id": "req_123",
-  "three_ds_auth_plan": "BIO"
+  "created_at": "2024-01-01T00:00:00Z",
+  "delivered_at": "2024-01-08T00:00:00Z",
+  "id": 1,
+  "reject_reason": "地址信息不完整",
+  "shipped_at": "2024-01-05T00:00:00Z",
+  "status": "pending",
+  "status_text": "待审核",
+  "tracking_number": "SF1234567890"
 }
 
 ```
 
+实体卡申请详情
+
 ### 属性
 
 |名称|类型|必选|约束|中文名|说明|
 |---|---|---|---|---|---|
-|public_token|string|false|none||none|
-|request_id|string|false|none||none|
-|three_ds_auth_plan|string|false|none||none|
-
-#### 枚举值
-
-|属性|值|
-|---|---|
-|three_ds_auth_plan|OTP|
-|three_ds_auth_plan|BIO|
-|three_ds_auth_plan|ALL|
+|created_at|string|false|none||创建时间|
+|delivered_at|string|false|none||签收时间|
+|id|integer|false|none||申请ID|
+|reject_reason|string|false|none||拒绝原因（被拒绝时返回）|
+|shipped_at|string|false|none||发货时间|
+|status|string|false|none||申请状态：pending/approved/rejected/shipped/delivered|
+|status_text|string|false|none||状态中文描述|
+|tracking_number|string|false|none||快递单号（已发货/已签收时返回）|
 

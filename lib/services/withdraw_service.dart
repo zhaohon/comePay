@@ -8,12 +8,14 @@ class WithdrawRequestModel {
   final double amount;
   final String address;
   final String network;
+    final String? transactionPassword;
 
   WithdrawRequestModel({
     required this.currency,
     required this.amount,
     required this.address,
     required this.network,
+      this.transactionPassword,
   });
 
   Map<String, dynamic> toJson() {

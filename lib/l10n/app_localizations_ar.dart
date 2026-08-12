@@ -368,10 +368,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get withdrawal => 'السحب';
 
   @override
-  String get send => 'إرسال';
+  String get send => 'سحب';
 
   @override
-  String get receive => 'استلام';
+  String get receive => 'إيداع';
 
   @override
   String get swap => 'مبادلة';
@@ -2305,4 +2305,23 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get accountDeactivatedSuccessfully => 'تم إلغاء تنشيط الحساب بنجاح';
+
+  @override
+  String get confirmReceivePhysicalCardTitle =>
+      'هل تؤكد استلام البطاقة الفعلية؟';
+
+  @override
+  String get confirmReceivePhysicalCardDesc =>
+      'يرجى التأكد من تسليم الطرد وتوقيعه بنفسك. عند التأكيد، لن يتم عرض تقدم البريد بعد الآن.';
+
+  @override
+  String get cardDeliveryConfirmed => 'تم تأكيد التسليم!';
+
+  @override
+  String cardDeliveryConfirmFailed(String error) {
+    return 'فشل تأكيد التسليم: $error';
+  }
+
+  @override
+  String get adminAdjustment => 'تعديل الإدارة';
 }

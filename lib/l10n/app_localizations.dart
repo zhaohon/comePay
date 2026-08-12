@@ -789,13 +789,13 @@ abstract class AppLocalizations {
   /// No description provided for @send.
   ///
   /// In en, this message translates to:
-  /// **'Send'**
+  /// **'Withdraw'**
   String get send;
 
   /// No description provided for @receive.
   ///
   /// In en, this message translates to:
-  /// **'Receive'**
+  /// **'Deposit'**
   String get receive;
 
   /// No description provided for @swap.
@@ -4445,6 +4445,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Account successfully deactivated'**
   String get accountDeactivatedSuccessfully;
+
+  /// No description provided for @confirmReceivePhysicalCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Receiving Physical Card?'**
+  String get confirmReceivePhysicalCardTitle;
+
+  /// No description provided for @confirmReceivePhysicalCardDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Please confirm that the package has been delivered and signed by yourself. Upon confirmation, the mailing progress will no longer be displayed.'**
+  String get confirmReceivePhysicalCardDesc;
+
+  /// No description provided for @cardDeliveryConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery Confirmed!'**
+  String get cardDeliveryConfirmed;
+
+  /// No description provided for @cardDeliveryConfirmFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm delivery failed: {error}'**
+  String cardDeliveryConfirmFailed(String error);
+
+  /// No description provided for @adminAdjustment.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin Adjustment'**
+  String get adminAdjustment;
 }
 
 class _AppLocalizationsDelegate

@@ -43,7 +43,7 @@ class CardBenefitsScreen extends StatelessWidget {
             // 顶部卡片图
             Center(
               child: AspectRatio(
-                aspectRatio: 4999 / 2880,
+                aspectRatio: 10788 / 6216,
                 child: Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
@@ -87,7 +87,7 @@ class CardBenefitsScreen extends StatelessWidget {
                 _buildBenefitItem(
                   context,
                   l10n.fxFee,
-                  '1.4 %',
+                  '1.5 %',
                   // '${(cardDetails.fxFee + 1).toStringAsFixed(2)} %',
                 ),
                 _buildBenefitItem(
@@ -96,11 +96,9 @@ class CardBenefitsScreen extends StatelessWidget {
                   // '${cardDetails.transactionFee.toStringAsFixed(2)} %',
                   '0.8 %',
                 ),
-                _buildBenefitItem(
-                  context,
-                  l10n.crossBorderFee,
-                  '${cardDetails.crossBorderFee.toStringAsFixed(0)} %',
-                ),
+                _buildBenefitItem(context, l10n.crossBorderFee, '2 %'
+                    // '${cardDetails.crossBorderFee.toStringAsFixed(0)} %',
+                    ),
               ],
             ),
 

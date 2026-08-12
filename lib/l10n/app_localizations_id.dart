@@ -366,10 +366,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get withdrawal => 'Penarikan';
 
   @override
-  String get send => 'Kirim';
+  String get send => 'Tarik';
 
   @override
-  String get receive => 'Terima';
+  String get receive => 'Setor';
 
   @override
   String get swap => 'SWAP';
@@ -2311,4 +2311,23 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get accountDeactivatedSuccessfully =>
       'Account successfully deactivated';
+
+  @override
+  String get confirmReceivePhysicalCardTitle =>
+      'Konfirmasi Penerimaan Kartu Fisik?';
+
+  @override
+  String get confirmReceivePhysicalCardDesc =>
+      'Harap konfirmasi bahwa paket telah dikirim dan ditandatangani oleh Anda sendiri. Setelah konfirmasi, kemajuan pengiriman tidak akan ditampilkan lagi.';
+
+  @override
+  String get cardDeliveryConfirmed => 'Pengiriman Dikonfirmasi!';
+
+  @override
+  String cardDeliveryConfirmFailed(String error) {
+    return 'Gagal mengonfirmasi pengiriman: $error';
+  }
+
+  @override
+  String get adminAdjustment => 'Penyesuaian Admin';
 }
