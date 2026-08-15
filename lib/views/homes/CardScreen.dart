@@ -1462,6 +1462,7 @@ class _CardScreenState extends State<CardScreen> {
               MaterialPageRoute(
                 builder: (context) => CardTransactionDetailScreen(
                   transaction: transaction,
+                  publicToken: _currentCardDetails?.publicToken ?? '',
                 ),
               ),
             );
@@ -1830,13 +1831,13 @@ class _CardScreenState extends State<CardScreen> {
                       ),
                       SizedBox(height: size.height * 0.05),
                       AspectRatio(
-                        aspectRatio: 10788 / 6216, // 保持原图比例
+                        aspectRatio: 1.586, // 物理信用卡的标准黄金比例
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(16),
                           child: Image.asset(
                             "assets/visa.png",
                             width: double.infinity,
-                            fit: BoxFit.contain, // 完整显示，不裁剪
+                            fit: BoxFit.fill, // 强制拉伸填满这个比例的相框，矫正原图本身的压扁错觉
                           ),
                         ),
                       ),
@@ -2183,18 +2184,22 @@ class _CardScreenState extends State<CardScreen> {
                         Navigator.pop(ctx); // 关闭确认弹窗
                         Navigator.pop(parentCtx); // 关闭进度底部弹窗
                         try {
-                            final result = await _cardService.confirmPhysicalCardDelivery(_currentCardDetails!.id);
-                            if (result["status"] == "success") {
-                              if (mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(AppLocalizations.of(context)!.cardDeliveryConfirmed)),
-                                );
-                              }
-                              setState(() {
-                                _optimisticHiddenMailingTabs.add(_currentCardDetails!.id);
-                              });
+                          final result =
+                              await _cardService.confirmPhysicalCardDelivery(
+                                  _currentCardDetails!.id);
+                          if (result["status"] == "success") {
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text(AppLocalizations.of(context)!
+                                        .cardDeliveryConfirmed)),
+                              );
                             }
-
+                            setState(() {
+                              _optimisticHiddenMailingTabs
+                                  .add(_currentCardDetails!.id);
+                            });
+                          }
                         } catch (e) {
                           if (mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(

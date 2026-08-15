@@ -26,6 +26,7 @@ import 'package:comecomepay/viewmodels/swap_viewmodel.dart';
 import 'package:comecomepay/models/responses/login_response_model.dart';
 import 'package:comecomepay/services/hive_storage_service.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
+import 'package:comecomepay/firebase_options.dart';
 
 // Firebase imports
 import 'package:firebase_core/firebase_core.dart';
@@ -91,20 +92,15 @@ class L10n {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase (Manually passing options only for iOS to bypass Xcode manual linking)
-  if (Firebase.apps.isEmpty) {
-    await Firebase.initializeApp(
-      options: Platform.isIOS
-          ? const FirebaseOptions(
-              apiKey: 'AIzaSyAQChITJHvky6gKiW_-cwcvNM4JMfK0OYY',
-              appId: '1:848715465177:ios:10715fff8e46d4fdf0d9c8',
-              messagingSenderId: '848715465177',
-              projectId: 'comepay-a31f4',
-              storageBucket: 'comepay-a31f4.firebasestorage.app',
-              iosBundleId: 'com.example.comecomepay',
-            )
-          : null,
-    );
+  // Initialize Firebase (Using the newly configured company environments)
+  try {
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    }
+  } catch (e) {
+    debugPrint('Firebase init error: $e');
   }
 
   // Run Firebase Token fetching in a non-blocking background Future

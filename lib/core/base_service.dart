@@ -71,7 +71,7 @@ abstract class BaseService {
 
   // Token refresh lock mechanism using Completer for true mutex behavior
   // Prevents race conditions when multiple 401 errors arrive simultaneously
-  Completer<Map<String, dynamic>>? _refreshCompleter;
+  static Completer<Map<String, dynamic>>? _refreshCompleter;
   final List<Function> _pendingRequests = [];
 
   // 🛡️ Flag to prevent multiple redundant redirections to login page
@@ -88,9 +88,9 @@ abstract class BaseService {
         options.extra['request_start_time'] =
             DateTime.now().millisecondsSinceEpoch;
 
-        // 自动添加Authorization token
+        // 自动添加Authorization token（⚠️ 排除 refresh 接口）
         final token = HiveStorageService.getAccessToken();
-        if (token != null) {
+        if (token != null && !options.path.contains('/auth/refresh')) {
           options.headers['Authorization'] = 'Bearer $token';
         }
 
@@ -178,8 +178,10 @@ abstract class BaseService {
             if (_refreshCompleter != null) {
               try {
                 // Wait for the ongoing refresh to complete
+                print('🚦 [核心拦截器] 发现别的兄弟正在换 Token，挂起排队等待拿新票...');
                 final newTokens = await _refreshCompleter!.future;
 
+                print('🚀 [核心拦截器] 兄弟换好了！用他换来的新短 Token 重发原始请求！');
                 // Retry the original request with new token
                 final options = error.requestOptions;
                 options.headers['Authorization'] =
@@ -187,6 +189,7 @@ abstract class BaseService {
                 final response = await _dio.fetch(options);
                 return handler.resolve(response);
               } catch (e) {
+                print('💥 [核心拦截器] 糟糕，排队等来的结果是换新失败，集体引爆返回错误...');
                 return handler.reject(error);
               }
             }
@@ -195,14 +198,25 @@ abstract class BaseService {
             _refreshCompleter = Completer<Map<String, dynamic>>();
 
             try {
+              print('===================================================');
+              print('⏳ [核心拦截器] 侦测到 401，启用全局锁！开始申请新 Token...');
+              print('===================================================');
+
               // Attempt to refresh the token
               final newTokens = await _refreshAccessToken(refreshToken);
+
+              print('✅ [核心拦截器] 请求成功！服务器下发了一对崭新的长短 Token 证书！');
+              print(
+                  '🔑 新短票 (Access Token 后缀): ...${newTokens['access_token']?.toString() != null && newTokens['access_token'].toString().length > 10 ? newTokens['access_token'].toString().substring(newTokens['access_token'].toString().length - 10) : '<安全隐蔽>'}');
+              print(
+                  '🛡️ 新长票 (Refresh Token 后缀): ...${newTokens['refresh_token']?.toString() != null && newTokens['refresh_token'].toString().length > 10 ? newTokens['refresh_token'].toString().substring(newTokens['refresh_token'].toString().length - 10) : '<安全隐蔽>'}');
 
               // Update stored tokens
               await HiveStorageService.updateTokens(
                 newTokens['access_token'],
                 newTokens['refresh_token'],
               );
+              print('💾 [核心拦截器] 两张新 Token 已经安全覆盖写入本地 Hive 缓存库，续期完成！');
 
               // Complete the Completer to notify waiting requests
               _refreshCompleter!.complete(newTokens);

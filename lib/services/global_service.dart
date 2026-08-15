@@ -553,7 +553,7 @@ class GlobalService extends BaseService {
         },
       );
 
-      _apiLogger.logMethodExit('getNotifications', result: 'Success');
+      // _apiLogger.logMethodExit('getNotifications', result: 'Success');
       return NotificationResponseModel.fromJson(data);
     } catch (e) {
       _apiLogger.logMethodExit('getNotifications',

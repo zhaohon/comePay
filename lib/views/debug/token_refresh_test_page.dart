@@ -26,16 +26,22 @@ class TokenRefreshTestPage extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    '💡 测试说明',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                children: [
+                  Row(
+                    children: const [
+                      Icon(Icons.lightbulb, color: Colors.amber, size: 20),
+                      SizedBox(width: 8),
+                      Text(
+                        '测试说明',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 8),
-                  Text(
+                  const SizedBox(height: 8),
+                  const Text(
                     '此页面用于测试Token自动刷新功能。\n'
                     '点击下方按钮模拟token过期，然后返回首页或其他页面触发API请求，'
                     '观察是否自动刷新token。',
@@ -146,17 +152,23 @@ class TokenRefreshTestPage extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    '✅ 预期结果',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green,
-                    ),
+                children: [
+                  Row(
+                    children: const [
+                      Icon(Icons.check_circle, color: Colors.green, size: 20),
+                      SizedBox(width: 8),
+                      Text(
+                        '预期结果',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 8),
-                  Text(
+                  const SizedBox(height: 8),
+                  const Text(
                     'Access Token过期：\n'
                     '• 自动刷新token（用户无感知）\n'
                     '• 数据正常加载\n\n'

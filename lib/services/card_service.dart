@@ -170,6 +170,39 @@ class CardService extends BaseService {
     return response['data'] as Map<String, dynamic>;
   }
 
+  /// 获取卡片账单详情
+  Future<Map<String, dynamic>> getCardTradeDetail({
+    required int tradeId,
+    required String publicToken,
+  }) async {
+    final response = await get(
+      '/card/trade/$tradeId',
+      queryParameters: {
+        'public_token': publicToken,
+      },
+    );
+
+    if (response is Map<String, dynamic>) {
+      final data = response['data'];
+      if (data != null && data is Map<String, dynamic>) {
+        return data;
+      }
+
+      // Some backends return 200 with data=null if record not found
+      // Or they might return the data directly without the {"data":...} wrapper.
+      if (data == null) {
+        if (response.containsKey('amount') ||
+            response.containsKey('trade_type')) {
+          return response; // Backend returned data without wrapper
+        }
+        throw Exception(
+            response['errstr'] ?? response['message'] ?? '未找到该笔账单详情');
+      }
+    }
+
+    throw Exception('接口返回格式异常');
+  }
+
   /// 获取CVV
   Future<String> getCvv(String publicToken) async {
     final response = await get(
