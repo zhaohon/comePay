@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:comecomepay/utils/app_colors.dart';
 import 'package:comecomepay/models/wallet_model.dart';
 import 'package:comecomepay/services/withdraw_service.dart';
+import 'package:comecomepay/services/global_service.dart';
+import 'package:comecomepay/utils/service_locator.dart';
 import 'package:comecomepay/models/requests/internal_transfer_request_model.dart';
 import 'package:comecomepay/widgets/otp_input.dart';
 import 'package:comecomepay/utils/transaction_password_guard.dart';
@@ -29,9 +32,16 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
       TextEditingController();
 
   final WithdrawService _withdrawService = WithdrawService();
+  final GlobalService _globalService = getIt<GlobalService>();
   bool _isLoading = false;
 
   late TabController _tabController;
+
+  // 提现手续费相关
+  Timer? _debounceTimer;
+  bool _isFetchingFee = false;
+  double _externalFee = 0.0;
+  double _actualAmount = 0.0;
 
   @override
   void initState() {
@@ -42,6 +52,67 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
         setState(() {});
       }
     });
+
+    _amountController.addListener(_onAmountChanged);
+  }
+
+  void _onAmountChanged() {
+    if (_tabController.index != 0) return; // 只管外部提现
+    final text = _amountController.text.trim();
+    if (text.isEmpty) {
+      if (_externalFee != 0 || _actualAmount != 0) {
+        setState(() {
+          _externalFee = 0.0;
+          _actualAmount = 0.0;
+        });
+      }
+      return;
+    }
+
+    final amount = double.tryParse(text) ?? 0.0;
+
+    if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+      _fetchWithdrawalFee(amount);
+    });
+  }
+
+  Future<void> _fetchWithdrawalFee(double amount) async {
+    if (!mounted) return;
+    setState(() {
+      _isFetchingFee = true;
+    });
+
+    try {
+      final data = await _globalService.getWithdrawalFeeInfo(amount: amount);
+      if (!mounted) return;
+      setState(() {
+        _externalFee =
+            (data['fee'] != null) ? double.parse(data['fee'].toString()) : 0.0;
+        _actualAmount = (data['actual_amount'] != null)
+            ? double.parse(data['actual_amount'].toString())
+            : 0.0;
+        _isFetchingFee = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _isFetchingFee = false;
+        // 如果出错，这里可以不强行清零，保留默认逻辑或提示
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _debounceTimer?.cancel();
+    _amountController.removeListener(_onAmountChanged);
+    _addressController.dispose();
+    _amountController.dispose();
+    _uidController.dispose();
+    _internalAmountController.dispose();
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
@@ -58,22 +129,13 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
     }
   }
 
-  @override
-  void dispose() {
-    _addressController.dispose();
-    _amountController.dispose();
-    _uidController.dispose();
-    _internalAmountController.dispose();
-    _tabController.dispose();
-    super.dispose();
-  }
-
   void _setMaxAmount(bool isInternal) {
     if (balance != null) {
       if (isInternal) {
         _internalAmountController.text = balance!.balance.toString();
       } else {
         _amountController.text = balance!.balance.toString();
+        _onAmountChanged(); // 手动触发计算
       }
     }
   }
@@ -143,7 +205,7 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
         amount: amount,
         address: _addressController.text.trim(),
         network: network,
-              transactionPassword: password,
+        transactionPassword: password,
       );
 
       final response = await _withdrawService.withdraw(request);
@@ -491,6 +553,7 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
         TextField(
           controller: _amountController,
           enabled: !_isLoading,
+          onChanged: (val) => _onAmountChanged(),
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           style: const TextStyle(
             fontSize: 16,
@@ -875,9 +938,11 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
                   const SizedBox(height: 20),
 
                   // Conditional form rendering
-                  if (_tabController.index == 0)
-                    _buildExternalTab()
-                  else
+                  if (_tabController.index == 0) ...[
+                    _buildExternalTab(),
+                    const SizedBox(height: 20),
+                    _buildFeeInfo(),
+                  ] else
                     _buildInternalTab(),
 
                   const SizedBox(height: 40),
@@ -937,6 +1002,72 @@ class _SendPdpState extends State<SendPdp> with SingleTickerProviderStateMixin {
                 ],
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeeInfo() {
+    if (_amountController.text.trim().isEmpty) return const SizedBox.shrink();
+
+    final symbol = balance?.symbol ?? '';
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.cardBackground,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border, width: 1),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                AppLocalizations.of(context)!.withdrawalFeeLabel,
+                style: const TextStyle(
+                    color: AppColors.textPlaceholder, fontSize: 13),
+              ),
+              _isFetchingFee
+                  ? const SizedBox(
+                      width: 12,
+                      height: 12,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : Text(
+                      '$_externalFee $symbol',
+                      style: const TextStyle(
+                          color: AppColors.textPrimary,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600),
+                    ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                AppLocalizations.of(context)!.withdrawalActualAmountLabel,
+                style: const TextStyle(
+                    color: AppColors.textPlaceholder, fontSize: 13),
+              ),
+              _isFetchingFee
+                  ? const SizedBox(
+                      width: 12,
+                      height: 12,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : Text(
+                      '$_actualAmount $symbol',
+                      style: const TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold),
+                    ),
+            ],
           ),
         ],
       ),

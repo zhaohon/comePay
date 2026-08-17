@@ -4,8 +4,63 @@ import 'package:comecomepay/viewmodels/modify_password_viewmodel.dart';
 import 'package:comecomepay/l10n/app_localizations.dart';
 import 'package:comecomepay/utils/app_colors.dart';
 
-class ModifyLoginPasswordScreen extends StatelessWidget {
+class ModifyLoginPasswordScreen extends StatefulWidget {
   const ModifyLoginPasswordScreen({super.key});
+
+  @override
+  State<ModifyLoginPasswordScreen> createState() =>
+      _ModifyLoginPasswordScreenState();
+}
+
+class _ModifyLoginPasswordScreenState extends State<ModifyLoginPasswordScreen> {
+  final TextEditingController _oldPasswordController = TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _oldPasswordController.dispose();
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildTextField({
+    required String title,
+    required String hint,
+    TextEditingController? controller,
+    bool obscure = false,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: const Color(0xFFE5E7EB)),
+          ),
+          child: TextField(
+            controller: controller,
+            obscureText: obscure,
+            style: const TextStyle(fontSize: 14),
+            decoration: InputDecoration(
+              hintText: hint,
+              hintStyle: const TextStyle(color: Color(0xFFD1D5DB)),
+              border: InputBorder.none,
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,51 +68,6 @@ class ModifyLoginPasswordScreen extends StatelessWidget {
       create: (_) => ModifyPasswordViewModel(),
       child: Consumer<ModifyPasswordViewModel>(
         builder: (context, viewModel, child) {
-          final TextEditingController _oldPasswordController =
-              TextEditingController();
-          final TextEditingController _newPasswordController =
-              TextEditingController();
-          final TextEditingController _confirmPasswordController =
-              TextEditingController();
-
-          Widget _buildTextField({
-            required String title,
-            required String hint,
-            TextEditingController? controller,
-            bool obscure = false,
-          }) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.w500),
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFFE5E7EB)),
-                  ),
-                  child: TextField(
-                    controller: controller,
-                    obscureText: obscure,
-                    style: const TextStyle(fontSize: 14),
-                    decoration: InputDecoration(
-                      hintText: hint,
-                      hintStyle: const TextStyle(color: Color(0xFFD1D5DB)),
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 14),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          }
-
           return Scaffold(
             backgroundColor: AppColors.pageBackground,
             appBar: AppBar(
@@ -74,29 +84,33 @@ class ModifyLoginPasswordScreen extends StatelessWidget {
                   children: [
                     Text(
                       AppLocalizations.of(context)!.modifyLoginPasswordWarning,
-                      style: TextStyle(color: Colors.red, fontSize: 13),
+                      style: const TextStyle(color: Colors.red, fontSize: 13),
                     ),
                     const SizedBox(height: 20),
                     _buildTextField(
                       title: AppLocalizations.of(context)!.oldPassword,
-                      hint: AppLocalizations.of(context)!
-                          .pleaseEnterTheOldPassword,
+                      hint: AppLocalizations.of(context)!.pleaseEnterTheOldPassword,
                       controller: _oldPasswordController,
                       obscure: true,
                     ),
                     const SizedBox(height: 16),
                     _buildTextField(
                       title: AppLocalizations.of(context)!.newPassword,
-                      hint:
-                          AppLocalizations.of(context)!.pleaseEnterANewPassword,
+                      hint: AppLocalizations.of(context)!.pleaseEnterANewPassword,
                       controller: _newPasswordController,
                       obscure: true,
                     ),
-                    const SizedBox(height: 16),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8, bottom: 4),
+                      child: Text(
+                        AppLocalizations.of(context)!.passwordMustBe8Characters,
+                        style: const TextStyle(color: Color(0xFF9CA3AF), fontSize: 12),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
                     _buildTextField(
                       title: AppLocalizations.of(context)!.confirmNewPassword,
-                      hint: AppLocalizations.of(context)!
-                          .pleaseEnterToConfirmTheNewPassword,
+                      hint: AppLocalizations.of(context)!.pleaseEnterToConfirmTheNewPassword,
                       controller: _confirmPasswordController,
                       obscure: true,
                     ),
@@ -114,8 +128,6 @@ class ModifyLoginPasswordScreen extends StatelessWidget {
                 ),
               ),
             ),
-
-            // Confirm button di paling bawah
             bottomNavigationBar: Padding(
               padding: const EdgeInsets.all(16.0),
               child: SizedBox(

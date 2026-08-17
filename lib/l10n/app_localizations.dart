@@ -4475,6 +4475,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Admin Adjustment'**
   String get adminAdjustment;
+
+  /// No description provided for @cardTxInvalidId.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid transaction ID or missing card verification info'**
+  String get cardTxInvalidId;
+
+  /// No description provided for @cardTxFetchFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to fetch bill details:'**
+  String get cardTxFetchFailed;
+
+  /// No description provided for @cardTxDeduction.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Deduction'**
+  String get cardTxDeduction;
+
+  /// No description provided for @cardTxReversal.
+  ///
+  /// In en, this message translates to:
+  /// **'Reversal Credit'**
+  String get cardTxReversal;
+
+  /// No description provided for @cardTxRefund.
+  ///
+  /// In en, this message translates to:
+  /// **'Refund Credit'**
+  String get cardTxRefund;
+
+  /// No description provided for @cardTxAuth.
+  ///
+  /// In en, this message translates to:
+  /// **'Auth'**
+  String get cardTxAuth;
+
+  /// No description provided for @cardTxRevoke.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoke'**
+  String get cardTxRevoke;
+
+  /// No description provided for @cardTxRefundShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Refund'**
+  String get cardTxRefundShort;
+
+  /// No description provided for @cardTxDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Details'**
+  String get cardTxDetailsTitle;
+
+  /// No description provided for @cardTxNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'No billing data available'**
+  String get cardTxNoData;
+
+  /// No description provided for @cardTxAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get cardTxAmount;
+
+  /// No description provided for @cardTxMerchant.
+  ///
+  /// In en, this message translates to:
+  /// **'Merchant'**
+  String get cardTxMerchant;
+
+  /// No description provided for @cardTxCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Country/Region'**
+  String get cardTxCountry;
+
+  /// No description provided for @cardTxCity.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get cardTxCity;
+
+  /// No description provided for @cardTxTraceId.
+  ///
+  /// In en, this message translates to:
+  /// **'Trace ID'**
+  String get cardTxTraceId;
+
+  /// No description provided for @crossBorderFeeBenefit.
+  ///
+  /// In en, this message translates to:
+  /// **'Cross-border Fee (>100k HKD/day)'**
+  String get crossBorderFeeBenefit;
+
+  /// No description provided for @withdrawalFeeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fee'**
+  String get withdrawalFeeLabel;
+
+  /// No description provided for @withdrawalActualAmountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Actual Amount'**
+  String get withdrawalActualAmountLabel;
 }
 
 class _AppLocalizationsDelegate

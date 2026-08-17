@@ -2324,4 +2324,60 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adminAdjustment => 'تعديل الإدارة';
+
+  @override
+  String get cardTxInvalidId =>
+      'Invalid transaction ID or missing card verification info';
+
+  @override
+  String get cardTxFetchFailed => 'Failed to fetch bill details:';
+
+  @override
+  String get cardTxDeduction => 'Transaction Deduction';
+
+  @override
+  String get cardTxReversal => 'Reversal Credit';
+
+  @override
+  String get cardTxRefund => 'Refund Credit';
+
+  @override
+  String get cardTxAuth => 'Auth';
+
+  @override
+  String get cardTxRevoke => 'Revoke';
+
+  @override
+  String get cardTxRefundShort => 'Refund';
+
+  @override
+  String get cardTxDetailsTitle => 'Transaction Details';
+
+  @override
+  String get cardTxNoData => 'No billing data available';
+
+  @override
+  String get cardTxAmount => 'Amount';
+
+  @override
+  String get cardTxMerchant => 'Merchant';
+
+  @override
+  String get cardTxCountry => 'Country/Region';
+
+  @override
+  String get cardTxCity => 'City';
+
+  @override
+  String get cardTxTraceId => 'Trace ID';
+
+  @override
+  String get crossBorderFeeBenefit =>
+      'رسوم عبر الحدود (> 100 ألف دولار هونج كونج / يوم)';
+
+  @override
+  String get withdrawalFeeLabel => 'رسوم';
+
+  @override
+  String get withdrawalActualAmountLabel => 'المبلغ الفعلي';
 }

@@ -160,6 +160,13 @@ abstract class BaseService {
 
         // Handle 401 Unauthorized - Token expired
         if (error.response?.statusCode == 401) {
+          // Prevent auth interfaces (login / register / forgot password) from triggering global token refresh logic
+          if (error.requestOptions.path.contains('/auth/login') ||
+              error.requestOptions.path.contains('/auth/code') ||
+              error.requestOptions.path.contains('/auth/set_pwd')) {
+            return handler.reject(error);
+          }
+
           // Prevent refresh endpoint from triggering another refresh
           if (error.requestOptions.path.contains('/auth/refresh')) {
             _apiLogger.logError(error, StackTrace.current);

@@ -70,7 +70,7 @@ class CardBenefitsScreen extends StatelessWidget {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               crossAxisCount: 2,
-              childAspectRatio: 2.2,
+              childAspectRatio: 1.8,
               crossAxisSpacing: 16,
               mainAxisSpacing: 24,
               children: [
@@ -78,6 +78,15 @@ class CardBenefitsScreen extends StatelessWidget {
                   context,
                   l10n.monthlyFee,
                   '${cardDetails.monthlyFee.toStringAsFixed(0)} ${cardDetails.currencyCode}',
+                ),
+                _buildBenefitItem(context, l10n.crossBorderFee, '2 %'
+                    // '${cardDetails.crossBorderFee.toStringAsFixed(0)} %',
+                    ),
+                _buildBenefitItem(
+                  context,
+                  l10n.transactionFee,
+                  // '${cardDetails.transactionFee.toStringAsFixed(2)} %',
+                  '0.8 %',
                 ),
                 _buildBenefitItem(
                   context,
@@ -92,13 +101,9 @@ class CardBenefitsScreen extends StatelessWidget {
                 ),
                 _buildBenefitItem(
                   context,
-                  l10n.transactionFee,
-                  // '${cardDetails.transactionFee.toStringAsFixed(2)} %',
-                  '0.8 %',
+                  l10n.crossBorderFeeBenefit,
+                  '0 %',
                 ),
-                _buildBenefitItem(context, l10n.crossBorderFee, '2 %'
-                    // '${cardDetails.crossBorderFee.toStringAsFixed(0)} %',
-                    ),
               ],
             ),
 
@@ -145,10 +150,11 @@ class CardBenefitsScreen extends StatelessWidget {
               Text(
                 label,
                 style: const TextStyle(
-                  fontSize: 13,
+                  fontSize: 12,
                   color: Color(0xFF9CA3AF),
+                  height: 1.2,
                 ),
-                maxLines: 1,
+                maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 4),

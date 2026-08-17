@@ -747,11 +747,35 @@
   "deactivateWarningContent": "Once deactivated, your account cannot be recovered. All assets, linked cards, and transaction records will be permanently cleared or frozen. Are you sure you want to continue?",
   "confirmDeactivate": "Confirm Deactivate",
   "deactivateOtpPrompt": "Please enter the OTP sent to your email to complete deactivation",
-  "accountDeactivatedSuccessfully": "Account successfully deactivated"
-  ,"confirmReceivePhysicalCardTitle": "Confirm Receiving Physical Card?",
+  "accountDeactivatedSuccessfully": "Account successfully deactivated",
+  "confirmReceivePhysicalCardTitle": "Confirm Receiving Physical Card?",
   "confirmReceivePhysicalCardDesc": "Please confirm that the package has been delivered and signed by yourself. Upon confirmation, the mailing progress will no longer be displayed.",
   "cardDeliveryConfirmed": "Delivery Confirmed!",
   "cardDeliveryConfirmFailed": "Confirm delivery failed: {error}",
-  "@cardDeliveryConfirmFailed": { "placeholders": { "error": { "type": "String" } } }
-  ,"adminAdjustment": "Admin Adjustment"
+  "@cardDeliveryConfirmFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "adminAdjustment": "Admin Adjustment",
+  "cardTxInvalidId": "Invalid transaction ID or missing card verification info",
+  "cardTxFetchFailed": "Failed to fetch bill details:",
+  "cardTxDeduction": "Transaction Deduction",
+  "cardTxReversal": "Reversal Credit",
+  "cardTxRefund": "Refund Credit",
+  "cardTxAuth": "Auth",
+  "cardTxRevoke": "Revoke",
+  "cardTxRefundShort": "Refund",
+  "cardTxDetailsTitle": "Transaction Details",
+  "cardTxNoData": "No billing data available",
+  "cardTxAmount": "Amount",
+  "cardTxMerchant": "Merchant",
+  "cardTxCountry": "Country/Region",
+  "cardTxCity": "City",
+  "cardTxTraceId": "Trace ID",
+  "crossBorderFeeBenefit": "Cross-border Fee (>100k HKD/day)",
+  "withdrawalFeeLabel": "Fee",
+  "withdrawalActualAmountLabel": "Actual Amount"
 }

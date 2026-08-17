@@ -115,19 +115,47 @@ void main() async {
         sound: true,
       );
 
-      // Get device token and log it for backend integration
+      // [iOS] 在换了 Firebase 项目之后，iOS 需要重新和苹果 APNs 注册绑定。
+      // 这个过程完全异步，最长需要数秒钟。
+      // 必须等 APNs token 到位之后，getToken() 才能成功兑换 FCM token。
+      // 我们用轮询的方式最多等 8 秒，避免报 apns-token-not-set。
+
       if (Platform.isIOS) {
-        // iOS specific: Ensure APNs token is ready before requesting FCM token
-        await FirebaseMessaging.instance.getAPNSToken();
+        String? apnsToken;
+        for (int i = 0; i < 8; i++) {
+          try {
+            apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+            if (apnsToken != null && apnsToken.isNotEmpty) {
+              debugPrint('✅ APNs Token 已就绪（第${i + 1}次尝试）');
+              break;
+            }
+          } catch (_) {}
+          debugPrint('⏳ 等待 APNs Token... (${i + 1}/8)');
+          await Future.delayed(const Duration(seconds: 1));
+        }
+        if (apnsToken == null) {
+          debugPrint('⚠️ APNs Token 等待超时（8秒），通知功能可能受影响');
+        }
       }
-      final String? token = await FirebaseMessaging.instance.getToken().timeout(
-        const Duration(seconds: 15),
-        onTimeout: () {
-          debugPrint(
-              'FCM Token fetch TIMEOUT (15s) - GMS framework is broken or network is blocked');
-          return null;
-        },
-      );
+
+      // 获取 FCM Token
+      String? token;
+      for (int attempt = 1; attempt <= 3; attempt++) {
+        try {
+          token = await FirebaseMessaging.instance.getToken().timeout(
+            const Duration(seconds: 10),
+            onTimeout: () {
+              debugPrint('FCM Token fetch TIMEOUT on attempt $attempt');
+              return null;
+            },
+          );
+          if (token != null && token.isNotEmpty) break;
+        } catch (e) {
+          debugPrint('FCM Token attempt $attempt failed: $e');
+          if (attempt < 3) await Future.delayed(const Duration(seconds: 2));
+        }
+      }
+
       debugPrint('--- DEVICE PUSH TOKEN ---');
       debugPrint(token ?? 'NO_TOKEN (Init Failed or Timeout)');
       debugPrint('-------------------------');

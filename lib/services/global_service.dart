@@ -767,4 +767,21 @@ class GlobalService extends BaseService {
       rethrow;
     }
   }
+
+  // 获取代币提现手续费信息
+  Future<Map<String, dynamic>> getWithdrawalFeeInfo({double? amount}) async {
+    _apiLogger.logMethodEntry('getWithdrawalFeeInfo', parameters: {'amount': amount});
+    try {
+      final queryParams = <String, dynamic>{};
+      if (amount != null && amount > 0) {
+        queryParams['amount'] = amount;
+      }
+      final response = await get('/wallet/withdrawal-fee-info', queryParameters: queryParams);
+      _apiLogger.logMethodExit('getWithdrawalFeeInfo', result: 'Success');
+      return response['data'] as Map<String, dynamic>? ?? {};
+    } catch (e) {
+      _apiLogger.logMethodExit('getWithdrawalFeeInfo', result: 'Error: $e');
+      rethrow;
+    }
+  }
 }

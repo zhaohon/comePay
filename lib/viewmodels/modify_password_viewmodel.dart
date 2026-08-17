@@ -84,8 +84,9 @@ class ModifyPasswordViewModel extends BaseViewModel {
       );
     }
 
-    if (newPassword.length < 8) {
-      _errorMessage = l10n.passwordMustBeAtLeast8Characters;
+    final passwordRegex = RegExp(r'^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$');
+    if (!passwordRegex.hasMatch(newPassword)) {
+      _errorMessage = l10n.passwordMustBe8Characters;
       notifyListeners();
       return ChangePasswordResult(
         success: false,

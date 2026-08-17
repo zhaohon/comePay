@@ -451,7 +451,7 @@ class _CardScreenState extends State<CardScreen> {
         limit: 20,
       );
 
-      final newTransactions = result['transactions'] as List<dynamic>? ?? [];
+      final newTransactions = result['trades'] as List<dynamic>? ?? [];
       final total = result['total'] as int? ?? 0;
 
       final mappedTransactions =
@@ -1392,17 +1392,16 @@ class _CardScreenState extends State<CardScreen> {
 
   /// 构建交易记录项
   Widget _buildTransactionItem(Map<String, dynamic> transaction) {
-    final amount = (transaction['amount'] is num)
-        ? (transaction['amount'] as num).toDouble()
-        : 0.0;
-    final isPositive = amount > 0;
-    final currency = transaction['currency'] ?? '';
+    final amount = (transaction['trade_total'] ?? transaction['amount'] ?? 0.0);
+    final isPositive =
+        (transaction['trade_type'] == 19 || transaction['trade_type'] == 18);
+    final currency = transaction['currency_code'] ?? '';
     final tradeType = transaction['trade_type'] ?? '';
     final status = transaction['status'] ?? '';
 
     // 标题：优先用 merchant_name，其次 description，最后回退到 trade_type 标签
     final merchantName = transaction['merchant_name'] as String? ?? '';
-    final description = transaction['description'] as String? ?? '';
+    final description = transaction['trade_remark'] as String? ?? '';
     final title = merchantName.isNotEmpty
         ? merchantName
         : description.isNotEmpty
@@ -2103,7 +2102,7 @@ class _CardScreenState extends State<CardScreen> {
     );
   }
 
-  void _showConfirmDeliveryDialog(BuildContext parentCtx) {
+  void _showConfirmDeliveryDialog(BuildContext parentCtx, String orderNo) {
     if (_currentCardDetails == null) return;
     showModalBottomSheet(
       context: parentCtx,
@@ -2184,9 +2183,8 @@ class _CardScreenState extends State<CardScreen> {
                         Navigator.pop(ctx); // 关闭确认弹窗
                         Navigator.pop(parentCtx); // 关闭进度底部弹窗
                         try {
-                          final result =
-                              await _cardService.confirmPhysicalCardDelivery(
-                                  _currentCardDetails!.id);
+                          final result = await _cardService
+                              .confirmPhysicalCardDelivery(orderNo);
                           if (result["status"] == "success") {
                             if (mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -2548,7 +2546,8 @@ class _CardScreenState extends State<CardScreen> {
                       child: ElevatedButton(
                         onPressed: snapshot.data!.isShippedOrDelivered
                             ? () {
-                                _showConfirmDeliveryDialog(ctx);
+                                _showConfirmDeliveryDialog(
+                                    ctx, snapshot.data!.orderNo);
                               }
                             : null,
                         style: ElevatedButton.styleFrom(

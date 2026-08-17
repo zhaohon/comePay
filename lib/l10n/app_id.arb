@@ -588,11 +588,20 @@
   "failedToCreateWallet": "Gagal membuat dompet",
   "rules": "Aturan",
   "my": "Saya",
-  "invitationSteps": "Langkah Undangan"
-  ,"confirmReceivePhysicalCardTitle": "Konfirmasi Penerimaan Kartu Fisik?",
+  "invitationSteps": "Langkah Undangan",
+  "confirmReceivePhysicalCardTitle": "Konfirmasi Penerimaan Kartu Fisik?",
   "confirmReceivePhysicalCardDesc": "Harap konfirmasi bahwa paket telah dikirim dan ditandatangani oleh Anda sendiri. Setelah konfirmasi, kemajuan pengiriman tidak akan ditampilkan lagi.",
   "cardDeliveryConfirmed": "Pengiriman Dikonfirmasi!",
   "cardDeliveryConfirmFailed": "Gagal mengonfirmasi pengiriman: {error}",
-  "@cardDeliveryConfirmFailed": { "placeholders": { "error": { "type": "String" } } }
-  ,"adminAdjustment": "Penyesuaian Admin"
+  "@cardDeliveryConfirmFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "adminAdjustment": "Penyesuaian Admin",
+  "crossBorderFeeBenefit": "Biaya Lintas Batas (>100k HKD/hari)",
+  "withdrawalFeeLabel": "Biaya",
+  "withdrawalActualAmountLabel": "Jumlah Aktual"
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:comecomepay/services/card_service.dart';
+import '../../l10n/app_localizations.dart';
 
 class CardTransactionDetailScreen extends StatefulWidget {
   final Map<String, dynamic> transaction;
@@ -37,10 +38,12 @@ class _CardTransactionDetailScreenState
     final tradeId = int.tryParse(tradeIdStr) ?? 0;
 
     if (tradeId == 0 || widget.publicToken.isEmpty) {
-      setState(() {
-        _isLoading = false;
-        _errorMessage = '无效的交易 ID 或 卡片验证信息缺失';
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = AppLocalizations.of(context)!.cardTxInvalidId;
+        });
+      }
       return;
     }
 
@@ -49,35 +52,39 @@ class _CardTransactionDetailScreenState
         tradeId: tradeId,
         publicToken: widget.publicToken,
       );
-      setState(() {
-        _detailData = data;
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _detailData = data;
+          _isLoading = false;
+        });
+      }
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-        _errorMessage = '获取账单详情失败: $e';
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage =
+              '${AppLocalizations.of(context)!.cardTxFetchFailed} $e';
+        });
+      }
     }
   }
 
   // 根据 trade_type 返回 上半部粗略说明
-  String _getTradeTypeTitle(int? type) {
-    if (type == 17) return '交易扣款';
-    if (type == 18) return '撤销入账';
-    if (type == 19) return '退款入账';
+  String _getTradeTypeTitle(int? type, BuildContext context) {
+    if (type == 17) return AppLocalizations.of(context)!.cardTxDeduction;
+    if (type == 18) return AppLocalizations.of(context)!.cardTxReversal;
+    if (type == 19) return AppLocalizations.of(context)!.cardTxRefund;
     return '-';
   }
 
   // 根据 trade_type 返回 下半部类型详情
-  String _getTradeTypeDetail(int? type) {
-    if (type == 17) return '授权';
-    if (type == 18) return '撤销';
-    if (type == 19) return '退款';
+  String _getTradeTypeDetail(int? type, BuildContext context) {
+    if (type == 17) return AppLocalizations.of(context)!.cardTxAuth;
+    if (type == 18) return AppLocalizations.of(context)!.cardTxRevoke;
+    if (type == 19) return AppLocalizations.of(context)!.cardTxRefundShort;
     return '-';
   }
 
-  // 格式化顶部带正负号和币种的金额
   String _formatTopAmount(Map<String, dynamic> data) {
     final amount = (data['amount'] ?? 0).toString();
     final currency = data['currency_code'] ?? '';
@@ -90,7 +97,6 @@ class _CardTransactionDetailScreenState
     }
   }
 
-  // 格式化原币种原始金额
   String _formatOriginalAmount(Map<String, dynamic> data) {
     final amount = (data['merchant_amount'] ?? 0).toString();
     final currency = data['merchant_currency'] ?? '';
@@ -102,9 +108,9 @@ class _CardTransactionDetailScreenState
     return Scaffold(
       backgroundColor: const Color(0xFFF7F7F7),
       appBar: AppBar(
-        title: const Text(
-          '交易明细',
-          style: TextStyle(
+        title: Text(
+          AppLocalizations.of(context)!.cardTxDetailsTitle,
+          style: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.w600,
             fontSize: 18,
@@ -118,11 +124,11 @@ class _CardTransactionDetailScreenState
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: _buildBody(),
+      body: _buildBody(context),
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(BuildContext context) {
     if (_isLoading) {
       return const Center(
         child: CircularProgressIndicator(color: Colors.purpleAccent),
@@ -139,10 +145,10 @@ class _CardTransactionDetailScreenState
     }
 
     if (_detailData == null) {
-      return const Center(
+      return Center(
         child: Text(
-          '暂无详情数据',
-          style: TextStyle(color: Colors.grey, fontSize: 16),
+          AppLocalizations.of(context)!.cardTxNoData,
+          style: const TextStyle(color: Colors.grey, fontSize: 16),
         ),
       );
     }
@@ -157,37 +163,49 @@ class _CardTransactionDetailScreenState
           // 第一张卡片：交易详情
           _buildCardContainer(
             children: [
-              _buildSectionTitle('交易详情'),
+              _buildSectionTitle(
+                  AppLocalizations.of(context)!.detailTransaction),
               const SizedBox(height: 16),
-              _buildInfoRow('交易金额', _formatTopAmount(data), isBoldValue: true),
+              _buildInfoRow(AppLocalizations.of(context)!.threeDsAmount,
+                  _formatTopAmount(data),
+                  isBoldValue: true),
               _buildDivider(),
-              _buildInfoRow('交易类型', _getTradeTypeTitle(tradeType)),
+              _buildInfoRow(AppLocalizations.of(context)!.transactionType,
+                  _getTradeTypeTitle(tradeType, context)),
               _buildDivider(),
-              _buildInfoRow('交易时间', data['trade_time']?.toString() ?? '-'),
+              _buildInfoRow(AppLocalizations.of(context)!.transactionTime,
+                  data['trade_time']?.toString() ?? '-'),
             ],
           ),
           const SizedBox(height: 20),
           // 第二张卡片：账单详情
           _buildCardContainer(
             children: [
-              _buildSectionTitle('账单详情'),
+              _buildSectionTitle(AppLocalizations.of(context)!.billDetail),
               const SizedBox(height: 16),
-              _buildInfoRow('卡号', data['card_number']?.toString() ?? '-'),
+              _buildInfoRow(AppLocalizations.of(context)!.cardNumber,
+                  data['card_number']?.toString() ?? '-'),
               _buildDivider(),
-              _buildInfoRow('交易类型', _getTradeTypeDetail(tradeType)),
+              _buildInfoRow(AppLocalizations.of(context)!.transactionType,
+                  _getTradeTypeDetail(tradeType, context)),
               _buildDivider(),
-              _buildInfoRow('金额', _formatOriginalAmount(data)),
+              _buildInfoRow(AppLocalizations.of(context)!.cardTxAmount,
+                  _formatOriginalAmount(data)),
               _buildDivider(),
-              _buildInfoRow('商户信息', data['merchant_name']?.toString() ?? '-'),
+              _buildInfoRow(AppLocalizations.of(context)!.cardTxMerchant,
+                  data['merchant_name']?.toString() ?? '-'),
               _buildDivider(),
-              _buildInfoRow(
-                  '国家/地区', data['merchant_country']?.toString() ?? '-'),
+              _buildInfoRow(AppLocalizations.of(context)!.cardTxCountry,
+                  data['merchant_country']?.toString() ?? '-'),
               _buildDivider(),
-              _buildInfoRow('城市', data['merchant_city']?.toString() ?? '-'),
+              _buildInfoRow(AppLocalizations.of(context)!.cardTxCity,
+                  data['merchant_city']?.toString() ?? '-'),
               _buildDivider(),
-              _buildInfoRow('交易流水号', data['trace_id']?.toString() ?? '-'),
+              _buildInfoRow(AppLocalizations.of(context)!.cardTxTraceId,
+                  data['trace_id']?.toString() ?? '-'),
             ],
           ),
+          const SizedBox(height: 40),
         ],
       ),
     );
@@ -232,6 +250,7 @@ class _CardTransactionDetailScreenState
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
@@ -240,13 +259,17 @@ class _CardTransactionDetailScreenState
               color: Color(0xFF6B7280), // 灰黑色文字
             ),
           ),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.black,
-              fontWeight: isBoldValue ? FontWeight.bold : FontWeight.w500,
-              letterSpacing: 0.5,
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              value,
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.black,
+                fontWeight: isBoldValue ? FontWeight.bold : FontWeight.w500,
+                letterSpacing: 0.5,
+              ),
             ),
           ),
         ],

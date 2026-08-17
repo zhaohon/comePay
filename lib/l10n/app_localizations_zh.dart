@@ -2251,4 +2251,58 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get adminAdjustment => '管理员调账';
+
+  @override
+  String get cardTxInvalidId => '无效的交易 ID 或卡片验证信息缺失';
+
+  @override
+  String get cardTxFetchFailed => '获取账单详情失败:';
+
+  @override
+  String get cardTxDeduction => '交易扣款';
+
+  @override
+  String get cardTxReversal => '撤销入账';
+
+  @override
+  String get cardTxRefund => '退款入账';
+
+  @override
+  String get cardTxAuth => '授权';
+
+  @override
+  String get cardTxRevoke => '撤销';
+
+  @override
+  String get cardTxRefundShort => '退款';
+
+  @override
+  String get cardTxDetailsTitle => '交易明细';
+
+  @override
+  String get cardTxNoData => '暂无账单数据';
+
+  @override
+  String get cardTxAmount => '金额';
+
+  @override
+  String get cardTxMerchant => '商户信息';
+
+  @override
+  String get cardTxCountry => '国家/地区';
+
+  @override
+  String get cardTxCity => '城市';
+
+  @override
+  String get cardTxTraceId => '交易流水号';
+
+  @override
+  String get crossBorderFeeBenefit => '跨境手续费(日消费满10万港币)';
+
+  @override
+  String get withdrawalFeeLabel => '手续费';
+
+  @override
+  String get withdrawalActualAmountLabel => '实际到账';
 }

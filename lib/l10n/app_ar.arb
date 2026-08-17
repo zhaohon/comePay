@@ -747,11 +747,20 @@
   "deactivateWarningContent": "بمجرد إلغاء التنشيط، لا يمكن استرداد حسابك. سيتم مسح أو تجميد جميع الأصول والبطاقات المرتبطة وسجلات المعاملات بشكل دائم. هل أنت متأكد أنك تريد المتابعة؟",
   "confirmDeactivate": "تأكيد إلغاء التنشيط",
   "deactivateOtpPrompt": "يرجى إدخال رمز التحقق المرسل إلى بريدك الإلكتروني لإكمال إلغاء التنشيط",
-  "accountDeactivatedSuccessfully": "تم إلغاء تنشيط الحساب بنجاح"
-  ,"confirmReceivePhysicalCardTitle": "هل تؤكد استلام البطاقة الفعلية؟",
+  "accountDeactivatedSuccessfully": "تم إلغاء تنشيط الحساب بنجاح",
+  "confirmReceivePhysicalCardTitle": "هل تؤكد استلام البطاقة الفعلية؟",
   "confirmReceivePhysicalCardDesc": "يرجى التأكد من تسليم الطرد وتوقيعه بنفسك. عند التأكيد، لن يتم عرض تقدم البريد بعد الآن.",
   "cardDeliveryConfirmed": "تم تأكيد التسليم!",
   "cardDeliveryConfirmFailed": "فشل تأكيد التسليم: {error}",
-  "@cardDeliveryConfirmFailed": { "placeholders": { "error": { "type": "String" } } }
-  ,"adminAdjustment": "تعديل الإدارة"
+  "@cardDeliveryConfirmFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "adminAdjustment": "تعديل الإدارة",
+  "crossBorderFeeBenefit": "رسوم عبر الحدود (> 100 ألف دولار هونج كونج / يوم)",
+  "withdrawalFeeLabel": "رسوم",
+  "withdrawalActualAmountLabel": "المبلغ الفعلي"
 }

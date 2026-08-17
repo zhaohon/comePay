@@ -747,11 +747,35 @@
   "deactivateWarningContent": "账号注销后将无法恢复，所有资产、绑卡和交易记录将被永久清空或冻结。您确定要继续吗？",
   "confirmDeactivate": "确认注销",
   "deactivateOtpPrompt": "请输入您邮箱中的验证码以完成注销",
-  "accountDeactivatedSuccessfully": "账号已成功注销"
-  ,"confirmReceivePhysicalCardTitle": "确认收到实体卡？",
+  "accountDeactivatedSuccessfully": "账号已成功注销",
+  "confirmReceivePhysicalCardTitle": "确认收到实体卡？",
   "confirmReceivePhysicalCardDesc": "请确认快递已送达并由您本人签收，确认后将不再展示邮寄进度。",
   "cardDeliveryConfirmed": "已确认收货！",
   "cardDeliveryConfirmFailed": "确认收货失败: {error}",
-  "@cardDeliveryConfirmFailed": { "placeholders": { "error": { "type": "String" } } }
-  ,"adminAdjustment": "管理员调账"
+  "@cardDeliveryConfirmFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "adminAdjustment": "管理员调账",
+  "cardTxInvalidId": "无效的交易 ID 或卡片验证信息缺失",
+  "cardTxFetchFailed": "获取账单详情失败:",
+  "cardTxDeduction": "交易扣款",
+  "cardTxReversal": "撤销入账",
+  "cardTxRefund": "退款入账",
+  "cardTxAuth": "授权",
+  "cardTxRevoke": "撤销",
+  "cardTxRefundShort": "退款",
+  "cardTxDetailsTitle": "交易明细",
+  "cardTxNoData": "暂无账单数据",
+  "cardTxAmount": "金额",
+  "cardTxMerchant": "商户信息",
+  "cardTxCountry": "国家/地区",
+  "cardTxCity": "城市",
+  "cardTxTraceId": "交易流水号",
+  "crossBorderFeeBenefit": "跨境手续费(日消费满10万港币)",
+  "withdrawalFeeLabel": "手续费",
+  "withdrawalActualAmountLabel": "实际到账"
 }

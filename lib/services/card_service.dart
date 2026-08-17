@@ -40,7 +40,7 @@ class CardService extends BaseService {
 
   /// 用户确认收货
   Future<Map<String, dynamic>> confirmPhysicalCardDelivery(
-      int applicationId) async {
+      String applicationId) async {
     final response = await post(
         '/card/physical-application/$applicationId/confirm-delivery');
     return response as Map<String, dynamic>;
@@ -160,7 +160,7 @@ class CardService extends BaseService {
     int limit = 20,
   }) async {
     final response = await get(
-      '/card/transaction-history',
+      '/card/trades',
       queryParameters: {
         'public_token': publicToken,
         'page': page,
